@@ -55,7 +55,7 @@ The portfolio will contain the following documents:
 
 | Document | Purpose | Status |
 |---|---|---|
-| Product Overview | Describe the product, users, features, and business context | Planned |
+| [Product Overview](docs/01-product-overview.md) | Describe the product, users, features, and business context | Completed |
 | Quality Risk Analysis | Identify and prioritise product and project risks | Planned |
 | Test Strategy | Define the overall testing approach and responsibilities | Planned |
 | Test Scope | Define what will and will not be tested | Planned |
