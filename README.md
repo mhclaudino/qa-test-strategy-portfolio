@@ -56,7 +56,7 @@ The portfolio will contain the following documents:
 | Document | Purpose | Status |
 |---|---|---|
 | [Product Overview](docs/01-product-overview.md) | Describe the product, users, features, and business context | Completed |
-| Quality Risk Analysis | Identify and prioritise product and project risks | Planned |
+| [Quality Risk Analysis](docs/02-quality-risk-analysis.md) | Identify and prioritise product and project risks | Completed |
 | Test Strategy | Define the overall testing approach and responsibilities | Planned |
 | Test Scope | Define what will and will not be tested | Planned |
 | Entry and Exit Criteria | Define conditions for starting and completing testing | Planned |
