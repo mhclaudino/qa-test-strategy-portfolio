@@ -59,10 +59,11 @@ The portfolio will contain the following documents:
 | [Quality Risk Analysis](docs/02-quality-risk-analysis.md) | Identify and prioritise product and project risks | Completed |
 | [Test Strategy](docs/03-test-strategy.md) | Define the overall testing approach and responsibilities | Completed |
 | [Test Scope](docs/04-test-scope.md) | Define what will and will not be tested | Completed |
-| Entry and Exit Criteria | Define conditions for starting and completing testing | Planned |
+| [Entry and Exit Criteria](docs/05-entry-exit-criteria.md) | Define conditions for starting and completing testing | Completed |
 | Test Environments | Describe environments, test data, and dependencies | Planned |
 | Defect Management | Define defect reporting, severity, priority, and triage | Planned |
 | Metrics and Reporting | Define useful quality indicators and reporting methods | Planned |
+| System Test Plan | Define the V1.0 system-level test execution and release validation plan | Planned |
 | Exploratory Test Charters | Provide focused exploratory testing missions | Planned |
 | Sample Test Cases | Demonstrate selected functional and risk-based tests | Planned |
 | Test Summary Report | Demonstrate release-level quality reporting | Planned |
@@ -84,7 +85,8 @@ qa-test-strategy-portfolio/
 │   ├── 05-entry-exit-criteria.md
 │   ├── 06-test-environments.md
 │   ├── 07-defect-management.md
-│   └── 08-metrics-and-reporting.md
+│   ├── 08-metrics-and-reporting.md
+│   └── 09-system-test-plan.md
 │
 ├── test-assets/
 │   ├── exploratory-test-charters.md
