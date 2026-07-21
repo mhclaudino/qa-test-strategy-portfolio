@@ -58,7 +58,7 @@ The portfolio will contain the following documents:
 | [Product Overview](docs/01-product-overview.md) | Describe the product, users, features, and business context | Completed |
 | [Quality Risk Analysis](docs/02-quality-risk-analysis.md) | Identify and prioritise product and project risks | Completed |
 | [Test Strategy](docs/03-test-strategy.md) | Define the overall testing approach and responsibilities | Completed |
-| Test Scope | Define what will and will not be tested | Planned |
+| [Test Scope](docs/04-test-scope.md) | Define what will and will not be tested | Completed |
 | Entry and Exit Criteria | Define conditions for starting and completing testing | Planned |
 | Test Environments | Describe environments, test data, and dependencies | Planned |
 | Defect Management | Define defect reporting, severity, priority, and triage | Planned |
