@@ -67,7 +67,6 @@ The portfolio will contain the following documents and supporting test evidence:
 | Exploratory Test Charters | Provide focused exploratory testing missions | Planned |
 | Sample Test Cases | Demonstrate selected functional and risk-based tests | Planned |
 | Test Summary Report | Demonstrate release-level quality reporting | Planned |
-
 | [V1.0 Test Evidence](evidence/v1.0/README.md) | Organise selected environment, smoke, regression, defect, and production-reset evidence | In Progress |
 
 The status and links in this table will be updated as each document is created.
