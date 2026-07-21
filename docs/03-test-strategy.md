@@ -4,7 +4,7 @@
 
 This document defines the overall testing strategy for AtlasBadge.
 
-It translates the product context ando practical decisions about:
+It translates the product context into practical decisions about:
 
 * test prioritisation;
 * test design and execution;
