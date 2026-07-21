@@ -51,7 +51,7 @@ The strategy documented in this repository is based on the following principles:
 
 ## Portfolio deliverables
 
-The portfolio will contain the following documents:
+The portfolio will contain the following documents and supporting test evidence:
 
 | Document | Purpose | Status |
 |---|---|---|
@@ -68,9 +68,25 @@ The portfolio will contain the following documents:
 | Sample Test Cases | Demonstrate selected functional and risk-based tests | Planned |
 | Test Summary Report | Demonstrate release-level quality reporting | Planned |
 
+| [V1.0 Test Evidence](evidence/v1.0/README.md) | Organise selected environment, smoke, regression, defect, and production-reset evidence | In Progress |
+
 The status and links in this table will be updated as each document is created.
 
-## Planned repository structure
+## Test evidence
+
+Selected and sanitised evidence from the AtlasBadge V1.0 quality process is organised in the [V1.0 Test Evidence](evidence/v1.0/README.md) directory.
+
+The evidence structure includes:
+
+* environment and configuration verification;
+* smoke test evidence;
+* regression test evidence;
+* selected defect examples;
+* final production-reset and clean-start evidence.
+
+Evidence will be added progressively as the corresponding tests are executed. Only material appropriate for a public professional portfolio will be committed. Personal data, credentials, tokens, private environment variables, and sensitive configuration must not be published.
+
+## Current and planned repository structure
 
 ```text
 qa-test-strategy-portfolio/
@@ -87,6 +103,15 @@ qa-test-strategy-portfolio/
 │   ├── 07-defect-management.md
 │   ├── 08-metrics-and-reporting.md
 │   └── 09-system-test-plan.md
+│
+├── evidence/
+│   └── v1.0/
+│       ├── README.md
+│       ├── environments/
+│       ├── smoke/
+│       ├── regression/
+│       ├── defects/
+│       └── production-reset/
 │
 ├── test-assets/
 │   ├── exploratory-test-charters.md
