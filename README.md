@@ -60,7 +60,7 @@ The portfolio will contain the following documents:
 | [Test Strategy](docs/03-test-strategy.md) | Define the overall testing approach and responsibilities | Completed |
 | [Test Scope](docs/04-test-scope.md) | Define what will and will not be tested | Completed |
 | [Entry and Exit Criteria](docs/05-entry-exit-criteria.md) | Define conditions for starting and completing testing | Completed |
-| Test Environments | Describe environments, test data, and dependencies | Planned |
+| [Test Environments](docs/06-test-environments.md) | Describe environments, test data, and dependencies | Completed |
 | Defect Management | Define defect reporting, severity, priority, and triage | Planned |
 | Metrics and Reporting | Define useful quality indicators and reporting methods | Planned |
 | System Test Plan | Define the V1.0 system-level test execution and release validation plan | Planned |
