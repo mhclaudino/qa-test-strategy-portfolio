@@ -635,7 +635,7 @@ When a defect is identified, the Test Lead:
 8. performs regression across affected areas;
 9. closes the defect only when the correction is verified or the residual risk is explicitly accepted.
 
-Detailed severity, priority and triage rules will be defined separately in the Defect Management document.
+Detailed severity, priority and triage rules are defined in the [Defect Management](07-defect-management.md) document.
 
 ---
 
