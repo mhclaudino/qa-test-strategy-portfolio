@@ -360,6 +360,8 @@ A `Blocked` decision means the exit criteria have not been satisfied.
 
 Evidence is proportional to risk, complexity and release importance.
 
+Quality indicators, readiness summaries, quality-gate reporting and evidence-status rules are governed by [Metrics and Reporting](08-metrics-and-reporting.md).
+
 It may include:
 
 * checklists;
