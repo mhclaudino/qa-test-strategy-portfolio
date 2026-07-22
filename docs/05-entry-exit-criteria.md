@@ -387,6 +387,8 @@ Medium and Low-impact changes may use lighter evidence when the risk and need fo
 
 ## 9. Defect correction and closure criteria
 
+Defect severity, priority, lifecycle and triage are governed by [Defect Management](07-defect-management.md).
+
 ### 9.1 Ready for retest
 
 A correction may be submitted for retesting when:
