@@ -69,7 +69,7 @@ This document does not replace:
 * the future System Test Plan;
 * the future Test Summary Report.
 
-The future `docs/09-system-test-plan.md` will apply the indicators and checkpoints defined here to the formal AtlasBadge V1.0 test cycle.
+The [System Test Plan](09-system-test-plan.md) applies the indicators and checkpoints defined here to the formal AtlasBadge V1.0 test cycle.
 
 The future `reports/test-summary-report.md` will use this reporting model to provide the final release-level quality assessment.
 
