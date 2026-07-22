@@ -41,5 +41,6 @@ Real personal data, credentials, tokens, private configuration and sensitive pro
 
 - [AB-DEF-001 — Country status selection is not applied or persisted](status-persistence-failure.md)
 - [QR-03 — Private cache remains after explicit logout](qr-03-private-cache-after-logout.md)
+- [QR-05 — Legacy memory editor persisted text on every keystroke](qr-05-legacy-memory-keystroke-persistence.md)
 
 See the central [V1.0 Evidence Register](../evidence-register.md) for evidence status, related risks and Test Lead decisions.

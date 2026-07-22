@@ -85,6 +85,7 @@ Current public records:
 
 - [AB-DEF-001 — Country status selection is not applied or persisted](defects/status-persistence-failure.md)
 - [QR-03 — Private cache remains after explicit logout](defects/qr-03-private-cache-after-logout.md)
+- [QR-05 — Legacy memory editor persisted text on every keystroke](defects/qr-05-legacy-memory-keystroke-persistence.md)
 
 ### `production-reset`
 
