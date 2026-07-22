@@ -61,7 +61,7 @@ The portfolio will contain the following documents and supporting test evidence:
 | [Test Scope](docs/04-test-scope.md) | Define what will and will not be tested | Completed |
 | [Entry and Exit Criteria](docs/05-entry-exit-criteria.md) | Define conditions for starting and completing testing | Completed |
 | [Test Environments](docs/06-test-environments.md) | Describe environments, test data, and dependencies | Completed |
-| Defect Management | Define defect reporting, severity, priority, and triage | Planned |
+| [Defect Management](docs/07-defect-management.md) | Define defect reporting, severity, priority, and triage | Completed |
 | Metrics and Reporting | Define useful quality indicators and reporting methods | Planned |
 | System Test Plan | Define the V1.0 system-level test execution and release validation plan | Planned |
 | Exploratory Test Charters | Provide focused exploratory testing missions | Planned |
