@@ -16,8 +16,7 @@ It is not an Application Lifecycle Management system, a complete defect backlog 
 |---|---|---|---|---|---|---|---|
 | AB-EV-001 | Silent country-status persistence failure | AB-DEF-001; QR-01 | Local development, Firebase Rules validation and Vercel Production | Correction commit not supplied in the public summary; production-approved deployment | Public narrative complete; selected supporting artefacts pending sanitisation | Corrected behaviour approved after retest, regression, controlled deployment and production smoke | [Status persistence failure](defects/status-persistence-failure.md) |
 | AB-EV-002 | QR-02 visit-history preservation | QR-02 | Local development and Vercel Production | `f6cc331`, `322d15b`, `482fd51`, `771bf6c` | Public narrative complete; selected command output may be added after sanitisation | Current V1.0 behaviour approved; no production functional correction required | [QR-02 visit-history preservation](regression/qr-02-visit-history-preservation.md) |
-| AB-EV-003 | QR-03 private cache after explicit logout | QR-03 | Local InPrivate browser validation and Vercel Production | `d8179cb` | Public narrative complete; sanitised screenshots pending | Correction approved after local QA and production smoke | [QR-03 private cache after logout](defects/qr-03-private-cache-after-logout.md) |
-| AB-EV-004 | QR-05 text write-volume investigation | QR-05 | To be recorded from the controlled measurement | To be recorded | **In progress** | No Test Lead conclusion yet | [QR-05 text write-volume template](work-in-progress/qr-05-text-write-volume.md) |
+| AB-EV-003 | QR-03 private cache after explicit logout | QR-03 | Local InPrivate browser validation and Vercel Production | `d8179cb` | Public narrative and sanitised screenshots complete | Correction approved after local QA and production smoke | [QR-03 private cache after logout](defects/qr-03-private-cache-after-logout.md) |
 
 ## 3. Evidence-status interpretation
 
@@ -34,10 +33,10 @@ The following Quality Risk status changes are intentionally recorded as pending 
 |---|---|---|
 | QR-02 | `Current gap` → `Regression risk` | Current V1.0 behaviour was approved and reusable regression protection was added. |
 | QR-03 | `Current gap` → `Regression risk` | The explicit-logout private-cache correction was approved and permanent regression protection was added. |
-| QR-05 | Pending investigation and Production validation | Measurement and optimisation work remains in progress. |
+| QR-05 | Review required during the batch risk update | The current description is based on an obsolete code path. The risk was not reproduced in the active V1.0 interface, whose Visit Note workflow uses explicit Save. QR-05 should be rewritten, reclassified or closed during the batch review. Dead-code cleanup, if required, is a separate technical task and is not evidence of an active product defect. |
 | QR-06 | Not started | No evidence package or status decision is available yet. |
 
-The Quality Risk Analysis will be updated in one controlled batch after QR-05 and QR-06, or at another checkpoint explicitly approved by the Test Lead.
+The Quality Risk Analysis will be updated during the planned batch review after QR-06, or at another checkpoint explicitly approved by the Test Lead.
 
 ## 5. Publication control
 

@@ -17,7 +17,6 @@ evidence/
     ├── smoke/
     ├── regression/
     ├── defects/
-    ├── work-in-progress/
     └── production-reset/
 ```
 
@@ -86,16 +85,6 @@ Current public records:
 
 - [AB-DEF-001 — Country status selection is not applied or persisted](defects/status-persistence-failure.md)
 - [QR-03 — Private cache remains after explicit logout](defects/qr-03-private-cache-after-logout.md)
-
-### `work-in-progress`
-
-Controlled templates and interim evidence for investigations that are not complete.
-
-An in-progress record must not be presented as Passed, approved or release-ready. Unknown dates, builds, results and measurements must remain explicit.
-
-Current working record:
-
-- [QR-05 — Text write-volume investigation](work-in-progress/qr-05-text-write-volume.md)
 
 ### `production-reset`
 
