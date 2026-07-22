@@ -1,7 +1,7 @@
 # QR-03 — Private cache remains after explicit logout
 
 **Evidence ID:** AB-EV-003  
-**Evidence status:** Public narrative complete; sanitised screenshots pending  
+**Evidence status:** Public narrative and sanitised screenshots complete  
 **Related quality risk:** QR-03  
 **Classification:** Product defect and privacy-control failure  
 **Formal operational defect ID:** Not supplied for this public record  
@@ -117,50 +117,17 @@ QR-03 remains a permanent regression area. Its Quality Risk status is intentiona
 - The record covers explicit logout and the tested refresh/account-switch paths.
 - It does not claim exhaustive proof for every abnormal browser termination or every third-party storage mechanism.
 - Exact pipeline gate output remains pending for the public package.
-- Public screenshots remain pending sanitisation.
+- Public screenshots are available in this evidence directory.
 
-## 13. Required sanitised screenshot placeholders
+## 13. Sanitised public screenshots
 
 ### AB-EV-003-A — Private key present before logout
 
-**Planned filename:**
-
-```text
-qr-03-private-cache-before-logout-sanitised.png
-```
-
-The public image may show:
-
-- browser storage inspection;
-- existence of one AtlasBadge private-cache key before logout;
-- no visible value content.
-
-It must hide or crop:
-
-- UID;
-- key suffixes that reveal identifiers;
-- stored value;
-- Firebase Authentication payload;
-- e-mail address;
-- username;
-- travel data;
-- unrelated storage entries.
+![Private AtlasBadge cache present before explicit logout](qr-03-private-cache-before-logout-sanitised.png)
 
 ### AB-EV-003-B — Private keys absent after logout
 
-**Planned filename:**
-
-```text
-qr-03-private-cache-after-logout-sanitised.png
-```
-
-The public image may show:
-
-- the same sanitised storage scope after logout;
-- absence of the private AtlasBadge key categories;
-- approved non-sensitive preferences only when safe and useful.
-
-It must hide or crop the same protected information listed above.
+![Private AtlasBadge cache absent after explicit logout](qr-03-private-cache-after-logout-sanitised.png)
 
 ## 14. Evidence still private or pending sanitisation
 
