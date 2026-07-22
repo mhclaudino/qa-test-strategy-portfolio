@@ -63,7 +63,7 @@ The portfolio will contain the following documents and supporting test evidence:
 | [Test Environments](docs/06-test-environments.md) | Describe environments, test data, and dependencies | Completed |
 | [Defect Management](docs/07-defect-management.md) | Define defect reporting, severity, priority, and triage | Completed |
 | [Metrics and Reporting](docs/08-metrics-and-reporting.md) | Define useful quality indicators and reporting methods | Completed |
-| System Test Plan | Define the V1.0 system-level test execution and release validation plan | Planned |
+| [System Test Plan](docs/09-system-test-plan.md) | Define the V1.0 system-level test execution and release validation plan | Completed |
 | Exploratory Test Charters | Provide focused exploratory testing missions | Planned |
 | Sample Test Cases | Demonstrate selected functional and risk-based tests | Planned |
 | Test Summary Report | Demonstrate release-level quality reporting | Planned |
