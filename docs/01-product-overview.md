@@ -6,7 +6,7 @@ This document provides a high-level overview of AtlasBadge, including its purpos
 
 It establishes the product context required for the risk analysis and test strategy documented in this repository.
 
-> **Document status:** Initial working version. The content will evolve as AtlasBadge features and business rules are refined.
+> **Document status:** Initial completed version. The content will continue to evolve under change control as AtlasBadge is refined.
 
 ## 2. Product summary
 
