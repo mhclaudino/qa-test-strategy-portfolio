@@ -1367,7 +1367,7 @@ Defect records should allow future collection of:
 * deferral;
 * accepted risk.
 
-The future `docs/08-metrics-and-reporting.md` will determine:
+The [Metrics and Reporting](08-metrics-and-reporting.md) document determines:
 
 * which indicators are useful for AtlasBadge;
 * which data volumes support meaningful interpretation;
@@ -1404,7 +1404,7 @@ Planned process improvements include:
 * greater automation of repeatable technical checks;
 * more reusable automated regression coverage;
 * structured defect and release reporting;
-* metrics defined through `docs/08-metrics-and-reporting.md`.
+* metrics and release reporting applied according to [Metrics and Reporting](08-metrics-and-reporting.md).
 
 These improvements are not represented as already implemented and do not require artificial deadlines.
 
@@ -1447,7 +1447,7 @@ A suitability review is also performed:
 * [Test Scope](04-test-scope.md)
 * [Entry and Exit Criteria](05-entry-exit-criteria.md)
 * [Test Environments](06-test-environments.md)
-* `docs/08-metrics-and-reporting.md` — planned
+* [Metrics and Reporting](08-metrics-and-reporting.md)
 * `docs/09-system-test-plan.md` — planned
 * [V1.0 Test Evidence](../evidence/v1.0/README.md)
 * `test-assets/exploratory-test-charters.md` — planned
