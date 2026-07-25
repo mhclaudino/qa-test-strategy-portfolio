@@ -1,3 +1,4 @@
+
 # AtlasBadge V1.0 Test Evidence
 
 This directory contains selected test evidence produced during the quality validation of AtlasBadge V1.0.
@@ -79,13 +80,16 @@ Evidence may include:
 - retest results;
 - regression decisions.
 
-This directory is not intended to contain every defect identified during the project. Evidence is selected according to its professional and portfolio value.
+This directory is not intended to contain every defect identified during the project.
+
+Evidence is selected according to its professional and portfolio value.
 
 Current public records:
 
 - [AB-DEF-001 — Country status selection is not applied or persisted](defects/status-persistence-failure.md)
 - [QR-03 — Private cache remains after explicit logout](defects/qr-03-private-cache-after-logout.md)
 - [QR-05 — Legacy memory editor persisted text on every keystroke](defects/qr-05-legacy-memory-keystroke-persistence.md)
+- [AB-DEF-002 — Production frontend and Firestore Rules were deployed out of sync](defects/production-deployment-parity-failure.md)
 
 ### `production-reset`
 
@@ -116,7 +120,9 @@ Evidence should provide enough context to understand:
 - the relevant build, commit or deployment when available;
 - the Test Lead decision supported.
 
-Screenshots are not required for every execution. A textual record may be sufficient when the command, build or commit, environment, verified result and decision are clear.
+Screenshots are not required for every execution.
+
+A textual record may be sufficient when the command, build or commit, environment, verified result and decision are clear.
 
 Screenshots should be accompanied by a short textual explanation when the result is not self-explanatory.
 
