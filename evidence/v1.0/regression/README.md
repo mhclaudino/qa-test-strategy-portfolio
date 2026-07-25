@@ -28,8 +28,8 @@ Each regression record should identify:
 
 Only selected and sanitised evidence suitable for the public portfolio should be committed.
 
-## Current public records
+## Available evidence
 
-- [QR-02 — Visit-history preservation](qr-02-visit-history-preservation.md)
-
-See the central [V1.0 Evidence Register](../evidence-register.md) for evidence status, related risks and Test Lead decisions.
+| Evidence | Scope | Environment | Status |
+|---|---|---|---|
+| [V1 Social Profiles and Birthplace Integrity — Local Validation](./v1-social-profiles-and-birthplace-integrity-local-validation.md) | Social profile ordering, GitHub restrictions, Footer versioning, single-birthplace integrity, Firestore Rules and concurrency | Local, Firebase Emulator and production build | Local Approved — Production Validation Pending |
