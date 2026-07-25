@@ -18,6 +18,7 @@ It is not an Application Lifecycle Management system, a complete defect backlog 
 | AB-EV-002 | QR-02 visit-history preservation | QR-02 | Local development and Vercel Production | `f6cc331`, `322d15b`, `482fd51`, `771bf6c` | Public narrative complete; selected command output may be added after sanitisation | Current V1.0 behaviour approved; no production functional correction required | [QR-02 visit-history preservation](regression/qr-02-visit-history-preservation.md) |
 | AB-EV-003 | QR-03 private cache after explicit logout | QR-03 | Local InPrivate browser validation and Vercel Production | `d8179cb` | Public narrative and sanitised screenshots complete | Correction approved after local QA and production smoke | [QR-03 private cache after logout](defects/qr-03-private-cache-after-logout.md) |
 | AB-EV-004 | QR-05 legacy memory editor persisted text on every keystroke | QR-05 | Local development and Vercel Production | `e73fad9` | Production approved | Approved for AtlasBadge V1.0 | [QR-05 legacy memory keystroke persistence](defects/qr-05-legacy-memory-keystroke-persistence.md) |
+| AB-EV-005 | Account linking identity preservation | QR-09 | Production (2026-07-25) | `f209c14` | Public narrative and sanitised screenshots complete | Approved by Test Lead (Passed - Mitigated) | [QR-09 account linking identity preservation](qr-09/qr-09-account-linking-identity-preservation.md) |
 
 ## 3. Evidence-status interpretation
 

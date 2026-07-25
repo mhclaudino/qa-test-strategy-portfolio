@@ -261,6 +261,7 @@ A quality-risk priority is not the same as defect severity. The risk score deter
 
 | State | Meaning |
 |---|---|
+| Mitigated | The risk has been addressed and validated, with acceptable residual risk retained in regression coverage. |
 | Current gap | A known limitation or unsafe behaviour exists in the current product. |
 | Regression risk | The feature exists, but failure would have material consequences and requires continued coverage. |
 | Future risk | The risk applies to a planned feature and must be reassessed before implementation or release. |
@@ -288,7 +289,7 @@ A quality-risk priority is not the same as defect severity. The risk score deter
 | ID | Risk statement | State | Impact | Likelihood | Score | Priority |
 |---|---|---|---:|---:|---:|---|
 | QR-08 | An insufficient password policy may allow weak credentials and increase the chance of unauthorised account access. | Current gap | 4 | 3 | 12 | High |
-| QR-09 | Linking Google and password access methods may create or use a different UID, making existing profile and travel data appear lost. | Regression risk | 5 | 2 | 10 | Medium |
+| QR-09 | Linking Google and password access methods may create or use a different UID, making existing profile and travel data appear lost. | Mitigated | 5 | 2 | 10 | Medium |
 | QR-10 | An access method may be linked to the wrong identity if e-mail matching, reauthentication, cancellation, or rollback behaviour fails. | Regression risk | 5 | 2 | 10 | Medium |
 | QR-11 | Inconsistent username case normalisation may allow collisions or unpredictable public-profile resolution. | Assessment gap | 3 | 3 | 9 | Medium |
 | QR-12 | Concurrent username reservations may leave the `users` and `usernames` records inconsistent. | Regression risk | 3 | 2 | 6 | Medium |
