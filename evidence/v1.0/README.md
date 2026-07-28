@@ -89,6 +89,7 @@ Current public records:
 - [AB-DEF-001 — Country status selection is not applied or persisted](defects/status-persistence-failure.md)
 - [QR-03 — Private cache remains after explicit logout](defects/qr-03-private-cache-after-logout.md)
 - [QR-05 — Legacy memory editor persisted text on every keystroke](defects/qr-05-legacy-memory-keystroke-persistence.md)
+- [QR-10 — Wrong identity during access-method linking](defects/qr-10-wrong-identity-account-linking.md)
 - [AB-DEF-002 — Production frontend and Firestore Rules were deployed out of sync](defects/production-deployment-parity-failure.md)
 
 ### `production-reset`
