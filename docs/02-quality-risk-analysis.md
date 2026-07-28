@@ -290,7 +290,7 @@ A quality-risk priority is not the same as defect severity. The risk score deter
 |---|---|---|---:|---:|---:|---|
 | QR-08 | An insufficient password policy may allow weak credentials and increase the chance of unauthorised account access. | Current gap | 4 | 3 | 12 | High |
 | QR-09 | Linking Google and password access methods may create or use a different UID, making existing profile and travel data appear lost. | Mitigated | 5 | 2 | 10 | Medium |
-| QR-10 | An access method may be linked to the wrong identity if e-mail matching, reauthentication, cancellation, or rollback behaviour fails. | Regression risk | 5 | 2 | 10 | Medium |
+| QR-10 | An access method may be linked to the wrong identity if e-mail matching, reauthentication, cancellation, or rollback behaviour fails. | Mitigated | 5 | 2 | 10 | Medium |
 | QR-11 | Inconsistent username case normalisation may allow collisions or unpredictable public-profile resolution. | Assessment gap | 3 | 3 | 9 | Medium |
 | QR-12 | Concurrent username reservations may leave the `users` and `usernames` records inconsistent. | Regression risk | 3 | 2 | 6 | Medium |
 | QR-13 | A released username may be registered by another person, causing previously shared links to point to the wrong profile and enabling impersonation-like confusion. | Accepted behaviour | 4 | 3 | 12 | High |
