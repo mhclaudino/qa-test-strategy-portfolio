@@ -64,6 +64,7 @@ Examples may include:
 Current public record:
 
 - [QR-02 — Visit-history preservation](regression/qr-02-visit-history-preservation.md)
+- [AB-EV-008 — QR-01 map persistence and dashboard regression](regression/qr-01-map-persistence-and-dashboard-regression.md)
 
 ### `defects`
 
