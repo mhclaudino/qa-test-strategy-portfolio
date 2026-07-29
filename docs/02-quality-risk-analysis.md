@@ -141,7 +141,7 @@ The local cache is used as:
 - a fallback when the initial Firestore read fails;
 - the primary storage for demonstration data when no authenticated user is present.
 
-Changes are written to local state and local storage immediately, followed by an asynchronous Firestore write. There is currently no explicit retry queue, user-visible save status, or real-time listener between tabs and devices.
+For the registered-place map path, changes are rendered optimistically in React, while the UID-scoped browser cache is updated only after the Firestore write succeeds. A rejected write restores the last confirmed state. This confirmed-cache contract is covered by AB-EV-008 for map status and visit mutations; equivalent coverage for all other persistence flows remains incomplete. There is no real-time listener or explicit conflict resolution between tabs and devices.
 
 ### 3.5 Public profile and privacy
 
@@ -181,17 +181,18 @@ The internal model distinguishes between:
 
 The United Kingdom aggregate is not assigned its own persisted travel status. England, Scotland, Wales, and Northern Ireland are selectable independently.
 
-The primary continent statistic uses seven standard travel regions:
+The current V1.0 public progress model uses eight display groups:
 
 - South America;
 - Central America;
 - North America;
+- Antarctica;
 - Africa;
-- Europe;
 - Asia;
+- Europe;
 - Oceania.
 
-Antarctica is selectable and is treated as a special additional territory/continent achievement, while the primary statistic remains based on seven continents.
+A group increases the continent numerator only when at least one selectable place in that group has qualifying physical presence. The same eight-group taxonomy must be used consistently across the personal map, public profile and progress cards.
 
 Each continent has a colour family. Each travel status uses a different intensity within that family. When more than one status is present, a defined status priority determines the final map intensity.
 
@@ -284,6 +285,22 @@ A quality-risk priority is not the same as defect severity. The risk score deter
 | QR-06 | Missing character limits may allow oversized notes or profile content, causing layout, validation, storage, or document-size problems. | Current gap | 3 | 4 | 12 | High |
 | QR-07 | Account deletion may partially fail and leave authentication records, user data, reserved usernames, public-profile data, or other orphaned records. | Regression risk | 5 | 3 | 15 | High |
 
+### 5.1.1 Current QR-01 scoped mitigation evidence
+
+AB-EV-008 demonstrates that the registered-place map path now separates optimistic React state from confirmed browser-cache state.
+
+The covered controls include:
+
+- no durable cache update before Firestore confirmation;
+- rollback to the last confirmed state after rejection;
+- retry and idempotency;
+- sequential mutation ordering;
+- reload and cache-fallback coverage;
+- immediate visit and counter rendering;
+- canonical Total Visits parity between My Map and Public Profile.
+
+**Risk-state decision:** QR-01 remains **Current gap**. The map status and visit path is scoped as mitigated, but equivalent failure, reload and recovery coverage for every product persistence flow and final Production confirmation remain pending.
+
 ### 5.2 Authentication and account identity
 
 | ID | Risk statement | State | Impact | Likelihood | Score | Priority |
@@ -315,7 +332,7 @@ A quality-risk priority is not the same as defect severity. The risk score deter
 
 | ID | Risk statement | State | Impact | Likelihood | Score | Priority |
 |---|---|---|---:|---:|---:|---|
-| QR-25 | The `195 countries`, `251 selectable places`, `7 continents`, and Antarctica rules may be represented inconsistently across screens and statistics. | Regression risk | 4 | 3 | 12 | High |
+| QR-25 | The `195 countries`, `251 selectable places`, `52 territories and entities`, and `8 continent display groups` may be represented inconsistently across screens and statistics. | Regression risk | 4 | 3 | 12 | High |
 | QR-26 | A selectable place may be missing, mapped to the wrong ID, unclickable, incorrectly coloured, or persisted under an unsupported record. | Regression risk | 4 | 3 | 12 | High |
 | QR-27 | Technical or non-selectable geographic records may create invalid Firestore data or duplicate user progress. | Regression risk | 4 | 2 | 8 | Medium |
 | QR-28 | The map may display the wrong intensity when a place has multiple statuses and the status-priority rule is not applied consistently. | Regression risk | 3 | 3 | 9 | Medium |
@@ -374,7 +391,7 @@ The following confirmed behaviours are intentional unless the product definition
 - **Passed through** counts as physical presence and contributes one visit;
 - achievements become locked again when their current criteria are no longer met;
 - achievement dates are recalculated rather than preserved as permanent historical unlock dates;
-- the primary continent statistic remains based on seven continents, while Antarctica is a special additional selectable achievement;
+- the public progress model uses eight display groups, including Antarctica as a distinct group;
 - the four constituent nations of the United Kingdom are separate selectable records;
 - the technical United Kingdom geometry must not receive its own persisted travel status;
 - the public profile is read-only;
