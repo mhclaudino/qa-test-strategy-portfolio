@@ -1,5 +1,8 @@
 # QR-07 — Retry-Safe Account Deletion
 
+**Evidence ID:** AB-EV-010  
+**Publication note:** The evidence ID was assigned during the 2026-07-30 portfolio reconciliation; the original validation date remains 23 July 2026.
+
 ## Evidence metadata
 
 | Item | Value |
