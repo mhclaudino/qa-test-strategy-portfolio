@@ -14,7 +14,7 @@ Its purpose is to support risk-based test planning by showing:
 
 This is a living analysis. Risk scores and priorities must be reviewed whenever the product, architecture, geographic catalogue, privacy model, or release scope changes.
 
-> **Document status:** Reviewed through the AB-EV-011 evidence reconciliation, including completed Production validation and the applied QR-02, QR-03, QR-05, QR-06 and QR-07 decisions.
+> **Document status:** Reviewed through AB-EV-013, including the applied QR-04 real-time synchronisation decision and the QR-08 password-policy closure.
 
 ---
 
@@ -42,6 +42,8 @@ AtlasBadge currently supports:
 - e-mail and password authentication;
 - mandatory e-mail verification before an e-mail/password user can access the application;
 - password recovery;
+- an approved minimum password length of **15 characters**;
+- valid passphrases, including phrases containing spaces;
 - secure linking of Google and password access methods while preserving the same user identity and data;
 - persistent authenticated sessions;
 - unique usernames used in public URLs such as `/@username`;
@@ -144,7 +146,9 @@ The local cache is used as:
 - a fallback when the initial Firestore read fails;
 - the primary storage for demonstration data when no authenticated user is present.
 
-For the registered-place map path, changes are rendered optimistically in React, while the UID-scoped browser cache is updated only after the Firestore write succeeds. A rejected write restores the last confirmed state. This confirmed-cache contract is covered locally by AB-EV-008 and was confirmed in the final Production smoke through AB-EV-009 for map status and visit mutations. Equivalent failure, reload and recovery coverage for all other persistence flows remains incomplete. There is no real-time listener or explicit conflict resolution between tabs and devices.
+For the registered-place map path, changes are rendered optimistically in React, while the UID-scoped browser cache is updated only after the Firestore write succeeds. A rejected write restores the last confirmed state. This confirmed-cache contract is covered locally by AB-EV-008 and was confirmed in the final Production smoke through AB-EV-009 for map status and visit mutations. Equivalent failure, reload and recovery coverage for all other persistence flows remains incomplete.
+
+Authenticated place data now uses a Firestore real-time subscription. Confirmed remote snapshots are reconciled with local optimistic mutations, pending local writes are not treated as independent remote confirmation, and optimistic concurrency control uses the confirmed `updatedAt` version to prevent a stale client from silently overwriting newer place data. Listener cleanup and UID isolation are retained under permanent regression coverage through AB-EV-013.
 
 ### 3.5 Public profile and privacy
 
@@ -283,7 +287,7 @@ A quality-risk priority is not the same as defect severity. The risk score deter
 | QR-01 | A Firestore write may fail while the interface and local cache continue to show the change as saved, causing silent data loss in a later session. | Current gap | 5 | 3 | 15 | High |
 | QR-02 | Visit-history preservation may regress when **Visited** is deselected and later restored, causing counts or user-created memories to be lost. | Regression risk | 4 | 4 | 16 | High |
 | QR-03 | Explicit logout may fail to remove UID-scoped private travel data from browser storage on a shared computer. | Regression risk | 4 | 3 | 12 | High |
-| QR-04 | Two tabs or devices may overwrite each other's changes because there is no real-time synchronisation or explicit conflict resolution. | Current gap | 4 | 2 | 8 | Medium |
+| QR-04 | Real-time listener, confirmed-state reconciliation or optimistic concurrency control may regress, allowing stale tabs or devices to lose confirmed travel-data changes. | Regression risk | 4 | 2 | 8 | Medium |
 | QR-05 | A legacy or replacement memory editor may bypass the explicit-Save contract and reintroduce persistence on every keystroke. | Regression risk | 3 | 4 | 12 | High |
 | QR-06 | Approved character-limit enforcement may regress across notes or profile content, allowing oversized values or inconsistent boundary handling. | Regression risk | 3 | 4 | 12 | High |
 | QR-07 | Account deletion may partially fail and leave authentication records, user data, reserved usernames, public-profile data, or other orphaned records. | Regression risk | 5 | 3 | 15 | High |
@@ -308,6 +312,7 @@ The covered controls include:
 
 - **QR-02 — Regression risk:** visit counts and memories are preserved when **Visited** is deselected and restored; see AB-EV-002.
 - **QR-03 — Regression risk:** explicit logout removes UID-scoped private browser data; see AB-EV-003.
+- **QR-04 — Regression risk:** Firestore real-time synchronisation, confirmed-state reconciliation, OCC conflict handling, listener cleanup and two-tab Production behaviour were approved; see AB-EV-013.
 - **QR-05 — Regression risk:** memory and non-visit note text follows an explicit-Save contract; see AB-EV-004.
 - **QR-06 — Regression risk:** approved character-limit controls are implemented and remain under boundary and layout regression coverage; see AB-EV-011.
 - **QR-07 — Regression risk:** account deletion is retry-safe and Production-approved, with residual cross-service convergence risk retained in regression; see AB-EV-010.
@@ -316,7 +321,7 @@ The covered controls include:
 
 | ID | Risk statement | State | Impact | Likelihood | Score | Priority |
 |---|---|---|---:|---:|---:|---|
-| QR-08 | An insufficient password policy may allow weak credentials and increase the chance of unauthorised account access. | Current gap | 4 | 3 | 12 | High |
+| QR-08 | The approved 15-character minimum or passphrase-compatible password policy may regress or become inconsistent across password-based account flows. | Regression risk | 4 | 3 | 12 | High |
 | QR-09 | Linking Google and password access methods may create or use a different UID, making existing profile and travel data appear lost. | Mitigated | 5 | 2 | 10 | Medium |
 | QR-10 | An access method may be linked to the wrong identity if e-mail matching, reauthentication, cancellation, or rollback behaviour fails. | Mitigated | 5 | 2 | 10 | Medium |
 | QR-11 | Inconsistent username case normalisation may allow collisions or unpredictable public-profile resolution. | Assessment gap | 3 | 3 | 9 | Medium |
@@ -324,6 +329,12 @@ The covered controls include:
 | QR-13 | A released username may be registered by another person, causing previously shared links to point to the wrong profile and enabling impersonation-like confusion. | Accepted behaviour | 4 | 3 | 12 | High |
 | QR-14 | A persistent session may expose an account on a shared device when the user does not explicitly log out. | Regression risk | 4 | 2 | 8 | Medium |
 | QR-15 | An e-mail may be successfully verified, but stale authentication state may continue blocking the user from the application. | Regression risk | 4 | 3 | 12 | High |
+
+### 5.2.1 Applied authentication decisions
+
+- **QR-08 — Regression risk:** the approved policy requires at least 15 characters, permits passphrases and is protected by permanent automated coverage; see AB-EV-012.
+- **QR-09 — Mitigated:** account linking preserves the existing UID and travel data; see AB-EV-005.
+- **QR-10 — Mitigated:** wrong-identity linking and Google-photo synchronisation controls were approved; see AB-EV-007.
 
 ### 5.3 Travel statuses, counters, and calculations
 
@@ -387,6 +398,8 @@ The following risks should receive the strongest coverage and earliest execution
 | Privacy transitions | Test public-to-private changes, direct URLs, cached pages, unauthenticated requests, private data in network responses, and read-only enforcement. |
 | Local-data exposure | Retain explicit-logout regression coverage that proves UID-scoped private cache and session data are removed. |
 | Explicit-save integrity | Confirm that typing changes only draft state, that no per-keystroke persistence occurs, and that the approved Save action is the only persistence trigger. |
+| Real-time concurrency integrity | Retain multi-tab listener, pending-write, confirmed-cache, OCC conflict, retry, cleanup and UID-isolation coverage. |
+| Password-policy integrity | Retain boundary, passphrase, Firebase-response and credential-sanitisation coverage across every password-based flow. |
 | Accessibility | Perform an initial keyboard, focus, semantic-label, contrast, colour-dependence, screen-reader, and reduced-motion assessment. |
 
 ---
@@ -434,19 +447,17 @@ The following V1.0 decisions are already resolved and must not be reopened as ga
 - memory and non-visit note text uses local draft state and explicit Save;
 - the approved character-limit policy is implemented and retained under QR-06 regression coverage;
 - account deletion uses a retry-safe, idempotent convergence model validated through AB-EV-010.
+- registered-place changes use real-time synchronisation and optimistic concurrency controls validated through AB-EV-013;
+- the approved password policy requires at least 15 characters and permits passphrases, as recorded in AB-EV-012.
 
 ### 9.1 Data and persistence
 
-- Should UID-scoped local cache be deleted automatically during logout?
-- What user-visible save states are required: saving, saved, failed, offline, or pending synchronisation?
-- What retry and conflict-resolution behaviour should apply after a failed Firestore write?
-- Should changes from another tab or device update in real time, on refresh, or through a conflict warning?
+- What user-visible save states are required for persistence flows outside the registered-place map path: saving, saved, failed, offline, or pending synchronisation?
 
 ### 9.2 Account and username policy
 
 - What characters, separators, casing, and reserved words are allowed in usernames?
 - Should a previous username remain reserved, redirect to the new username, or become reusable immediately?
-- What minimum password policy is appropriate for the product?
 
 ### 9.3 Memories and notes
 
@@ -505,9 +516,9 @@ This analysis must be reviewed when any of the following occurs:
 - the map implementation or data source changes;
 - per-memory privacy is implemented;
 - character limits or save behaviour are introduced;
-- authentication providers or linking rules change;
+- authentication providers, password-policy rules or linking rules change;
 - account deletion logic changes;
-- real-time synchronisation or offline support is added;
+- real-time synchronisation, optimistic concurrency control or offline behaviour changes;
 - Story generation or external sharing is released;
 - new browsers, devices, or accessibility targets become officially supported;
 - a production defect or incident reveals a new failure mode.
