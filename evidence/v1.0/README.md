@@ -52,6 +52,7 @@ Examples may include:
 Current public record:
 - [AB-EV-009 — Final dashboard and persistence Production smoke](smoke/ab-ev-009-final-dashboard-and-persistence-production-smoke.md)
 - [AB-EV-013 — QR-04 real-time synchronisation and concurrency Production validation](smoke/ab-ev-013-qr-04-real-time-sync-production-smoke.md)
+- [AB-EV-014 — QR-11 username case-normalisation Production validation](smoke/ab-ev-014-qr-11-username-case-normalisation-production-smoke.md)
 
 ### `regression`
 
@@ -71,6 +72,7 @@ Current public record:
 - [AB-EV-008 — QR-01 map persistence and dashboard regression](regression/qr-01-map-persistence-and-dashboard-regression.md)
 - [AB-EV-011 — QR-06 character-limit closure](regression/qr-06-character-limits-closure.md)
 - [AB-EV-012 — QR-08 password-policy closure](regression/qr-08-password-policy-closure.md)
+- [AB-EV-015 — QR-13 immediate username reuse accepted behaviour](regression/qr-13-immediate-username-reuse-accepted-behaviour.md)
 
 ### `defects`
 
