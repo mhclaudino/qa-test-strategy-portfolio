@@ -26,4 +26,8 @@ Each smoke evidence item should identify:
 * defects or limitations found;
 * Test Lead decision or required follow-up.
 
-Smoke evidence must not contain real user data or sensitive authentication information.
+Smoke evidence must not contain real user data or sensitive authentication information.## Available evidence
+
+| Evidence | Scope | Environment | Status |
+|---|---|---|---|
+| [AB-EV-009 — Final dashboard and persistence Production smoke](./ab-ev-009-final-dashboard-and-persistence-production-smoke.md) | Deployment readiness, essential routes, 251-place selector, flags, Footer GitHub, registered-place filters, metric parity, controlled persistence, relogin and test-data restoration | Vercel Production, Microsoft Edge on Windows | Passed — approved by Test Lead; QR-01 remains Current gap due to broader persistence scope |
