@@ -49,6 +49,9 @@ Examples may include:
 - language smoke in `pt-BR` and `en-GB`;
 - confirmation that essential flows remain available after deployment.
 
+Current public record:
+- [AB-EV-009 — Final dashboard and persistence Production smoke](smoke/ab-ev-009-final-dashboard-and-persistence-production-smoke.md)
+
 ### `regression`
 
 Selected evidence from quick regression, affected-area regression and final V1.0 regression.
@@ -65,6 +68,7 @@ Current public record:
 
 - [QR-02 — Visit-history preservation](regression/qr-02-visit-history-preservation.md)
 - [AB-EV-008 — QR-01 map persistence and dashboard regression](regression/qr-01-map-persistence-and-dashboard-regression.md)
+- [AB-EV-011 — QR-06 character-limit closure](regression/qr-06-character-limits-closure.md)
 
 ### `defects`
 
@@ -90,6 +94,7 @@ Current public records:
 - [AB-DEF-001 — Country status selection is not applied or persisted](defects/status-persistence-failure.md)
 - [QR-03 — Private cache remains after explicit logout](defects/qr-03-private-cache-after-logout.md)
 - [QR-05 — Legacy memory editor persisted text on every keystroke](defects/qr-05-legacy-memory-keystroke-persistence.md)
+- [AB-EV-010 / QR-07 — Retry-safe account deletion](defects/qr-07-account-deletion-retry-safe.md)
 - [QR-10 — Wrong identity during access-method linking](defects/qr-10-wrong-identity-account-linking.md)
 - [AB-DEF-002 — Production frontend and Firestore Rules were deployed out of sync](defects/production-deployment-parity-failure.md)
 
