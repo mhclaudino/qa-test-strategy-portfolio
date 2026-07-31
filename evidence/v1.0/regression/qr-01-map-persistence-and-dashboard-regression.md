@@ -8,7 +8,7 @@
 **Git state covered:** AtlasBadge `main` through `83f5650`  
 **Evidence date:** 2026-07-29  
 **Decision owner:** Test Lead/Product Owner  
-**Evidence status:** Public narrative and sanitised local screenshots complete; Production deployment and Production smoke are not independently evidenced in this package  
+**Evidence status:** Public narrative and sanitised local screenshots complete; final Production deployment and smoke are closed separately through AB-EV-009  
 **Quality-risk decision:** QR-01 remains **Current gap** — the map persistence path is mitigated, while broader persistence coverage remains incomplete  
 
 ## 1. Executive summary
@@ -325,7 +325,7 @@ The public crop contains only the product Footer and institutional social links.
 
 ## 13. Test Lead decision
 
-**Local scope approved; QR-01 remains Current gap.**
+**Scoped path approved locally and confirmed in Production through AB-EV-009; QR-01 remains Current gap.**
 
 The Test Lead approved:
 
@@ -342,18 +342,23 @@ The Test Lead approved:
 
 The risk is not moved to Mitigated because this record does not prove equivalent failure, reload and recovery coverage for every persistence flow in the product.
 
-## 14. Production status and limitation
+## 14. Production confirmation and remaining limitation
 
-The AtlasBadge commits were reported as pushed to `main`.
+AB-EV-009 records the final Vercel Production deployment and non-destructive smoke for the six-commit package through `83f5650`.
 
-This public package does **not** independently prove:
+The Production record confirms:
 
-- a Vercel deployment with status `Ready` for `83f5650`;
-- a completed Production smoke for the final six-commit package;
-- Production mutation testing;
-- broader non-map persistence coverage.
+- deployment status `Ready`;
+- essential-route availability;
+- the 251-place selector and lazy-loaded flags;
+- Footer GitHub availability;
+- registered-place filter and reset behaviour;
+- My Map / Public Profile metric parity;
+- controlled visit persistence across navigation, refresh and relogin;
+- complete restoration of the test data;
+- no fault injection in Production.
 
-A future Production smoke record may reference AB-EV-008 without changing its scoped QR-01 conclusion.
+AB-EV-009 does not change the scoped QR-01 conclusion. Broader non-map persistence flows still require equivalent failure, reload and recovery coverage before QR-01 can move from **Current gap**.
 
 ## 15. Residual risk and regression expectation
 
@@ -381,7 +386,7 @@ The public package excludes:
 
 - real e-mail addresses;
 - usernames;
-- profile names;
+- private account or profile names; public creator attribution may remain;
 - personal photographs;
 - personal travel counts;
 - notes or memories;
