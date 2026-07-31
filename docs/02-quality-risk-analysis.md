@@ -14,7 +14,7 @@ Its purpose is to support risk-based test planning by showing:
 
 This is a living analysis. Risk scores and priorities must be reviewed whenever the product, architecture, geographic catalogue, privacy model, or release scope changes.
 
-> **Document status:** Initial completed version based on the current AtlasBadge implementation and the product rules confirmed during the quality risk workshop.
+> **Document status:** Reviewed through the AB-EV-011 evidence reconciliation, including completed Production validation and the applied QR-02, QR-03, QR-05, QR-06 and QR-07 decisions.
 
 ---
 
@@ -107,10 +107,13 @@ Confirmed rules include:
 - a place counts only once as a conquered place, regardless of how many times it was visited;
 - the number of detailed memory records does not need to equal `visitsCount`;
 - users may choose to document only some of their trips;
-- memories can contain duration and notes and are saved automatically;
+- memories can contain duration and notes;
+- typing changes only local draft state and persistence occurs after an explicit **Save** action;
+- memories are available for any travel status;
+- a non-visit memory may use the internal `generalNote` model without creating an artificial `registeredVisit` or increasing `visitsCount`;
 - memories can be edited and deleted.
 
-Current behaviour permanently removes the visit count and memories when **Visited** is deselected. The target behaviour is to hide and preserve that information so it can be restored if the status is selected again.
+Current V1.0 behaviour preserves the visit count and user-created memories when **Visited** is deselected. The information is hidden while the status is inactive and restored if **Visited** is selected again.
 
 ### 3.4 Persistence and data model
 
@@ -141,7 +144,7 @@ The local cache is used as:
 - a fallback when the initial Firestore read fails;
 - the primary storage for demonstration data when no authenticated user is present.
 
-For the registered-place map path, changes are rendered optimistically in React, while the UID-scoped browser cache is updated only after the Firestore write succeeds. A rejected write restores the last confirmed state. This confirmed-cache contract is covered by AB-EV-008 for map status and visit mutations; equivalent coverage for all other persistence flows remains incomplete. There is no real-time listener or explicit conflict resolution between tabs and devices.
+For the registered-place map path, changes are rendered optimistically in React, while the UID-scoped browser cache is updated only after the Firestore write succeeds. A rejected write restores the last confirmed state. This confirmed-cache contract is covered locally by AB-EV-008 and was confirmed in the final Production smoke through AB-EV-009 for map status and visit mutations. Equivalent failure, reload and recovery coverage for all other persistence flows remains incomplete. There is no real-time listener or explicit conflict resolution between tabs and devices.
 
 ### 3.5 Public profile and privacy
 
@@ -278,11 +281,11 @@ A quality-risk priority is not the same as defect severity. The risk score deter
 | ID | Risk statement | State | Impact | Likelihood | Score | Priority |
 |---|---|---|---:|---:|---:|---|
 | QR-01 | A Firestore write may fail while the interface and local cache continue to show the change as saved, causing silent data loss in a later session. | Current gap | 5 | 3 | 15 | High |
-| QR-02 | Deselecting **Visited** may permanently delete the visit count and user-created memories after an accidental click. | Current gap | 4 | 4 | 16 | High |
-| QR-03 | UID-scoped travel data remains readable in local storage after logout on a shared computer. | Current gap | 4 | 3 | 12 | High |
+| QR-02 | Visit-history preservation may regress when **Visited** is deselected and later restored, causing counts or user-created memories to be lost. | Regression risk | 4 | 4 | 16 | High |
+| QR-03 | Explicit logout may fail to remove UID-scoped private travel data from browser storage on a shared computer. | Regression risk | 4 | 3 | 12 | High |
 | QR-04 | Two tabs or devices may overwrite each other's changes because there is no real-time synchronisation or explicit conflict resolution. | Current gap | 4 | 2 | 8 | Medium |
-| QR-05 | Text changes may trigger a Firestore write for every keystroke, increasing operation volume and creating avoidable performance and scalability risk. | Current gap | 3 | 4 | 12 | High |
-| QR-06 | Missing character limits may allow oversized notes or profile content, causing layout, validation, storage, or document-size problems. | Current gap | 3 | 4 | 12 | High |
+| QR-05 | A legacy or replacement memory editor may bypass the explicit-Save contract and reintroduce persistence on every keystroke. | Regression risk | 3 | 4 | 12 | High |
+| QR-06 | Approved character-limit enforcement may regress across notes or profile content, allowing oversized values or inconsistent boundary handling. | Regression risk | 3 | 4 | 12 | High |
 | QR-07 | Account deletion may partially fail and leave authentication records, user data, reserved usernames, public-profile data, or other orphaned records. | Regression risk | 5 | 3 | 15 | High |
 
 ### 5.1.1 Current QR-01 scoped mitigation evidence
@@ -299,7 +302,15 @@ The covered controls include:
 - immediate visit and counter rendering;
 - canonical Total Visits parity between My Map and Public Profile.
 
-**Risk-state decision:** QR-01 remains **Current gap**. The map status and visit path is scoped as mitigated, but equivalent failure, reload and recovery coverage for every product persistence flow and final Production confirmation remain pending.
+**Risk-state decision:** QR-01 remains **Current gap**. The map status and visit path is scoped as mitigated and its final Production confirmation is recorded in AB-EV-009. Equivalent failure, reload and recovery coverage for every other product persistence flow remains incomplete.
+
+### 5.1.2 Applied data-integrity decisions
+
+- **QR-02 — Regression risk:** visit counts and memories are preserved when **Visited** is deselected and restored; see AB-EV-002.
+- **QR-03 — Regression risk:** explicit logout removes UID-scoped private browser data; see AB-EV-003.
+- **QR-05 — Regression risk:** memory and non-visit note text follows an explicit-Save contract; see AB-EV-004.
+- **QR-06 — Regression risk:** approved character-limit controls are implemented and remain under boundary and layout regression coverage; see AB-EV-011.
+- **QR-07 — Regression risk:** account deletion is retry-safe and Production-approved, with residual cross-service convergence risk retained in regression; see AB-EV-010.
 
 ### 5.2 Authentication and account identity
 
@@ -368,14 +379,14 @@ The following risks should receive the strongest coverage and earliest execution
 | Risk area | Primary validation focus |
 |---|---|
 | Silent persistence failure | Simulate failed writes, offline transitions, reloads, cache fallback, recovery, and user feedback. |
-| Accidental memory deletion | Deselect and restore **Visited** with different counts, notes, durations, and status combinations. Confirm that the target preservation rule is implemented before release approval. |
+| Visit-history preservation | Retain permanent regression coverage for deselecting and restoring **Visited** with different counts, notes, durations and compatible status combinations. |
 | Account deletion integrity | Validate deletion for Google, password, and linked accounts; partial failures; recent-authentication requirements; subcollections; username release; public-profile removal; and repeat attempts. |
 | Status-rule integrity | Execute pairwise and state-transition coverage across all six statuses, including automatic selection and removal rules. |
 | Progress calculation integrity | Recalculate countries, territories, continents, total visits, badges, and achievements after every relevant add, remove, and restore operation. |
 | Geographic catalogue integrity | Validate the exact selectable fixture, unsupported IDs, United Kingdom records, Antarctica, microterritories, aliases, map clicks, tooltips, colours, and Firestore IDs. |
 | Privacy transitions | Test public-to-private changes, direct URLs, cached pages, unauthenticated requests, private data in network responses, and read-only enforcement. |
-| Local-data exposure | Inspect local storage before and after logout and decide whether cache removal is a release requirement. |
-| Firestore write volume | Measure writes generated while editing notes and confirm the intended debounce or save strategy. |
+| Local-data exposure | Retain explicit-logout regression coverage that proves UID-scoped private cache and session data are removed. |
+| Explicit-save integrity | Confirm that typing changes only draft state, that no per-keystroke persistence occurs, and that the approved Save action is the only persistence trigger. |
 | Accessibility | Perform an initial keyboard, focus, semantic-label, contrast, colour-dependence, screen-reader, and reduced-motion assessment. |
 
 ---
@@ -407,15 +418,22 @@ The following statements are plausible but have not yet been fully demonstrated 
 2. Public-to-private profile changes invalidate all previously visible or cached content immediately.
 3. Social-link validation rejects unsafe protocols and unsuitable destination formats.
 4. The current geographic fixture and the deployed application contain the same selectable records.
-5. Account deletion consistently removes every user-owned record in all supported authentication configurations.
-6. Responsive behaviour remains acceptable outside the currently tested Windows/Edge and Android/Chrome combinations.
-7. The current map-status priority is applied identically in the personal map, public profile, cards, legends, and generated assets.
+5. Responsive behaviour remains acceptable outside the currently tested Windows/Edge and Android/Chrome combinations.
+6. The current map-status priority is applied identically in the personal map, public profile, cards, legends, and generated assets.
+
+Account deletion is no longer listed as an assessment assumption. AB-EV-010 records emulator fault coverage, retry-safe behaviour and a complete disposable-account Production validation; the area remains a Regression risk because the underlying services do not form a single distributed transaction.
 
 ---
 
 ## 9. Open product and quality questions
 
-The following decisions must be resolved or formally accepted before the related risks can be closed.
+The following decisions remain open or require formal acceptance before the related risks can be closed.
+
+The following V1.0 decisions are already resolved and must not be reopened as gaps without new evidence:
+
+- memory and non-visit note text uses local draft state and explicit Save;
+- the approved character-limit policy is implemented and retained under QR-06 regression coverage;
+- account deletion uses a retry-safe, idempotent convergence model validated through AB-EV-010.
 
 ### 9.1 Data and persistence
 
@@ -423,7 +441,6 @@ The following decisions must be resolved or formally accepted before the related
 - What user-visible save states are required: saving, saved, failed, offline, or pending synchronisation?
 - What retry and conflict-resolution behaviour should apply after a failed Firestore write?
 - Should changes from another tab or device update in real time, on refresh, or through a conflict warning?
-- What debounce interval or save trigger should apply to text fields?
 
 ### 9.2 Account and username policy
 
@@ -433,7 +450,6 @@ The following decisions must be resolved or formally accepted before the related
 
 ### 9.3 Memories and notes
 
-- What maximum lengths apply to memory notes, general notes, biography, social links, and other free-text fields?
 - When will **Passed through** receive a detail or memory workflow?
 - Where will the default memory-visibility preference be configured?
 - How will existing memories be normalised when individual privacy controls are introduced?
@@ -508,6 +524,7 @@ This analysis provides direct input for:
 - `docs/06-test-environments.md`;
 - `docs/07-defect-management.md`;
 - `docs/08-metrics-and-reporting.md`;
+- `docs/09-system-test-plan.md`;
 - `test-assets/exploratory-test-charters.md`;
 - `test-assets/sample-test-cases.md`;
 - `reports/test-summary-report.md`.
