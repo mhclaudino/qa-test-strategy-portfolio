@@ -14,7 +14,7 @@ Its purpose is to support risk-based test planning by showing:
 
 This is a living analysis. Risk scores and priorities must be reviewed whenever the product, architecture, geographic catalogue, privacy model, or release scope changes.
 
-> **Document status:** Reviewed through AB-EV-013, including the applied QR-04 real-time synchronisation decision and the QR-08 password-policy closure.
+> **Document status:** Reviewed through AB-EV-015, including the QR-11 username case-normalisation approval and the QR-13 immediate-reuse acceptance.
 
 ---
 
@@ -50,9 +50,9 @@ AtlasBadge currently supports:
 - username changes;
 - account deletion.
 
-A username is mandatory, must contain at least three characters, and should be treated as case-insensitive. The complete allowed-character policy has not yet been defined.
+A username is mandatory, must contain at least three characters, and is treated as case-insensitive through a shared trimmed lowercase identity. The complete allowed-character policy has not yet been defined.
 
-When a username is changed, the previous username becomes immediately available for another user.
+When a username is changed, the previous username becomes immediately available for another user. No historical alias or redirect is created; the possibility that an old link later resolves to a new owner is an explicitly accepted product behaviour.
 
 ### 3.2 Travel status model
 
@@ -324,7 +324,7 @@ The covered controls include:
 | QR-08 | The approved 15-character minimum or passphrase-compatible password policy may regress or become inconsistent across password-based account flows. | Regression risk | 4 | 3 | 12 | High |
 | QR-09 | Linking Google and password access methods may create or use a different UID, making existing profile and travel data appear lost. | Mitigated | 5 | 2 | 10 | Medium |
 | QR-10 | An access method may be linked to the wrong identity if e-mail matching, reauthentication, cancellation, or rollback behaviour fails. | Mitigated | 5 | 2 | 10 | Medium |
-| QR-11 | Inconsistent username case normalisation may allow collisions or unpredictable public-profile resolution. | Assessment gap | 3 | 3 | 9 | Medium |
+| QR-11 | Shared username normalisation, case-insensitive reservation or canonical public-profile resolution may regress. | Regression risk | 3 | 3 | 9 | Medium |
 | QR-12 | Concurrent username reservations may leave the `users` and `usernames` records inconsistent. | Regression risk | 3 | 2 | 6 | Medium |
 | QR-13 | A released username may be registered by another person, causing previously shared links to point to the wrong profile and enabling impersonation-like confusion. | Accepted behaviour | 4 | 3 | 12 | High |
 | QR-14 | A persistent session may expose an account on a shared device when the user does not explicitly log out. | Regression risk | 4 | 2 | 8 | Medium |
@@ -335,6 +335,9 @@ The covered controls include:
 - **QR-08 — Regression risk:** the approved policy requires at least 15 characters, permits passphrases and is protected by permanent automated coverage; see AB-EV-012.
 - **QR-09 — Mitigated:** account linking preserves the existing UID and travel data; see AB-EV-005.
 - **QR-10 — Mitigated:** wrong-identity linking and Google-photo synchronisation controls were approved; see AB-EV-007.
+- **QR-11 — Regression risk:** creation, change, reservation, public lookup and generated links use the same case-insensitive canonical identity; see AB-EV-014.
+- **QR-12 — Regression risk:** transactional reservation must continue to prevent different UIDs from owning the same canonical username; affected-area coverage is retained by AB-EV-014 and AB-EV-015.
+- **QR-13 — Accepted behaviour:** a previous username is released immediately, no alias or redirect is created, and another UID may reserve it; see AB-EV-015.
 
 ### 5.3 Travel statuses, counters, and calculations
 
@@ -427,12 +430,11 @@ The following confirmed behaviours are intentional unless the product definition
 
 The following statements are plausible but have not yet been fully demonstrated across all relevant scenarios:
 
-1. Username uniqueness is consistently case-insensitive in creation, change, lookup, and reservation flows.
-2. Public-to-private profile changes invalidate all previously visible or cached content immediately.
-3. Social-link validation rejects unsafe protocols and unsuitable destination formats.
-4. The current geographic fixture and the deployed application contain the same selectable records.
-5. Responsive behaviour remains acceptable outside the currently tested Windows/Edge and Android/Chrome combinations.
-6. The current map-status priority is applied identically in the personal map, public profile, cards, legends, and generated assets.
+1. Public-to-private profile changes invalidate all previously visible or cached content immediately.
+2. Social-link validation rejects unsafe protocols and unsuitable destination formats.
+3. The current geographic fixture and the deployed application contain the same selectable records.
+4. Responsive behaviour remains acceptable outside the currently tested Windows/Edge and Android/Chrome combinations.
+5. The current map-status priority is applied identically in the personal map, public profile, cards, legends, and generated assets.
 
 Account deletion is no longer listed as an assessment assumption. AB-EV-010 records emulator fault coverage, retry-safe behaviour and a complete disposable-account Production validation; the area remains a Regression risk because the underlying services do not form a single distributed transaction.
 
@@ -448,7 +450,9 @@ The following V1.0 decisions are already resolved and must not be reopened as ga
 - the approved character-limit policy is implemented and retained under QR-06 regression coverage;
 - account deletion uses a retry-safe, idempotent convergence model validated through AB-EV-010.
 - registered-place changes use real-time synchronisation and optimistic concurrency controls validated through AB-EV-013;
-- the approved password policy requires at least 15 characters and permits passphrases, as recorded in AB-EV-012.
+- the approved password policy requires at least 15 characters and permits passphrases, as recorded in AB-EV-012;
+- usernames use case-insensitive trimmed lowercase normalisation across reservation and public-profile flows, as recorded in AB-EV-014;
+- a previous username becomes reusable immediately without an alias or redirect, and that consequence is accepted through AB-EV-015.
 
 ### 9.1 Data and persistence
 
@@ -457,7 +461,6 @@ The following V1.0 decisions are already resolved and must not be reopened as ga
 ### 9.2 Account and username policy
 
 - What characters, separators, casing, and reserved words are allowed in usernames?
-- Should a previous username remain reserved, redirect to the new username, or become reusable immediately?
 
 ### 9.3 Memories and notes
 
