@@ -73,6 +73,10 @@ Current public record:
 - [AB-EV-011 — QR-06 character-limit closure](regression/qr-06-character-limits-closure.md)
 - [AB-EV-012 — QR-08 password-policy closure](regression/qr-08-password-policy-closure.md)
 - [AB-EV-015 — QR-13 immediate username reuse accepted behaviour](regression/qr-13-immediate-username-reuse-accepted-behaviour.md)
+- [AB-EV-016 — QR-24 Passed through detailed-visit workflow](regression/qr-24-passed-through-detailed-visit-workflow.md)
+- [AB-EV-017 — QR-40 accessibility technical baseline](regression/qr-40-accessibility-technical-baseline.md)
+- [AB-EV-018 — QR-39 responsive, touch and constrained-device baseline](regression/qr-39-responsive-touch-constrained-device-baseline.md)
+- [AB-EV-016 — QR-24 Passed through detailed-visit workflow](regression/qr-24-passed-through-detailed-visit-workflow.md)
 
 ### `defects`
 
@@ -101,6 +105,8 @@ Current public records:
 - [AB-EV-010 / QR-07 — Retry-safe account deletion](defects/qr-07-account-deletion-retry-safe.md)
 - [QR-10 — Wrong identity during access-method linking](defects/qr-10-wrong-identity-account-linking.md)
 - [AB-DEF-002 — Production frontend and Firestore Rules were deployed out of sync](defects/production-deployment-parity-failure.md)
+- [AB-DEF-003 — Production CSS not applied in the affected Android browser](defects/android-css-cascade-layer-compatibility.md)
+- [AB-DEF-004 — Rapid same-session status changes triggered a false external conflict](defects/rapid-status-mutation-false-conflict.md)
 
 ### `production-reset`
 
