@@ -14,7 +14,7 @@ Its purpose is to support risk-based test planning by showing:
 
 This is a living analysis. Risk scores and priorities must be reviewed whenever the product, architecture, geographic catalogue, privacy model, or release scope changes.
 
-> **Document status:** Reviewed through AB-EV-015, including the QR-11 username case-normalisation approval and the QR-13 immediate-reuse acceptance.
+> **Document status:** Reviewed through AB-EV-018, including the QR-24 detailed-visit workflow, QR-40 accessibility baseline and QR-39 responsive/touch/constrained-device closure.
 
 ---
 
@@ -103,8 +103,9 @@ Confirmed rules include:
 - the minimum value is zero;
 - the decrement control is disabled at zero;
 - selecting **Visited** changes the count from zero to one;
-- selecting **Passed through** also contributes one visit;
-- visit controls are currently enabled through **Visited**;
+- selecting **Passed through** also changes the count from zero to one and creates the first physical passage record;
+- detailed visit controls are enabled for both **Visited** and **Passed through**;
+- users may register multiple **Passed through** occurrences for the same place;
 - the global **Total Visits** value is the sum of the individual `visitsCount` values;
 - a place counts only once as a conquered place, regardless of how many times it was visited;
 - the number of detailed memory records does not need to equal `visitsCount`;
@@ -112,6 +113,7 @@ Confirmed rules include:
 - memories can contain duration and notes;
 - typing changes only local draft state and persistence occurs after an explicit **Save** action;
 - memories are available for any travel status;
+- **Passed through** uses the detailed `RegisteredVisit` and `VisitEditor` workflow because it represents physical presence;
 - a non-visit memory may use the internal `generalNote` model without creating an artificial `registeredVisit` or increasing `visitsCount`;
 - memories can be edited and deleted.
 
@@ -148,7 +150,7 @@ The local cache is used as:
 
 For the registered-place map path, changes are rendered optimistically in React, while the UID-scoped browser cache is updated only after the Firestore write succeeds. A rejected write restores the last confirmed state. This confirmed-cache contract is covered locally by AB-EV-008 and was confirmed in the final Production smoke through AB-EV-009 for map status and visit mutations. Equivalent failure, reload and recovery coverage for all other persistence flows remains incomplete.
 
-Authenticated place data now uses a Firestore real-time subscription. Confirmed remote snapshots are reconciled with local optimistic mutations, pending local writes are not treated as independent remote confirmation, and optimistic concurrency control uses the confirmed `updatedAt` version to prevent a stale client from silently overwriting newer place data. Listener cleanup and UID isolation are retained under permanent regression coverage through AB-EV-013.
+Authenticated place data now uses a Firestore real-time subscription. Confirmed remote snapshots are reconciled with local optimistic mutations, pending local writes are not treated as independent remote confirmation, and optimistic concurrency control uses the confirmed `updatedAt` version to prevent a stale client from silently overwriting newer place data. Listener cleanup and UID isolation are retained under permanent regression coverage through AB-EV-013. Rapid same-session mutations for the same place are queued and coalesced against fresh confirmed state so local actions do not trigger false external-session conflicts; true stale writes from another context remain protected by OCC through the extended AB-EV-018 coverage.
 
 ### 3.5 Public profile and privacy
 
@@ -215,16 +217,23 @@ Achievements are dynamic rather than permanent historical records:
 - the **United Kingdom** achievement requires England, Scotland, Wales, and Northern Ireland;
 - a special Antarctica achievement is planned but is not yet implemented.
 
-### 3.8 Current compatibility evidence
+### 3.8 Current compatibility and accessibility evidence
 
 Confirmed manual usage currently covers:
 
 - Microsoft Edge on Windows;
-- Google Chrome on Android.
+- Google Chrome on Android, including portrait, landscape, touch, virtual-keyboard-sensitive flows and cache-sensitive Production retests.
 
-The responsive experience appears usable in the tested scenarios, but broader compatibility validation is still required.
+Permanent automated coverage now includes:
 
-Accessibility behaviour has not yet been formally assessed.
+- responsive and reflow matrices from 320 × 568 through desktop and tablet viewports;
+- touch-enabled mobile contexts;
+- Slow 4G-equivalent, temporary offline-recovery and Chromium CPU 4× scenarios;
+- local production-build CSS compatibility checks;
+- a WCAG 2.2 AA technical baseline across 15 critical public and authenticated UI states;
+- keyboard, dialog, focus-trap, accessible-name, contrast, reduced-motion and non-colour status controls.
+
+The current baseline does not claim universal browser/device support or formal accessibility certification. Native screen-reader and forced-colours coverage remains residual, and untested browser/device combinations remain represented by QR-38.
 
 ---
 
@@ -312,7 +321,7 @@ The covered controls include:
 
 - **QR-02 — Regression risk:** visit counts and memories are preserved when **Visited** is deselected and restored; see AB-EV-002.
 - **QR-03 — Regression risk:** explicit logout removes UID-scoped private browser data; see AB-EV-003.
-- **QR-04 — Regression risk:** Firestore real-time synchronisation, confirmed-state reconciliation, OCC conflict handling, listener cleanup and two-tab Production behaviour were approved; see AB-EV-013.
+- **QR-04 — Regression risk:** Firestore real-time synchronisation, confirmed-state reconciliation, OCC conflict handling, listener cleanup and two-tab Production behaviour were approved through AB-EV-013. AB-EV-018 adds permanent rapid same-session mutation, deterministic recovery and genuine external-conflict coverage.
 - **QR-05 — Regression risk:** memory and non-visit note text follows an explicit-Save contract; see AB-EV-004.
 - **QR-06 — Regression risk:** approved character-limit controls are implemented and remain under boundary and layout regression coverage; see AB-EV-011.
 - **QR-07 — Regression risk:** account deletion is retry-safe and Production-approved, with residual cross-service convergence risk retained in regression; see AB-EV-010.
@@ -351,7 +360,11 @@ The covered controls include:
 | QR-21 | A place with multiple physical statuses may be counted more than once as a conquered country or territory. | Regression risk | 4 | 3 | 12 | High |
 | QR-22 | Automatic status transitions may incorrectly reset visit counts or delete related memories. | Regression risk | 4 | 3 | 12 | High |
 | QR-23 | **Born there** or **Lived / Live there** may fail to select **Visited** and initialise the visit count. | Regression risk | 3 | 3 | 9 | Medium |
-| QR-24 | **Passed through** contributes to physical presence and total visits but does not currently provide the same detail and memory workflow as **Visited**. | Current gap | 2 | 4 | 8 | Medium |
+| QR-24 | The approved **Passed through** detailed-visit workflow may regress, causing passage records, memories, status transitions or visit metrics to become inconsistent. | Regression risk | 2 | 4 | 8 | Medium |
+
+### 5.3.1 Applied travel-status decisions
+
+- **QR-24 — Regression risk:** **Passed through** represents physical presence, creates the first `RegisteredVisit`, supports multiple detailed passages and memories, contributes to canonical visit totals and remains protected by 18 permanent tests; see AB-EV-016.
 
 ### 5.4 Geographic catalogue, map, and achievements
 
@@ -381,8 +394,14 @@ The covered controls include:
 | ID | Risk statement | State | Impact | Likelihood | Score | Priority |
 |---|---|---|---:|---:|---:|---|
 | QR-38 | Behaviour may differ on Firefox, Safari, iPhone, tablets, macOS, or other untested browser/device combinations. | Assessment gap | 3 | 3 | 9 | Medium |
-| QR-39 | The map or profile may become difficult to use on smaller screens, touch devices, low-performance devices, or slower networks. | Assessment gap | 3 | 3 | 9 | Medium |
-| QR-40 | Keyboard access, focus visibility, accessible names, screen-reader behaviour, animation preferences, or non-colour status identification may be inadequate. | Assessment gap | 4 | 3 | 12 | High |
+| QR-39 | The responsive, touch, constrained-network, constrained-CPU or production CSS-delivery baseline may regress and make critical flows difficult or impossible to use. | Regression risk | 3 | 3 | 9 | Medium |
+| QR-40 | Keyboard access, focus visibility, accessible names, dialog behaviour, contrast, animation preferences or non-colour status identification may regress. | Regression risk | 4 | 3 | 12 | High |
+
+### 5.6.1 Applied compatibility and accessibility decisions
+
+- **QR-38 — Assessment gap:** browser and device combinations outside the approved Edge/Windows and Chrome/Android evidence remain unassessed.
+- **QR-39 — Regression risk:** responsive reflow, touch, constrained network/CPU, production CSS delivery and Android Production behaviour were approved through AB-EV-018.
+- **QR-40 — Regression risk:** the WCAG 2.2 AA technical baseline for critical V1.0 flows, 15 Axe states, focus management and Production smoke were approved through AB-EV-017.
 
 ---
 
@@ -401,9 +420,11 @@ The following risks should receive the strongest coverage and earliest execution
 | Privacy transitions | Test public-to-private changes, direct URLs, cached pages, unauthenticated requests, private data in network responses, and read-only enforcement. |
 | Local-data exposure | Retain explicit-logout regression coverage that proves UID-scoped private cache and session data are removed. |
 | Explicit-save integrity | Confirm that typing changes only draft state, that no per-keystroke persistence occurs, and that the approved Save action is the only persistence trigger. |
-| Real-time concurrency integrity | Retain multi-tab listener, pending-write, confirmed-cache, OCC conflict, retry, cleanup and UID-isolation coverage. |
+| Real-time concurrency integrity | Retain multi-tab listener, pending-write, confirmed-cache, OCC conflict, retry, rapid same-session mutation, cleanup and UID-isolation coverage. |
 | Password-policy integrity | Retain boundary, passphrase, Firebase-response and credential-sanitisation coverage across every password-based flow. |
-| Accessibility | Perform an initial keyboard, focus, semantic-label, contrast, colour-dependence, screen-reader, and reduced-motion assessment. |
+| Passed-through integrity | Retain first-passage creation, multiple passage, detailed-memory, metric, privacy and status-transition coverage. |
+| Compatibility and constrained devices | Retain responsive, touch, production CSS, network, CPU, orientation and Android regression coverage. |
+| Accessibility | Retain keyboard, focus, semantic-label, contrast, non-colour, dialog, zoom, reflow and reduced-motion regression coverage; extend native assistive-technology coverage when available. |
 
 ---
 
@@ -415,7 +436,7 @@ The following confirmed behaviours are intentional unless the product definition
 - repeated visits increase **Total Visits**, but do not create additional conquered places;
 - the number of detailed memories may be lower than `visitsCount`;
 - **Nationality** and **Want to visit** do not represent physical presence when used alone;
-- **Passed through** counts as physical presence and contributes one visit;
+- **Passed through** counts as physical presence, creates the first detailed passage and may contain multiple registered passages;
 - achievements become locked again when their current criteria are no longer met;
 - achievement dates are recalculated rather than preserved as permanent historical unlock dates;
 - the public progress model uses eight display groups, including Antarctica as a distinct group;
@@ -452,7 +473,10 @@ The following V1.0 decisions are already resolved and must not be reopened as ga
 - registered-place changes use real-time synchronisation and optimistic concurrency controls validated through AB-EV-013;
 - the approved password policy requires at least 15 characters and permits passphrases, as recorded in AB-EV-012;
 - usernames use case-insensitive trimmed lowercase normalisation across reservation and public-profile flows, as recorded in AB-EV-014;
-- a previous username becomes reusable immediately without an alias or redirect, and that consequence is accepted through AB-EV-015.
+- a previous username becomes reusable immediately without an alias or redirect, and that consequence is accepted through AB-EV-015;
+- **Passed through** uses the detailed physical-visit workflow, including `RegisteredVisit`, explicit Save and multiple passages, as recorded in AB-EV-016;
+- critical V1.0 flows use the approved WCAG 2.2 AA technical baseline recorded in AB-EV-017;
+- the tested responsive baseline includes 320 × 568 portrait, 568 × 320 landscape, touch, constrained network/CPU and Android Production validation through AB-EV-018.
 
 ### 9.1 Data and persistence
 
@@ -464,17 +488,14 @@ The following V1.0 decisions are already resolved and must not be reopened as ga
 
 ### 9.3 Memories and notes
 
-- When will **Passed through** receive a detail or memory workflow?
 - Where will the default memory-visibility preference be configured?
 - How will existing memories be normalised when individual privacy controls are introduced?
 
 ### 9.4 Compatibility and accessibility
 
-- Which desktop and mobile browsers are officially supported?
-- What minimum screen sizes and device capabilities are required?
-- What performance targets apply to map loading, interaction, profile loading, and saving?
-- Which accessibility standard or acceptance criteria will be used?
-- How will travel status be communicated without relying only on colour intensity?
+- Which additional browser and device combinations beyond Microsoft Edge on Windows and Google Chrome on Android should become officially supported?
+- Should the current laboratory response observations become formal public performance service-level targets?
+- When will native screen-reader and forced-colours testing be added to the release evidence?
 
 ### 9.5 Sharing
 
