@@ -14,7 +14,7 @@ Its purpose is to support risk-based test planning by showing:
 
 This is a living analysis. Risk scores and priorities must be reviewed whenever the product, architecture, geographic catalogue, privacy model, or release scope changes.
 
-> **Document status:** Reviewed through AB-EV-018, including the QR-24 detailed-visit workflow, QR-40 accessibility baseline and QR-39 responsive/touch/constrained-device closure.
+> **Document status:** Reviewed through AB-EV-020, including the AB-DEF-005 status-persistence closure and the responsive-navigation, density and country-card paint-stability baseline.
 
 ---
 
@@ -150,7 +150,7 @@ The local cache is used as:
 
 For the registered-place map path, changes are rendered optimistically in React, while the UID-scoped browser cache is updated only after the Firestore write succeeds. A rejected write restores the last confirmed state. This confirmed-cache contract is covered locally by AB-EV-008 and was confirmed in the final Production smoke through AB-EV-009 for map status and visit mutations. Equivalent failure, reload and recovery coverage for all other persistence flows remains incomplete.
 
-Authenticated place data now uses a Firestore real-time subscription. Confirmed remote snapshots are reconciled with local optimistic mutations, pending local writes are not treated as independent remote confirmation, and optimistic concurrency control uses the confirmed `updatedAt` version to prevent a stale client from silently overwriting newer place data. Listener cleanup and UID isolation are retained under permanent regression coverage through AB-EV-013. Rapid same-session mutations for the same place are queued and coalesced against fresh confirmed state so local actions do not trigger false external-session conflicts; true stale writes from another context remain protected by OCC through the extended AB-EV-018 coverage.
+Authenticated place data now uses a Firestore real-time subscription. Confirmed remote snapshots are reconciled with local optimistic mutations, pending local writes are not treated as independent remote confirmation, and optimistic concurrency control uses the confirmed `updatedAt` version to prevent a stale client from silently overwriting newer place data. Listener cleanup and UID isolation are retained under permanent regression coverage through AB-EV-013. Rapid same-session mutations for the same place are queued and coalesced against fresh confirmed state so local actions do not trigger false external-session conflicts; true stale writes from another context remain protected by OCC through the extended AB-EV-018 coverage. AB-EV-019 additionally confirms that a single permitted status intent converges across optimistic UI, Firestore, subscription output and reload without changing unrelated visits or memories.
 
 ### 3.5 Public profile and privacy
 
@@ -315,13 +315,13 @@ The covered controls include:
 - immediate visit and counter rendering;
 - canonical Total Visits parity between My Map and Public Profile.
 
-**Risk-state decision:** QR-01 remains **Current gap**. The map status and visit path is scoped as mitigated and its final Production confirmation is recorded in AB-EV-009. Equivalent failure, reload and recovery coverage for every other product persistence flow remains incomplete.
+**Risk-state decision:** QR-01 remains **Current gap**. The registered-place status and visit path is scoped as mitigated through AB-EV-008, AB-EV-009 and the single-intent persistence closure in AB-EV-019. Equivalent failure, reload and recovery coverage for every other product persistence flow remains incomplete.
 
 ### 5.1.2 Applied data-integrity decisions
 
 - **QR-02 — Regression risk:** visit counts and memories are preserved when **Visited** is deselected and restored; see AB-EV-002.
 - **QR-03 — Regression risk:** explicit logout removes UID-scoped private browser data; see AB-EV-003.
-- **QR-04 — Regression risk:** Firestore real-time synchronisation, confirmed-state reconciliation, OCC conflict handling, listener cleanup and two-tab Production behaviour were approved through AB-EV-013. AB-EV-018 adds permanent rapid same-session mutation, deterministic recovery and genuine external-conflict coverage.
+- **QR-04 — Regression risk:** Firestore real-time synchronisation, confirmed-state reconciliation, OCC conflict handling, listener cleanup and two-tab Production behaviour were approved through AB-EV-013. AB-EV-018 adds rapid same-session mutation and genuine external-conflict coverage. AB-EV-019 adds permanent single-intent status persistence, Firestore convergence, five-second stability and reload parity after AB-DEF-005.
 - **QR-05 — Regression risk:** memory and non-visit note text follows an explicit-Save contract; see AB-EV-004.
 - **QR-06 — Regression risk:** approved character-limit controls are implemented and remain under boundary and layout regression coverage; see AB-EV-011.
 - **QR-07 — Regression risk:** account deletion is retry-safe and Production-approved, with residual cross-service convergence risk retained in regression; see AB-EV-010.
@@ -394,14 +394,14 @@ The covered controls include:
 | ID | Risk statement | State | Impact | Likelihood | Score | Priority |
 |---|---|---|---:|---:|---:|---|
 | QR-38 | Behaviour may differ on Firefox, Safari, iPhone, tablets, macOS, or other untested browser/device combinations. | Assessment gap | 3 | 3 | 9 | Medium |
-| QR-39 | The responsive, touch, constrained-network, constrained-CPU or production CSS-delivery baseline may regress and make critical flows difficult or impossible to use. | Regression risk | 3 | 3 | 9 | Medium |
+| QR-39 | The responsive, touch, constrained-network, constrained-CPU, production CSS-delivery, navigation-breakpoint or repeated-card paint baseline may regress and make critical flows difficult or impossible to use. | Regression risk | 3 | 3 | 9 | Medium |
 | QR-40 | Keyboard access, focus visibility, accessible names, dialog behaviour, contrast, animation preferences or non-colour status identification may regress. | Regression risk | 4 | 3 | 12 | High |
 
 ### 5.6.1 Applied compatibility and accessibility decisions
 
 - **QR-38 — Assessment gap:** browser and device combinations outside the approved Edge/Windows and Chrome/Android evidence remain unassessed.
-- **QR-39 — Regression risk:** responsive reflow, touch, constrained network/CPU, production CSS delivery and Android Production behaviour were approved through AB-EV-018.
-- **QR-40 — Regression risk:** the WCAG 2.2 AA technical baseline for critical V1.0 flows, 15 Axe states, focus management and Production smoke were approved through AB-EV-017.
+- **QR-39 — Regression risk:** responsive reflow, touch, constrained network/CPU, production CSS delivery and Android Production behaviour were approved through AB-EV-018. AB-EV-020 adds the 768 px navigation breakpoint, shared floating-surface standard, responsive density and repeated-country-card paint stability after AB-DEF-006.
+- **QR-40 — Regression risk:** the WCAG 2.2 AA technical baseline for critical V1.0 flows, 15 Axe states, focus management and Production smoke were approved through AB-EV-017. AB-EV-020 retains semantic links, visible focus and accessible mobile-menu state after the navigation changes.
 
 ---
 
@@ -476,7 +476,9 @@ The following V1.0 decisions are already resolved and must not be reopened as ga
 - a previous username becomes reusable immediately without an alias or redirect, and that consequence is accepted through AB-EV-015;
 - **Passed through** uses the detailed physical-visit workflow, including `RegisteredVisit`, explicit Save and multiple passages, as recorded in AB-EV-016;
 - critical V1.0 flows use the approved WCAG 2.2 AA technical baseline recorded in AB-EV-017;
-- the tested responsive baseline includes 320 × 568 portrait, 568 × 320 landscape, touch, constrained network/CPU and Android Production validation through AB-EV-018.
+- the tested responsive baseline includes 320 × 568 portrait, 568 × 320 landscape, touch, constrained network/CPU and Android Production validation through AB-EV-018;
+- a valid single status intent must converge across optimistic UI, Firestore, subscription output and reload as recorded in AB-EV-019;
+- the approved responsive menu uses a hamburger below 768 px and full navigation at 768 px and above, while repeated country cards use a non-blurred surface to preserve Chromium paint stability, as recorded in AB-EV-020.
 
 ### 9.1 Data and persistence
 
