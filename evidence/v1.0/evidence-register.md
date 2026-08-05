@@ -1,9 +1,8 @@
-
 # AtlasBadge V1.0 Evidence Register
 
-**Register status:** In progress  
-**Scope:** Selected, sanitised public evidence for AtlasBadge V1.0  
-**Owner:** Test Lead/Product Owner  
+**Register status:** In progress
+**Scope:** Selected, sanitised public evidence for AtlasBadge V1.0
+**Owner:** Test Lead/Product Owner
 
 ## 1. Purpose
 
@@ -31,9 +30,10 @@ It is not an Application Lifecycle Management system, a complete defect backlog 
 | AB-EV-014 | QR-11 case-insensitive username normalisation and Production validation | QR-11; QR-12; QR-13 | Local automated regression, clean npm reproduction, Next.js production build and Vercel Production smoke (2026-07-31) | `b7718892a184fbda80df86ab82a1c768347dcba5`; regression adjustment `d648a84` | Public textual record complete; raw account and browser artefacts remain private | Approved by Test Lead; canonical reservation, lookup, collision handling and restoration Passed; QR-11 moved to Regression risk | [QR-11 username case-normalisation Production validation](smoke/ab-ev-014-qr-11-username-case-normalisation-production-smoke.md) |
 | AB-EV-015 | QR-13 immediate username reuse and containment audit | QR-13; QR-07; QR-11; QR-12 | Local audit, repository search, focused Vitest, full regression, lint and production build | `751e3f6` — `test(profile): cover immediate username reuse` | Public textual record complete; no username, UID or private profile value published | Approved by Test Lead/Product Owner; no alias changes found, immediate reuse protected by tests, QR-13 remains Accepted behaviour | [QR-13 immediate username reuse](regression/qr-13-immediate-username-reuse-accepted-behaviour.md) |
 | AB-EV-016 | QR-24 Passed through detailed-visit workflow closure | QR-24; QR-01; QR-02; QR-04; QR-05; QR-18; QR-19; QR-20; QR-22; QR-23 | Static implementation audit, 18 focused Vitest scenarios, 139-test full regression, lint and Next.js production build | `cf5382d` — `test(visits): cover Passed through workflow for QR-24` | Public textual record complete; no private memory, account or travel values published | Approved by Test Lead/Product Owner; runtime already matched the rule, permanent coverage added, QR-24 moved to Regression risk | [QR-24 Passed through detailed-visit workflow](regression/qr-24-passed-through-detailed-visit-workflow.md) |
-
 | AB-EV-017 | QR-40 accessibility technical baseline | QR-40; QR-24; QR-31; QR-33; QR-34; QR-39 | Static audit, Firebase Emulators, Vitest, Playwright/Axe, Microsoft Edge, Google Chrome on Android and Vercel Production | `8a18615`, `a7eec48`, `918875d`, `c064b11`, `62f0d59`; final regression retained through `eca539e` | Public textual record complete; raw operational logs and account artefacts remain private | Approved by Test Lead; WCAG 2.2 AA technical baseline evaluated for critical V1.0 flows, QR-40 moved to Regression risk | [QR-40 accessibility technical baseline](regression/qr-40-accessibility-technical-baseline.md) |
 | AB-EV-018 | QR-39 responsive, touch and constrained-device baseline with Android Production corrections | QR-39; QR-04; QR-01; QR-24; QR-40; AB-DEF-003; AB-DEF-004 | Local development and production builds, Firebase Emulators, Playwright, Microsoft Edge, Google Chrome on Android and Vercel Production (2026-08-01) | Baseline `f9a1261`; CSS `4fdf260e`; sync `9cdb1808`; final release `eca539ea793a2aadc4be657f0b9dd549f1f04699` | Public narrative and selected sanitised defect screenshots complete | Android CSS and rapid-status defects closed after Production retest; QR-39 moved to Regression risk and QR-04 remains Regression risk with extended coverage | [QR-39 responsive and constrained-device baseline](regression/qr-39-responsive-touch-constrained-device-baseline.md) |
+| AB-EV-019 | Status persistence and optimistic-concurrency regression closure | AB-DEF-005; QR-01; QR-04; QR-16; QR-18; QR-19; QR-22 | Firebase Auth/Firestore Emulators, Microsoft Edge, Chromium validation and Vercel Production (2026-08-01 to 2026-08-05) | Runtime `ff8d13ab923c988cf8f7d459681e9e251f34cf17`; final approved baseline `982091c` | Public narrative and sanitised before/after screenshots complete | AB-DEF-005 closed after Firestore, subscription, five-second and reload parity; QR-04 remains Regression risk | [Status persistence and OCC regression closure](regression/ab-ev-019-status-persistence-and-occ-regression.md) |
+| AB-EV-020 | Responsive navigation, layout density and country-card paint stability | AB-DEF-006; QR-39; QR-40 | Playwright responsive regression, Chromium desktop/mobile, local Next.js runtime and Vercel Production (2026-08-01 to 2026-08-05) | Paint correction `67dae2b306ff045f38fab68a0b57a5019948935d`; final approved baseline `982091c` | Public narrative and sanitised defect screenshot complete | AB-DEF-006 closed; breakpoint, floating-surface, density and card-paint standards approved in Production | [Responsive navigation and card-paint stability](regression/ab-ev-020-responsive-navigation-and-card-painting-stability.md) |
 
 ## 3. Evidence-status interpretation
 
@@ -49,10 +49,10 @@ The following decisions are reflected in the current Quality Risk Analysis and p
 
 | Quality Risk | Applied state | Evidence position |
 |---|---|---|
-| QR-01 | `Current gap` | AB-EV-008 and AB-EV-009 confirm the map status and visit path locally and in Production. The remaining gap is limited to equivalent failure, reload and recovery coverage for every other product persistence flow. |
+| QR-01 | `Current gap` | AB-EV-008 and AB-EV-009 confirm the map status and visit path locally and in Production; AB-EV-019 adds single-intent Firestore and reload parity. The remaining gap is limited to equivalent failure, reload and recovery coverage for other persistence flows. |
 | QR-02 | `Regression risk` | Visit-history preservation was approved and reusable regression protection was added through AB-EV-002. |
 | QR-03 | `Regression risk` | Explicit logout removes the UID-scoped private cache; correction and Production smoke are recorded in AB-EV-003. |
-| QR-04 | `Regression risk` | AB-EV-013 approves real-time snapshots, confirmed-state reconciliation, OCC and two-tab behaviour. AB-EV-018 adds rapid same-session mutation, deterministic recovery and genuine external-conflict coverage. |
+| QR-04 | `Regression risk` | AB-EV-013 approves real-time snapshots, confirmed-state reconciliation, OCC and two-tab behaviour. AB-EV-018 adds rapid same-session mutation coverage; AB-EV-019 adds single-intent persistence, Firestore convergence and reload parity after AB-DEF-005. |
 | QR-05 | `Regression risk` | The legacy non-visit memory editor now uses local draft state and explicit Save; Production approval is recorded in AB-EV-004. |
 | QR-06 | `Regression risk` | Approved character-limit controls were completed and approved by the Test Lead; the public closure decision is recorded in AB-EV-011. |
 | QR-07 | `Regression risk` | Retry-safe account deletion was validated with emulator fault coverage and a complete disposable-account Production execution in AB-EV-010. |
@@ -62,8 +62,8 @@ The following decisions are reflected in the current Quality Risk Analysis and p
 | QR-11 | `Regression risk` | Case-insensitive normalisation, canonical reservations, mixed-case public lookup and Production restoration were approved through AB-EV-014. |
 | QR-13 | `Accepted behaviour` | AB-EV-015 confirms immediate release, absence of aliases and redirects, permanent automated coverage and explicit Product Owner acceptance. |
 | QR-24 | `Regression risk` | AB-EV-016 confirms the approved detailed `RegisteredVisit` workflow, multiple passages, private memories, canonical metrics and permanent automated coverage. |
-| QR-39 | `Regression risk` | AB-EV-018 confirms small-screen reflow, touch, orientation, network/CPU constraints, production CSS delivery and physical Android Production approval. |
-| QR-40 | `Regression risk` | AB-EV-017 confirms the scoped WCAG 2.2 AA technical baseline, 15 Axe states, permanent focus-management coverage and Production smoke. |
+| QR-39 | `Regression risk` | AB-EV-018 confirms small-screen reflow, touch, orientation, network/CPU constraints and production CSS delivery. AB-EV-020 adds responsive-navigation breakpoints, density controls and repeated-card paint stability after AB-DEF-006. |
+| QR-40 | `Regression risk` | AB-EV-017 confirms the scoped WCAG 2.2 AA technical baseline. AB-EV-020 retains semantic navigation, focus visibility and accessible menu-state coverage through the responsive-menu changes. |
 
 Evidence IDs reflect public publication order, not the chronological order of the underlying technical work.
 

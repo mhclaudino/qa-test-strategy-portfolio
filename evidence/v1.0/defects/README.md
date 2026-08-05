@@ -1,4 +1,3 @@
-
 # Defect Evidence
 
 This directory contains selected defect examples from the AtlasBadge V1.0 quality process.
@@ -36,6 +35,8 @@ This directory does not need to contain every project defect.
 
 Only representative examples with professional portfolio value should be published.
 
+Real personal data, credentials, tokens, private configuration and sensitive project information must be removed or masked.
+
 ## Current public records
 
 - [AB-DEF-001 — Country status selection is not applied or persisted](status-persistence-failure.md)
@@ -44,5 +45,9 @@ Only representative examples with professional portfolio value should be publish
 - [AB-EV-010 / QR-07 — Retry-safe account deletion](qr-07-account-deletion-retry-safe.md)
 - [QR-10 — Wrong identity during access-method linking](qr-10-wrong-identity-account-linking.md)
 - [AB-DEF-002 — Production frontend and Firestore Rules were deployed out of sync](production-deployment-parity-failure.md)
+- [AB-DEF-003 — Production CSS not applied in the affected Android browser](android-css-cascade-layer-compatibility.md)
+- [AB-DEF-004 — Rapid same-session status changes triggered a false external conflict](rapid-status-mutation-false-conflict.md)
+- [AB-DEF-005 — Added status disappeared after optimistic synchronisation](status-added-disappears-after-sync.md)
+- [AB-DEF-006 — Country cards became visually empty during rapid scrolling](transient-empty-country-cards-during-scroll.md)
 
-Real personal data, credentials, tokens, private configuration and sensitive project information must be removed or masked.
+See the central [V1.0 Evidence Register](../evidence-register.md) for evidence status, related risks and Test Lead decisions.
