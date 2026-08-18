@@ -35,8 +35,6 @@ This directory does not need to contain every project defect.
 
 Only representative examples with professional portfolio value should be published.
 
-Real personal data, credentials, tokens, private configuration and sensitive project information must be removed or masked.
-
 ## Current public records
 
 - [AB-DEF-001 — Country status selection is not applied or persisted](status-persistence-failure.md)
@@ -47,7 +45,8 @@ Real personal data, credentials, tokens, private configuration and sensitive pro
 - [AB-DEF-002 — Production frontend and Firestore Rules were deployed out of sync](production-deployment-parity-failure.md)
 - [AB-DEF-003 — Production CSS not applied in the affected Android browser](android-css-cascade-layer-compatibility.md)
 - [AB-DEF-004 — Rapid same-session status changes triggered a false external conflict](rapid-status-mutation-false-conflict.md)
-- [AB-DEF-005 — Added status disappeared after optimistic synchronisation](status-added-disappears-after-sync.md)
-- [AB-DEF-006 — Country cards became visually empty during rapid scrolling](transient-empty-country-cards-during-scroll.md)
+- [AB-DEF-005 / AB-EV-019 — Clear Map achievement metadata reconciliation race](ab-def-005-clear-map-achievement-reconciliation-race.md)
 
 See the central [V1.0 Evidence Register](../evidence-register.md) for evidence status, related risks and Test Lead decisions.
+
+Real personal data, credentials, tokens, private configuration and sensitive project information must be removed or masked.

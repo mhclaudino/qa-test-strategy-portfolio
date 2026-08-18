@@ -49,10 +49,11 @@ Examples may include:
 - confirmation that essential flows remain available after deployment.
 
 Current public record:
+
 - [AB-EV-009 — Final dashboard and persistence Production smoke](smoke/ab-ev-009-final-dashboard-and-persistence-production-smoke.md)
 - [AB-EV-013 — QR-04 real-time synchronisation and concurrency Production validation](smoke/ab-ev-013-qr-04-real-time-sync-production-smoke.md)
 - [AB-EV-014 — QR-11 username case-normalisation Production validation](smoke/ab-ev-014-qr-11-username-case-normalisation-production-smoke.md)
-- [AB-EV-024 — Production release validation and harness hardening](smoke/ab-ev-024-production-release-validation-and-harness-hardening.md)
+- [AB-EV-021 — Map and profile parity Production validation](smoke/ab-ev-021-map-profile-parity-production-validation.md)
 
 ### `regression`
 
@@ -76,12 +77,7 @@ Current public record:
 - [AB-EV-016 — QR-24 Passed through detailed-visit workflow](regression/qr-24-passed-through-detailed-visit-workflow.md)
 - [AB-EV-017 — QR-40 accessibility technical baseline](regression/qr-40-accessibility-technical-baseline.md)
 - [AB-EV-018 — QR-39 responsive, touch and constrained-device baseline](regression/qr-39-responsive-touch-constrained-device-baseline.md)
-- [AB-EV-019 — Status persistence and optimistic-concurrency regression closure](regression/ab-ev-019-status-persistence-and-occ-regression.md)
-- [AB-EV-020 — Responsive navigation, layout density and country-card paint stability](regression/ab-ev-020-responsive-navigation-and-card-painting-stability.md)
-- [AB-EV-021 — V1.0 release hardening and integrated regression](regression/ab-ev-021-v1-release-hardening-and-integrated-regression.md)
-- [AB-EV-022 — Rapid status last-intent and activation-chronology closure](regression/ab-ev-022-status-last-intent-and-activation-chronology.md)
-- [AB-EV-023 — Achievement chronology, World Completion and notification reliability](regression/ab-ev-023-achievement-chronology-world-completion-and-notification-reliability.md)
-- [AB-EV-025 — Badge Unlock surface consistency and visual polish](regression/ab-ev-025-badge-unlock-surface-and-visual-polish.md)
+- [AB-EV-020 — United Kingdom coverage and geographic counter integrity](regression/ab-ev-020-uk-coverage-and-geographic-counter-integrity.md)
 
 ### `defects`
 
@@ -112,14 +108,7 @@ Current public records:
 - [AB-DEF-002 — Production frontend and Firestore Rules were deployed out of sync](defects/production-deployment-parity-failure.md)
 - [AB-DEF-003 — Production CSS not applied in the affected Android browser](defects/android-css-cascade-layer-compatibility.md)
 - [AB-DEF-004 — Rapid same-session status changes triggered a false external conflict](defects/rapid-status-mutation-false-conflict.md)
-- [AB-DEF-005 — Added status disappeared after optimistic synchronisation](defects/status-added-disappears-after-sync.md)
-- [AB-DEF-006 — Country cards became visually empty during rapid scrolling](defects/transient-empty-country-cards-during-scroll.md)
-- [AB-DEF-007 — Rapid status changes could lose the latest local intent](defects/rapid-status-last-intent-lost.md)
-- [AB-DEF-008 — World Complete achievement was mathematically unattainable](defects/world-complete-achievement-unattainable.md)
-- [AB-DEF-009 — Achievement unlock re-entered the full-page application loader](defects/full-page-loader-during-achievement-unlock.md)
-- [AB-DEF-010 — Achievement popup could be lost during a reconciliation race](defects/achievement-popup-lost-during-reconciliation-race.md)
-
-The Production-validation cycle also found several **test-harness defects** involving target selection, authentication setup, stale accessible names, search-surface assumptions, optimistic-state synchronisation and locator scope. These are documented as QA-process evidence in AB-EV-024 rather than being assigned AtlasBadge product-defect IDs.
+- [AB-DEF-005 / AB-EV-019 — Clear Map achievement metadata reconciliation race](defects/ab-def-005-clear-map-achievement-reconciliation-race.md)
 
 ### `production-reset`
 
@@ -151,7 +140,6 @@ Evidence should provide enough context to understand:
 - the Test Lead decision supported.
 
 Screenshots are not required for every execution.
-
 A textual record may be sufficient when the command, build or commit, environment, verified result and decision are clear.
 
 Screenshots should be accompanied by a short textual explanation when the result is not self-explanatory.
