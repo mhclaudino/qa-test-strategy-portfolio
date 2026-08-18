@@ -14,7 +14,7 @@ Its purpose is to support risk-based test planning by showing:
 
 This is a living analysis. Risk scores and priorities must be reviewed whenever the product, architecture, geographic catalogue, privacy model, or release scope changes.
 
-> **Document status:** Reviewed through AB-EV-020, including the AB-DEF-005 status-persistence closure and the responsive-navigation, density and country-card paint-stability baseline.
+> **Document status:** Reviewed through AB-EV-025 and the AtlasBadge C20 Production baseline, including release hardening, explicit status-intent concurrency, persisted achievement chronology, controlled Production validation, achievement-notification reliability and final Badge Unlock visual polish.
 
 ---
 
@@ -150,7 +150,7 @@ The local cache is used as:
 
 For the registered-place map path, changes are rendered optimistically in React, while the UID-scoped browser cache is updated only after the Firestore write succeeds. A rejected write restores the last confirmed state. This confirmed-cache contract is covered locally by AB-EV-008 and was confirmed in the final Production smoke through AB-EV-009 for map status and visit mutations. Equivalent failure, reload and recovery coverage for all other persistence flows remains incomplete.
 
-Authenticated place data now uses a Firestore real-time subscription. Confirmed remote snapshots are reconciled with local optimistic mutations, pending local writes are not treated as independent remote confirmation, and optimistic concurrency control uses the confirmed `updatedAt` version to prevent a stale client from silently overwriting newer place data. Listener cleanup and UID isolation are retained under permanent regression coverage through AB-EV-013. Rapid same-session mutations for the same place are queued and coalesced against fresh confirmed state so local actions do not trigger false external-session conflicts; true stale writes from another context remain protected by OCC through the extended AB-EV-018 coverage. AB-EV-019 additionally confirms that a single permitted status intent converges across optimistic UI, Firestore, subscription output and reload without changing unrelated visits or memories.
+Authenticated place data uses a Firestore real-time subscription. Confirmed remote snapshots are reconciled with local optimistic mutations, pending local writes are not treated as independent remote confirmation, and optimistic concurrency control uses the confirmed `updatedAt` version to prevent a stale client from silently overwriting newer place data. Rapid same-session status changes now use explicit idempotent `setStatus` intents whose desired active state is captured once and replayed safely during rebase; the latest valid local intent wins while genuine stale writes from another context remain protected by OCC. Status activation chronology is persisted independently of the visible status object. Listener cleanup, UID isolation, rapid mutation, single-intent persistence, activation chronology, Firestore convergence and reload parity are retained through AB-EV-013, AB-EV-018, AB-EV-019 and AB-EV-022.
 
 ### 3.5 Public profile and privacy
 
@@ -209,13 +209,21 @@ Each continent has a colour family. Each travel status uses a different intensit
 
 Numeric achievements may count any conquered country or territory that represents physical presence.
 
-Achievements are dynamic rather than permanent historical records:
+Achievements remain dynamic with respect to whether their criteria are currently met, but the current earned state now has canonical persisted acquisition metadata:
 
 - an achievement unlocks when its current criteria are met;
-- it becomes locked again if the user later stops meeting the criteria;
-- displayed achievement dates are recalculated;
+- while earned, `achievementMetadata` stores the confirmed `unlockedAt` timestamp and a per-user monotonic acquisition `sequence`;
+- `nextAchievementUnlockSequence` remains monotonic and is not reduced by relocking;
+- earned Badge and Profile views sort by acquisition sequence, with timestamp and ID used only as defensive fallbacks;
+- when criteria stop being met, the achievement becomes locked again and its current metadata entry is removed;
+- a later reconquest receives a new timestamp and a new sequence at the end of the current acquisition order;
+- historical achievements are not replayed as notifications on login or reload;
+- an unlock notification is emitted only for a locally caused earned transition confirmed by final persisted metadata and is deduplicated by user, achievement and sequence;
 - the **United Kingdom** achievement requires England, Scotland, Wales, and Northern Ireland;
+- **Mundo Completo** treats the non-selectable United Kingdom aggregate as satisfied only when all four selectable UK constituents are complete, preventing the 195-country target from becoming unattainable;
 - a special Antarctica achievement is planned but is not yet implemented.
+
+The persisted chronology, relock/reconquest semantics, same-timestamp ordering, concurrent reconciliation and Production notification behaviour are recorded in AB-EV-023 and AB-EV-024.
 
 ### 3.8 Current compatibility and accessibility evidence
 
@@ -233,7 +241,7 @@ Permanent automated coverage now includes:
 - a WCAG 2.2 AA technical baseline across 15 critical public and authenticated UI states;
 - keyboard, dialog, focus-trap, accessible-name, contrast, reduced-motion and non-colour status controls.
 
-The current baseline does not claim universal browser/device support or formal accessibility certification. Native screen-reader and forced-colours coverage remains residual, and untested browser/device combinations remain represented by QR-38.
+The current baseline does not claim universal browser/device support or formal accessibility certification. Native screen-reader and forced-colours coverage remains residual, and untested browser/device combinations remain represented by QR-38. Final floating-surface and Badge Unlock visual consistency through C20 is recorded in AB-EV-025.
 
 ---
 
@@ -364,6 +372,8 @@ The covered controls include:
 
 ### 5.3.1 Applied travel-status decisions
 
+- **QR-16 / QR-17 — Regression risk:** the approved compatibility rules remain authoritative. The final Production validator confirmed the real transition sequence `wishlist → visited → visited + nationality → visited + born`, including automatic removal of incompatible statuses and UI/Firestore parity; see AB-EV-024.
+- **QR-18 / QR-19 — Regression risk:** status, visit and dashboard calculations remain under integrated release regression and Production parity coverage through AB-EV-021 and AB-EV-024.
 - **QR-24 — Regression risk:** **Passed through** represents physical presence, creates the first `RegisteredVisit`, supports multiple detailed passages and memories, contributes to canonical visit totals and remains protected by 18 permanent tests; see AB-EV-016.
 
 ### 5.4 Geographic catalogue, map, and achievements
@@ -375,7 +385,13 @@ The covered controls include:
 | QR-27 | Technical or non-selectable geographic records may create invalid Firestore data or duplicate user progress. | Regression risk | 4 | 2 | 8 | Medium |
 | QR-28 | The map may display the wrong intensity when a place has multiple statuses and the status-priority rule is not applied consistently. | Regression risk | 3 | 3 | 9 | Medium |
 | QR-29 | The **United Kingdom** achievement may be calculated without all four constituent nations or may incorrectly rely on the technical `gb` geometry. | Regression risk | 3 | 3 | 9 | Medium |
-| QR-30 | Achievements may remain unlocked after the criteria are no longer met, or recalculated dates may become inconsistent between screens or sessions. | Regression risk | 3 | 3 | 9 | Medium |
+| QR-30 | Achievement lock/relock state, persisted unlock metadata, acquisition chronology, reconquest sequence or notification delivery may become inconsistent between screens, sessions or concurrent reconcilers. | Regression risk | 3 | 3 | 9 | Medium |
+
+### 5.4.1 Applied geographic and achievement decisions
+
+- **QR-25 — Regression risk:** the canonical geographic fixture, selectable-place universe and dashboard/profile calculations remain under integrated regression coverage. The current `195 countries / 52 territories and entities / 251 selectable places` representation remains a regression concern and must stay internally consistent across screens; see AB-EV-021.
+- **QR-29 — Regression risk:** the United Kingdom aggregate remains non-selectable and receives no persisted travel status. The four selectable UK constituents remain the authority for the UK-specific achievement, while World Complete grants the conceptual sovereign point only when all four are complete; see AB-EV-023.
+- **QR-30 — Regression risk:** earned achievements use persisted per-user acquisition metadata with monotonic sequence allocation, relock removes the current metadata entry without reducing the counter, reconquest creates a new sequence, and notification dedupe uses the resulting acquisition identity. Same-session, reload, remote-tab and reconciliation-race coverage is retained through AB-EV-023 and AB-EV-024.
 
 ### 5.5 Public profile and sharing
 
@@ -416,14 +432,15 @@ The following risks should receive the strongest coverage and earliest execution
 | Account deletion integrity | Validate deletion for Google, password, and linked accounts; partial failures; recent-authentication requirements; subcollections; username release; public-profile removal; and repeat attempts. |
 | Status-rule integrity | Execute pairwise and state-transition coverage across all six statuses, including automatic selection and removal rules. |
 | Progress calculation integrity | Recalculate countries, territories, continents, total visits, badges, and achievements after every relevant add, remove, and restore operation. |
-| Geographic catalogue integrity | Validate the exact selectable fixture, unsupported IDs, United Kingdom records, Antarctica, microterritories, aliases, map clicks, tooltips, colours, and Firestore IDs. |
+| Geographic catalogue integrity | Validate the exact selectable fixture, unsupported IDs, United Kingdom records, virtual-sovereign World Completion, Antarctica, microterritories, aliases, map clicks, tooltips, colours, Firestore IDs and achievement denominators. |
 | Privacy transitions | Test public-to-private changes, direct URLs, cached pages, unauthenticated requests, private data in network responses, and read-only enforcement. |
 | Local-data exposure | Retain explicit-logout regression coverage that proves UID-scoped private cache and session data are removed. |
 | Explicit-save integrity | Confirm that typing changes only draft state, that no per-keystroke persistence occurs, and that the approved Save action is the only persistence trigger. |
-| Real-time concurrency integrity | Retain multi-tab listener, pending-write, confirmed-cache, OCC conflict, retry, rapid same-session mutation, cleanup and UID-isolation coverage. |
+| Real-time concurrency integrity | Retain multi-tab listener, pending-write, confirmed-cache, OCC conflict, retry, explicit last-intent-wins status mutation, activation chronology, cleanup and UID-isolation coverage. |
 | Password-policy integrity | Retain boundary, passphrase, Firebase-response and credential-sanitisation coverage across every password-based flow. |
 | Passed-through integrity | Retain first-passage creation, multiple passage, detailed-memory, metric, privacy and status-transition coverage. |
 | Compatibility and constrained devices | Retain responsive, touch, production CSS, network, CPU, orientation and Android regression coverage. |
+| Achievement chronology and notification integrity | Retain canonical acquisition-order, same-timestamp sequence, relock/reconquest, multi-session reconciliation, exactly-once popup and no-historical-popup coverage. |
 | Accessibility | Retain keyboard, focus, semantic-label, contrast, non-colour, dialog, zoom, reflow and reduced-motion regression coverage; extend native assistive-technology coverage when available. |
 
 ---
@@ -438,7 +455,7 @@ The following confirmed behaviours are intentional unless the product definition
 - **Nationality** and **Want to visit** do not represent physical presence when used alone;
 - **Passed through** counts as physical presence, creates the first detailed passage and may contain multiple registered passages;
 - achievements become locked again when their current criteria are no longer met;
-- achievement dates are recalculated rather than preserved as permanent historical unlock dates;
+- an earned achievement uses its persisted current-acquisition timestamp and sequence; relocking removes that current entry, and reconquest creates a new timestamp and sequence rather than restoring an old acquisition record;
 - the public progress model uses eight display groups, including Antarctica as a distinct group;
 - the four constituent nations of the United Kingdom are separate selectable records;
 - the technical United Kingdom geometry must not receive its own persisted travel status;
