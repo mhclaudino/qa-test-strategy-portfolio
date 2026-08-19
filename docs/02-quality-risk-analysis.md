@@ -2,33 +2,19 @@
 
 ## 1. Document purpose
 
-This document identifies, evaluates, and prioritises the main quality risks associated with AtlasBadge.
+This document identifies, evaluates and prioritises the main quality risks associated with AtlasBadge. It supports risk-based test planning by showing what could fail, why it matters, the realistic likelihood, the required coverage and any unresolved product or quality decisions.
 
-Its purpose is to support risk-based test planning by showing:
+This is a living analysis. Risk scores and priorities must be reviewed whenever the product, architecture, geographic catalogue, privacy model or release scope changes.
 
-- what could fail;
-- why the failure matters;
-- how likely the failure is under realistic usage conditions;
-- which areas require the strongest test coverage;
-- which product decisions are still assumptions or open questions.
-
-This is a living analysis. Risk scores and priorities must be reviewed whenever the product, architecture, geographic catalogue, privacy model, or release scope changes.
-
-> **Document status:** Reviewed through AB-EV-025 and the AtlasBadge C20 Production baseline, including release hardening, explicit status-intent concurrency, persisted achievement chronology, controlled Production validation, achievement-notification reliability and final Badge Unlock visual polish.
+> **Document status:** Reviewed through AB-EV-028 and the AtlasBadge C30 Production baseline. C26–C30 passed their intended Production validation, while a later `9 places / 5 countries / 5 territories/entities` observation reopened QR-25 for a new cross-counter and catalogue-integrity investigation.
 
 ---
 
 ## 2. Assessment basis
 
-This analysis is based on:
+This analysis is based on direct review of the deployed application, confirmed Product Owner rules, static code audit of authentication/profile/Firestore/cache/travel-map persistence, the current backlog and geographic catalogue decisions, and observed behaviour on Microsoft Edge on Windows and Google Chrome on Android.
 
-- direct review of the deployed AtlasBadge application;
-- confirmed product rules supplied by the product owner;
-- static code audit of authentication, profile, Firestore, local cache, and travel-map persistence;
-- review of the current AtlasBadge backlog and geographic catalogue decisions;
-- observed behaviour on Microsoft Edge on Windows and Google Chrome on Android.
-
-The analysis does not assume that an intended behaviour is already implemented. Where implementation has not been confirmed, the item is explicitly classified as an assumption, open question, known gap, or future risk.
+An intended behaviour is not assumed to be implemented unless evidence supports it. Incomplete areas are classified explicitly as gaps, assumptions, future risks or accepted behaviour.
 
 ---
 
@@ -36,212 +22,73 @@ The analysis does not assume that an intended behaviour is already implemented. 
 
 ### 3.1 Authentication and account management
 
-AtlasBadge currently supports:
+AtlasBadge supports Google authentication, e-mail/password authentication, mandatory e-mail verification, password recovery, a 15-character minimum password policy with valid passphrases, secure access-method linking while preserving identity/data, persistent sessions, unique case-insensitive usernames, username changes and account deletion.
 
-- Google authentication;
-- e-mail and password authentication;
-- mandatory e-mail verification before an e-mail/password user can access the application;
-- password recovery;
-- an approved minimum password length of **15 characters**;
-- valid passphrases, including phrases containing spaces;
-- secure linking of Google and password access methods while preserving the same user identity and data;
-- persistent authenticated sessions;
-- unique usernames used in public URLs such as `/@username`;
-- username changes;
-- account deletion.
-
-A username is mandatory, must contain at least three characters, and is treated as case-insensitive through a shared trimmed lowercase identity. The complete allowed-character policy has not yet been defined.
-
-When a username is changed, the previous username becomes immediately available for another user. No historical alias or redirect is created; the possibility that an old link later resolves to a new owner is an explicitly accepted product behaviour.
+A username is mandatory, has a minimum length of three characters and uses a shared trimmed-lowercase identity. The full allowed-character policy remains open. Previous usernames become immediately reusable and no historical alias/redirect is created; this is accepted behaviour.
 
 ### 3.2 Travel status model
 
-AtlasBadge supports six travel statuses:
+AtlasBadge supports six travel statuses: **Visited**, **Lived / Live there**, **Born there**, **Nationality**, **Passed through** and **Want to visit**.
 
-| Status | Product meaning |
-|---|---|
-| Visited | The user has travelled to and experienced the place. |
-| Lived / Live there | The user lives or has lived in the place. |
-| Born there | The user was born in the place. |
-| Nationality | The user holds nationality or citizenship associated with the place. |
-| Passed through | The user was physically present for a short period, such as an airport connection. |
-| Want to visit | The place is on the user's future travel wish list. |
+Multiple compatible statuses may coexist. Confirmed compatible examples include Visited + Lived, Visited + Born, Visited + Nationality, Lived + Born, Lived + Nationality, Nationality + Passed through, Want to visit + Nationality and Want to visit + Passed through.
 
-Multiple statuses may coexist when the combination is meaningful. The application must enforce the approved compatibility rules and automatically remove incompatible statuses.
+Confirmed incompatible examples include Visited + Passed through, Lived + Passed through, Born + Nationality, Born + Passed through, Want to visit + Visited, Want to visit + Lived and Want to visit + Born.
 
-Confirmed compatible combinations include:
-
-- Visited + Lived / Live there;
-- Visited + Born there;
-- Visited + Nationality;
-- Lived / Live there + Born there;
-- Lived / Live there + Nationality;
-- Nationality + Passed through;
-- Want to visit + Nationality;
-- Want to visit + Passed through.
-
-Confirmed incompatible combinations include:
-
-- Visited + Passed through;
-- Lived / Live there + Passed through;
-- Born there + Nationality;
-- Born there + Passed through;
-- Want to visit + Visited;
-- Want to visit + Lived / Live there;
-- Want to visit + Born there.
-
-Selecting **Born there** or **Lived / Live there** automatically selects **Visited**.
-
-Selecting a status incompatible with **Want to visit** automatically removes **Want to visit**.
+Selecting **Born there** or **Lived / Live there** automatically selects **Visited**. Selecting a physical-presence status incompatible with **Want to visit** automatically removes **Want to visit**.
 
 ### 3.3 Visits and memories
 
-Each selected place may contain a `visitsCount` value.
+`visitsCount` has a minimum of zero. Selecting **Visited** or **Passed through** changes zero to one; Passed through creates the first physical passage record. Detailed visit controls support both statuses and multiple Passed-through occurrences.
 
-Confirmed rules include:
+**Total Visits** is the sum of individual `visitsCount` values. A place counts once as conquered regardless of repeated visits. Detailed memory count does not need to equal `visitsCount`. Memory text uses local draft state and persists only after explicit **Save**. Non-visit memories may use `generalNote` without an artificial registered visit or visit-count increase.
 
-- the minimum value is zero;
-- the decrement control is disabled at zero;
-- selecting **Visited** changes the count from zero to one;
-- selecting **Passed through** also changes the count from zero to one and creates the first physical passage record;
-- detailed visit controls are enabled for both **Visited** and **Passed through**;
-- users may register multiple **Passed through** occurrences for the same place;
-- the global **Total Visits** value is the sum of the individual `visitsCount` values;
-- a place counts only once as a conquered place, regardless of how many times it was visited;
-- the number of detailed memory records does not need to equal `visitsCount`;
-- users may choose to document only some of their trips;
-- memories can contain duration and notes;
-- typing changes only local draft state and persistence occurs after an explicit **Save** action;
-- memories are available for any travel status;
-- **Passed through** uses the detailed `RegisteredVisit` and `VisitEditor` workflow because it represents physical presence;
-- a non-visit memory may use the internal `generalNote` model without creating an artificial `registeredVisit` or increasing `visitsCount`;
-- memories can be edited and deleted.
-
-Current V1.0 behaviour preserves the visit count and user-created memories when **Visited** is deselected. The information is hidden while the status is inactive and restored if **Visited** is selected again.
+Current V1.0 behaviour preserves visit counts and user-created memories when **Visited** is deselected; they are hidden while inactive and restored when Visited returns.
 
 ### 3.4 Persistence and data model
 
-Cloud Firestore is the primary source of truth for authenticated users.
+Cloud Firestore is the primary source of truth for authenticated users. Travel data is stored under `users/{uid}/places/{placeId}` and may contain statuses, visitsCount, registeredVisits and generalNote.
 
-Travel data is stored under:
+The UID-scoped browser cache is `atlasbadge_local_data_{uid}`. It is a cache/fallback for authenticated travel data and a primary store for unauthenticated demonstration data.
 
-```text
-users/{uid}/places/{placeId}
-```
+Registered-place changes render optimistically in React while durable cache state is updated only after Firestore confirmation. Rejected writes restore the last confirmed state. AB-EV-008 and AB-EV-009 cover the map-status/visit path; equivalent failure/reload/recovery coverage for every persistence flow remains incomplete under QR-01.
 
-A place document may contain:
+Authenticated place data uses a real-time Firestore subscription and OCC based on confirmed `updatedAt`. Explicit idempotent status intents preserve latest-valid-local-intent semantics. Activation chronology is stored independently of the visible status object. AB-EV-013, AB-EV-018, AB-EV-019 and AB-EV-022 cover listener, OCC, rapid mutation and chronology behaviour.
 
-- `statuses`;
-- `visitsCount`;
-- `registeredVisits`;
-- `generalNote`.
-
-The browser cache uses a UID-specific key:
-
-```text
-atlasbadge_local_data_{uid}
-```
-
-The local cache is used as:
-
-- a cache of authenticated travel data;
-- a fallback when the initial Firestore read fails;
-- the primary storage for demonstration data when no authenticated user is present.
-
-For the registered-place map path, changes are rendered optimistically in React, while the UID-scoped browser cache is updated only after the Firestore write succeeds. A rejected write restores the last confirmed state. This confirmed-cache contract is covered locally by AB-EV-008 and was confirmed in the final Production smoke through AB-EV-009 for map status and visit mutations. Equivalent failure, reload and recovery coverage for all other persistence flows remains incomplete.
-
-Authenticated place data uses a Firestore real-time subscription. Confirmed remote snapshots are reconciled with local optimistic mutations, pending local writes are not treated as independent remote confirmation, and optimistic concurrency control uses the confirmed `updatedAt` version to prevent a stale client from silently overwriting newer place data. Rapid same-session status changes now use explicit idempotent `setStatus` intents whose desired active state is captured once and replayed safely during rebase; the latest valid local intent wins while genuine stale writes from another context remain protected by OCC. Status activation chronology is persisted independently of the visible status object. Listener cleanup, UID isolation, rapid mutation, single-intent persistence, activation chronology, Firestore convergence and reload parity are retained through AB-EV-013, AB-EV-018, AB-EV-019 and AB-EV-022.
+AB-EV-026 adds a further authority rule: cache-only startup snapshots may hydrate local/UI state but are not authoritative inputs for persistent achievement-metadata reconciliation. Persistent/destructive reconciliation waits for server-confirmed snapshot authority. This prevents a stale/empty cache from queuing phantom delete/recreate work during Clear Map. The exact known Firestore `FAILED_PRECONDITION` base-version contention is qualified by a fail-closed Production harness and remains observable rather than silently ignored.
 
 ### 3.5 Public profile and privacy
 
-A new profile is private by default. The user may change the profile visibility at any time.
+A new profile is private by default and can be changed by the user. Private profiles must not expose map, statistics or private content.
 
-When a profile is private, visitors are shown that the profile is private and must not receive the traveller's map, statistics, or private content.
+A public profile may display public display name, username, biography, social links, map/status colours, country/territory progress, total visits, continent progress, conquered flags and achievements. Memories and visit notes remain private.
 
-A public profile may display:
-
-- public display name;
-- username;
-- biography;
-- social links;
-- map colours and travel-status representation;
-- territory and country progress;
-- total visits;
-- continent progress;
-- conquered places and flags;
-- achievements and badges.
-
-The public profile is read-only.
-
-Memories and visit notes are currently private. Individual memory visibility is planned but has not yet been implemented.
+The public profile is read-only. AB-EV-028 confirms that the Profile now reuses the canonical `AtlasWorldMapV2` in read-only mode with zoom, pan, wheel zoom, reset, marker rendering and responsive behaviour, but without country mutation or Clear Map.
 
 ### 3.6 Geographic catalogue and progress model
 
-AtlasBadge currently has **251 selectable places**.
+AtlasBadge currently exposes **251 selectable places** and public counters using **195 conceptual countries** and **56 territories and entities**.
 
-The internal model distinguishes between:
+The internal model distinguishes selectable sovereign countries, four UK constituent nations, territories, limited-recognition/de facto entities, special geographic records and Antarctica. The United Kingdom aggregate is non-selectable and receives no persisted travel status. England, Scotland, Wales and Northern Ireland are individually selectable.
 
-- the conceptual country total used by the product;
-- selectable sovereign countries;
-- the four constituent nations of the United Kingdom;
-- limited-recognition or de facto entities;
-- territories;
-- Antarctica.
+C26/AB-EV-027 confirmed the specific implemented rule that each UK constituent contributes individually to the territory/entity counter and that all four together additionally credit the conceptual United Kingdom country and UK achievement.
 
-The United Kingdom aggregate is not assigned its own persisted travel status. England, Scotland, Wales, and Northern Ireland are selectable independently.
+A later Production observation showed `9/251 places`, `5/195 countries` and `5/56 territories/entities` for nine conquered selectable places. Therefore the global relationship between the 251-, 195- and 56-item universes is **not considered mathematically closed**. QR-25 is a Current gap until a dataset audit proves classification, overlap/partition semantics and the exact expected counters at full completion.
 
-The current V1.0 public progress model uses eight display groups:
-
-- South America;
-- Central America;
-- North America;
-- Antarctica;
-- Africa;
-- Asia;
-- Europe;
-- Oceania.
-
-A group increases the continent numerator only when at least one selectable place in that group has qualifying physical presence. The same eight-group taxonomy must be used consistently across the personal map, public profile and progress cards.
-
-Each continent has a colour family. Each travel status uses a different intensity within that family. When more than one status is present, a defined status priority determines the final map intensity.
+The public continent model uses eight display groups: South America, Central America, North America, Antarctica, Africa, Asia, Europe and Oceania. The same taxonomy must remain consistent across map/profile/progress cards.
 
 ### 3.7 Achievements
 
-Numeric achievements may count any conquered country or territory that represents physical presence.
+Achievements are dynamic with canonical persisted current-acquisition metadata. Earned state stores `unlockedAt` plus a per-user monotonic `sequence`; `nextAchievementUnlockSequence` is not reduced by relocking. Relock removes the current metadata entry and reconquest receives a new timestamp/sequence. Historical achievements are not replayed on login/reload, and locally caused notifications are deduplicated by user, achievement and sequence.
 
-Achievements remain dynamic with respect to whether their criteria are currently met, but the current earned state now has canonical persisted acquisition metadata:
+The UK achievement requires England, Scotland, Wales and Northern Ireland. **Mundo Completo** treats the non-selectable UK aggregate as satisfied only when all four constituents are complete. Achievement chronology/notification evidence is retained through AB-EV-023 and AB-EV-024. AB-EV-026 adds the Clear Map reconciliation-race closure.
 
-- an achievement unlocks when its current criteria are met;
-- while earned, `achievementMetadata` stores the confirmed `unlockedAt` timestamp and a per-user monotonic acquisition `sequence`;
-- `nextAchievementUnlockSequence` remains monotonic and is not reduced by relocking;
-- earned Badge and Profile views sort by acquisition sequence, with timestamp and ID used only as defensive fallbacks;
-- when criteria stop being met, the achievement becomes locked again and its current metadata entry is removed;
-- a later reconquest receives a new timestamp and a new sequence at the end of the current acquisition order;
-- historical achievements are not replayed as notifications on login or reload;
-- an unlock notification is emitted only for a locally caused earned transition confirmed by final persisted metadata and is deduplicated by user, achievement and sequence;
-- the **United Kingdom** achievement requires England, Scotland, Wales, and Northern Ireland;
-- **Mundo Completo** treats the non-selectable United Kingdom aggregate as satisfied only when all four selectable UK constituents are complete, preventing the 195-country target from becoming unattainable;
-- a special Antarctica achievement is planned but is not yet implemented.
+### 3.8 Compatibility, responsive and visual baseline
 
-The persisted chronology, relock/reconquest semantics, same-timestamp ordering, concurrent reconciliation and Production notification behaviour are recorded in AB-EV-023 and AB-EV-024.
+Manual evidence covers Edge/Windows and Chrome/Android, including portrait/landscape, touch and cache-sensitive Production retests. Automated coverage includes responsive/reflow matrices from 320×568 upward, touch contexts, constrained network/CPU scenarios, production CSS checks and a WCAG 2.2 AA technical baseline over critical UI states.
 
-### 3.8 Current compatibility and accessibility evidence
+AB-EV-020 covers responsive navigation and paint stability. AB-EV-025 covers the final Badge Unlock surface/golden accent. AB-EV-028 adds canonical map reuse, micro-marker zoom scaling, Profile read-only behaviour, shared desktop content width and map-surface parity.
 
-Confirmed manual usage currently covers:
-
-- Microsoft Edge on Windows;
-- Google Chrome on Android, including portrait, landscape, touch, virtual-keyboard-sensitive flows and cache-sensitive Production retests.
-
-Permanent automated coverage now includes:
-
-- responsive and reflow matrices from 320 × 568 through desktop and tablet viewports;
-- touch-enabled mobile contexts;
-- Slow 4G-equivalent, temporary offline-recovery and Chromium CPU 4× scenarios;
-- local production-build CSS compatibility checks;
-- a WCAG 2.2 AA technical baseline across 15 critical public and authenticated UI states;
-- keyboard, dialog, focus-trap, accessible-name, contrast, reduced-motion and non-colour status controls.
-
-The current baseline does not claim universal browser/device support or formal accessibility certification. Native screen-reader and forced-colours coverage remains residual, and untested browser/device combinations remain represented by QR-38. Final floating-surface and Badge Unlock visual consistency through C20 is recorded in AB-EV-025.
+Universal browser/device support and formal accessibility certification are not claimed. Untested browser/device combinations remain QR-38.
 
 ---
 
@@ -254,8 +101,8 @@ The current baseline does not claim universal browser/device support or formal a
 | 1 | Negligible effect with no meaningful impact on the user or release decision. |
 | 2 | Minor inconvenience or cosmetic issue with a simple workaround. |
 | 3 | Important feature is affected, but the user can continue with a workaround. |
-| 4 | Major loss of functionality, data integrity, privacy, or user trust. |
-| 5 | Critical security, privacy, account-access, severe data-loss, or core-service failure. |
+| 4 | Major loss of functionality, data integrity, privacy or user trust. |
+| 5 | Critical security, privacy, account-access, severe data-loss or core-service failure. |
 
 ### 4.2 Likelihood scale
 
@@ -269,9 +116,7 @@ The current baseline does not claim universal browser/device support or formal a
 
 ### 4.3 Risk score and priority
 
-```text
-Risk score = Impact × Likelihood
-```
+`Risk score = Impact × Likelihood`
 
 | Score | Test priority |
 |---:|---|
@@ -280,305 +125,179 @@ Risk score = Impact × Likelihood
 | 6–11 | Medium |
 | 1–5 | Low |
 
-A quality-risk priority is not the same as defect severity. The risk score determines how strongly an area should influence test design, coverage, sequencing, and release evidence.
-
 ### 4.4 Risk state
 
 | State | Meaning |
 |---|---|
-| Mitigated | The risk has been addressed and validated, with acceptable residual risk retained in regression coverage. |
-| Current gap | A known limitation or unsafe behaviour exists in the current product. |
-| Regression risk | The feature exists, but failure would have material consequences and requires continued coverage. |
-| Future risk | The risk applies to a planned feature and must be reassessed before implementation or release. |
-| Assessment gap | Insufficient evidence exists to claim that the quality characteristic is adequately covered. |
-| Accepted behaviour | The product intentionally permits the behaviour, but its consequences still require testing, communication, or explicit risk acceptance. |
+| Mitigated | Addressed and validated, with acceptable residual risk retained in regression coverage. |
+| Current gap | A known limitation, inconsistency or unsafe behaviour exists in the current product. |
+| Regression risk | The feature exists but failure has material consequences and requires continued coverage. |
+| Future risk | Applies to a planned feature and must be reassessed before implementation/release. |
+| Assessment gap | Evidence is insufficient to claim adequate coverage. |
+| Accepted behaviour | Intentionally permitted behaviour whose consequences still require testing/communication/acceptance. |
 
 ---
 
 ## 5. Quality risk register
 
-### 5.1 Data integrity, persistence, and privacy
+### 5.1 Data integrity, persistence and privacy
 
 | ID | Risk statement | State | Impact | Likelihood | Score | Priority |
 |---|---|---|---:|---:|---:|---|
 | QR-01 | A Firestore write may fail while the interface and local cache continue to show the change as saved, causing silent data loss in a later session. | Current gap | 5 | 3 | 15 | High |
 | QR-02 | Visit-history preservation may regress when **Visited** is deselected and later restored, causing counts or user-created memories to be lost. | Regression risk | 4 | 4 | 16 | High |
 | QR-03 | Explicit logout may fail to remove UID-scoped private travel data from browser storage on a shared computer. | Regression risk | 4 | 3 | 12 | High |
-| QR-04 | Real-time listener, confirmed-state reconciliation or optimistic concurrency control may regress, allowing stale tabs or devices to lose confirmed travel-data changes. | Regression risk | 4 | 2 | 8 | Medium |
-| QR-05 | A legacy or replacement memory editor may bypass the explicit-Save contract and reintroduce persistence on every keystroke. | Regression risk | 3 | 4 | 12 | High |
-| QR-06 | Approved character-limit enforcement may regress across notes or profile content, allowing oversized values or inconsistent boundary handling. | Regression risk | 3 | 4 | 12 | High |
-| QR-07 | Account deletion may partially fail and leave authentication records, user data, reserved usernames, public-profile data, or other orphaned records. | Regression risk | 5 | 3 | 15 | High |
+| QR-04 | Real-time listener, confirmed-state reconciliation or optimistic concurrency control may regress, allowing stale tabs/devices to lose confirmed travel-data changes. | Regression risk | 4 | 2 | 8 | Medium |
+| QR-05 | A memory editor may bypass the explicit-Save contract and reintroduce persistence on every keystroke. | Regression risk | 3 | 4 | 12 | High |
+| QR-06 | Approved character-limit enforcement may regress across notes/profile content. | Regression risk | 3 | 4 | 12 | High |
+| QR-07 | Account deletion may partially fail and leave authentication records, user data, reserved usernames, public-profile data or orphaned records. | Regression risk | 5 | 3 | 15 | High |
 
-### 5.1.1 Current QR-01 scoped mitigation evidence
-
-AB-EV-008 demonstrates that the registered-place map path now separates optimistic React state from confirmed browser-cache state.
-
-The covered controls include:
-
-- no durable cache update before Firestore confirmation;
-- rollback to the last confirmed state after rejection;
-- retry and idempotency;
-- sequential mutation ordering;
-- reload and cache-fallback coverage;
-- immediate visit and counter rendering;
-- canonical Total Visits parity between My Map and Public Profile.
-
-**Risk-state decision:** QR-01 remains **Current gap**. The registered-place status and visit path is scoped as mitigated through AB-EV-008, AB-EV-009 and the single-intent persistence closure in AB-EV-019. Equivalent failure, reload and recovery coverage for every other product persistence flow remains incomplete.
-
-### 5.1.2 Applied data-integrity decisions
-
-- **QR-02 — Regression risk:** visit counts and memories are preserved when **Visited** is deselected and restored; see AB-EV-002.
-- **QR-03 — Regression risk:** explicit logout removes UID-scoped private browser data; see AB-EV-003.
-- **QR-04 — Regression risk:** Firestore real-time synchronisation, confirmed-state reconciliation, OCC conflict handling, listener cleanup and two-tab Production behaviour were approved through AB-EV-013. AB-EV-018 adds rapid same-session mutation and genuine external-conflict coverage. AB-EV-019 adds permanent single-intent status persistence, Firestore convergence, five-second stability and reload parity after AB-DEF-005.
-- **QR-05 — Regression risk:** memory and non-visit note text follows an explicit-Save contract; see AB-EV-004.
-- **QR-06 — Regression risk:** approved character-limit controls are implemented and remain under boundary and layout regression coverage; see AB-EV-011.
-- **QR-07 — Regression risk:** account deletion is retry-safe and Production-approved, with residual cross-service convergence risk retained in regression; see AB-EV-010.
+**Applied decisions:** QR-02 is protected by AB-EV-002; QR-03 by AB-EV-003; QR-04 by AB-EV-013/018/019/022 plus cache-authority/reconciliation protection in AB-EV-026; QR-05 by AB-EV-004; QR-06 by AB-EV-011; QR-07 by AB-EV-010. QR-01 remains Current gap outside the specifically validated persistence paths.
 
 ### 5.2 Authentication and account identity
 
 | ID | Risk statement | State | Impact | Likelihood | Score | Priority |
 |---|---|---|---:|---:|---:|---|
-| QR-08 | The approved 15-character minimum or passphrase-compatible password policy may regress or become inconsistent across password-based account flows. | Regression risk | 4 | 3 | 12 | High |
-| QR-09 | Linking Google and password access methods may create or use a different UID, making existing profile and travel data appear lost. | Mitigated | 5 | 2 | 10 | Medium |
-| QR-10 | An access method may be linked to the wrong identity if e-mail matching, reauthentication, cancellation, or rollback behaviour fails. | Mitigated | 5 | 2 | 10 | Medium |
+| QR-08 | The approved 15-character minimum or passphrase-compatible password policy may regress or become inconsistent across password flows. | Regression risk | 4 | 3 | 12 | High |
+| QR-09 | Linking Google and password methods may create/use a different UID, making existing data appear lost. | Mitigated | 5 | 2 | 10 | Medium |
+| QR-10 | An access method may be linked to the wrong identity if matching/reauth/cancellation/rollback fails. | Mitigated | 5 | 2 | 10 | Medium |
 | QR-11 | Shared username normalisation, case-insensitive reservation or canonical public-profile resolution may regress. | Regression risk | 3 | 3 | 9 | Medium |
-| QR-12 | Concurrent username reservations may leave the `users` and `usernames` records inconsistent. | Regression risk | 3 | 2 | 6 | Medium |
-| QR-13 | A released username may be registered by another person, causing previously shared links to point to the wrong profile and enabling impersonation-like confusion. | Accepted behaviour | 4 | 3 | 12 | High |
+| QR-12 | Concurrent username reservations may leave `users` and `usernames` inconsistent. | Regression risk | 3 | 2 | 6 | Medium |
+| QR-13 | A released username may be registered by another person, causing old links to resolve to a new owner. | Accepted behaviour | 4 | 3 | 12 | High |
 | QR-14 | A persistent session may expose an account on a shared device when the user does not explicitly log out. | Regression risk | 4 | 2 | 8 | Medium |
-| QR-15 | An e-mail may be successfully verified, but stale authentication state may continue blocking the user from the application. | Regression risk | 4 | 3 | 12 | High |
+| QR-15 | E-mail may be verified while stale auth state continues blocking application access. | Regression risk | 4 | 3 | 12 | High |
 
-### 5.2.1 Applied authentication decisions
+**Applied decisions:** QR-08 AB-EV-012; QR-09 AB-EV-005; QR-10 AB-EV-007; QR-11 AB-EV-014; QR-12 affected-area coverage through AB-EV-014/015; QR-13 accepted through AB-EV-015.
 
-- **QR-08 — Regression risk:** the approved policy requires at least 15 characters, permits passphrases and is protected by permanent automated coverage; see AB-EV-012.
-- **QR-09 — Mitigated:** account linking preserves the existing UID and travel data; see AB-EV-005.
-- **QR-10 — Mitigated:** wrong-identity linking and Google-photo synchronisation controls were approved; see AB-EV-007.
-- **QR-11 — Regression risk:** creation, change, reservation, public lookup and generated links use the same case-insensitive canonical identity; see AB-EV-014.
-- **QR-12 — Regression risk:** transactional reservation must continue to prevent different UIDs from owning the same canonical username; affected-area coverage is retained by AB-EV-014 and AB-EV-015.
-- **QR-13 — Accepted behaviour:** a previous username is released immediately, no alias or redirect is created, and another UID may reserve it; see AB-EV-015.
-
-### 5.3 Travel statuses, counters, and calculations
+### 5.3 Travel statuses, counters and calculations
 
 | ID | Risk statement | State | Impact | Likelihood | Score | Priority |
 |---|---|---|---:|---:|---:|---|
 | QR-16 | The application may accept prohibited status combinations or remove combinations that are valid. | Regression risk | 3 | 4 | 12 | High |
 | QR-17 | **Want to visit** may remain selected when an incompatible physical-presence status is applied. | Regression risk | 3 | 3 | 9 | Medium |
-| QR-18 | Global country, territory, continent, or visit totals may not recalculate correctly after status changes. | Regression risk | 4 | 4 | 16 | High |
-| QR-19 | The global **Total Visits** value may diverge from the sum of the individual `visitsCount` values. | Regression risk | 4 | 3 | 12 | High |
+| QR-18 | Global country, territory, continent or visit totals may not recalculate correctly after status changes. | Regression risk | 4 | 4 | 16 | High |
+| QR-19 | Global **Total Visits** may diverge from the sum of individual `visitsCount` values. | Regression risk | 4 | 3 | 12 | High |
 | QR-20 | **Nationality** or **Want to visit** may incorrectly increase physical-presence metrics when used without a qualifying status. | Regression risk | 3 | 3 | 9 | Medium |
-| QR-21 | A place with multiple physical statuses may be counted more than once as a conquered country or territory. | Regression risk | 4 | 3 | 12 | High |
-| QR-22 | Automatic status transitions may incorrectly reset visit counts or delete related memories. | Regression risk | 4 | 3 | 12 | High |
-| QR-23 | **Born there** or **Lived / Live there** may fail to select **Visited** and initialise the visit count. | Regression risk | 3 | 3 | 9 | Medium |
-| QR-24 | The approved **Passed through** detailed-visit workflow may regress, causing passage records, memories, status transitions or visit metrics to become inconsistent. | Regression risk | 2 | 4 | 8 | Medium |
+| QR-21 | A place with multiple physical statuses may be counted more than once as a conquered place. | Regression risk | 4 | 3 | 12 | High |
+| QR-22 | Automatic status transitions may incorrectly reset visit counts or delete memories. | Regression risk | 4 | 3 | 12 | High |
+| QR-23 | **Born there** or **Lived / Live there** may fail to select **Visited** and initialise visit count. | Regression risk | 3 | 3 | 9 | Medium |
+| QR-24 | The approved **Passed through** workflow may regress, causing passage records, memories, transitions or metrics to become inconsistent. | Regression risk | 2 | 4 | 8 | Medium |
 
-### 5.3.1 Applied travel-status decisions
+**Applied decisions:** QR-16/17 remain covered by integrated and Production transition validation; QR-18/19 remain regression risks and are additionally affected by the QR-25 cross-counter investigation; QR-24 is protected by AB-EV-016.
 
-- **QR-16 / QR-17 — Regression risk:** the approved compatibility rules remain authoritative. The final Production validator confirmed the real transition sequence `wishlist → visited → visited + nationality → visited + born`, including automatic removal of incompatible statuses and UI/Firestore parity; see AB-EV-024.
-- **QR-18 / QR-19 — Regression risk:** status, visit and dashboard calculations remain under integrated release regression and Production parity coverage through AB-EV-021 and AB-EV-024.
-- **QR-24 — Regression risk:** **Passed through** represents physical presence, creates the first `RegisteredVisit`, supports multiple detailed passages and memories, contributes to canonical visit totals and remains protected by 18 permanent tests; see AB-EV-016.
-
-### 5.4 Geographic catalogue, map, and achievements
+### 5.4 Geographic catalogue, map and achievements
 
 | ID | Risk statement | State | Impact | Likelihood | Score | Priority |
 |---|---|---|---:|---:|---:|---|
-| QR-25 | The `195 countries`, `251 selectable places`, `52 territories and entities`, and `8 continent display groups` may be represented inconsistently across screens and statistics. | Regression risk | 4 | 3 | 12 | High |
-| QR-26 | A selectable place may be missing, mapped to the wrong ID, unclickable, incorrectly coloured, or persisted under an unsupported record. | Regression risk | 4 | 3 | 12 | High |
-| QR-27 | Technical or non-selectable geographic records may create invalid Firestore data or duplicate user progress. | Regression risk | 4 | 2 | 8 | Medium |
-| QR-28 | The map may display the wrong intensity when a place has multiple statuses and the status-priority rule is not applied consistently. | Regression risk | 3 | 3 | 9 | Medium |
-| QR-29 | The **United Kingdom** achievement may be calculated without all four constituent nations or may incorrectly rely on the technical `gb` geometry. | Regression risk | 3 | 3 | 9 | Medium |
-| QR-30 | Achievement lock/relock state, persisted unlock metadata, acquisition chronology, reconquest sequence or notification delivery may become inconsistent between screens, sessions or concurrent reconcilers. | Regression risk | 3 | 3 | 9 | Medium |
+| QR-25 | The `195 countries`, `251 selectable places`, `56 territories and entities`, and `8 continent display groups` may be represented or related inconsistently across screens/statistics. | Current gap | 4 | 3 | 12 | High |
+| QR-26 | A selectable place may be missing, mapped to the wrong ID, unclickable, incorrectly coloured or persisted under an unsupported record. | Regression risk | 4 | 3 | 12 | High |
+| QR-27 | Technical/non-selectable geographic records may create invalid Firestore data or duplicate progress. | Regression risk | 4 | 2 | 8 | Medium |
+| QR-28 | Map intensity may be wrong when multiple statuses are present and priority is inconsistent. | Regression risk | 3 | 3 | 9 | Medium |
+| QR-29 | The **United Kingdom** achievement may be calculated without all four constituents or incorrectly rely on technical `gb`. | Regression risk | 3 | 3 | 9 | Medium |
+| QR-30 | Achievement lock/relock, persisted metadata, chronology, reconquest sequence or notification delivery may become inconsistent between screens/sessions/reconcilers. | Regression risk | 3 | 3 | 9 | Medium |
 
-### 5.4.1 Applied geographic and achievement decisions
+**Applied geographic and achievement decisions:**
 
-- **QR-25 — Regression risk:** the canonical geographic fixture, selectable-place universe and dashboard/profile calculations remain under integrated regression coverage. The current `195 countries / 52 territories and entities / 251 selectable places` representation remains a regression concern and must stay internally consistent across screens; see AB-EV-021.
-- **QR-29 — Regression risk:** the United Kingdom aggregate remains non-selectable and receives no persisted travel status. The four selectable UK constituents remain the authority for the UK-specific achievement, while World Complete grants the conceptual sovereign point only when all four are complete; see AB-EV-023.
-- **QR-30 — Regression risk:** earned achievements use persisted per-user acquisition metadata with monotonic sequence allocation, relock removes the current metadata entry without reducing the counter, reconquest creates a new sequence, and notification dedupe uses the resulting acquisition identity. Same-session, reload, remote-tab and reconciliation-race coverage is retained through AB-EV-023 and AB-EV-024.
+- **QR-25 — Current gap:** AB-EV-027 confirms the C26-specific UK rule but also records the later `9 places / 5 countries / 5 entities` Production observation. The exact mathematical relationship of the 251/195/56 universes must be re-audited before closure.
+- **QR-26 — Regression risk:** AB-EV-028 confirms canonical map reuse, geographic anchoring, micro-marker zoom scaling and interaction.
+- **QR-29 — Regression risk:** AB-EV-023 protects World Complete/UK semantics; AB-EV-027 confirms all four constituents are required for the UK country/achievement while each contributes to the entity counter.
+- **QR-30 — Regression risk:** AB-EV-023/024 protect chronology and notification behaviour; AB-EV-026 closes the observed Clear Map metadata-reconciliation race.
 
 ### 5.5 Public profile and sharing
 
 | ID | Risk statement | State | Impact | Likelihood | Score | Priority |
 |---|---|---|---:|---:|---:|---|
-| QR-31 | A private profile may expose identity, map, statistics, travel statuses, or other data to an unauthenticated visitor. | Regression risk | 5 | 2 | 10 | Medium |
-| QR-32 | Private memories or notes may be exposed in the public interface or returned to an unauthorised browser even when they are not rendered. | Regression risk | 5 | 2 | 10 | Medium |
+| QR-31 | A private profile may expose identity, map, statistics, travel statuses or other data to an unauthenticated visitor. | Regression risk | 5 | 2 | 10 | Medium |
+| QR-32 | Private memories/notes may be exposed publicly or returned to an unauthorised browser. | Regression risk | 5 | 2 | 10 | Medium |
 | QR-33 | A public-profile component may allow an editing action or unauthorised data modification. | Regression risk | 5 | 2 | 10 | Medium |
 | QR-34 | Changing a profile from public to private may not hide previously visible content immediately. | Regression risk | 4 | 3 | 12 | High |
 | QR-35 | Social-link validation may permit an unsafe or unexpected destination. | Regression risk | 4 | 2 | 8 | Medium |
-| QR-36 | Future per-memory visibility or visibility-default logic may publish content contrary to the user's selected privacy preference. | Future risk | 5 | 3 | 15 | High |
-| QR-37 | A future generated Story may expose information the user did not expect to include or may fail differently across mobile and desktop sharing flows. | Future risk | 4 | 3 | 12 | High |
+| QR-36 | Future per-memory visibility/default logic may publish content contrary to user preference. | Future risk | 5 | 3 | 15 | High |
+| QR-37 | A future generated Story may expose unexpected information or fail differently across sharing flows. | Future risk | 4 | 3 | 12 | High |
 
-### 5.6 Compatibility, usability, performance, and accessibility
+**Applied decision:** AB-EV-028 confirms the canonical Profile map is read-only and does not expose country mutation or Clear Map actions, strengthening QR-33 regression coverage.
+
+### 5.6 Compatibility, usability, performance and accessibility
 
 | ID | Risk statement | State | Impact | Likelihood | Score | Priority |
 |---|---|---|---:|---:|---:|---|
-| QR-38 | Behaviour may differ on Firefox, Safari, iPhone, tablets, macOS, or other untested browser/device combinations. | Assessment gap | 3 | 3 | 9 | Medium |
-| QR-39 | The responsive, touch, constrained-network, constrained-CPU, production CSS-delivery, navigation-breakpoint or repeated-card paint baseline may regress and make critical flows difficult or impossible to use. | Regression risk | 3 | 3 | 9 | Medium |
-| QR-40 | Keyboard access, focus visibility, accessible names, dialog behaviour, contrast, animation preferences or non-colour status identification may regress. | Regression risk | 4 | 3 | 12 | High |
+| QR-38 | Behaviour may differ on Firefox, Safari, iPhone, tablets, macOS or other untested combinations. | Assessment gap | 3 | 3 | 9 | Medium |
+| QR-39 | Responsive/touch/constrained-device/CSS/navigation/card-paint or map-layout baselines may regress. | Regression risk | 3 | 3 | 9 | Medium |
+| QR-40 | Keyboard access, focus, accessible names, dialogs, contrast, animation preference or non-colour identification may regress. | Regression risk | 4 | 3 | 12 | High |
 
-### 5.6.1 Applied compatibility and accessibility decisions
-
-- **QR-38 — Assessment gap:** browser and device combinations outside the approved Edge/Windows and Chrome/Android evidence remain unassessed.
-- **QR-39 — Regression risk:** responsive reflow, touch, constrained network/CPU, production CSS delivery and Android Production behaviour were approved through AB-EV-018. AB-EV-020 adds the 768 px navigation breakpoint, shared floating-surface standard, responsive density and repeated-country-card paint stability after AB-DEF-006.
-- **QR-40 — Regression risk:** the WCAG 2.2 AA technical baseline for critical V1.0 flows, 15 Axe states, focus management and Production smoke were approved through AB-EV-017. AB-EV-020 retains semantic links, visible focus and accessible mobile-menu state after the navigation changes.
+**Applied decisions:** QR-38 remains an Assessment gap. QR-39 is protected by AB-EV-018 and AB-EV-020, with Badge surface evidence in AB-EV-025 and current map/profile width/surface/zoom parity in AB-EV-028. QR-40 is protected by AB-EV-017 and related responsive/visual regression evidence.
 
 ---
 
 ## 6. Highest-priority test focus
 
-The following risks should receive the strongest coverage and earliest execution because they combine high impact with realistic likelihood.
+Priority focus includes silent persistence failure; visit-history preservation; account-deletion integrity; status-rule integrity; progress/counter integrity; geographic catalogue integrity; privacy transitions; explicit logout/local-data exposure; explicit-Save integrity; real-time concurrency and cache authority; password policy; Passed-through workflow; responsive/constrained-device behaviour; achievement chronology/notification integrity; and accessibility.
 
-| Risk area | Primary validation focus |
-|---|---|
-| Silent persistence failure | Simulate failed writes, offline transitions, reloads, cache fallback, recovery, and user feedback. |
-| Visit-history preservation | Retain permanent regression coverage for deselecting and restoring **Visited** with different counts, notes, durations and compatible status combinations. |
-| Account deletion integrity | Validate deletion for Google, password, and linked accounts; partial failures; recent-authentication requirements; subcollections; username release; public-profile removal; and repeat attempts. |
-| Status-rule integrity | Execute pairwise and state-transition coverage across all six statuses, including automatic selection and removal rules. |
-| Progress calculation integrity | Recalculate countries, territories, continents, total visits, badges, and achievements after every relevant add, remove, and restore operation. |
-| Geographic catalogue integrity | Validate the exact selectable fixture, unsupported IDs, United Kingdom records, virtual-sovereign World Completion, Antarctica, microterritories, aliases, map clicks, tooltips, colours, Firestore IDs and achievement denominators. |
-| Privacy transitions | Test public-to-private changes, direct URLs, cached pages, unauthenticated requests, private data in network responses, and read-only enforcement. |
-| Local-data exposure | Retain explicit-logout regression coverage that proves UID-scoped private cache and session data are removed. |
-| Explicit-save integrity | Confirm that typing changes only draft state, that no per-keystroke persistence occurs, and that the approved Save action is the only persistence trigger. |
-| Real-time concurrency integrity | Retain multi-tab listener, pending-write, confirmed-cache, OCC conflict, retry, explicit last-intent-wins status mutation, activation chronology, cleanup and UID-isolation coverage. |
-| Password-policy integrity | Retain boundary, passphrase, Firebase-response and credential-sanitisation coverage across every password-based flow. |
-| Passed-through integrity | Retain first-passage creation, multiple passage, detailed-memory, metric, privacy and status-transition coverage. |
-| Compatibility and constrained devices | Retain responsive, touch, production CSS, network, CPU, orientation and Android regression coverage. |
-| Achievement chronology and notification integrity | Retain canonical acquisition-order, same-timestamp sequence, relock/reconquest, multi-session reconciliation, exactly-once popup and no-historical-popup coverage. |
-| Accessibility | Retain keyboard, focus, semantic-label, contrast, non-colour, dialog, zoom, reflow and reduced-motion regression coverage; extend native assistive-technology coverage when available. |
+The immediate geographic focus is QR-25: audit the dataset and prove how 251 selectable places, 195 conceptual countries and 56 territories/entities relate, including UK constituents and any special/limited-recognition records, before changing arithmetic again.
 
 ---
 
-## 7. Important rules that must not be reported as defects
-
-The following confirmed behaviours are intentional unless the product definition changes:
+## 7. Important rules that must not be reported as defects without new product evidence
 
 - a place is counted once as conquered even when it has multiple compatible statuses;
-- repeated visits increase **Total Visits**, but do not create additional conquered places;
-- the number of detailed memories may be lower than `visitsCount`;
-- **Nationality** and **Want to visit** do not represent physical presence when used alone;
-- **Passed through** counts as physical presence, creates the first detailed passage and may contain multiple registered passages;
-- achievements become locked again when their current criteria are no longer met;
-- an earned achievement uses its persisted current-acquisition timestamp and sequence; relocking removes that current entry, and reconquest creates a new timestamp and sequence rather than restoring an old acquisition record;
-- the public progress model uses eight display groups, including Antarctica as a distinct group;
-- the four constituent nations of the United Kingdom are separate selectable records;
-- the technical United Kingdom geometry must not receive its own persisted travel status;
+- repeated visits increase Total Visits but do not create additional conquered places;
+- detailed-memory count may be lower than `visitsCount`;
+- Nationality and Want to visit alone do not represent physical presence;
+- Passed through counts as physical presence and may contain multiple registered passages;
+- achievements relock when criteria are no longer met;
+- relock removes current acquisition metadata and reconquest creates a new acquisition sequence;
+- the public continent model uses eight display groups including Antarctica;
+- the four UK constituent nations are separate selectable records and the technical UK geometry receives no persisted travel status;
+- the current C26 implementation counts each UK constituent in the territory/entity counter and all four together additionally credit the UK country/achievement; the *global arithmetic consequence of this rule is under QR-25 investigation and is not yet a closed mathematical assumption*;
 - the public profile is read-only;
-- memories are currently private because individual memory-publication controls are not yet available.
+- memories are currently private.
 
 ---
 
 ## 8. Assumptions requiring validation
 
-The following statements are plausible but have not yet been fully demonstrated across all relevant scenarios:
-
-1. Public-to-private profile changes invalidate all previously visible or cached content immediately.
-2. Social-link validation rejects unsafe protocols and unsuitable destination formats.
-3. The current geographic fixture and the deployed application contain the same selectable records.
-4. Responsive behaviour remains acceptable outside the currently tested Windows/Edge and Android/Chrome combinations.
-5. The current map-status priority is applied identically in the personal map, public profile, cards, legends, and generated assets.
-
-Account deletion is no longer listed as an assessment assumption. AB-EV-010 records emulator fault coverage, retry-safe behaviour and a complete disposable-account Production validation; the area remains a Regression risk because the underlying services do not form a single distributed transaction.
+1. Public-to-private profile changes invalidate previously visible/cached content immediately.
+2. Social-link validation rejects unsafe protocols and unsuitable formats.
+3. The geographic fixture and deployed application contain the same selectable records.
+4. Responsive behaviour remains acceptable outside Edge/Windows and Chrome/Android evidence.
+5. Map-status priority is applied identically across map, profile, cards, legends and generated assets.
+6. The exact relationship between 251 selectable places, 195 conceptual countries and 56 territories/entities — including whether any categories overlap or leave selectable places outside either counter — remains to be proven after the post-C26 Production observation.
 
 ---
 
 ## 9. Open product and quality questions
 
-The following decisions remain open or require formal acceptance before the related risks can be closed.
+Resolved V1.0 decisions must not be reopened without new evidence: explicit Save for memories, character-limit policy, retry-safe account deletion, real-time/OCC controls, 15-character password minimum/passphrases, canonical lowercase usernames, immediate username reuse, Passed-through detailed workflow, accessibility baseline, responsive baseline, single-intent persistence, responsive navigation/card-paint stability, integrated release hardening, last-intent/activation chronology, achievement chronology/World Complete/notification logic, Production runner safety, Badge Unlock visual polish, Clear Map confirmed-snapshot reconciliation protection and C27–C30 map/profile parity.
 
-The following V1.0 decisions are already resolved and must not be reopened as gaps without new evidence:
+**Current reopened question:** What is the canonical mathematical relationship between the 251 selectable places, 195 conceptual countries and 56 territories/entities? The next investigation must prove classification and expected full-completion values before QR-25 can return to Regression risk.
 
-- memory and non-visit note text uses local draft state and explicit Save;
-- the approved character-limit policy is implemented and retained under QR-06 regression coverage;
-- account deletion uses a retry-safe, idempotent convergence model validated through AB-EV-010.
-- registered-place changes use real-time synchronisation and optimistic concurrency controls validated through AB-EV-013;
-- the approved password policy requires at least 15 characters and permits passphrases, as recorded in AB-EV-012;
-- usernames use case-insensitive trimmed lowercase normalisation across reservation and public-profile flows, as recorded in AB-EV-014;
-- a previous username becomes reusable immediately without an alias or redirect, and that consequence is accepted through AB-EV-015;
-- **Passed through** uses the detailed physical-visit workflow, including `RegisteredVisit`, explicit Save and multiple passages, as recorded in AB-EV-016;
-- critical V1.0 flows use the approved WCAG 2.2 AA technical baseline recorded in AB-EV-017;
-- the tested responsive baseline includes 320 × 568 portrait, 568 × 320 landscape, touch, constrained network/CPU and Android Production validation through AB-EV-018;
-- a valid single status intent must converge across optimistic UI, Firestore, subscription output and reload as recorded in AB-EV-019;
-- the approved responsive menu uses a hamburger below 768 px and full navigation at 768 px and above, while repeated country cards use a non-blurred surface to preserve Chromium paint stability, as recorded in AB-EV-020.
-
-### 9.1 Data and persistence
-
-- What user-visible save states are required for persistence flows outside the registered-place map path: saving, saved, failed, offline, or pending synchronisation?
-
-### 9.2 Account and username policy
-
-- What characters, separators, casing, and reserved words are allowed in usernames?
-
-### 9.3 Memories and notes
-
-- Where will the default memory-visibility preference be configured?
-- How will existing memories be normalised when individual privacy controls are introduced?
-
-### 9.4 Compatibility and accessibility
-
-- Which additional browser and device combinations beyond Microsoft Edge on Windows and Google Chrome on Android should become officially supported?
-- Should the current laboratory response observations become formal public performance service-level targets?
-- When will native screen-reader and forced-colours testing be added to the release evidence?
-
-### 9.5 Sharing
-
-- Which platforms and devices must support the future Story-sharing flow?
-- What information will be included by default in a generated Story image?
-- Must the user review the generated image before opening an external sharing flow?
+Other open questions remain around username allowed characters, future memory visibility, broader browser/device support, native assistive-technology coverage, and future Story-sharing scope/content/review.
 
 ---
 
 ## 10. Risk-based release implications
 
-A release recommendation should not be based only on whether the main happy paths work.
+Release confidence requires evidence that travel data is not silently lost; private content is not exposed; account deletion/linking preserve identity/integrity; status transitions follow rules; progress values are mathematically consistent; the geographic catalogue uses approved records/identifiers; public profiles are read-only; known gaps are resolved or explicitly accepted; and supported compatibility/accessibility baselines are defined.
 
-Release confidence should require evidence that:
-
-- user-created travel data is not silently lost;
-- private content is not exposed;
-- account deletion and authentication linking preserve identity and data integrity;
-- status combinations and automatic transitions follow the approved rules;
-- all progress values remain mathematically consistent;
-- the geographic catalogue and map use the approved records and identifiers;
-- public profiles are read-only and become private immediately when requested;
-- known gaps are either resolved or explicitly accepted with documented impact;
-- the supported compatibility and accessibility baseline is defined.
-
-Any unresolved High risk should be reviewed before release and recorded as one of the following:
-
-- mitigated by completed testing and evidence;
-- accepted by the product owner;
-- reduced by a technical or product control;
-- deferred with a documented limitation and follow-up action;
-- considered a release blocker.
+Any unresolved High risk must be reviewed before release and recorded as mitigated, accepted, reduced by control, deferred with limitation/follow-up, or a release blocker.
 
 ---
 
 ## 11. Review triggers
 
-This analysis must be reviewed when any of the following occurs:
-
-- a new travel status or status combination is introduced;
-- the geographic catalogue or country/territory classification changes;
-- the map implementation or data source changes;
-- per-memory privacy is implemented;
-- character limits or save behaviour are introduced;
-- authentication providers, password-policy rules or linking rules change;
-- account deletion logic changes;
-- real-time synchronisation, optimistic concurrency control or offline behaviour changes;
-- Story generation or external sharing is released;
-- new browsers, devices, or accessibility targets become officially supported;
-- a production defect or incident reveals a new failure mode.
+Review this analysis when travel statuses/combinations, geographic catalogue/classification, map implementation/data source, privacy, save/limit behaviour, auth/linking/password rules, account deletion, real-time/OCC/offline behaviour, sharing, supported browsers/devices/accessibility targets change, or when Production evidence reveals a new failure mode.
 
 ---
 
 ## 12. Related portfolio documents
 
-This analysis provides direct input for:
-
-- `docs/03-test-strategy.md`;
-- `docs/04-test-scope.md`;
-- `docs/05-entry-exit-criteria.md`;
-- `docs/06-test-environments.md`;
-- `docs/07-defect-management.md`;
-- `docs/08-metrics-and-reporting.md`;
-- `docs/09-system-test-plan.md`;
-- `test-assets/exploratory-test-charters.md`;
-- `test-assets/sample-test-cases.md`;
-- `reports/test-summary-report.md`.
+- `docs/03-test-strategy.md`
+- `docs/04-test-scope.md`
+- `docs/05-entry-exit-criteria.md`
+- `docs/06-test-environments.md`
+- `docs/07-defect-management.md`
+- `docs/08-metrics-and-reporting.md`
+- `docs/09-system-test-plan.md`
+- `test-assets/exploratory-test-charters.md`
+- `test-assets/sample-test-cases.md`
+- `reports/test-summary-report.md`
