@@ -2,38 +2,9 @@
 
 This directory contains selected defect examples from the AtlasBadge V1.0 quality process.
 
-The purpose is to demonstrate:
+The purpose is to demonstrate defect identification, risk assessment, expected/observed behaviour, prioritisation, correction follow-up, retesting, regression decisions and final quality assessment.
 
-- defect identification;
-- risk assessment;
-- clear communication;
-- expected and observed behaviour;
-- prioritisation;
-- correction follow-up;
-- retesting;
-- regression decisions;
-- final quality assessment.
-
-A defect evidence item may include:
-
-- defect title;
-- description;
-- preconditions;
-- reproduction steps;
-- expected result;
-- observed result;
-- affected environment;
-- browser or device;
-- screenshots;
-- severity and priority;
-- correction summary;
-- retest evidence;
-- regression scope;
-- final status.
-
-This directory does not need to contain every project defect.
-
-Only representative examples with professional portfolio value should be published.
+Only representative examples with professional portfolio value should be published. Real personal data, credentials, tokens, private configuration and sensitive project information must be removed or masked.
 
 ## Current public records
 
@@ -45,8 +16,12 @@ Only representative examples with professional portfolio value should be publish
 - [AB-DEF-002 — Production frontend and Firestore Rules were deployed out of sync](production-deployment-parity-failure.md)
 - [AB-DEF-003 — Production CSS not applied in the affected Android browser](android-css-cascade-layer-compatibility.md)
 - [AB-DEF-004 — Rapid same-session status changes triggered a false external conflict](rapid-status-mutation-false-conflict.md)
-- [AB-DEF-005 / AB-EV-019 — Clear Map achievement metadata reconciliation race](ab-def-005-clear-map-achievement-reconciliation-race.md)
+- [AB-DEF-005 — Added status disappeared after optimistic synchronisation](status-added-disappears-after-sync.md)
+- [AB-DEF-006 — Country cards became visually empty during rapid scrolling](transient-empty-country-cards-during-scroll.md)
+- [AB-DEF-007 — Rapid status changes could lose the latest local intent](rapid-status-last-intent-lost.md)
+- [AB-DEF-008 — World Complete achievement was mathematically unattainable](world-complete-achievement-unattainable.md)
+- [AB-DEF-009 — Achievement unlock re-entered the full-page application loader](full-page-loader-during-achievement-unlock.md)
+- [AB-DEF-010 — Achievement popup could be lost during a reconciliation race](achievement-popup-lost-during-reconciliation-race.md)
+- [AB-DEF-011 / AB-EV-026 — Clear Map achievement metadata reconciliation race](ab-ev-026-clear-map-achievement-reconciliation-race.md)
 
 See the central [V1.0 Evidence Register](../evidence-register.md) for evidence status, related risks and Test Lead decisions.
-
-Real personal data, credentials, tokens, private configuration and sensitive project information must be removed or masked.

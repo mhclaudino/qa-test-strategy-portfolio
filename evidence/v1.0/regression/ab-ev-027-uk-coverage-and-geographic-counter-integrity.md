@@ -3,7 +3,7 @@
 **Evidence status:** Production approved  
 **Related quality risks:** QR-18, QR-25, QR-29  
 **Target release:** AtlasBadge V1.0  
-**Final status:** Passed in Production
+**Final status:** C26-specific behaviour Passed in Production; broader QR-25 counter-integrity relationship reopened after follow-up Production evidence
 
 ## 1. Evidence purpose
 
@@ -157,11 +157,32 @@ Production validation confirmed:
 
 `validate-production` and `validate-clear-map` both passed on the same Production baseline.
 
-## 9. Test Lead decision
+## 9. Follow-up Production observation
 
-**Approved for AtlasBadge V1.0.**
+After C26 had passed its intended Production smoke, the Test Lead identified a new cross-counter consistency observation on the deployed product:
 
-The corrected model is now treated as a permanent regression rule:
+```text
+9/251 places visited
+5/195 countries visited
+5/56 territories and entities
+```
+
+The visible conquered set in that scenario contained nine selectable places, while the country and territory/entity counters summed to ten.
+
+This does **not** invalidate the narrow C26 verification that all four UK constituents contribute to the territory/entity counter and collectively credit the United Kingdom country. It does, however, prove that the broader mathematical relationship between the `251 places`, `195 countries` and `56 territories/entities` universes must be audited again before being described as a closed partition or a deliberately overlapping model.
+
+Accordingly:
+
+- C26 remains Passed for its specific accepted rule;
+- QR-25 is reopened as a **Current gap** for cross-counter/universe integrity;
+- the next investigation must prove the dataset classification and the expected values when all 251 selectable places are complete;
+- no new arithmetic assumption is accepted until that audit is complete.
+
+## 10. Test Lead decision
+
+**C26-specific rule approved; broader QR-25 counter integrity reopened.**
+
+The C26-specific rule remains regression-protected, while the global counter relationship requires follow-up investigation:
 
 - 251 selectable places;
 - 195 conceptual countries;
@@ -169,7 +190,7 @@ The corrected model is now treated as a permanent regression rule:
 - four UK constituents count individually in territory/entity progress;
 - all four also credit the United Kingdom country and achievement.
 
-## 10. Traceability
+## 11. Traceability
 
 | Item | Reference |
 |---|---|
@@ -178,5 +199,5 @@ The corrected model is now treated as a permanent regression rule:
 | Denominator correction | `71fc58df0e1ba96074308850a38a54a5cff04d2c` |
 | Numerator correction | `754fd9be91fc82d7382a802eb8e2ace391c45326` |
 | Final Production baseline | `a8d1d3ec150f9c8fd73263b1e08e558f572ca722` |
-| Result | Passed |
-| Decision | Approved; retained in regression coverage |
+| Result | C26 Passed; follow-up counter-integrity observation open |
+| Decision | C26 retained in regression coverage; QR-25 reopened as Current gap |

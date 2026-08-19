@@ -24,48 +24,23 @@ evidence/
 
 ### `environments`
 
-Evidence related to the environments, browsers, devices, resolutions and configurations used during testing.
-
-Examples may include:
-
-- browser and device information;
-- confirmed browser versions;
-- desktop resolution evidence;
-- mobile orientation evidence;
-- environment configuration checks;
-- Firebase Emulator verification;
-- Playwright environment verification.
+Evidence related to environments, browsers, devices, resolutions and configurations used during testing, including browser/device information, desktop and mobile evidence, Firebase Emulator verification and Playwright environment verification.
 
 ### `smoke`
 
 Evidence from Production and release smoke testing.
-
-Examples may include:
-
-- post-deployment smoke results;
-- desktop browser smoke;
-- mobile smoke;
-- language smoke in `pt-BR` and `en-GB`;
-- confirmation that essential flows remain available after deployment.
 
 Current public record:
 
 - [AB-EV-009 — Final dashboard and persistence Production smoke](smoke/ab-ev-009-final-dashboard-and-persistence-production-smoke.md)
 - [AB-EV-013 — QR-04 real-time synchronisation and concurrency Production validation](smoke/ab-ev-013-qr-04-real-time-sync-production-smoke.md)
 - [AB-EV-014 — QR-11 username case-normalisation Production validation](smoke/ab-ev-014-qr-11-username-case-normalisation-production-smoke.md)
-- [AB-EV-021 — Map and profile parity Production validation](smoke/ab-ev-021-map-profile-parity-production-validation.md)
+- [AB-EV-024 — Production release validation and harness hardening](smoke/ab-ev-024-production-release-validation-and-harness-hardening.md)
+- [AB-EV-028 — Map and profile parity Production validation](smoke/ab-ev-028-map-profile-parity-production-validation.md)
 
 ### `regression`
 
 Selected evidence from quick regression, affected-area regression and final V1.0 regression.
-
-Examples may include:
-
-- regression execution summaries;
-- screenshots of validated critical flows;
-- browser and device coverage;
-- language coverage;
-- retest evidence following corrections.
 
 Current public record:
 
@@ -77,26 +52,17 @@ Current public record:
 - [AB-EV-016 — QR-24 Passed through detailed-visit workflow](regression/qr-24-passed-through-detailed-visit-workflow.md)
 - [AB-EV-017 — QR-40 accessibility technical baseline](regression/qr-40-accessibility-technical-baseline.md)
 - [AB-EV-018 — QR-39 responsive, touch and constrained-device baseline](regression/qr-39-responsive-touch-constrained-device-baseline.md)
-- [AB-EV-020 — United Kingdom coverage and geographic counter integrity](regression/ab-ev-020-uk-coverage-and-geographic-counter-integrity.md)
+- [AB-EV-019 — Status persistence and optimistic-concurrency regression closure](regression/ab-ev-019-status-persistence-and-occ-regression.md)
+- [AB-EV-020 — Responsive navigation, layout density and country-card paint stability](regression/ab-ev-020-responsive-navigation-and-card-painting-stability.md)
+- [AB-EV-021 — V1.0 release hardening and integrated regression](regression/ab-ev-021-v1-release-hardening-and-integrated-regression.md)
+- [AB-EV-022 — Rapid status last-intent and activation-chronology closure](regression/ab-ev-022-status-last-intent-and-activation-chronology.md)
+- [AB-EV-023 — Achievement chronology, World Completion and notification reliability](regression/ab-ev-023-achievement-chronology-world-completion-and-notification-reliability.md)
+- [AB-EV-025 — Badge Unlock surface consistency and visual polish](regression/ab-ev-025-badge-unlock-surface-and-visual-polish.md)
+- [AB-EV-027 — United Kingdom coverage rule and follow-up counter-integrity observation](regression/ab-ev-027-uk-coverage-and-geographic-counter-integrity.md)
 
 ### `defects`
 
 Selected examples of defects identified, investigated, corrected and retested.
-
-Evidence may include:
-
-- defect descriptions;
-- expected and observed results;
-- screenshots;
-- affected environment;
-- severity or priority;
-- correction summaries;
-- retest results;
-- regression decisions.
-
-This directory is not intended to contain every defect identified during the project.
-
-Evidence is selected according to its professional and portfolio value.
 
 Current public records:
 
@@ -108,90 +74,32 @@ Current public records:
 - [AB-DEF-002 — Production frontend and Firestore Rules were deployed out of sync](defects/production-deployment-parity-failure.md)
 - [AB-DEF-003 — Production CSS not applied in the affected Android browser](defects/android-css-cascade-layer-compatibility.md)
 - [AB-DEF-004 — Rapid same-session status changes triggered a false external conflict](defects/rapid-status-mutation-false-conflict.md)
-- [AB-DEF-005 / AB-EV-019 — Clear Map achievement metadata reconciliation race](defects/ab-def-005-clear-map-achievement-reconciliation-race.md)
+- [AB-DEF-005 — Added status disappeared after optimistic synchronisation](defects/status-added-disappears-after-sync.md)
+- [AB-DEF-006 — Country cards became visually empty during rapid scrolling](defects/transient-empty-country-cards-during-scroll.md)
+- [AB-DEF-007 — Rapid status changes could lose the latest local intent](defects/rapid-status-last-intent-lost.md)
+- [AB-DEF-008 — World Complete achievement was mathematically unattainable](defects/world-complete-achievement-unattainable.md)
+- [AB-DEF-009 — Achievement unlock re-entered the full-page application loader](defects/full-page-loader-during-achievement-unlock.md)
+- [AB-DEF-010 — Achievement popup could be lost during a reconciliation race](defects/achievement-popup-lost-during-reconciliation-race.md)
+- [AB-DEF-011 / AB-EV-026 — Clear Map achievement metadata reconciliation race](defects/ab-ev-026-clear-map-achievement-reconciliation-race.md)
+
+The Production-validation cycle also found test-harness defects involving target selection, authentication setup, stale accessible names, search-surface assumptions, optimistic-state synchronisation and locator scope. These are documented as QA-process evidence in AB-EV-024 rather than being assigned product-defect IDs.
 
 ### `production-reset`
 
-Evidence related to the final removal of all test accounts and test data before the official V1.0 launch.
-
-Evidence may include:
-
-- Firebase Authentication cleanup;
-- Cloud Firestore cleanup;
-- Firebase Storage cleanup;
-- removal of test usernames and public profiles;
-- final disposable-account smoke;
-- confirmation that the product starts empty;
-- confirmation that cache or fallback mechanisms do not repopulate data;
-- Test Lead approval of the clean-start state.
+Evidence related to the final removal of test accounts and test data before the official V1.0 launch.
 
 ## Evidence standards
 
-Evidence should provide enough context to understand:
+Evidence should provide enough context to understand what was tested, the environment, expected and observed results, status, defects or limitations, retest/regression, relevant build or deployment, and the Test Lead decision.
 
-- what was tested;
-- which environment was used;
-- the expected result;
-- the observed result;
-- whether the test Passed, Failed, was Not Executed or remained unverified;
-- any defect, limitation or residual risk identified;
-- any retest or regression performed;
-- the relevant build, commit or deployment when available;
-- the Test Lead decision supported.
-
-Screenshots are not required for every execution.
-A textual record may be sufficient when the command, build or commit, environment, verified result and decision are clear.
-
-Screenshots should be accompanied by a short textual explanation when the result is not self-explanatory.
+Screenshots are not required for every execution. A textual record is acceptable when command/build/commit, environment, result and decision are clear.
 
 ## Screenshot and log sanitisation policy
 
-Original screenshots, recordings and raw logs remain private.
+Original screenshots, recordings and raw logs remain private. Public evidence must not expose identifiers, authentication payloads, e-mail addresses, credentials, API keys, `.env` values, cookies, personal notes/memories, private URLs, identifiable payloads, sensitive cloud configuration or unnecessary private source code.
 
-A public copy must be reviewed and, where necessary, cropped, masked or redacted before publication.
-
-Public evidence must not expose:
-
-- UID values or identifier-bearing cache keys;
-- `localStorage` values;
-- Firebase Authentication payloads;
-- real e-mail addresses;
-- private usernames;
-- passwords, tokens or credentials;
-- API keys;
-- private environment variables or `.env` files;
-- session cookies;
-- personal notes, memories or travel data;
-- private URLs;
-- complete identifiable request or stored payloads;
-- sensitive Firebase or Vercel configuration;
-- unnecessary private source code.
-
-Personal notes, memories, biographies and similar fields must use artificial sanitised QA content.
-
-Console and command output must exclude or mask identifiers, personal paths, secrets and private configuration.
-
-Raw Antigravity or other AI-assisted logs are not public evidence. Only verified summaries and relevant sanitised command results may be published.
-
-## Privacy and security
-
-Only evidence suitable for publication may be committed to this repository.
-
-Names, e-mail addresses, usernames, project identifiers and other potentially sensitive information must be removed or masked when necessary.
-
-Disposable test accounts and artificial test data should be used wherever possible.
+Raw Antigravity or other AI-assisted logs are not public evidence. Only verified summaries and relevant sanitised outputs may be published.
 
 ## Evidence selection
 
-Not every item produced during testing must be published.
-
-The Test Lead selects evidence that:
-
-- demonstrates the testing approach;
-- supports important quality decisions;
-- provides useful traceability;
-- illustrates defect management and retesting;
-- demonstrates release readiness;
-- is safe and appropriate for a public professional portfolio.
-
-The responsible technical role may adjust the directory structure when implementation needs require it, provided that traceability, privacy, clarity and Test Lead review are preserved.
+Not every item produced during testing must be published. The Test Lead selects evidence that demonstrates the testing approach, supports decisions, provides traceability, illustrates defect management/retesting, demonstrates release readiness and is safe for a public professional portfolio.
