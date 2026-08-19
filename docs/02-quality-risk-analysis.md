@@ -2,17 +2,17 @@
 
 ## 1. Document purpose
 
-This document identifies, evaluates and prioritises the main quality risks associated with AtlasBadge. It supports risk-based test planning by showing what could fail, why it matters, the realistic likelihood, the required coverage and any unresolved product or quality decisions.
+This document identifies, evaluates and prioritises the main quality risks associated with AtlasBadge. It supports risk-based test planning by showing what could fail, why it matters, the realistic likelihood, the required coverage and the residual risk that must remain visible after a correction is approved.
 
 This is a living analysis. Risk scores and priorities must be reviewed whenever the product, architecture, geographic catalogue, privacy model or release scope changes.
 
-> **Document status:** Reviewed through AB-EV-028 and the AtlasBadge C30 Production baseline. C26–C30 passed their intended Production validation, while a later `9 places / 5 countries / 5 territories/entities` observation reopened QR-25 for a new cross-counter and catalogue-integrity investigation.
+> **Document status:** Reviewed through AB-EV-030 and the AtlasBadge C32 Production baseline. C31 closed the geographic counter-integrity gap raised after C26 by establishing and validating the canonical `252 Places / 195 Countries / 57 Territories and Entities` model. C32 added read-only Profile map-to-flag navigation without changing persistence or privacy semantics.
 
 ---
 
 ## 2. Assessment basis
 
-This analysis is based on direct review of the deployed application, confirmed Product Owner rules, static code audit of authentication/profile/Firestore/cache/travel-map persistence, the current backlog and geographic catalogue decisions, and observed behaviour on Microsoft Edge on Windows and Google Chrome on Android.
+This analysis is based on direct review of the deployed application, confirmed Product Owner/Test Lead rules, static code audit of authentication/profile/Firestore/cache/travel-map persistence, geographic catalogue decisions, automated regression, local manual QA and controlled Vercel Production validation.
 
 An intended behaviour is not assumed to be implemented unless evidence supports it. Incomplete areas are classified explicitly as gaps, assumptions, future risks or accepted behaviour.
 
@@ -30,17 +30,13 @@ A username is mandatory, has a minimum length of three characters and uses a sha
 
 AtlasBadge supports six travel statuses: **Visited**, **Lived / Live there**, **Born there**, **Nationality**, **Passed through** and **Want to visit**.
 
-Multiple compatible statuses may coexist. Confirmed compatible examples include Visited + Lived, Visited + Born, Visited + Nationality, Lived + Born, Lived + Nationality, Nationality + Passed through, Want to visit + Nationality and Want to visit + Passed through.
-
-Confirmed incompatible examples include Visited + Passed through, Lived + Passed through, Born + Nationality, Born + Passed through, Want to visit + Visited, Want to visit + Lived and Want to visit + Born.
-
-Selecting **Born there** or **Lived / Live there** automatically selects **Visited**. Selecting a physical-presence status incompatible with **Want to visit** automatically removes **Want to visit**.
+Multiple compatible statuses may coexist. Confirmed incompatible combinations are normalised by product rules. Selecting **Born there** or **Lived / Live there** automatically selects **Visited**. Selecting a physical-presence status incompatible with **Want to visit** automatically removes **Want to visit**.
 
 ### 3.3 Visits and memories
 
-`visitsCount` has a minimum of zero. Selecting **Visited** or **Passed through** changes zero to one; Passed through creates the first physical passage record. Detailed visit controls support both statuses and multiple Passed-through occurrences.
+`visitsCount` has a minimum of zero. Selecting **Visited** or **Passed through** changes zero to one where applicable. Passed through supports detailed passage records and multiple occurrences.
 
-**Total Visits** is the sum of individual `visitsCount` values. A place counts once as conquered regardless of repeated visits. Detailed memory count does not need to equal `visitsCount`. Memory text uses local draft state and persists only after explicit **Save**. Non-visit memories may use `generalNote` without an artificial registered visit or visit-count increase.
+**Total Visits** is the sum of active individual `visitsCount` values. A place counts once as conquered regardless of repeated visits. Memory text uses local draft state and persists only after explicit **Save**. Non-visit memories may use `generalNote` without an artificial registered visit or visit-count increase.
 
 Current V1.0 behaviour preserves visit counts and user-created memories when **Visited** is deselected; they are hidden while inactive and restored when Visited returns.
 
@@ -48,45 +44,99 @@ Current V1.0 behaviour preserves visit counts and user-created memories when **V
 
 Cloud Firestore is the primary source of truth for authenticated users. Travel data is stored under `users/{uid}/places/{placeId}` and may contain statuses, visitsCount, registeredVisits and generalNote.
 
-The UID-scoped browser cache is `atlasbadge_local_data_{uid}`. It is a cache/fallback for authenticated travel data and a primary store for unauthenticated demonstration data.
+The UID-scoped browser cache is `atlasbadge_local_data_{uid}`. Registered-place changes render optimistically in React while durable cache state is updated after Firestore confirmation. Rejected writes restore confirmed state.
 
-Registered-place changes render optimistically in React while durable cache state is updated only after Firestore confirmation. Rejected writes restore the last confirmed state. AB-EV-008 and AB-EV-009 cover the map-status/visit path; equivalent failure/reload/recovery coverage for every persistence flow remains incomplete under QR-01.
-
-Authenticated place data uses a real-time Firestore subscription and OCC based on confirmed `updatedAt`. Explicit idempotent status intents preserve latest-valid-local-intent semantics. Activation chronology is stored independently of the visible status object. AB-EV-013, AB-EV-018, AB-EV-019 and AB-EV-022 cover listener, OCC, rapid mutation and chronology behaviour.
-
-AB-EV-026 adds a further authority rule: cache-only startup snapshots may hydrate local/UI state but are not authoritative inputs for persistent achievement-metadata reconciliation. Persistent/destructive reconciliation waits for server-confirmed snapshot authority. This prevents a stale/empty cache from queuing phantom delete/recreate work during Clear Map. The exact known Firestore `FAILED_PRECONDITION` base-version contention is qualified by a fail-closed Production harness and remains observable rather than silently ignored.
+Authenticated place data uses a real-time Firestore subscription and OCC based on confirmed `updatedAt`. Explicit status intents preserve latest-valid-local-intent semantics. AB-EV-013, AB-EV-018, AB-EV-019, AB-EV-022 and AB-EV-026 provide the main concurrency/cache-authority evidence.
 
 ### 3.5 Public profile and privacy
 
 A new profile is private by default and can be changed by the user. Private profiles must not expose map, statistics or private content.
 
-A public profile may display public display name, username, biography, social links, map/status colours, country/territory progress, total visits, continent progress, conquered flags and achievements. Memories and visit notes remain private.
+A public profile may display public display name, username, biography, social links, map/status colours, progress counters, total visits, continent progress, conquered flags and achievements. Memories and visit notes remain private.
 
-The public profile is read-only. AB-EV-028 confirms that the Profile now reuses the canonical `AtlasWorldMapV2` in read-only mode with zoom, pan, wheel zoom, reset, marker rendering and responsive behaviour, but without country mutation or Clear Map.
+The public profile remains read-only.
+
+AB-EV-028 confirms canonical `AtlasWorldMapV2` reuse in read-only mode with zoom, pan, wheel zoom, reset, markers and responsive behaviour.
+
+AB-EV-030 extends this baseline: clicking a conquered place in the Profile map now scrolls to and temporarily highlights the matching earned-flag card by canonical `countryId`. Normal geographies, micro-markers, alphabetical order, visit order and a mobile viewport were covered. The interaction does not open edit controls, mutate status/visits, change counters or write travel data.
 
 ### 3.6 Geographic catalogue and progress model
 
-AtlasBadge currently exposes **251 selectable places** and public counters using **195 conceptual countries** and **56 territories and entities**.
+AtlasBadge contains **251 directly selectable geographic records**.
 
-The internal model distinguishes selectable sovereign countries, four UK constituent nations, territories, limited-recognition/de facto entities, special geographic records and Antarctica. The United Kingdom aggregate is non-selectable and receives no persisted travel status. England, Scotland, Wales and Northern Ireland are individually selectable.
+The audited selectable catalogue is:
 
-C26/AB-EV-027 confirmed the specific implemented rule that each UK constituent contributes individually to the territory/entity counter and that all four together additionally credit the conceptual United Kingdom country and UK achievement.
+```text
+194 sovereign_country
+47 territory
+5 limited_recognition
+4 constituent_country
+1 special_region (Antarctica)
+--------------------------------
+251 directly selectable records
+```
 
-A later Production observation showed `9/251 places`, `5/195 countries` and `5/56 territories/entities` for nine conquered selectable places. Therefore the global relationship between the 251-, 195- and 56-item universes is **not considered mathematically closed**. QR-25 is a Current gap until a dataset audit proves classification, overlap/partition semantics and the exact expected counters at full completion.
+The United Kingdom aggregate is non-selectable, map-only/derived and receives no persisted travel status.
 
-The public continent model uses eight display groups: South America, Central America, North America, Antarctica, Africa, Asia, Europe and Oceania. The same taxonomy must remain consistent across map/profile/progress cards.
+The approved conceptual progress model is:
+
+```text
+252 Places
+195 Countries
+57 Territories and Entities
+```
+
+The relationship is intentionally defined as:
+
+```text
+Places = Countries + Territories and Entities
+252 = 195 + 57
+```
+
+#### Countries
+
+```text
+194 directly selectable sovereign countries
++ 1 derived United Kingdom
+= 195 Countries
+```
+
+The derived UK is credited only when England, Scotland, Wales and Northern Ireland all have qualifying physical presence.
+
+#### Territories and Entities
+
+```text
+47 territories
++ 5 limited-recognition entities
++ 4 UK constituent countries
++ 1 Antarctica special region
+= 57 Territories and Entities
+```
+
+Each UK constituent independently contributes one Place and one Territory/Entity. Completing all four additionally contributes one derived UK Country and one derived Place.
+
+Antarctica contributes one Place and one Territory/Entity, but no Country.
+
+AB-EV-027 preserves the historical post-C26 observation that exposed the previous inconsistency. AB-EV-029 records the C31 catalogue audit, correction, explicit invariants, achievement alignment and Production closure. QR-25 therefore moved from **Current gap** to **Regression risk**.
+
+The public continent model continues to use eight display groups: South America, Central America, North America, Antarctica, Africa, Asia, Europe and Oceania.
 
 ### 3.7 Achievements
 
-Achievements are dynamic with canonical persisted current-acquisition metadata. Earned state stores `unlockedAt` plus a per-user monotonic `sequence`; `nextAchievementUnlockSequence` is not reduced by relocking. Relock removes the current metadata entry and reconquest receives a new timestamp/sequence. Historical achievements are not replayed on login/reload, and locally caused notifications are deduplicated by user, achievement and sequence.
+Achievements use canonical persisted acquisition metadata with sequence and relock/reconquest behaviour protected by AB-EV-023, AB-EV-024 and AB-EV-026.
 
-The UK achievement requires England, Scotland, Wales and Northern Ireland. **Mundo Completo** treats the non-selectable UK aggregate as satisfied only when all four constituents are complete. Achievement chronology/notification evidence is retained through AB-EV-023 and AB-EV-024. AB-EV-026 adds the Clear Map reconciliation-race closure.
+C31 aligned the affected geographic achievements to the canonical model:
 
-### 3.8 Compatibility, responsive and visual baseline
+- **A15 — United Kingdom:** requires the four UK constituent countries (`4/4`);
+- **A18 — Lenda Atlas:** requires all `252/252 Places`;
+- **A31 — Mundo Completo:** requires `195/195 Countries` and does not require all territories/entities;
+- **A32 — Além das Fronteiras:** requires `57/57 Territories and Entities`, including Antarctica.
 
-Manual evidence covers Edge/Windows and Chrome/Android, including portrait/landscape, touch and cache-sensitive Production retests. Automated coverage includes responsive/reflow matrices from 320×568 upward, touch contexts, constrained network/CPU scenarios, production CSS checks and a WCAG 2.2 AA technical baseline over critical UI states.
+### 3.8 Compatibility, responsive and accessibility baseline
 
-AB-EV-020 covers responsive navigation and paint stability. AB-EV-025 covers the final Badge Unlock surface/golden accent. AB-EV-028 adds canonical map reuse, micro-marker zoom scaling, Profile read-only behaviour, shared desktop content width and map-surface parity.
+Manual and automated evidence includes Edge/Windows, Chrome/Android, desktop/mobile responsive matrices, touch contexts, constrained-device checks and a scoped WCAG 2.2 AA technical baseline.
+
+AB-EV-020 covers responsive navigation/paint stability. AB-EV-025 covers Badge Unlock visual polish. AB-EV-028 covers map/profile surface and micro-marker parity. AB-EV-030 adds mobile Profile map-to-flag navigation coverage.
 
 Universal browser/device support and formal accessibility certification are not claimed. Untested browser/device combinations remain QR-38.
 
@@ -152,7 +202,7 @@ Universal browser/device support and formal accessibility certification are not 
 | QR-06 | Approved character-limit enforcement may regress across notes/profile content. | Regression risk | 3 | 4 | 12 | High |
 | QR-07 | Account deletion may partially fail and leave authentication records, user data, reserved usernames, public-profile data or orphaned records. | Regression risk | 5 | 3 | 15 | High |
 
-**Applied decisions:** QR-02 is protected by AB-EV-002; QR-03 by AB-EV-003; QR-04 by AB-EV-013/018/019/022 plus cache-authority/reconciliation protection in AB-EV-026; QR-05 by AB-EV-004; QR-06 by AB-EV-011; QR-07 by AB-EV-010. QR-01 remains Current gap outside the specifically validated persistence paths.
+**Applied decisions:** QR-02 is protected by AB-EV-002; QR-03 by AB-EV-003; QR-04 by AB-EV-013/018/019/022/026; QR-05 by AB-EV-004; QR-06 by AB-EV-011; QR-07 by AB-EV-010. QR-01 remains Current gap outside the specifically validated persistence paths.
 
 ### 5.2 Authentication and account identity
 
@@ -183,13 +233,13 @@ Universal browser/device support and formal accessibility certification are not 
 | QR-23 | **Born there** or **Lived / Live there** may fail to select **Visited** and initialise visit count. | Regression risk | 3 | 3 | 9 | Medium |
 | QR-24 | The approved **Passed through** workflow may regress, causing passage records, memories, transitions or metrics to become inconsistent. | Regression risk | 2 | 4 | 8 | Medium |
 
-**Applied decisions:** QR-16/17 remain covered by integrated and Production transition validation; QR-18/19 remain regression risks and are additionally affected by the QR-25 cross-counter investigation; QR-24 is protected by AB-EV-016.
+**Applied decisions:** QR-16/17 remain covered by integrated/Production transition validation; QR-18 receives explicit canonical counter coverage through AB-EV-029; QR-24 is protected by AB-EV-016.
 
 ### 5.4 Geographic catalogue, map and achievements
 
 | ID | Risk statement | State | Impact | Likelihood | Score | Priority |
 |---|---|---|---:|---:|---:|---|
-| QR-25 | The `195 countries`, `251 selectable places`, `56 territories and entities`, and `8 continent display groups` may be represented or related inconsistently across screens/statistics. | Current gap | 4 | 3 | 12 | High |
+| QR-25 | The `252 Places`, `195 Countries`, `57 Territories and Entities`, `251 directly selectable records` and `8 continent display groups` may diverge or be represented inconsistently across screens/statistics. | Regression risk | 4 | 3 | 12 | High |
 | QR-26 | A selectable place may be missing, mapped to the wrong ID, unclickable, incorrectly coloured or persisted under an unsupported record. | Regression risk | 4 | 3 | 12 | High |
 | QR-27 | Technical/non-selectable geographic records may create invalid Firestore data or duplicate progress. | Regression risk | 4 | 2 | 8 | Medium |
 | QR-28 | Map intensity may be wrong when multiple statuses are present and priority is inconsistent. | Regression risk | 3 | 3 | 9 | Medium |
@@ -198,10 +248,10 @@ Universal browser/device support and formal accessibility certification are not 
 
 **Applied geographic and achievement decisions:**
 
-- **QR-25 — Current gap:** AB-EV-027 confirms the C26-specific UK rule but also records the later `9 places / 5 countries / 5 entities` Production observation. The exact mathematical relationship of the 251/195/56 universes must be re-audited before closure.
-- **QR-26 — Regression risk:** AB-EV-028 confirms canonical map reuse, geographic anchoring, micro-marker zoom scaling and interaction.
-- **QR-29 — Regression risk:** AB-EV-023 protects World Complete/UK semantics; AB-EV-027 confirms all four constituents are required for the UK country/achievement while each contributes to the entity counter.
-- **QR-30 — Regression risk:** AB-EV-023/024 protect chronology and notification behaviour; AB-EV-026 closes the observed Clear Map metadata-reconciliation race.
+- **QR-25 — Regression risk:** AB-EV-027 records the historical observation that reopened the arithmetic question. AB-EV-029 closes the gap with the audited `252/195/57` model, explicit UK/Antarctica rules, full-completion assertions, achievement alignment and Production validation.
+- **QR-26 — Regression risk:** AB-EV-028 confirms canonical map reuse and micro-marker behaviour; AB-EV-030 adds deterministic Profile map-to-flag targeting.
+- **QR-29 — Regression risk:** AB-EV-023 protects World Complete/UK semantics; AB-EV-027 confirms all four constituents; AB-EV-029 aligns derived UK country/place contribution with the canonical counters.
+- **QR-30 — Regression risk:** AB-EV-023/024 protect chronology/notification; AB-EV-026 protects Clear Map reconciliation; AB-EV-029 updates A18/A31/A32 thresholds to the canonical geographic universes.
 
 ### 5.5 Public profile and sharing
 
@@ -215,7 +265,7 @@ Universal browser/device support and formal accessibility certification are not 
 | QR-36 | Future per-memory visibility/default logic may publish content contrary to user preference. | Future risk | 5 | 3 | 15 | High |
 | QR-37 | A future generated Story may expose unexpected information or fail differently across sharing flows. | Future risk | 4 | 3 | 12 | High |
 
-**Applied decision:** AB-EV-028 confirms the canonical Profile map is read-only and does not expose country mutation or Clear Map actions, strengthening QR-33 regression coverage.
+**Applied decision:** AB-EV-028 confirms the canonical Profile map is read-only. AB-EV-030 confirms the new map-to-earned-flag navigation remains read-only, including no-flag fallback and no status/visit mutation.
 
 ### 5.6 Compatibility, usability, performance and accessibility
 
@@ -225,31 +275,34 @@ Universal browser/device support and formal accessibility certification are not 
 | QR-39 | Responsive/touch/constrained-device/CSS/navigation/card-paint or map-layout baselines may regress. | Regression risk | 3 | 3 | 9 | Medium |
 | QR-40 | Keyboard access, focus, accessible names, dialogs, contrast, animation preference or non-colour identification may regress. | Regression risk | 4 | 3 | 12 | High |
 
-**Applied decisions:** QR-38 remains an Assessment gap. QR-39 is protected by AB-EV-018 and AB-EV-020, with Badge surface evidence in AB-EV-025 and current map/profile width/surface/zoom parity in AB-EV-028. QR-40 is protected by AB-EV-017 and related responsive/visual regression evidence.
+**Applied decisions:** QR-38 remains an Assessment gap. QR-39 is protected by AB-EV-018/020/025/028 and the C32 mobile navigation evidence in AB-EV-030. QR-40 is protected by AB-EV-017 and the affected interaction regression evidence.
 
 ---
 
 ## 6. Highest-priority test focus
 
-Priority focus includes silent persistence failure; visit-history preservation; account-deletion integrity; status-rule integrity; progress/counter integrity; geographic catalogue integrity; privacy transitions; explicit logout/local-data exposure; explicit-Save integrity; real-time concurrency and cache authority; password policy; Passed-through workflow; responsive/constrained-device behaviour; achievement chronology/notification integrity; and accessibility.
+Priority focus includes silent persistence failure; visit-history preservation; account-deletion integrity; status-rule integrity; **252/195/57 counter integrity**; geographic catalogue integrity; privacy transitions; explicit logout/local-data exposure; explicit-Save integrity; real-time concurrency/cache authority; password policy; Passed-through workflow; responsive/constrained-device behaviour; achievement chronology/notification integrity; Profile read-only interaction; and accessibility.
 
-The immediate geographic focus is QR-25: audit the dataset and prove how 251 selectable places, 195 conceptual countries and 56 territories/entities relate, including UK constituents and any special/limited-recognition records, before changing arithmetic again.
+QR-25 is no longer an open arithmetic investigation. Its residual concern is regression: future catalogue/classification, counter, percentage or achievement changes must preserve the approved model unless the Product Owner/Test Lead explicitly changes the rule and rebaselines dependent tests/documentation.
 
 ---
 
 ## 7. Important rules that must not be reported as defects without new product evidence
 
 - a place is counted once as conquered even when it has multiple compatible statuses;
-- repeated visits increase Total Visits but do not create additional conquered places;
+- repeated visits increase Total Visits but do not create additional directly selectable records;
 - detailed-memory count may be lower than `visitsCount`;
 - Nationality and Want to visit alone do not represent physical presence;
 - Passed through counts as physical presence and may contain multiple registered passages;
 - achievements relock when criteria are no longer met;
 - relock removes current acquisition metadata and reconquest creates a new acquisition sequence;
 - the public continent model uses eight display groups including Antarctica;
-- the four UK constituent nations are separate selectable records and the technical UK geometry receives no persisted travel status;
-- the current C26 implementation counts each UK constituent in the territory/entity counter and all four together additionally credit the UK country/achievement; the *global arithmetic consequence of this rule is under QR-25 investigation and is not yet a closed mathematical assumption*;
-- the public profile is read-only;
+- 251 records are directly selectable, while the conceptual Places counter totals 252 because completing the four UK constituents derives one additional UK Place;
+- the four UK constituent nations are independently selectable and each belongs to Territory/Entity progress;
+- completing all four UK constituents derives one United Kingdom Country and one United Kingdom Place without persisting a separate selectable `gb` status;
+- Antarctica belongs to Places and Territories/Entities, but not Countries;
+- the canonical counter invariant is `252 Places = 195 Countries + 57 Territories and Entities`;
+- the public profile is read-only; Profile map clicks may navigate to matching earned flags but must not mutate travel data;
 - memories are currently private.
 
 ---
@@ -258,26 +311,26 @@ The immediate geographic focus is QR-25: audit the dataset and prove how 251 sel
 
 1. Public-to-private profile changes invalidate previously visible/cached content immediately.
 2. Social-link validation rejects unsafe protocols and unsuitable formats.
-3. The geographic fixture and deployed application contain the same selectable records.
-4. Responsive behaviour remains acceptable outside Edge/Windows and Chrome/Android evidence.
-5. Map-status priority is applied identically across map, profile, cards, legends and generated assets.
-6. The exact relationship between 251 selectable places, 195 conceptual countries and 56 territories/entities — including whether any categories overlap or leave selectable places outside either counter — remains to be proven after the post-C26 Production observation.
+3. The geographic fixture and deployed application continue to contain the same 251 directly selectable records.
+4. Responsive behaviour remains acceptable outside the validated Edge/Windows and Chrome/Android evidence.
+5. Map-status priority remains identical across map, profile, cards, legends and generated assets.
+6. Future geographic catalogue changes will trigger explicit re-audit of the `252/195/57` model rather than silently changing a denominator or derived rule.
 
 ---
 
 ## 9. Open product and quality questions
 
-Resolved V1.0 decisions must not be reopened without new evidence: explicit Save for memories, character-limit policy, retry-safe account deletion, real-time/OCC controls, 15-character password minimum/passphrases, canonical lowercase usernames, immediate username reuse, Passed-through detailed workflow, accessibility baseline, responsive baseline, single-intent persistence, responsive navigation/card-paint stability, integrated release hardening, last-intent/activation chronology, achievement chronology/World Complete/notification logic, Production runner safety, Badge Unlock visual polish, Clear Map confirmed-snapshot reconciliation protection and C27–C30 map/profile parity.
+Resolved V1.0 decisions must not be reopened without new evidence: explicit Save for memories, character-limit policy, retry-safe account deletion, real-time/OCC controls, 15-character password minimum/passphrases, canonical lowercase usernames, immediate username reuse, Passed-through detailed workflow, accessibility baseline, responsive baseline, single-intent persistence, responsive navigation/card-paint stability, integrated release hardening, last-intent/activation chronology, achievement chronology/World Complete/notification logic, Production runner safety, Badge Unlock visual polish, Clear Map confirmed-snapshot reconciliation protection, C27–C30 map/profile parity, **C31 counter integrity** and **C32 Profile map-to-flag navigation**.
 
-**Current reopened question:** What is the canonical mathematical relationship between the 251 selectable places, 195 conceptual countries and 56 territories/entities? The next investigation must prove classification and expected full-completion values before QR-25 can return to Regression risk.
+The previous QR-25 question about `251/195/56` is closed. The approved model is `251 directly selectable records`, `252 conceptual Places`, `195 Countries` and `57 Territories and Entities`.
 
-Other open questions remain around username allowed characters, future memory visibility, broader browser/device support, native assistive-technology coverage, and future Story-sharing scope/content/review.
+Other open questions remain around username allowed characters, future memory visibility, broader browser/device support, native assistive-technology coverage, localisation completion and future Story-sharing scope/content/review.
 
 ---
 
 ## 10. Risk-based release implications
 
-Release confidence requires evidence that travel data is not silently lost; private content is not exposed; account deletion/linking preserve identity/integrity; status transitions follow rules; progress values are mathematically consistent; the geographic catalogue uses approved records/identifiers; public profiles are read-only; known gaps are resolved or explicitly accepted; and supported compatibility/accessibility baselines are defined.
+Release confidence requires evidence that travel data is not silently lost; private content is not exposed; account deletion/linking preserve identity/integrity; status transitions follow rules; progress values remain mathematically consistent; the geographic catalogue uses approved records/identifiers; public profiles remain read-only; known gaps are resolved or explicitly accepted; and supported compatibility/accessibility baselines are defined.
 
 Any unresolved High risk must be reviewed before release and recorded as mitigated, accepted, reduced by control, deferred with limitation/follow-up, or a release blocker.
 
@@ -286,6 +339,8 @@ Any unresolved High risk must be reviewed before release and recorded as mitigat
 ## 11. Review triggers
 
 Review this analysis when travel statuses/combinations, geographic catalogue/classification, map implementation/data source, privacy, save/limit behaviour, auth/linking/password rules, account deletion, real-time/OCC/offline behaviour, sharing, supported browsers/devices/accessibility targets change, or when Production evidence reveals a new failure mode.
+
+A change to UK derivation, Antarctica classification, any of the `252/195/57` denominators, A15/A18/A31/A32 criteria or Profile map interaction requires explicit affected-area regression and documentation review.
 
 ---
 
@@ -298,6 +353,9 @@ Review this analysis when travel statuses/combinations, geographic catalogue/cla
 - `docs/07-defect-management.md`
 - `docs/08-metrics-and-reporting.md`
 - `docs/09-system-test-plan.md`
+- `evidence/v1.0/evidence-register.md`
+- `evidence/v1.0/defects/ab-ev-029-geographic-counter-integrity-252-195-57.md`
+- `evidence/v1.0/smoke/ab-ev-030-profile-map-to-earned-flag-navigation.md`
 - `test-assets/exploratory-test-charters.md`
 - `test-assets/sample-test-cases.md`
 - `reports/test-summary-report.md`
