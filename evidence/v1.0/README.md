@@ -37,6 +37,7 @@ Current public record:
 - [AB-EV-014 — QR-11 username case-normalisation Production validation](smoke/ab-ev-014-qr-11-username-case-normalisation-production-smoke.md)
 - [AB-EV-024 — Production release validation and harness hardening](smoke/ab-ev-024-production-release-validation-and-harness-hardening.md)
 - [AB-EV-028 — Map and profile parity Production validation](smoke/ab-ev-028-map-profile-parity-production-validation.md)
+- [AB-EV-030 — Profile map to earned-flag navigation](smoke/ab-ev-030-profile-map-to-earned-flag-navigation.md)
 
 ### `regression`
 
@@ -59,6 +60,7 @@ Current public record:
 - [AB-EV-023 — Achievement chronology, World Completion and notification reliability](regression/ab-ev-023-achievement-chronology-world-completion-and-notification-reliability.md)
 - [AB-EV-025 — Badge Unlock surface consistency and visual polish](regression/ab-ev-025-badge-unlock-surface-and-visual-polish.md)
 - [AB-EV-027 — United Kingdom coverage rule and follow-up counter-integrity observation](regression/ab-ev-027-uk-coverage-and-geographic-counter-integrity.md)
+- [AB-EV-029 / AB-DEF-012 — Geographic counter integrity closure](defects/ab-ev-029-geographic-counter-integrity-252-195-57.md)
 
 ### `defects`
 
@@ -81,6 +83,7 @@ Current public records:
 - [AB-DEF-009 — Achievement unlock re-entered the full-page application loader](defects/full-page-loader-during-achievement-unlock.md)
 - [AB-DEF-010 — Achievement popup could be lost during a reconciliation race](defects/achievement-popup-lost-during-reconciliation-race.md)
 - [AB-DEF-011 / AB-EV-026 — Clear Map achievement metadata reconciliation race](defects/ab-ev-026-clear-map-achievement-reconciliation-race.md)
+- [AB-DEF-012 / AB-EV-029 — Geographic counter integrity: 252 / 195 / 57](defects/ab-ev-029-geographic-counter-integrity-252-195-57.md)
 
 The Production-validation cycle also found test-harness defects involving target selection, authentication setup, stale accessible names, search-surface assumptions, optimistic-state synchronisation and locator scope. These are documented as QA-process evidence in AB-EV-024 rather than being assigned product-defect IDs.
 
