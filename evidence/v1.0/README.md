@@ -61,6 +61,7 @@ Current public record:
 - [AB-EV-025 — Badge Unlock surface consistency and visual polish](regression/ab-ev-025-badge-unlock-surface-and-visual-polish.md)
 - [AB-EV-027 — United Kingdom coverage rule and follow-up counter-integrity observation](regression/ab-ev-027-uk-coverage-and-geographic-counter-integrity.md)
 - [AB-EV-029 / AB-DEF-012 — Geographic counter integrity closure](defects/ab-ev-029-geographic-counter-integrity-252-195-57.md)
+- [AB-EV-031 — Dashboard selected-place sorting](regression/ab-ev-031-dashboard-selected-place-sorting.md)
 
 ### `defects`
 
@@ -84,6 +85,7 @@ Current public records:
 - [AB-DEF-010 — Achievement popup could be lost during a reconciliation race](defects/achievement-popup-lost-during-reconciliation-race.md)
 - [AB-DEF-011 / AB-EV-026 — Clear Map achievement metadata reconciliation race](defects/ab-ev-026-clear-map-achievement-reconciliation-race.md)
 - [AB-DEF-012 / AB-EV-029 — Geographic counter integrity: 252 / 195 / 57](defects/ab-ev-029-geographic-counter-integrity-252-195-57.md)
+- [AB-DEF-013 / AB-EV-032 — Manual visit order and rapid-visit concurrency closure](defects/ab-ev-032-manual-visit-order-and-rapid-visit-concurrency.md)
 
 The Production-validation cycle also found test-harness defects involving target selection, authentication setup, stale accessible names, search-surface assumptions, optimistic-state synchronisation and locator scope. These are documented as QA-process evidence in AB-EV-024 rather than being assigned product-defect IDs.
 
