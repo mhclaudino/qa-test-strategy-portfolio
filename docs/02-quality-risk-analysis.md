@@ -6,7 +6,7 @@ This document identifies, evaluates and prioritises the main quality risks assoc
 
 This is a living analysis. Risk scores and priorities must be reviewed whenever the product, architecture, geographic catalogue, privacy model or release scope changes.
 
-> **Document status:** Reviewed through AB-EV-030 and the AtlasBadge C32 Production baseline. C31 closed the geographic counter-integrity gap raised after C26 by establishing and validating the canonical `252 Places / 195 Countries / 57 Territories and Entities` model. C32 added read-only Profile map-to-flag navigation without changing persistence or privacy semantics.
+> **Document status:** Reviewed through AB-EV-032 and the AtlasBadge C34 Production baseline. C31 established the canonical `252 Places / 195 Countries / 57 Territories and Entities` model; C32 added read-only Profile map-to-flag navigation; C33 added non-persistent dashboard sorting; and C34 added owner-only manual visit-order correction while closing the P0 rapid-visit concurrency regression and preserving transactional birthplace integrity.
 
 ---
 
@@ -40,13 +40,17 @@ Multiple compatible statuses may coexist. Confirmed incompatible combinations ar
 
 Current V1.0 behaviour preserves visit counts and user-created memories when **Visited** is deselected; they are hidden while inactive and restored when Visited returns.
 
+AB-EV-032 extends the concurrency baseline for visit history. Rapid add/remove/save operations use replayable semantic intents; add uses a stable idempotent visit ID, remove is idempotent by visit ID, save updates the target visit on the latest state, and `visitsCount` is derived from `registeredVisits.length`. Rapid `+++`, `+++++` and removal flows are under permanent regression coverage.
+
 ### 3.4 Persistence and data model
 
-Cloud Firestore is the primary source of truth for authenticated users. Travel data is stored under `users/{uid}/places/{placeId}` and may contain statuses, visitsCount, registeredVisits and generalNote.
+Cloud Firestore is the primary source of truth for authenticated users. Travel data is stored under `users/{uid}/places/{placeId}` and may contain statuses, visitsCount, registeredVisits, generalNote and the optional C34 `visitOrderRank` used for manual ordering of qualifying physical-presence places.
 
 The UID-scoped browser cache is `atlasbadge_local_data_{uid}`. Registered-place changes render optimistically in React while durable cache state is updated after Firestore confirmation. Rejected writes restore confirmed state.
 
-Authenticated place data uses a real-time Firestore subscription and OCC based on confirmed `updatedAt`. Explicit status intents preserve latest-valid-local-intent semantics. AB-EV-013, AB-EV-018, AB-EV-019, AB-EV-022 and AB-EV-026 provide the main concurrency/cache-authority evidence.
+Authenticated place data uses a real-time Firestore subscription and OCC based on confirmed `updatedAt`. Explicit status/visit intents preserve latest-valid-local-intent semantics. AB-EV-013, AB-EV-018, AB-EV-019, AB-EV-022, AB-EV-026 and AB-EV-032 provide the main concurrency/cache-authority evidence.
+
+C34 made the persistence callback intent-aware. Rapid visit mutations may use the validated fast persistence path, while any `setStatus` intent for **Born there** disables that bypass and uses the normal transaction so `users/{uid}.birthplacePlaceId` and `users/{uid}/places/{placeId}.statuses.born` remain atomic. Firestore Rules retain the birthplace-consistency invariant and validate `visitOrderRank` as an optional integer `>= 1`.
 
 ### 3.5 Public profile and privacy
 
@@ -58,7 +62,9 @@ The public profile remains read-only.
 
 AB-EV-028 confirms canonical `AtlasWorldMapV2` reuse in read-only mode with zoom, pan, wheel zoom, reset, markers and responsive behaviour.
 
-AB-EV-030 extends this baseline: clicking a conquered place in the Profile map now scrolls to and temporarily highlights the matching earned-flag card by canonical `countryId`. Normal geographies, micro-markers, alphabetical order, visit order and a mobile viewport were covered. The interaction does not open edit controls, mutate status/visits, change counters or write travel data.
+AB-EV-030 extends this baseline: clicking a conquered place in the Profile map scrolls to and temporarily highlights the matching earned-flag card by canonical `countryId`. Normal geographies, micro-markers, alphabetical order, visit order and a mobile viewport were covered. The interaction does not open edit controls, mutate status/visits, change counters or write travel data.
+
+C34 preserves this boundary explicitly: Manual Visit Order editing, Save/Cancel and drag handles exist only on the authenticated Map tab. The public Profile may display Alphabetical or Visit Order presentation but exposes no manual-order editing capability.
 
 ### 3.6 Geographic catalogue and progress model
 
@@ -136,7 +142,7 @@ C31 aligned the affected geographic achievements to the canonical model:
 
 Manual and automated evidence includes Edge/Windows, Chrome/Android, desktop/mobile responsive matrices, touch contexts, constrained-device checks and a scoped WCAG 2.2 AA technical baseline.
 
-AB-EV-020 covers responsive navigation/paint stability. AB-EV-025 covers Badge Unlock visual polish. AB-EV-028 covers map/profile surface and micro-marker parity. AB-EV-030 adds mobile Profile map-to-flag navigation coverage.
+AB-EV-020 covers responsive navigation/paint stability. AB-EV-025 covers Badge Unlock visual polish. AB-EV-028 covers map/profile surface and micro-marker parity. AB-EV-030 adds mobile Profile map-to-flag navigation. AB-EV-031 adds responsive dashboard sorting, and AB-EV-032 adds mobile/read-only Manual Visit Order coverage plus keyboard-capable drag handles and rapid-mutation regression.
 
 Universal browser/device support and formal accessibility certification are not claimed. Untested browser/device combinations remain QR-38.
 
@@ -202,7 +208,7 @@ Universal browser/device support and formal accessibility certification are not 
 | QR-06 | Approved character-limit enforcement may regress across notes/profile content. | Regression risk | 3 | 4 | 12 | High |
 | QR-07 | Account deletion may partially fail and leave authentication records, user data, reserved usernames, public-profile data or orphaned records. | Regression risk | 5 | 3 | 15 | High |
 
-**Applied decisions:** QR-02 is protected by AB-EV-002; QR-03 by AB-EV-003; QR-04 by AB-EV-013/018/019/022/026; QR-05 by AB-EV-004; QR-06 by AB-EV-011; QR-07 by AB-EV-010. QR-01 remains Current gap outside the specifically validated persistence paths.
+**Applied decisions:** QR-02 is protected by AB-EV-002; QR-03 by AB-EV-003; QR-04 by AB-EV-013/018/019/022/026/032; QR-05 by AB-EV-004; QR-06 by AB-EV-011; QR-07 by AB-EV-010. AB-EV-032 extends QR-01 evidence for manual-order and rapid-visit persistence, but QR-01 remains Current gap outside the specifically validated persistence paths.
 
 ### 5.2 Authentication and account identity
 
@@ -233,7 +239,7 @@ Universal browser/device support and formal accessibility certification are not 
 | QR-23 | **Born there** or **Lived / Live there** may fail to select **Visited** and initialise visit count. | Regression risk | 3 | 3 | 9 | Medium |
 | QR-24 | The approved **Passed through** workflow may regress, causing passage records, memories, transitions or metrics to become inconsistent. | Regression risk | 2 | 4 | 8 | Medium |
 
-**Applied decisions:** QR-16/17 remain covered by integrated/Production transition validation; QR-18 receives explicit canonical counter coverage through AB-EV-029; QR-24 is protected by AB-EV-016.
+**Applied decisions:** QR-16/17 remain covered by integrated/Production transition validation; QR-18 receives canonical counter coverage through AB-EV-029 and presentation non-mutation coverage through AB-EV-031; QR-18/19/22/23 receive additional C34 rapid-visit and birthplace integrity regression through AB-EV-032; QR-24 is protected by AB-EV-016.
 
 ### 5.4 Geographic catalogue, map and achievements
 
@@ -265,7 +271,7 @@ Universal browser/device support and formal accessibility certification are not 
 | QR-36 | Future per-memory visibility/default logic may publish content contrary to user preference. | Future risk | 5 | 3 | 15 | High |
 | QR-37 | A future generated Story may expose unexpected information or fail differently across sharing flows. | Future risk | 4 | 3 | 12 | High |
 
-**Applied decision:** AB-EV-028 confirms the canonical Profile map is read-only. AB-EV-030 confirms the new map-to-earned-flag navigation remains read-only, including no-flag fallback and no status/visit mutation.
+**Applied decision:** AB-EV-028 confirms the canonical Profile map is read-only. AB-EV-030 confirms map-to-earned-flag navigation remains read-only, including no-flag fallback and no status/visit mutation. AB-EV-032 confirms Manual Visit Order editing exists only on the owner Map tab; the Profile exposes no Edit, Save, Cancel or drag controls.
 
 ### 5.6 Compatibility, usability, performance and accessibility
 
@@ -275,13 +281,13 @@ Universal browser/device support and formal accessibility certification are not 
 | QR-39 | Responsive/touch/constrained-device/CSS/navigation/card-paint or map-layout baselines may regress. | Regression risk | 3 | 3 | 9 | Medium |
 | QR-40 | Keyboard access, focus, accessible names, dialogs, contrast, animation preference or non-colour identification may regress. | Regression risk | 4 | 3 | 12 | High |
 
-**Applied decisions:** QR-38 remains an Assessment gap. QR-39 is protected by AB-EV-018/020/025/028 and the C32 mobile navigation evidence in AB-EV-030. QR-40 is protected by AB-EV-017 and the affected interaction regression evidence.
+**Applied decisions:** QR-38 remains an Assessment gap. QR-39 is protected by AB-EV-018/020/025/028/030 plus C33 responsive sorting in AB-EV-031 and C34 mobile/manual-order regression in AB-EV-032. QR-40 is protected by AB-EV-017 and affected interaction regression; C33/C34 add deterministic controls and keyboard-capable ordering coverage without claiming formal accessibility certification.
 
 ---
 
 ## 6. Highest-priority test focus
 
-Priority focus includes silent persistence failure; visit-history preservation; account-deletion integrity; status-rule integrity; **252/195/57 counter integrity**; geographic catalogue integrity; privacy transitions; explicit logout/local-data exposure; explicit-Save integrity; real-time concurrency/cache authority; password policy; Passed-through workflow; responsive/constrained-device behaviour; achievement chronology/notification integrity; Profile read-only interaction; and accessibility.
+Priority focus includes silent persistence failure; visit-history preservation; account-deletion integrity; status-rule integrity; **252/195/57 counter integrity**; geographic catalogue integrity; privacy transitions; explicit logout/local-data exposure; explicit-Save integrity; real-time concurrency/cache authority; rapid visit add/remove convergence; manual visit-order persistence; birthplace pointer/status atomicity; password policy; Passed-through workflow; responsive/constrained-device behaviour; achievement chronology/notification integrity; Profile read-only interaction; and accessibility.
 
 QR-25 is no longer an open arithmetic investigation. Its residual concern is regression: future catalogue/classification, counter, percentage or achievement changes must preserve the approved model unless the Product Owner/Test Lead explicitly changes the rule and rebaselines dependent tests/documentation.
 
@@ -303,6 +309,9 @@ QR-25 is no longer an open arithmetic investigation. Its residual concern is reg
 - Antarctica belongs to Places and Territories/Entities, but not Countries;
 - the canonical counter invariant is `252 Places = 195 Countries + 57 Territories and Entities`;
 - the public profile is read-only; Profile map clicks may navigate to matching earned flags but must not mutate travel data;
+- Manual Visit Order editing exists only on the owner Map tab;
+- Wishlist-only and Nationality-only records do not participate in Manual Visit Order because they do not represent physical presence;
+- the Born there location remains fixed at the top of Manual Visit Order and its user pointer/status must remain transactionally consistent;
 - memories are currently private.
 
 ---
@@ -320,7 +329,7 @@ QR-25 is no longer an open arithmetic investigation. Its residual concern is reg
 
 ## 9. Open product and quality questions
 
-Resolved V1.0 decisions must not be reopened without new evidence: explicit Save for memories, character-limit policy, retry-safe account deletion, real-time/OCC controls, 15-character password minimum/passphrases, canonical lowercase usernames, immediate username reuse, Passed-through detailed workflow, accessibility baseline, responsive baseline, single-intent persistence, responsive navigation/card-paint stability, integrated release hardening, last-intent/activation chronology, achievement chronology/World Complete/notification logic, Production runner safety, Badge Unlock visual polish, Clear Map confirmed-snapshot reconciliation protection, C27–C30 map/profile parity, **C31 counter integrity** and **C32 Profile map-to-flag navigation**.
+Resolved V1.0 decisions must not be reopened without new evidence: explicit Save for memories, character-limit policy, retry-safe account deletion, real-time/OCC controls, 15-character password minimum/passphrases, canonical lowercase usernames, immediate username reuse, Passed-through detailed workflow, accessibility baseline, responsive baseline, single-intent persistence, responsive navigation/card-paint stability, integrated release hardening, last-intent/activation chronology, achievement chronology/World Complete/notification logic, Production runner safety, Badge Unlock visual polish, Clear Map confirmed-snapshot reconciliation protection, C27–C30 map/profile parity, **C31 counter integrity**, **C32 Profile map-to-flag navigation**, **C33 dashboard sorting** and **C34 Manual Visit Order / rapid-visit concurrency / birthplace integrity**.
 
 The previous QR-25 question about `251/195/56` is closed. The approved model is `251 directly selectable records`, `252 conceptual Places`, `195 Countries` and `57 Territories and Entities`.
 
@@ -338,9 +347,9 @@ Any unresolved High risk must be reviewed before release and recorded as mitigat
 
 ## 11. Review triggers
 
-Review this analysis when travel statuses/combinations, geographic catalogue/classification, map implementation/data source, privacy, save/limit behaviour, auth/linking/password rules, account deletion, real-time/OCC/offline behaviour, sharing, supported browsers/devices/accessibility targets change, or when Production evidence reveals a new failure mode.
+Review this analysis when travel statuses/combinations, geographic catalogue/classification, map implementation/data source, privacy, save/limit behaviour, auth/linking/password rules, account deletion, real-time/OCC/offline behaviour, `visitOrderRank` semantics, manual ordering, birthplace transaction logic, sharing, supported browsers/devices/accessibility targets change, or when Production evidence reveals a new failure mode.
 
-A change to UK derivation, Antarctica classification, any of the `252/195/57` denominators, A15/A18/A31/A32 criteria or Profile map interaction requires explicit affected-area regression and documentation review.
+A change to UK derivation, Antarctica classification, any of the `252/195/57` denominators, A15/A18/A31/A32 criteria, Profile map interaction, manual visit-order persistence or rapid mutation orchestration requires explicit affected-area regression and documentation review.
 
 ---
 
@@ -353,9 +362,13 @@ A change to UK derivation, Antarctica classification, any of the `252/195/57` de
 - `docs/07-defect-management.md`
 - `docs/08-metrics-and-reporting.md`
 - `docs/09-system-test-plan.md`
+- `docs/10-c31-c32-production-traceability.md`
+- `docs/11-c33-c34-production-traceability.md`
 - `evidence/v1.0/evidence-register.md`
 - `evidence/v1.0/defects/ab-ev-029-geographic-counter-integrity-252-195-57.md`
 - `evidence/v1.0/smoke/ab-ev-030-profile-map-to-earned-flag-navigation.md`
+- `evidence/v1.0/regression/ab-ev-031-dashboard-selected-place-sorting.md`
+- `evidence/v1.0/defects/ab-ev-032-manual-visit-order-and-rapid-visit-concurrency.md`
 - `test-assets/exploratory-test-charters.md`
 - `test-assets/sample-test-cases.md`
 - `reports/test-summary-report.md`
