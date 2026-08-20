@@ -65,6 +65,7 @@ The portfolio will contain the following documents and supporting test evidence:
 | [Metrics and Reporting](docs/08-metrics-and-reporting.md) | Define useful quality indicators and reporting methods | Completed |
 | [System Test Plan](docs/09-system-test-plan.md) | Define the V1.0 system-level test execution and release validation plan | Completed |
 | [C31–C32 Production Traceability](docs/10-c31-c32-production-traceability.md) | Connect the counter-integrity correction and Profile map navigation to requirements, risks, tests, evidence, commits and Production sign-off | Completed |
+| [C33–C34 Production Traceability](docs/11-c33-c34-production-traceability.md) | Connect dashboard sorting, manual visit order, rapid-visit concurrency, birthplace integrity, tests, defects and final Production sign-off | Completed |
 | Exploratory Test Charters | Provide focused exploratory testing missions | Planned |
 | Sample Test Cases | Demonstrate selected functional and risk-based tests | Planned |
 | Test Summary Report | Demonstrate release-level quality reporting | Planned |
@@ -80,6 +81,8 @@ Recent Production traceability includes:
 
 - [AB-EV-029 / AB-DEF-012 — Geographic counter integrity: 252 / 195 / 57](evidence/v1.0/defects/ab-ev-029-geographic-counter-integrity-252-195-57.md)
 - [AB-EV-030 — Profile map to earned-flag navigation](evidence/v1.0/smoke/ab-ev-030-profile-map-to-earned-flag-navigation.md)
+- [AB-EV-031 — Dashboard selected-place sorting](evidence/v1.0/regression/ab-ev-031-dashboard-selected-place-sorting.md)
+- [AB-EV-032 / AB-DEF-013 — Manual visit order and rapid-visit concurrency closure](evidence/v1.0/defects/ab-ev-032-manual-visit-order-and-rapid-visit-concurrency.md)
 
 The evidence structure includes:
 
@@ -108,7 +111,8 @@ qa-test-strategy-portfolio/
 │   ├── 07-defect-management.md
 │   ├── 08-metrics-and-reporting.md
 │   ├── 09-system-test-plan.md
-│   └── 10-c31-c32-production-traceability.md
+│   ├── 10-c31-c32-production-traceability.md
+│   └── 11-c33-c34-production-traceability.md
 │
 ├── evidence/
 │   └── v1.0/
