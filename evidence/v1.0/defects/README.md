@@ -24,5 +24,6 @@ Only representative examples with professional portfolio value should be publish
 - [AB-DEF-010 — Achievement popup could be lost during a reconciliation race](achievement-popup-lost-during-reconciliation-race.md)
 - [AB-DEF-011 / AB-EV-026 — Clear Map achievement metadata reconciliation race](ab-ev-026-clear-map-achievement-reconciliation-race.md)
 - [AB-DEF-012 / AB-EV-029 — Geographic counter integrity: 252 / 195 / 57](ab-ev-029-geographic-counter-integrity-252-195-57.md)
+- [AB-DEF-013 / AB-EV-032 — Manual visit order and rapid-visit concurrency closure](ab-ev-032-manual-visit-order-and-rapid-visit-concurrency.md)
 
 See the central [V1.0 Evidence Register](../evidence-register.md) for evidence status, related risks and Test Lead decisions.
