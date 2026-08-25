@@ -1,7 +1,7 @@
 # AtlasBadge V1.0 System Test Plan
 
 **Document status:** Active / change-controlled  
-**Execution status:** Incremental system testing in progress; latest baseline reviewed through AB-EV-036  
+**Execution status:** Incremental system testing in progress; latest baseline reviewed through AB-EV-037  
 **Product:** AtlasBadge  
 **Target release:** V1.0  
 **Document owner:** Test Lead/Product Owner  
@@ -34,7 +34,7 @@ A material update is required when:
 
 Each update should identify what changed, affected risks/tests, which previous results remain valid, which require re-execution and the Test Lead decision.
 
-AB-EV-033 established the broad checkpointed regression baseline; AB-EV-034 and AB-EV-035 demonstrate proportional follow-up validation; AB-EV-036 demonstrates the same principle for a larger persistence redesign by combining one necessary full baseline with later focused requalification rather than repeatedly rerunning every suite.
+AB-EV-033 established the broad checkpointed regression baseline; AB-EV-034 and AB-EV-035 demonstrate proportional follow-up validation; AB-EV-036 applies the same principle to Wishlist atomic persistence; AB-EV-037 extends it to a destructive Clear Map redesign by rerunning the Rules/build/static and focused persistence/public-source/modal boundaries actually invalidated rather than repeating an unrelated full browser campaign.
 
 ---
 
@@ -59,13 +59,15 @@ Where documents disagree, the inconsistency must be resolved before the affected
 
 ## 4. Product and release context
 
-AtlasBadge includes authentication/account lifecycle, an interactive travel map, six travel statuses, detailed visits/memories, Wishlist management, Manual Visit Order, geographic counters, achievements, private/public profiles, public sanitised projections, account deletion, responsiveness, localisation, privacy and security controls.
+AtlasBadge includes authentication/account lifecycle, an interactive travel map, six travel statuses, detailed visits/memories, Wishlist management, Manual Visit Order, geographic counters, achievements, private/public profiles, public sanitised projections, account deletion, destructive Clear Map, responsiveness, localisation, privacy and security controls.
 
 The integrated test item includes the browser application plus Firebase Authentication, Cloud Firestore, Firestore Rules, Firebase Storage where relevant, local cache/state, Firebase Emulators, Vercel deployment and geographic data.
 
 The C35 product rule defines **Visited + Passed through** as compatible cumulative statuses. Individual travel occurrences remain represented by `RegisteredVisit`; adding the second status does not by itself create another visit.
 
 C36 establishes that Wishlist membership remains `statuses.wishlist`, while canonical presentation order is root `wishlistOrder`; changed order/privacy/public projection work behind one user-visible Save must use one atomic Firestore batch boundary.
+
+C37 establishes that Clear Map is one logical destructive operation. The private place reset, private root lifecycle reset and public root invalidation are committed through one atomic batch of at most 253 writes. Public child projections use `placesGeneration`; stale generations are no longer current/readable public travel state and their later physical deletion is housekeeping rather than part of the Clear Map success criterion.
 
 Previous incremental testing is valid evidence when impact analysis confirms that a later change has not invalidated it.
 
@@ -111,9 +113,16 @@ fix(wishlist): make settings save atomic and preserve order
 Vercel: dpl_HfDXpCCDisqAHXL85fyqHjnUd5N9 — READY / production
 Firestore Rules-only deployment: SUCCESS / project atlas-badge
 Production smoke: PASS / Test Lead approved
+
+C37 / AB-DEF-018 correction:
+add3b5b27f2e38d3be23f2d7ed4a4c2992599a1c
+fix(clear-map): make logical reset atomic
+Vercel: dpl_2ywN1nFvxnoZD4JHo4YMd65ogkrz — READY / production
+Firestore Rules-only deployment: SUCCESS / project atlas-badge
+Production Clear Map retest: PASS / Test Lead approved
 ```
 
-C35 did not alter Firestore Rules. C36 did, so Production validation was blocked until the separate Rules deployment restored frontend/Rules parity.
+C35 did not alter Firestore Rules. C36 and C37 did, so their Production functional validation was blocked until the separate Rules-only deployment restored application/Rules parity.
 
 ---
 
@@ -127,8 +136,10 @@ Objectives include:
 - confirm correct user ownership and isolation;
 - validate all approved status/Wishlist combinations;
 - verify reliable persistence, failed-write recovery, reload and concurrency behaviour;
-- verify one logical multi-resource Save is atomic when the product contract requires all-or-nothing persistence;
+- verify one logical multi-resource Save or destructive reset is atomic when the product contract requires all-or-nothing persistence;
 - protect visits/memories/ordering from unintended loss or artificial duplication;
+- confirm destructive Clear Map cannot expose a partially cleared private/public state;
+- confirm stale public projection generations are not returned as current travel data;
 - confirm the canonical geographic/counter model;
 - confirm private/public Profile projection and sanitisation;
 - confirm public Profile/Wishlist remains read-only;
@@ -149,12 +160,13 @@ Release-blocking coverage includes:
 - owner identity and protected routes;
 - travel-status/Wishlist persistence and compatibility;
 - visits/memories/order/concurrency;
-- atomic combined settings/actions where required by user intent;
+- atomic combined settings/actions/destructive resets where required by user intent;
 - rejected-write recovery where risk-relevant;
 - privacy/user isolation;
 - public projection whitelisting/sanitisation;
+- current/stale public generation boundaries after destructive reset;
 - public/private transitions;
-- account deletion;
+- account deletion and Clear Map lifecycle;
 - core counters/geographic model;
 - achievements where affected;
 - responsive usability of critical controls;
@@ -200,24 +212,47 @@ C36 final WishlistModal root-order/refresh:
 
 C36 full Vitest checkpoint:
 375 passed / 16 skipped
+
+C37 Profile public projection preservation:
+9 / 9 PASS
+
+C37 Public Profile source/generation caller:
+5 / 5 PASS
+
+C37 Wishlist combined regression:
+6 / 6 PASS
+
+C37 Wishlist/public projection regression:
+17 / 17 PASS
+
+C37 Clear Map confirmation modal:
+2 / 2 PASS
 ```
 
 ### 8.3 Firestore Rules and backend Emulator
 
-Rules validate owner-only private access, public projection boundaries and approved data schemas.
+Rules validate owner-only private access, public projection boundaries, approved data schemas and current/stale generation access.
 
-C36 Rules checkpoint:
+Latest C37 Rules checkpoint:
 
 ```text
 226 / 226 PASS
 ```
 
-C36 also adds a permanent real Firestore Emulator backend test. One document write inside the combined Wishlist batch is rejected by Rules and backend re-read confirms no sibling write partially commits:
+Relevant backend Emulator results include:
 
 ```text
-travelMap.wishlistAtomicity.emulator.test.ts
+C36 Wishlist rejected-batch atomicity:
 1 / 1 PASS
+
+C37 Clear Map lifecycle/atomicity/generation:
+7 / 7 PASS
+
+C37 upsert/concurrency generation regression:
+4 / 4 PASS
 ```
+
+C37 Clear Map coverage includes root Wishlist cleanup, one atomic logical-reset rejection, the supported 251-place/253-write maximum, legacy generation-0 compatibility, stale public direct-read denial, current-generation query/new-place behaviour and the missing-public-root case.
 
 ### 8.4 Browser E2E — Emulator
 
@@ -241,6 +276,8 @@ C36 Wishlist persistence/public order baseline: 3 / 3 PASS
 realFirebaseRequests=0
 ```
 
+C37 did not require a new broad Playwright campaign because the affected destructive persistence, Rules/public-generation and confirmation-modal boundaries were covered deterministically at backend/Rules/component layers and later validated manually in Production.
+
 ### 8.5 Manual/exploratory QA
 
 Used for usability, visual behaviour, edge conditions, unexpected interaction sequences and Test Lead sign-off.
@@ -248,6 +285,8 @@ Used for usability, visual behaviour, edge conditions, unexpected interaction se
 C35 received Test Lead manual QA before commit approval, including coexistence, memory/counter behaviour and independent status handling.
 
 C36 demonstrates why manual QA remains material even with strong automation. The first manual retest found that the backend correctly saved root `wishlistOrder`, but the owner read path still rendered legacy/alphabetical order after a combined reorder/privacy Save. Static/backend evidence then isolated the frontend read-path issue, and the final Test Lead retest approved root-order precedence plus confirmed Profile refresh for order/privacy changes.
+
+C37 similarly retained a focused manual boundary. Before release, a local working-tree C37 application was briefly exercised against the still-deployed C36 Production Rules; the resulting permission rejection was classified as an application/Rules parity mismatch, not a second product failure. The actual C36 Production baseline independently reproduced the real AB-DEF-018 Clear Map failure. After C37 application and Rules parity was restored, the Test Lead performed the destructive Production retest and approved the correction.
 
 ### 8.6 Production validation
 
@@ -267,7 +306,17 @@ firestore:rules deployment SUCCESS against atlas-badge
 focused Production Wishlist smoke PASS
 ```
 
-AB-EV-036 records the completed Production approval.
+For C37, the same parity gate applied:
+
+```text
+Vercel READY at add3b5b27f2e38d3be23f2d7ed4a4c2992599a1c
++
+firestore:rules deployment SUCCESS against atlas-badge
++
+focused destructive Clear Map Production retest PASS
+```
+
+AB-EV-036 and AB-EV-037 record the completed Production approvals.
 
 ---
 
@@ -293,7 +342,9 @@ This is not reduced coverage by omission: the carried-forward result and reason 
 
 **C35/AB-EV-035:** central `statusRules.ts` changed, justifying focused QR-24 tests and one full Vitest checkpoint. Browser impact was restored through one focused Emulator E2E; a full Playwright campaign was not required because no wider browser contract was invalidated.
 
-**C36/AB-EV-036:** shared Wishlist persistence/read logic and Rules changed, so one full Vitest/Rules/build baseline was justified. Later focused dependency-injection and owner read-path changes were requalified with their directly affected Emulator/component/E2E/manual paths instead of repeatedly rerunning the full suite. The final Production smoke was also proportional to the released Wishlist contract rather than an unrelated full-system campaign.
+**C36/AB-EV-036:** shared Wishlist persistence/read logic and Rules changed, so one full Vitest/Rules/build baseline was justified. Later focused dependency-injection and owner read-path changes were requalified with their directly affected Emulator/component/E2E/manual paths instead of repeatedly rerunning the full suite. The final Production smoke was proportional to the released Wishlist contract rather than an unrelated full-system campaign.
+
+**C37/AB-EV-037:** `travelMap.ts`, public source handling, profile projection and Firestore Rules changed materially, so the full Rules checkpoint and Production build were rerun. Focused Clear Map, Wishlist/upsert, public-source/profile and modal tests restored the invalidated functional boundaries. The previous full Vitest and broad Playwright checkpoints were carried forward because no failing focused evidence or shared-domain change justified another complete campaign.
 
 The efficiency rules are retained in `docs/12-lessons-learned.md`.
 
@@ -312,7 +363,9 @@ A later requirement correction is not counted as a Product Defect when the imple
 
 C35 is the reference requirement-correction example: tests valid for the old rule became stale after Product Owner/Test Lead redefinition and were updated without inventing a Product Defect ID.
 
-AB-DEF-017 is the contrasting true Product Defect example: fault injection proved partial persisted state from two independent Wishlist commits. During retest, a Rules-parity permission failure was correctly separated as an environment/release mismatch, while lost order under the correctly aligned environment was correctly treated as a product read-path failure until fixed.
+AB-DEF-017 is a true Product Defect example: fault injection proved partial persisted state from two independent Wishlist commits. During retest, a Rules-parity permission failure was correctly separated as an environment/release mismatch, while lost order under the correctly aligned environment was correctly treated as a product read-path failure until fixed.
+
+AB-DEF-018 is the destructive-operation counterpart: C36 root `wishlistOrder` made the old Clear Map lifecycle invalid under the aligned Rules, and the existing public/private split commits independently permitted partial persisted state. Both failure modes were proven and closed under one defect because they violated the same single Clear Map intent. A later local C37-vs-C36-Rules failure was classified separately as parity mismatch rather than inflating the defect count.
 
 ---
 
@@ -350,7 +403,7 @@ For releases that alter Firestore Rules:
 9. Start focused Production validation.
 ```
 
-C36 followed this gate exactly:
+C36 followed this gate:
 
 ```text
 Commit: 5d660b016528e75a2a70b49010a84065d884f883
@@ -358,6 +411,16 @@ Vercel: dpl_HfDXpCCDisqAHXL85fyqHjnUd5N9 — READY / production
 Rules: firebase deploy --only firestore:rules --project atlas-badge — SUCCESS
 Other Firebase services: none
 Production smoke: PASS
+```
+
+C37 followed the same controlled parity gate:
+
+```text
+Commit: add3b5b27f2e38d3be23f2d7ed4a4c2992599a1c
+Vercel: dpl_2ywN1nFvxnoZD4JHo4YMd65ogkrz — READY / production
+Rules: firebase deploy --only firestore:rules --project atlas-badge — SUCCESS
+Other Firebase services: none
+Production destructive retest: PASS
 ```
 
 No force push/rebase/deploy shortcut is used to bypass this gate.
@@ -387,6 +450,14 @@ State: READY
 Firestore Rules-only deploy: PASS / atlas-badge
 Production Wishlist smoke: PASS / Test Lead approved
 Decision: AB-DEF-017 CLOSED
+
+AB-EV-037 / AB-DEF-018 / C37:
+Commit: add3b5b27f2e38d3be23f2d7ed4a4c2992599a1c
+Vercel Production: dpl_2ywN1nFvxnoZD4JHo4YMd65ogkrz
+State: READY
+Firestore Rules-only deploy: PASS / atlas-badge
+Production Clear Map retest: PASS / Test Lead approved
+Decision: AB-DEF-018 CLOSED
 ```
 
 ---
@@ -410,7 +481,7 @@ Requirement / rule
 
 The central public index is `evidence/v1.0/evidence-register.md`.
 
-Current recent evidence is AB-EV-033 through AB-EV-036.
+Current recent evidence is AB-EV-033 through AB-EV-037.
 
 ---
 
@@ -436,12 +507,14 @@ The final release decision belongs to the Test Lead/Product Owner.
 
 - QR-01 is now a Regression risk rather than a Current gap.
 - AB-DEF-017 is closed; Wishlist atomic settings/order behaviour remains permanent regression scope.
+- AB-DEF-018 is closed; Clear Map atomic logical reset/generation invalidation remains permanent regression scope.
+- Physical garbage collection of obsolete public-generation child documents is optional housekeeping; correctness does not depend on it.
 - Browser/device coverage is not comprehensive.
 - Quantitative performance targets are not established.
 - Formal accessibility certification/native assistive-technology coverage is not claimed.
 - No independent penetration/security audit or formal load test has been completed.
 - Remaining V1.0 localisation/final release activities must be assessed separately.
-- Manual Emulator QA bootstrap is not yet a formal persisted one-command environment contract; environment readiness rules are documented in `06-test-environments.md`.
+- Manual Emulator QA bootstrap is not a formal persisted one-command environment contract; environment readiness rules are documented in `06-test-environments.md`.
 
 ---
 
@@ -452,4 +525,5 @@ The final release decision belongs to the Test Lead/Product Owner.
 - `evidence/v1.0/regression/ab-ev-034-qr-01-failed-write-recovery-closure.md`
 - `evidence/v1.0/regression/ab-ev-035-c35-visited-passed-coexistence.md`
 - `evidence/v1.0/defects/ab-ev-036-wishlist-atomic-settings-save-and-order-integrity.md`
+- `evidence/v1.0/defects/ab-ev-037-clear-map-atomic-generation-reset.md`
 - `docs/12-lessons-learned.md`
