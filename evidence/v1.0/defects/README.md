@@ -28,5 +28,6 @@ Only representative examples with professional portfolio value should be publish
 - [AB-DEF-014 — Public place projection missing for normal public statuses](ab-def-014-public-place-projection-missing.md)
 - [AB-DEF-015 — Public achievement metadata was not synchronised](ab-def-015-public-achievement-metadata-not-synchronised.md)
 - [AB-DEF-016 — Mobile dashboard control grid collapsed to zero width](ab-def-016-mobile-dashboard-grid-collapse.md)
+- [AB-DEF-017 / AB-EV-036 — Wishlist atomic settings save and order integrity](ab-ev-036-wishlist-atomic-settings-save-and-order-integrity.md)
 
 See the central [V1.0 Evidence Register](../evidence-register.md) for evidence status, related risks and Test Lead decisions.
