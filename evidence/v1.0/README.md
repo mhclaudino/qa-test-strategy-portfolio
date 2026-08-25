@@ -62,6 +62,7 @@ Current public record:
 - [AB-EV-027 — United Kingdom coverage rule and follow-up counter-integrity observation](regression/ab-ev-027-uk-coverage-and-geographic-counter-integrity.md)
 - [AB-EV-029 / AB-DEF-012 — Geographic counter integrity closure](defects/ab-ev-029-geographic-counter-integrity-252-195-57.md)
 - [AB-EV-031 — Dashboard selected-place sorting](regression/ab-ev-031-dashboard-selected-place-sorting.md)
+- [AB-EV-033 — Wishlist, public-profile projection and release hardening](regression/ab-ev-033-wishlist-public-profile-release-hardening.md)
 
 ### `defects`
 
@@ -86,8 +87,11 @@ Current public records:
 - [AB-DEF-011 / AB-EV-026 — Clear Map achievement metadata reconciliation race](defects/ab-ev-026-clear-map-achievement-reconciliation-race.md)
 - [AB-DEF-012 / AB-EV-029 — Geographic counter integrity: 252 / 195 / 57](defects/ab-ev-029-geographic-counter-integrity-252-195-57.md)
 - [AB-DEF-013 / AB-EV-032 — Manual visit order and rapid-visit concurrency closure](defects/ab-ev-032-manual-visit-order-and-rapid-visit-concurrency.md)
+- [AB-DEF-014 — Public place projection missing for normal public statuses](defects/ab-def-014-public-place-projection-missing.md)
+- [AB-DEF-015 — Public achievement metadata was not synchronised](defects/ab-def-015-public-achievement-metadata-not-synchronised.md)
+- [AB-DEF-016 — Mobile dashboard control grid collapsed to zero width](defects/ab-def-016-mobile-dashboard-grid-collapse.md)
 
-The Production-validation cycle also found test-harness defects involving target selection, authentication setup, stale accessible names, search-surface assumptions, optimistic-state synchronisation and locator scope. These are documented as QA-process evidence in AB-EV-024 rather than being assigned product-defect IDs.
+The Production-validation cycle also found test-harness defects involving target selection, authentication setup, stale accessible names, search-surface assumptions, optimistic-state synchronisation and locator scope. These are documented as QA-process evidence rather than being assigned product-defect IDs. AB-EV-033 continues this distinction by separating product defects from stale automation assumptions discovered during release hardening.
 
 ### `production-reset`
 
