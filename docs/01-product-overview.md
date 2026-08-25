@@ -6,15 +6,15 @@ This document provides a high-level overview of AtlasBadge, including its purpos
 
 It establishes the product context required for the risk analysis and test strategy documented in this repository.
 
-> **Document status:** Initial completed version. The content will continue to evolve under change control as AtlasBadge is refined.
+> **Document status:** Completed and maintained through the AB-EV-033 Wishlist/public-profile Production baseline.
 
 ## 2. Product summary
 
-AtlasBadge is an interactive travel platform that allows users to record, organise, and present their travel history.
+AtlasBadge is an interactive travel platform that allows users to record, organise and present their travel history and future travel interests.
 
-Users can interact with a map, assign travel statuses to places, monitor their progress, and build a public traveller profile.
+Users can interact with a world map, assign travel statuses to places, maintain detailed visits and memories, manage a private or public Wishlist, monitor geographic progress and achievements, and publish a read-only traveller profile.
 
-The product combines travel tracking, personal progress, map interaction, and profile presentation in a single experience.
+The product combines travel tracking, personal progress, map interaction, collection-oriented features and selective public sharing in a single experience.
 
 ## 3. Product objectives
 
@@ -22,11 +22,13 @@ AtlasBadge aims to:
 
 - Provide an intuitive way to record visited and planned destinations
 - Allow users to classify places using meaningful travel statuses
-- Present travel progress in a visual and engaging format
+- Maintain detailed visit history without compromising data integrity
+- Present geographic progress in a visual and engaging format
 - Persist each user's personal travel information securely
-- Allow users to share selected travel information through a public profile
+- Allow users to keep a Wishlist private or intentionally share it
+- Allow users to share selected travel/profile information without exposing private records
 - Provide a consistent experience across desktop and mobile devices
-- Make travel tracking enjoyable through progress and collection-oriented elements
+- Make travel tracking enjoyable through progress, flags, badges and achievements
 
 ## 4. Target users
 
@@ -37,19 +39,24 @@ A registered traveller can:
 - Create and access an account
 - Select countries or places on the map
 - Assign and change travel statuses
-- Save personal travel progress
-- Review previously recorded information
-- Access their personal profile
-- Share a public profile when the feature is available and enabled
+- Save visits and private memories
+- Maintain a Wishlist based on the Want to visit status
+- Choose whether the Wishlist is public or private
+- Reorder visits and Wishlist items independently where supported
+- Review saved travel progress and achievements
+- Manage personal profile information
+- Publish or hide a public profile
 
 ### 4.2 Public visitor
 
-A public visitor may be able to:
+A public visitor can:
 
-- Open a traveller's public profile
-- View information intentionally shared by that traveller
-- Browse the profile without accessing private account data
-- Use the public profile across supported devices and browsers
+- Open a traveller's public profile when that profile is public
+- View only information intentionally projected for public presentation
+- Browse the public map, progress, flags and achievements
+- View a public Wishlist only when the owner enabled it and the Wishlist is non-empty
+- Use local presentation controls without modifying or persisting changes to the owner's data
+- Browse without access to private visits, memories, notes or owner-only records
 
 ### 4.3 Product administrator
 
@@ -68,9 +75,12 @@ Relevant behaviours include:
 - Account creation
 - Login
 - Logout
+- E-mail verification and recovery
+- Authentication-method linking
 - Session handling
 - Authentication error handling
 - Access control for authenticated areas
+- Account deletion
 
 ### 5.2 Interactive travel map
 
@@ -82,61 +92,108 @@ Relevant behaviours include:
 
 - Selecting a place
 - Viewing its current status
-- Assigning a new status
-- Changing an existing status
+- Assigning or changing supported statuses
 - Removing a status where supported
 - Displaying visual differences between statuses
-- Maintaining usability across different screen sizes
+- Searching/filtering selected places
+- Navigating between map and related place/flag presentation
+- Maintaining usability across desktop and mobile screen sizes
 
-### 5.3 Travel status management
+AtlasBadge contains 251 directly selectable geographic records. The conceptual global progress model is 252 Places / 195 Countries / 57 Territories and Entities because completing all four UK constituent countries derives one additional United Kingdom Place/Country.
 
-Users can classify destinations according to their travel relationship with each place.
+### 5.3 Travel status and Wishlist management
 
-The exact list and business meaning of each status are controlled by the AtlasBadge product definition.
+AtlasBadge supports six travel statuses:
 
-Testing must confirm that:
+- Visited
+- Lived / Live there
+- Born there
+- Nationality
+- Passed through
+- Want to visit
 
-- Only supported statuses can be assigned
-- Status changes are saved correctly
-- The interface reflects the saved status
-- Progress calculations remain consistent
-- Status information is isolated between users
+The Wishlist uses `statuses.wishlist === true` / Want to visit as its source of truth; it is not a separate duplicate travel-status system.
 
-### 5.4 Persistent user data
+Confirmed rules include:
 
-Authenticated user progress is stored persistently so that it remains available across sessions and devices.
+- incompatible physical-presence states remove Want to visit according to the status rules;
+- Wishlist-only records do not count as physical presence;
+- Wishlist-only records do not participate in Manual Visit Order;
+- Wishlist ordering uses `wishlistOrderRank`, independently from `visitOrderRank`;
+- Wishlist privacy defaults to private;
+- the saved Wishlist-public preference survives unrelated profile-visibility changes;
+- Clear Map removes Wishlist membership/ranks and resets its public preference;
+- account deletion removes the associated private/public Wishlist data.
 
-The current implementation is intended to use cloud-based storage for the primary user record, with local browser storage retained as a cache or fallback where applicable.
+### 5.4 Visits, memories and manual order
+
+Qualifying physical-presence places may contain registered visits and private memories.
+
+Relevant behaviours include:
+
+- repeated visit creation/removal/editing;
+- `visitsCount` derived from registered visits where applicable;
+- explicit Save for memory text rather than persistence on every keystroke;
+- preservation of private memories across supported status transitions;
+- Manual Visit Order for qualifying physical-presence places only;
+- independent Wishlist order;
+- transactional integrity for the Born there user pointer/status relationship.
+
+### 5.5 Persistent user data
+
+Cloud Firestore is the primary source of truth for authenticated user progress.
+
+The private source is:
+
+```text
+users/{uid}
+users/{uid}/places/{placeId}
+```
+
+Private user/place records are owner-only.
 
 Relevant behaviours include:
 
 - Loading saved data after login
-- Saving status changes
-- Handling delayed or failed saves
-- Preventing one user from accessing another user's data
-- Maintaining consistency between the interface, local cache, and cloud data
-- Recovering gracefully from temporary connectivity problems
+- Saving status/visit/order changes
+- Handling delayed, rejected or concurrent writes
+- Maintaining consistency between optimistic UI, confirmed state and cloud data
+- Preventing one user from accessing another user's private records
+- Recovering safely from interruption/reload conditions
 
-### 5.5 User profile
+### 5.6 Public profile and sanitised projection
 
-Each registered user has a profile representing their travel activity.
+The public Profile is a read-only projection rather than a direct view of private Firestore records.
 
-The profile may contain:
+Public data is stored under:
 
-- Username
-- Display information
-- Travel progress
-- Status summaries
-- Selected public travel information
-- A public profile address
+```text
+publicProfiles/{uid}
+publicProfiles/{uid}/places/{placeId}
+```
 
-Public and private information must remain clearly separated.
+A non-owner or anonymous Profile viewer reads the public source only.
 
-### 5.6 Responsive experience
+The approved public-profile root may expose only selected presentation fields including display information, profile visibility, Wishlist visibility, flag-sort preference, social links and sanitised achievement metadata.
 
-AtlasBadge is intended to support common desktop and mobile screen sizes.
+Public place projections must not expose:
 
-Testing must consider:
+- `generalNote`;
+- `registeredVisits`;
+- memories or private visit details;
+- `firstPhysicalPresenceAt`;
+- `statusActivatedAt`;
+- `visitsCount`.
+
+Public achievement metadata contains only the public chronology fields `unlockedAt` and `sequence`.
+
+A public Wishlist tile appears only when Wishlist visibility is public and the Wishlist is non-empty. Its modal is read-only and does not expose privacy, status, Save or ordering controls.
+
+### 5.7 Responsive experience
+
+AtlasBadge supports desktop and mobile web use.
+
+Testing considers:
 
 - Navigation
 - Map interaction
@@ -145,19 +202,23 @@ Testing must consider:
 - Touch interaction
 - Scrolling
 - Layout stability
+- Modal background scroll locking
+- Horizontal overflow
 - Accessible interaction patterns
+
+The AB-EV-033 release hardening closed a mobile grid regression that could collapse the Map control column to zero width.
 
 ## 6. High-level user journeys
 
 ### Journey 1: Register and begin tracking
 
 1. A new user opens AtlasBadge.
-2. The user creates an account.
+2. The user creates an account and completes required verification.
 3. The user enters the authenticated product area.
 4. The user selects a place.
 5. The user assigns a travel status.
-6. The application saves the selection.
-7. The user's progress is updated.
+6. The application persists the selection.
+7. Progress is updated.
 
 ### Journey 2: Return to saved progress
 
@@ -165,73 +226,74 @@ Testing must consider:
 2. The user logs in.
 3. Previously saved travel information is loaded.
 4. The map displays the correct statuses.
-5. The user continues updating their travel progress.
+5. The user continues updating travel progress.
 
-### Journey 3: Change an existing status
+### Journey 3: Manage a Wishlist
 
-1. The user selects a place with an existing status.
-2. The current status is displayed.
-3. The user selects a different status.
-4. The new status is saved.
-5. Progress and visual indicators are recalculated.
-6. The updated information remains available after refreshing or returning later.
+1. The user applies Want to visit to one or more places.
+2. The Wishlist management surface shows those places.
+3. The user may reorder them independently from visit chronology.
+4. The user chooses public or private Wishlist visibility.
+5. The selected membership, order and privacy persist after reload.
+6. If public and non-empty, the read-only public Profile displays the Wishlist in the saved order.
 
 ### Journey 4: View a public profile
 
 1. A visitor opens a valid public profile address.
-2. The application locates the requested profile.
-3. Publicly available travel information is displayed.
-4. Private account information remains hidden.
-5. Invalid or unavailable usernames are handled clearly.
+2. The application resolves the public profile.
+3. Publicly projected travel information is displayed.
+4. Private user/place records are not read by the visitor.
+5. Private memories/visits remain absent from public responses.
+6. Invalid, unavailable or private profiles are handled according to the visibility rules.
 
 ## 7. Data overview
 
-AtlasBadge may process the following categories of information:
-
 | Data category | Examples | Main quality concerns |
 |---|---|---|
-| Account data | User identifier, authentication details | Security, privacy, account isolation |
-| Profile data | Username, display information | Validation, uniqueness, public visibility |
-| Travel data | Place identifier and assigned status | Accuracy, persistence, ownership |
-| Progress data | Counts, percentages, summaries | Calculation consistency |
-| Local cache | Temporarily stored browser data | Synchronisation, stale information |
-| Public profile data | Information visible without login | Privacy, access control, correctness |
+| Account data | User identifier, authentication state | Security, privacy, account isolation |
+| Private profile data | User settings and owner-only lifecycle state | Authorisation, deletion, integrity |
+| Private travel data | Statuses, visits, memories, ranks | Accuracy, persistence, ownership, concurrency |
+| Wishlist data | Membership, `wishlistOrderRank`, `isWishlistPublic` | Status compatibility, privacy, independent ordering |
+| Progress data | Counts, percentages, achievements | Calculation consistency, chronology |
+| Local cache | UID-scoped browser state | Synchronisation, stale information |
+| Public projection | `publicProfiles` root and places | Whitelisting, sanitisation, read-only access |
 
 No real user credentials or personal data are included in this portfolio.
 
 ## 8. External services and technical dependencies
 
-AtlasBadge depends on services and technologies that may include:
+AtlasBadge depends on services and technologies including:
 
-- Web hosting and deployment through Vercel
-- User authentication services
-- Firestore or equivalent cloud data storage
-- Browser local storage for caching or fallback behaviour
+- Vercel hosting and Git-triggered deployment
+- Firebase Authentication
+- Cloud Firestore
+- Firebase Storage where applicable
+- Firebase Emulator Suite for isolated technical/E2E validation
+- Playwright for automated browser regression and controlled Production validation
+- Browser local storage/cache behaviour
 - Map data and visual map components
 - Third-party libraries used by the web interface
-- Supported web browsers and mobile devices
+- Supported browsers and mobile devices
 
-Failures or changes in these dependencies may affect product behaviour and must be considered during testing.
+A release that changes both frontend behaviour and Firestore Rules must preserve deployment parity; a Vercel READY state alone is not sufficient evidence that the Firebase security layer is aligned.
 
 ## 9. Product constraints and assumptions
 
-The current portfolio is based on the following assumptions:
+The current portfolio is based on the following constraints/assumptions:
 
-- AtlasBadge is under active development
-- Features and business rules may change
-- The production-sized user base is not yet established
-- Testing is currently performed using controlled accounts and test data
+- AtlasBadge remains under active V1.0 development
+- Features and business rules may change under Test Lead/Product Owner approval
+- Testing uses controlled accounts and disposable data
 - Desktop and mobile web experiences are both relevant
-- Cloud persistence is the intended source of truth for authenticated user progress
-- Local storage may temporarily support caching or fallback behaviour
-- Public profile functionality may evolve as privacy and sharing rules are refined
-- Administrative functionality is outside the current testing scope
-
-These assumptions must be reviewed whenever the product changes significantly.
+- Cloud Firestore is the intended source of truth for authenticated progress
+- Public Profile data is served from a separate sanitised projection
+- Emulator-based browser tests must fail fast rather than silently fall back to real Firebase
+- Production testing is controlled and limited to approved scenarios
+- Administrative functionality is outside current scope
 
 ## 10. Quality characteristics
 
-The most relevant quality characteristics for AtlasBadge are:
+The most relevant quality characteristics are:
 
 ### Functional correctness
 
@@ -239,15 +301,15 @@ Features and business rules must behave according to the intended product design
 
 ### Data integrity
 
-Travel selections, statuses, progress, and profile information must remain accurate and consistent.
+Statuses, visits, orders, progress and profile information must remain accurate and consistent through rapid or repeated changes.
 
 ### Security and privacy
 
-Users must only access information they are authorised to see or modify.
+Private user/travel data must remain owner-only. Public data must be intentionally projected and sanitised.
 
 ### Usability
 
-Core travel-tracking flows must be understandable and efficient.
+Core travel-tracking, Wishlist and profile flows must be understandable and efficient.
 
 ### Reliability
 
@@ -255,37 +317,33 @@ Saved information must remain available across sessions and expected usage condi
 
 ### Compatibility
 
-The application must behave consistently across supported browsers, devices, and screen sizes.
+The application must behave consistently across the supported browser/device sample.
 
 ### Performance
 
-Maps, profiles, and user progress must load and respond within acceptable times.
+Maps, profiles and user actions must remain acceptably responsive.
 
 ### Accessibility
 
-Navigation, controls, text, feedback, and visual status indicators should remain usable by people with different accessibility needs.
+Navigation, controls, dialogs, feedback and visual status indicators should remain usable with accessible interaction patterns.
 
 ### Maintainability
 
-Features and tests should be structured so that changes can be introduced without creating unnecessary regression risk.
+Product and test code should allow changes without creating unnecessary regression risk. Automated expectations must be maintained when product rules legitimately change rather than being masked by arbitrary locators or protocol-dependent assertions.
 
-## 11. Known areas requiring clarification
+## 11. Known areas requiring clarification or future work
 
-The following product decisions should be refined as development progresses:
+The following product decisions still require later refinement or broader evidence:
 
-- Final list and meaning of travel statuses
-- Rules for changing or removing a status
-- Username creation and uniqueness rules
-- Public profile visibility controls
-- Handling of deleted or disabled accounts
-- Conflict resolution between local and cloud data
-- Supported browsers and minimum device requirements
-- Expected performance targets
-- Accessibility acceptance criteria
-- Administrative and moderation requirements
-- Data retention and account deletion behaviour
+- Final localisation completeness across all V1.0 locales
+- Broader browser/device compatibility beyond the current validated sample
+- Quantitative performance targets
+- Future per-memory visibility rules
+- Future photos per RegisteredVisit
+- Future Story/share scope
+- Administrative and moderation capabilities, if introduced
 
-These items are not automatically defects. They are product questions that may create testing gaps or quality risks if left undefined.
+These items are not automatically defects. They are open product/quality questions or future features that require explicit assessment when they enter scope.
 
 ## 12. Related portfolio documents
 
@@ -295,6 +353,8 @@ This product overview provides input for:
 - Test Strategy
 - Test Scope
 - Test Environment Definition
+- Entry/Exit Criteria
 - Exploratory Test Charters
 - Sample Test Cases
 - Test Summary Reporting
+- V1.0 Evidence Register, including AB-EV-033
