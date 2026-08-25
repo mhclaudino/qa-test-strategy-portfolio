@@ -60,7 +60,7 @@ The strategy documented in this repository is based on the following principles:
 | [Test Strategy](docs/03-test-strategy.md) | Define the overall testing approach and responsibilities | Completed / maintained |
 | [Test Scope](docs/04-test-scope.md) | Define what will and will not be tested | Completed / maintained |
 | [Entry and Exit Criteria](docs/05-entry-exit-criteria.md) | Define conditions for starting and completing testing | Completed |
-| [Test Environments](docs/06-test-environments.md) | Describe environments, test data, dependencies and Emulator isolation | Completed / maintained |
+| [Test Environments](docs/06-test-environments.md) | Describe environments, test data, dependencies and Emulator isolation/readiness | Completed / maintained |
 | [Defect Management](docs/07-defect-management.md) | Define defect reporting, severity, priority and triage | Completed |
 | [Metrics and Reporting](docs/08-metrics-and-reporting.md) | Define useful quality indicators and reporting methods | Completed |
 | [System Test Plan](docs/09-system-test-plan.md) | Define the V1.0 system-level execution and release-validation plan | Completed / maintained |
@@ -85,10 +85,13 @@ Recent evidence includes:
 - [AB-EV-033 — Wishlist, public-profile projection and release hardening](evidence/v1.0/regression/ab-ev-033-wishlist-public-profile-release-hardening.md)
 - [AB-EV-034 — QR-01 failed-write recovery closure](evidence/v1.0/regression/ab-ev-034-qr-01-failed-write-recovery-closure.md)
 - [AB-EV-035 — C35 Visited + Passed-through coexistence](evidence/v1.0/regression/ab-ev-035-c35-visited-passed-coexistence.md)
+- [AB-EV-036 / AB-DEF-017 — Wishlist atomic settings save and order integrity](evidence/v1.0/defects/ab-ev-036-wishlist-atomic-settings-save-and-order-integrity.md)
 
 AB-EV-034 closes the last documented QR-01 coverage gap and changes its current state from `Current gap` to `Regression risk`. AB-EV-035 records a Product Owner/Test Lead requirement correction: Visited and Passed through are compatible cumulative historical statuses, while `RegisteredVisit` remains the individual-occurrence model.
 
-The portfolio also records significant true Product Defects separately from stale automation or requirement corrections so defect metrics are not artificially inflated.
+AB-EV-036 records a true Product Defect found through atomicity analysis: one Wishlist Save could use independent Firestore commits and leave partial persisted state. The final correction replaces per-place Wishlist ordering writes with root `wishlistOrder`, keeps the maximum combined operation at or below 253 document writes, proves rejected-batch atomicity in the Firestore Emulator and closes the defect after controlled Vercel/Firestore Rules deployment plus Test Lead Production validation.
+
+The portfolio records true Product Defects separately from stale automation, environment/Rules parity failures and requirement corrections so defect metrics are not artificially inflated.
 
 ## Lessons learned and efficiency
 
@@ -101,7 +104,12 @@ The portfolio also records significant true Product Defects separately from stal
 - validate temporal user journeys before imposing mutually exclusive historical states;
 - treat optimistic UI separately from confirmed persistence;
 - use actual Firestore commit boundaries when assessing atomicity;
-- keep Emulator isolation observable and fail-fast.
+- quantify maximum write cardinality before accepting a batch redesign;
+- verify application/Firestore Rules parity before investigating permission failures;
+- treat Emulator services, test identity and the Test Lead browser session as separate readiness gates;
+- use one canonical manual-QA browser origin;
+- review write path, read path and confirmed in-memory state whenever a source of truth changes;
+- ensure ordering tests connect user reorder state to persisted and later-rendered order.
 
 This is part of the QA strategy rather than a retrospective appendix: lessons are converted into standing working rules for later AtlasBadge changes.
 
