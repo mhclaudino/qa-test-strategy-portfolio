@@ -6,7 +6,7 @@ This document identifies, evaluates and prioritises the main quality risks assoc
 
 This is a living analysis. Risk scores and priorities must be reviewed whenever the product, architecture, geographic catalogue, privacy model or release scope changes.
 
-> **Document status:** Reviewed through AB-EV-035. AB-EV-034 closes the remaining QR-01 failed-write/recovery coverage gap and moves QR-01 from `Current gap` to `Regression risk`. C35/AB-EV-035 corrects the status model so **Visited** and **Passed through** may coexist without creating artificial visits. Earlier C31-C34 and AB-EV-033 baselines remain valid where not invalidated by these changes.
+> **Document status:** Reviewed through AB-EV-036. AB-EV-034 closed the remaining QR-01 failed-write/recovery coverage gap; C35/AB-EV-035 corrected the status model so Visited and Passed through may coexist; C36/AB-EV-036 closes AB-DEF-017 by replacing independent Wishlist settings commits/per-place order amplification with one atomic root-order settings Save, aligned Rules and Production validation.
 
 ---
 
@@ -30,13 +30,22 @@ A username is mandatory, has a minimum length of three characters and uses a sha
 
 AtlasBadge supports six travel statuses: **Visited**, **Lived / Live there**, **Born there**, **Nationality**, **Passed through** and **Want to visit**.
 
-The Wishlist uses `statuses.wishlist === true` / Want to visit as its source of truth rather than maintaining a duplicate status model.
+The Wishlist uses `statuses.wishlist === true` / Want to visit as its membership source of truth rather than maintaining a duplicate status model.
 
 Multiple compatible statuses may coexist. **Born there** and **Lived / Live there** imply **Visited**. C35 establishes that **Passed through is cumulative historical information and may coexist with Visited, Lived or Born**. A person may have passed through a place during one occurrence and visited/lived there during another.
 
 Selecting a proper physical-presence status continues to remove **Want to visit** according to the approved compatibility rules. Passed through + Wishlist may remain valid when no incompatible visited/lived/born state is active.
 
-Wishlist-only records do not represent physical presence, do not increase physical metrics and do not enter Manual Visit Order. Wishlist ordering is independently persisted through `wishlistOrderRank`.
+Wishlist-only records do not represent physical presence, do not increase physical metrics and do not enter Manual Visit Order.
+
+C36 establishes the canonical Wishlist ordering model:
+
+- membership remains `statuses.wishlist` on place records;
+- presentation order is root `wishlistOrder: string[]` on `users/{uid}`;
+- while the Wishlist is public, sanitised root order is projected to `publicProfiles/{uid}.wishlistOrder`;
+- legacy per-place `wishlistOrderRank` remains only a backward-compatible read fallback;
+- order is independent from `visitOrderRank`;
+- a user-visible Wishlist settings Save persists changed order/privacy/public cleanup or projection through one Firestore batch boundary.
 
 ### 3.3 Visits and memories
 
@@ -61,13 +70,15 @@ users/{uid}
 users/{uid}/places/{placeId}
 ```
 
-and may contain statuses, visitsCount, registeredVisits, generalNote, optional `visitOrderRank` and optional `wishlistOrderRank`.
+The private root may contain Profile/lifecycle settings including `isWishlistPublic` and canonical `wishlistOrder`. Place records contain status membership/history, visits and memories, plus optional owner ordering such as `visitOrderRank`; legacy `wishlistOrderRank` may remain only for compatibility.
 
 Authenticated place data uses a real-time Firestore subscription and confirmed-state reconciliation. Explicit status/visit intents preserve latest-valid-local-intent semantics.
 
-The main persistence/concurrency evidence includes AB-EV-013, AB-EV-018, AB-EV-019, AB-EV-022, AB-EV-026, AB-EV-032, AB-EV-033 and AB-EV-034.
+The main persistence/concurrency evidence includes AB-EV-013, AB-EV-018, AB-EV-019, AB-EV-022, AB-EV-026, AB-EV-032, AB-EV-033, AB-EV-034 and AB-EV-036.
 
-AB-EV-034 completes the QR-01 write-path audit using architectural/risk equivalence and adds deterministic failed-write/recovery coverage for the remaining Profile `flagSortOrder` path. The risk remains important, but the known coverage gap is closed.
+AB-EV-034 completes the QR-01 write-path audit using architectural/risk equivalence and adds deterministic failed-write/recovery coverage for the remaining Profile `flagSortOrder` path.
+
+AB-EV-036 records a true persistence defect: Wishlist order and privacy were previously committed independently behind one UI Save. Fault injection proved partial persistence. C36 replaces that model with one combined batch, adds a real Firestore Emulator rejected-batch proof and reduces the supported maximum from a possible 502 per-place order writes to no more than 253 writes for the largest privacy transition.
 
 ### 3.5 Public profile, Wishlist privacy and public projection
 
@@ -82,7 +93,7 @@ publicProfiles/{uid}/places/{placeId}
 
 Non-owner and anonymous viewers do not read the private `users` source.
 
-The approved public root whitelist is:
+The approved public root whitelist includes the current presentation fields required by the implemented Profile, including:
 
 ```text
 achievementMetadata
@@ -95,13 +106,14 @@ isWishlistPublic
 socialLinks
 uid
 username
+wishlistOrder   // only while Wishlist visibility permits public order
 ```
 
 Public place projections must not expose `generalNote`, `registeredVisits`, memories/private visit details, `firstPhysicalPresenceAt`, `statusActivatedAt` or `visitsCount`.
 
 Wishlist privacy defaults to private. A public Wishlist tile is rendered only when `isWishlistPublic` is true and Wishlist membership is non-empty. The tile/modal is read-only. Viewer-local presentation sorting is permitted but must not persist the owner's preference.
 
-AB-EV-033 validates private→public and public→private Wishlist transitions, public-only cleanup, mixed-document sanitisation and zero private viewer reads in Production.
+AB-EV-033 validates private→public and public→private Wishlist transitions, public-only cleanup, mixed-document sanitisation and zero private viewer reads in Production. AB-EV-036 extends that baseline by atomically coupling privacy/order changes, exposing root order only in the approved public state and validating the aligned Rules release in Production.
 
 ### 3.6 Geographic catalogue and progress model
 
@@ -204,7 +216,7 @@ Universal browser/device support and formal accessibility certification are not 
 | QR-06 | Approved character-limit enforcement may regress. | Regression risk | 3 | 4 | 12 | High |
 | QR-07 | Account deletion may partially fail and leave private/public/authentication records. | Regression risk | 5 | 3 | 15 | High |
 
-**Applied decisions:** AB-EV-034 closes the remaining QR-01 assessment/coverage gap through a full write-path audit plus focused failed-write/recovery evidence for `flagSortOrder`; QR-01 is now retained as a High `Regression risk`, not a Current gap. QR-02 AB-EV-002; QR-03 AB-EV-003; QR-04 AB-EV-013/018/019/022/026/032/033; QR-05 AB-EV-004; QR-06 AB-EV-011; QR-07 AB-EV-010/033.
+**Applied decisions:** AB-EV-034 closes the remaining QR-01 assessment/coverage gap through a full write-path audit plus focused failed-write/recovery evidence for `flagSortOrder`; QR-01 remains a High `Regression risk`, not a Current gap. AB-EV-036 adds atomic combined Wishlist settings persistence, a real rejected-batch rollback proof and confirmed Profile-root refresh/read behaviour. QR-02 AB-EV-002; QR-03 AB-EV-003; QR-04 AB-EV-013/018/019/022/026/032/033/036; QR-05 AB-EV-004; QR-06 AB-EV-011; QR-07 AB-EV-010/033.
 
 ### 5.2 Authentication and account identity
 
@@ -224,7 +236,7 @@ Universal browser/device support and formal accessibility certification are not 
 | ID | Risk statement | State | Impact | Likelihood | Score | Priority |
 |---|---|---|---:|---:|---:|---|
 | QR-16 | The application may accept prohibited status combinations or remove valid combinations. | Regression risk | 3 | 4 | 12 | High |
-| QR-17 | **Want to visit/Wishlist** may remain selected when an incompatible physical-presence status is applied. | Regression risk | 3 | 3 | 9 | Medium |
+| QR-17 | **Want to visit/Wishlist** membership, privacy or canonical order may diverge from the approved status/settings model. | Regression risk | 3 | 3 | 9 | Medium |
 | QR-18 | Global country, territory, continent or visit totals may not recalculate correctly. | Regression risk | 4 | 4 | 16 | High |
 | QR-19 | Global **Total Visits** may diverge from individual `visitsCount` values. | Regression risk | 4 | 3 | 12 | High |
 | QR-20 | **Nationality** or **Wishlist/Want to visit** may incorrectly increase physical-presence metrics. | Regression risk | 3 | 3 | 9 | Medium |
@@ -233,7 +245,7 @@ Universal browser/device support and formal accessibility certification are not 
 | QR-23 | **Born there** or **Lived** may fail to select **Visited** and initialise visit behaviour correctly. | Regression risk | 3 | 3 | 9 | Medium |
 | QR-24 | The approved **Passed through** workflow may regress. | Regression risk | 2 | 4 | 8 | Medium |
 
-**Applied decisions:** AB-EV-035 rebaselines QR-16/QR-24 after the C35 requirement correction. Visited + Passed through is now a valid cumulative combination; Passed through may coexist with Lived/Born through their Visited dependency; adding a second compatible status does not itself create an additional `RegisteredVisit` or increment Total Visits. Focused domain and Emulator E2E coverage protects the new contract. AB-EV-033 continues to protect Wishlist compatibility/non-physical semantics.
+**Applied decisions:** AB-EV-035 rebaselines QR-16/QR-24 after the C35 requirement correction. Visited + Passed through is now a valid cumulative combination; adding a second compatible status does not itself create an additional `RegisteredVisit` or increment Total Visits. AB-EV-033 protects Wishlist compatibility/non-physical semantics. AB-EV-036 preserves `statuses.wishlist` as membership source, replaces legacy per-place order persistence with root `wishlistOrder`, makes combined privacy/order Save atomic and validates order after read/reload/public rendering.
 
 ### 5.4 Geographic catalogue, map and achievements
 
@@ -258,6 +270,8 @@ Universal browser/device support and formal accessibility certification are not 
 | QR-36 | Future per-memory visibility/default logic may publish content contrary to preference. | Future risk | 5 | 3 | 15 | High |
 | QR-37 | A future generated Story may expose unexpected information or fail across sharing flows. | Future risk | 4 | 3 | 12 | High |
 
+**Applied decisions:** AB-EV-036 adds `wishlistOrder` to the intentional public-root contract only when Wishlist visibility permits it, preserves private order while public visibility is off, validates public→private atomic cleanup and restores frontend/Rules parity before the Production smoke. QR-31/QR-34 remain regression risks because privacy transitions remain consequential.
+
 ### 5.6 Compatibility, usability, performance and accessibility
 
 | ID | Risk statement | State | Impact | Likelihood | Score | Priority |
@@ -270,9 +284,9 @@ Universal browser/device support and formal accessibility certification are not 
 
 ## 6. Highest-priority test focus
 
-Priority focus includes failed-write/recovery regression; visit-history preservation; account-deletion integrity; status/Wishlist compatibility; `252/195/57` counter integrity; geographic catalogue integrity; private/public projection and privacy transitions; explicit logout/local-data exposure; explicit-Save integrity; real-time concurrency/cache authority; rapid visit convergence; Manual Visit Order; independent Wishlist ordering; birthplace pointer/status atomicity; achievement chronology/public metadata; responsive/constrained-device behaviour; Profile read-only interaction; and accessibility.
+Priority focus includes failed-write/recovery regression; atomic multi-resource Save behaviour; visit-history preservation; account-deletion integrity; status/Wishlist compatibility; `252/195/57` counter integrity; geographic catalogue integrity; private/public projection and privacy transitions; explicit logout/local-data exposure; explicit-Save integrity; real-time concurrency/cache authority; rapid visit convergence; Manual Visit Order; independent Wishlist root ordering; birthplace pointer/status atomicity; achievement chronology/public metadata; responsive/constrained-device behaviour; Profile read-only interaction; and accessibility.
 
-QR-01 and QR-25 are no longer open investigations. Their residual concern is regression.
+QR-01 and QR-25 are no longer open investigations. Their residual concern is regression. AB-DEF-017 is closed; atomic Wishlist settings/order integrity is now permanent regression scope.
 
 ---
 
@@ -285,8 +299,11 @@ QR-01 and QR-25 are no longer open investigations. Their residual concern is reg
 - Passed through may coexist with Lived/Born because those statuses imply Visited;
 - Nationality and Wishlist/Want to visit alone do not represent physical presence;
 - Wishlist membership uses the existing Want-to-visit status source rather than a duplicate status system;
+- canonical Wishlist order is root `wishlistOrder`; legacy `wishlistOrderRank` is fallback only;
 - Wishlist order is independent from visit order;
+- one logical Wishlist settings Save must use one atomic persistence boundary;
 - Wishlist privacy defaults to private and its public preference is independent from whole-profile visibility;
+- public `wishlistOrder` is not exposed while Wishlist visibility is private;
 - public Wishlist/Profile presentation is read-only;
 - viewer-local sorting may change presentation but must not persist the owner's preference;
 - public viewers read the sanitised `publicProfiles` projection, not private user/place documents;
@@ -308,12 +325,13 @@ QR-01 and QR-25 are no longer open investigations. Their residual concern is reg
 4. Map-status priority remains identical across map, profile, cards and legends when multiple statuses coexist.
 5. Future geographic changes trigger explicit re-audit of `252/195/57`.
 6. Future changes to public-profile fields extend the whitelist intentionally rather than reintroducing direct private reads.
+7. Future changes to Wishlist order/settings preserve the root-order atomic Save contract and supported maximum write ceiling.
 
 ---
 
 ## 9. Open product and quality questions
 
-Resolved V1.0 decisions must not be reopened without new evidence or an explicit requirement correction: explicit Save for memories, character-limit policy, retry-safe account deletion, real-time/OCC controls, password minimum/passphrases, canonical usernames, immediate username reuse, Passed-through detailed-visit workflow, QR-01 failed-write recovery baseline, C35 Visited + Passed-through coexistence, accessibility technical baseline, responsive baseline, achievement chronology, map/profile parity, geographic counters, dashboard/manual ordering and Wishlist/public-profile projection.
+Resolved V1.0 decisions must not be reopened without new evidence or an explicit requirement correction: explicit Save for memories, character-limit policy, retry-safe account deletion, real-time/OCC controls, password minimum/passphrases, canonical usernames, immediate username reuse, Passed-through detailed-visit workflow, QR-01 failed-write recovery baseline, C35 Visited + Passed-through coexistence, C36 Wishlist atomic settings/root-order model, accessibility technical baseline, responsive baseline, achievement chronology, map/profile parity, geographic counters, dashboard/manual ordering and Wishlist/public-profile projection.
 
 Open questions remain around username allowed characters, future memory visibility, broader browser/device support, native assistive-technology coverage, localisation completion, quantitative performance targets and future Story/photo scope.
 
@@ -321,7 +339,7 @@ Open questions remain around username allowed characters, future memory visibili
 
 ## 10. Risk-based release implications
 
-Release confidence requires evidence that travel data is not silently lost; private content is not exposed; public content is projected intentionally; account deletion/linking preserve integrity; status/Wishlist transitions follow approved rules; calculations remain consistent; public profiles remain read-only; frontend and Firestore Rules are release-aligned when both change; known gaps are resolved or explicitly accepted; and the supported compatibility/accessibility baseline is defined.
+Release confidence requires evidence that travel data is not silently lost; multi-document logical Saves are atomic where the user contract requires it; private content is not exposed; public content is projected intentionally; account deletion/linking preserve integrity; status/Wishlist transitions follow approved rules; calculations remain consistent; public profiles remain read-only; frontend and Firestore Rules are release-aligned when both change; known gaps are resolved or explicitly accepted; and the supported compatibility/accessibility baseline is defined.
 
 Any unresolved High risk must be reviewed before release and recorded as mitigated, accepted, reduced by control, deferred with limitation/follow-up, or a release blocker.
 
@@ -329,9 +347,9 @@ Any unresolved High risk must be reviewed before release and recorded as mitigat
 
 ## 11. Review triggers
 
-Review this analysis when travel statuses/combinations, Wishlist privacy/order, geographic catalogue/classification, map implementation, private/public profile projection, save/limit behaviour, auth/linking/password rules, account deletion, real-time/OCC behaviour, visit/wishlist ordering, birthplace transactions, public achievement metadata, sharing, supported browsers/devices/accessibility targets or release-parity controls change.
+Review this analysis when travel statuses/combinations, Wishlist membership/privacy/root order, geographic catalogue/classification, map implementation, private/public profile projection, save/limit behaviour, auth/linking/password rules, account deletion, real-time/OCC behaviour, visit ordering, birthplace transactions, public achievement metadata, sharing, supported browsers/devices/accessibility targets or release-parity controls change.
 
-A change to the public projection whitelist, Wishlist privacy model, status compatibility matrix, `252/195/57` denominators, achievement criteria, Profile interaction, manual order persistence or mutation orchestration requires explicit affected-area regression and documentation review.
+A change to the public projection whitelist, Wishlist source of truth, Wishlist atomic Save boundary, status compatibility matrix, `252/195/57` denominators, achievement criteria, Profile interaction, manual order persistence or mutation orchestration requires explicit affected-area regression and documentation review.
 
 ---
 
@@ -350,3 +368,4 @@ A change to the public projection whitelist, Wishlist privacy model, status comp
 - `evidence/v1.0/evidence-register.md`
 - `evidence/v1.0/regression/ab-ev-034-qr-01-failed-write-recovery-closure.md`
 - `evidence/v1.0/regression/ab-ev-035-c35-visited-passed-coexistence.md`
+- `evidence/v1.0/defects/ab-ev-036-wishlist-atomic-settings-save-and-order-integrity.md`
