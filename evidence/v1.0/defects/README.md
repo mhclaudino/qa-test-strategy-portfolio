@@ -25,5 +25,8 @@ Only representative examples with professional portfolio value should be publish
 - [AB-DEF-011 / AB-EV-026 — Clear Map achievement metadata reconciliation race](ab-ev-026-clear-map-achievement-reconciliation-race.md)
 - [AB-DEF-012 / AB-EV-029 — Geographic counter integrity: 252 / 195 / 57](ab-ev-029-geographic-counter-integrity-252-195-57.md)
 - [AB-DEF-013 / AB-EV-032 — Manual visit order and rapid-visit concurrency closure](ab-ev-032-manual-visit-order-and-rapid-visit-concurrency.md)
+- [AB-DEF-014 — Public place projection missing for normal public statuses](ab-def-014-public-place-projection-missing.md)
+- [AB-DEF-015 — Public achievement metadata was not synchronised](ab-def-015-public-achievement-metadata-not-synchronised.md)
+- [AB-DEF-016 — Mobile dashboard control grid collapsed to zero width](ab-def-016-mobile-dashboard-grid-collapse.md)
 
 See the central [V1.0 Evidence Register](../evidence-register.md) for evidence status, related risks and Test Lead decisions.
