@@ -1,7 +1,7 @@
 # AtlasBadge V1.0 System Test Plan
 
 **Document status:** Active / change-controlled  
-**Execution status:** Incremental system testing in progress; latest AB-EV-033 release increment Production-approved  
+**Execution status:** Incremental system testing in progress; latest baseline reviewed through AB-EV-035  
 **Product:** AtlasBadge  
 **Target release:** V1.0  
 **Document owner:** Test Lead/Product Owner  
@@ -34,7 +34,7 @@ A material update is required when:
 
 Each update should identify what changed, affected risks/tests, which previous results remain valid, which require re-execution and the Test Lead decision.
 
-AB-EV-033 applies this approach explicitly through checkpointed incremental regression.
+AB-EV-033 established the current checkpointed regression baseline; AB-EV-034 and AB-EV-035 demonstrate proportional follow-up validation without unnecessary full-suite repetition.
 
 ---
 
@@ -50,6 +50,7 @@ This plan applies:
 - [Test Environments](06-test-environments.md)
 - [Defect Management](07-defect-management.md)
 - [Metrics and Reporting](08-metrics-and-reporting.md)
+- [Lessons Learned](12-lessons-learned.md)
 - [V1.0 Evidence Register](../evidence/v1.0/evidence-register.md)
 
 Where documents disagree, the inconsistency must be resolved before the affected release decision.
@@ -61,6 +62,8 @@ Where documents disagree, the inconsistency must be resolved before the affected
 AtlasBadge includes authentication/account lifecycle, an interactive travel map, six travel statuses, detailed visits/memories, Wishlist management, Manual Visit Order, geographic counters, achievements, private/public profiles, public sanitised projections, account deletion, responsiveness, localisation, privacy and security controls.
 
 The integrated test item includes the browser application plus Firebase Authentication, Cloud Firestore, Firestore Rules, Firebase Storage where relevant, local cache/state, Firebase Emulators, Vercel deployment and geographic data.
+
+The C35 product rule defines **Visited + Passed through** as compatible cumulative statuses. Individual travel occurrences remain represented by `RegisteredVisit`; adding the second status does not by itself create another visit.
 
 Previous incremental testing is valid evidence when impact analysis confirms that a later change has not invalidated it.
 
@@ -81,25 +84,27 @@ Every material execution record should identify where applicable:
 
 The branch name `main` alone is not sufficient evidence because its content changes.
 
-### Latest approved increment
+### Current release anchors
 
-AB-EV-033 release anchors:
+The latest sequence is:
 
 ```text
-Product/security commit:
-276b0c9 feat(wishlist): add public wishlist and secure profile projections
-
-E2E/infrastructure commit:
-7bbdb94 test(e2e): isolate Firebase emulators and harden regression coverage
-
-Final product SHA:
+AB-EV-033 runtime/security baseline:
 7bbdb9402145523f6a2f36d41cc74e55479cc664
+Vercel: dpl_HEKQuz6MAXiW413m6cqnH25zWrRg — READY
 
-Vercel Production:
-dpl_HEKQuz6MAXiW413m6cqnH25zWrRg — READY
+AB-EV-034 QR-01 evidence-only closure:
+66cffbc933710f2b9f4ba007c5726ebc2857ac82
+test(profile): cover flagSortOrder failed-write recovery
+No runtime deployment required for the technical closure.
+
+C35 runtime requirement correction:
+29c7ac63748fb823899fb77cdb6ee91bb6194b1f
+fix(status): allow visited and passed through coexistence
+Vercel: dpl_HjnEQUdzS7G19So5hxyDRgkUxLvv — READY / production
 ```
 
-Firestore Rules were deployed separately using the Rules-only target before focused Production validation.
+C35 did not alter Firestore Rules, Firebase configuration or database schema.
 
 ---
 
@@ -112,8 +117,8 @@ Objectives include:
 - validate registration/authentication/session/account lifecycle;
 - confirm correct user ownership and isolation;
 - validate all approved status/Wishlist combinations;
-- verify reliable persistence, reload and concurrency behaviour;
-- protect visits/memories/ordering from unintended loss/corruption;
+- verify reliable persistence, failed-write recovery, reload and concurrency behaviour;
+- protect visits/memories/ordering from unintended loss or artificial duplication;
 - confirm the canonical geographic/counter model;
 - confirm private/public Profile projection and sanitisation;
 - confirm public Profile/Wishlist remains read-only;
@@ -134,6 +139,7 @@ Release-blocking coverage includes:
 - owner identity and protected routes;
 - travel-status/Wishlist persistence and compatibility;
 - visits/memories/order/concurrency;
+- rejected-write recovery where risk-relevant;
 - privacy/user isolation;
 - public projection whitelisting/sanitisation;
 - public/private transitions;
@@ -154,29 +160,39 @@ Depending on affected code:
 - TypeScript;
 - lint;
 - `git diff --check`;
-- Next.js production build when production code/build configuration is affected.
+- Next.js production build when production code/build configuration is affected and the relevant checkpoint is invalidated.
 
 ### 8.2 Unit/domain/component tests
 
 Vitest protects stable business/component behaviour.
 
-Latest preserved AB-EV-033 checkpoint:
+Important recent checkpoints:
 
 ```text
-359 passed
-15 skipped (environment-conditional)
-0 failed
+AB-EV-033 integrated checkpoint:
+359 passed / 15 skipped / 0 failed
+
+C35 full domain/component checkpoint after statusRules change:
+373 / 373 PASS
+
+C35 focused QR-24 status/history checkpoint:
+22 / 22 PASS
+
+AB-EV-034 focused flagSortOrder recovery:
+1 / 1 PASS
 ```
 
 ### 8.3 Firestore Rules
 
 Rules validate owner-only private access, public projection boundaries and approved data schemas.
 
-Latest AB-EV-033 checkpoint:
+Latest AB-EV-033 Rules checkpoint:
 
 ```text
 226 / 226 PASS
 ```
+
+AB-EV-034 and C35 did not modify Rules, so this checkpoint remains valid.
 
 ### 8.4 Browser E2E — Emulator
 
@@ -189,11 +205,20 @@ Firestore: 8080
 Project: demo-atlasbadge-web
 ```
 
-The suite fails fast against unexpected real Firebase traffic. Latest relevant executions recorded `realFirebaseRequests=0`.
+The suite fails fast against unexpected real Firebase traffic.
+
+C35 specifically restored the changed browser contract with one focused scenario:
+
+```text
+Visited + Passed-through coexistence/persistence/reload/deselection: 1 / 1 PASS
+realFirebaseRequests=0
+```
 
 ### 8.5 Manual/exploratory QA
 
 Used for usability, visual behaviour, edge conditions, unexpected interaction sequences and Test Lead sign-off.
+
+C35 received Test Lead manual QA before commit approval, including coexistence, memory/counter behaviour and independent status handling.
 
 ### 8.6 Production validation
 
@@ -201,50 +226,37 @@ Executed only after the expected source revision and applicable Firebase Rules a
 
 Production testing uses controlled QA accounts/data and only the authorised scope.
 
+For C35, release verification confirmed the exact runtime SHA reached a `READY` Production Vercel deployment and the Production root returned HTTP 200. No separate authenticated post-deployment functional smoke is claimed in AB-EV-035.
+
 ---
 
 ## 9. Checkpointed incremental regression
 
 ### Principle
 
-A previously green checkpoint remains valid unless a later change directly invalidates it.
+A previously green checkpoint remains valid unless a later change directly invalidates what it proved.
 
 Examples:
 
 - E2E-only stale locator cleanup does not invalidate full unit/Rules checkpoints;
 - a persistence change invalidates affected persistence tests and relevant static/build gates;
 - a Rules change invalidates Rules/release-parity coverage;
-- a responsive CSS change requires affected responsive/manual/E2E validation.
+- a responsive CSS change requires affected responsive/manual/E2E validation;
+- formatting performed after a gate invalidates only the gate required to verify the final file form unless semantics changed.
 
 This is not reduced coverage by omission: the carried-forward result and reason must remain explicit.
 
-### AB-EV-033 regression gate
+### Recent applications
 
-The latest increment closed with:
+**AB-EV-034:** the write-path audit identified only `flagSortOrder` as the remaining Partial QR-01 path. One deterministic component failure/recovery test closed the gap; no runtime deployment or unrelated regression rerun was required.
 
-```text
-TypeScript: PASS
-ESLint: 0 errors / 0 warnings
-Vitest checkpoint: 359 passed / 15 skipped / 0 failed
-Firestore Rules: 226 / 226 PASS
-Wishlist E2E: 3 / 3 PASS
-Clear Map Emulator: 2 / 2 PASS
-Account Deletion controlled: 6 / 6 PASS
-C31: PASS
-C32: 2 / 2 PASS
-C33: PASS
-C34: 22 / 22 PASS FINAL
-Remaining Playwright batch: 45 / 45 PASS
-Final seven touched specs: 26 / 26 PASS
-git diff --check: PASS
-Quality Inventory blockers: 0
-```
+**C35/AB-EV-035:** central `statusRules.ts` changed, justifying focused QR-24 tests and one full Vitest checkpoint. Browser impact was restored through one focused Emulator E2E; a full Playwright campaign was not required because no wider browser contract was invalidated.
 
-**INCREMENTAL REGRESSION GATE = PASS FINAL.**
+The efficiency rules are retained in `docs/12-lessons-learned.md`.
 
 ---
 
-## 10. Defect handling during the cycle
+## 10. Defect and requirement-change handling
 
 A failed scenario is classified before correction as:
 
@@ -253,13 +265,9 @@ A failed scenario is classified before correction as:
 - infrastructure/environment issue;
 - inconclusive.
 
-AB-EV-033 assigned product-defect IDs only to true product failures:
+A later requirement correction is not counted as a Product Defect when the implementation correctly matched the previously approved product rule.
 
-- AB-DEF-014 — missing public place projection;
-- AB-DEF-015 — missing public achievement metadata projection;
-- AB-DEF-016 — mobile dashboard grid collapsed to zero width.
-
-Stale selectors, invalid test authentication assumptions and obsolete protocol/offline assertions were corrected as test-maintenance debt rather than inflated into product-defect counts.
+C35 is the reference example: QR24-UT-11/12 were valid tests for the old rule and became stale only after Product Owner/Test Lead redefinition. They were updated without inventing a Product Defect ID.
 
 ---
 
@@ -275,16 +283,7 @@ Before commits are approved, the candidate is audited for:
 - diff integrity;
 - coherent commit grouping.
 
-AB-EV-033 found/remediated temporary `[DEBUG]` logs and their dead local variables. Final state:
-
-```text
-TypeScript: PASS
-Lint: 0/0
-diff-check: PASS
-Secrets: CLEAN
-Temp/debug: CLEAN
-PRE-COMMIT AUDIT = PASS FINAL
-```
+Auto-fix/formatting should occur before final validation whenever possible so that the final committed artefact is the artefact that passed the quality gates.
 
 ---
 
@@ -304,36 +303,31 @@ For releases that alter Firestore Rules:
 9. Start focused Production validation.
 ```
 
+For application-only changes such as C35, a Rules deploy is not performed when Rules did not change.
+
 No force push/rebase/deploy shortcut is used to bypass this gate.
 
 ---
 
-## 13. Latest focused Production validation
+## 13. Latest Production/release evidence
 
-AB-EV-033 recorded:
+AB-EV-033 remains the latest broad authenticated Production validation and recorded Wishlist/public projection, privacy, desktop/mobile and release-parity PASS results.
+
+Later release evidence:
 
 ```text
-Wishlist add/persist/remove: PASS
-Wishlist private/public/public→private: PASS
-Wishlist order persistence: PASS
-visitOrder independence: PASS
-Public Wishlist order: PASS
-Anonymous/viewer Profile: PASS
-Private viewer reads: 0
-Public source: publicProfiles/{uid}
-Forbidden public fields: NONE
-Public achievementMetadata: PASS
-Desktop: PASS
-Mobile: PASS
-Horizontal overflow: PASS
-Modal scroll lock: PASS
-Destructive operations: 0
-Non-QA accounts modified: 0
+AB-EV-034:
+test-only QR-01 coverage closure — no runtime deployment required
+
+AB-EV-035 / C35:
+Commit: 29c7ac63748fb823899fb77cdb6ee91bb6194b1f
+Vercel Production: dpl_HjnEQUdzS7G19So5hxyDRgkUxLvv
+State: READY
+Production root: HTTP 200
+Firestore Rules/schema/config: unchanged
 ```
 
-**PRODUCTION VALIDATION = PASS.**
-
-A temporary Production validation spec was removed afterwards and the product repository returned to a clean `HEAD == origin/main` state.
+The absence of an additional authenticated Production functional smoke for C35 is stated explicitly rather than inferred from deployment readiness.
 
 ---
 
@@ -346,7 +340,7 @@ Requirement / rule
 → Quality risk
 → Implementation
 → Automated/manual tests
-→ Defect(s), if any
+→ Defect(s) or requirement correction, if applicable
 → Retest / regression
 → Commit
 → Deployment
@@ -356,23 +350,23 @@ Requirement / rule
 
 The central public index is `evidence/v1.0/evidence-register.md`.
 
-Latest release-hardening evidence is AB-EV-033.
+Current recent evidence is AB-EV-033 through AB-EV-035.
 
 ---
 
 ## 15. Exit and release assessment
 
-An increment may be Production-approved when:
+An increment may be approved when:
 
 - required tests/gates pass;
 - no unacceptable Critical/High defect remains;
 - privacy/security/data-integrity boundaries are acceptable;
 - repository quality is clean;
-- source/deployment/Rules parity is proven;
-- focused Production validation passes;
-- residual risks are explicitly retained in the risk register.
+- source/deployment/Rules parity is proven where relevant;
+- required Production validation is complete or its limitation explicitly accepted;
+- residual risks are retained in the risk register.
 
-The official V1.0 final release assessment additionally depends on completion/acceptance of the remaining V1.0 mandatory scope, including outstanding localisation/compatibility/performance or final reset/clean-start activities as applicable at that time.
+The official V1.0 final release assessment additionally depends on completion/acceptance of the remaining mandatory scope, including localisation/compatibility/performance or final reset/clean-start activities as applicable.
 
 The final release decision belongs to the Test Lead/Product Owner.
 
@@ -380,12 +374,13 @@ The final release decision belongs to the Test Lead/Product Owner.
 
 ## 16. Current limitations carried into later V1.0 work
 
-- QR-01 remains Current gap outside specifically validated persistence paths.
+- QR-01 is now a Regression risk rather than a Current gap.
 - Browser/device coverage is not comprehensive.
 - Quantitative performance targets are not established.
 - Formal accessibility certification/native assistive-technology coverage is not claimed.
 - No independent penetration/security audit or formal load test has been completed.
-- Remaining V1.0 localisation/final release activities must be assessed separately rather than inferred from AB-EV-033.
+- Remaining V1.0 localisation/final release activities must be assessed separately.
+- C35 has deployment-readiness verification but no separately claimed authenticated post-deployment functional smoke.
 
 ---
 
@@ -393,6 +388,6 @@ The final release decision belongs to the Test Lead/Product Owner.
 
 - `evidence/v1.0/evidence-register.md`
 - `evidence/v1.0/regression/ab-ev-033-wishlist-public-profile-release-hardening.md`
-- `evidence/v1.0/defects/ab-def-014-public-place-projection-missing.md`
-- `evidence/v1.0/defects/ab-def-015-public-achievement-metadata-not-synchronised.md`
-- `evidence/v1.0/defects/ab-def-016-mobile-dashboard-grid-collapse.md`
+- `evidence/v1.0/regression/ab-ev-034-qr-01-failed-write-recovery-closure.md`
+- `evidence/v1.0/regression/ab-ev-035-c35-visited-passed-coexistence.md`
+- `docs/12-lessons-learned.md`
