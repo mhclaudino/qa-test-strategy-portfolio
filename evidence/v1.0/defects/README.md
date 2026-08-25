@@ -29,5 +29,6 @@ Only representative examples with professional portfolio value should be publish
 - [AB-DEF-015 — Public achievement metadata was not synchronised](ab-def-015-public-achievement-metadata-not-synchronised.md)
 - [AB-DEF-016 — Mobile dashboard control grid collapsed to zero width](ab-def-016-mobile-dashboard-grid-collapse.md)
 - [AB-DEF-017 / AB-EV-036 — Wishlist atomic settings save and order integrity](ab-ev-036-wishlist-atomic-settings-save-and-order-integrity.md)
+- [AB-DEF-018 / AB-EV-037 — Clear Map atomic generation reset](ab-ev-037-clear-map-atomic-generation-reset.md)
 
 See the central [V1.0 Evidence Register](../evidence-register.md) for evidence status, related risks and Test Lead decisions.
