@@ -50,6 +50,7 @@ It is not an Application Lifecycle Management system, a complete defect backlog 
 | AB-EV-034 | QR-01 failed-write recovery closure | QR-01 | Static/write-path audit, component Vitest and repository quality gates | `66cffbc933710f2b9f4ba007c5726ebc2857ac82` | Public textual record complete | QR-01 coverage gap closed; `Current gap` → `Regression risk`; no Product Defect | [QR-01 failed-write recovery closure](regression/ab-ev-034-qr-01-failed-write-recovery-closure.md) |
 | AB-EV-035 | C35 Visited + Passed-through coexistence | QR-16; QR-18; QR-19; QR-21; QR-22; QR-23; QR-24 | Domain tests, Firebase Emulator E2E, Test Lead manual QA and Vercel deployment verification | `29c7ac63748fb823899fb77cdb6ee91bb6194b1f`; `dpl_HjnEQUdzS7G19So5hxyDRgkUxLvv` READY | Public textual record complete | Requirement correction approved; no Product Defect; Visited + Passed through becomes supported cumulative combination | [C35 Visited + Passed-through coexistence](regression/ab-ev-035-c35-visited-passed-coexistence.md) |
 | AB-EV-036 | Wishlist atomic settings save and order integrity | AB-DEF-017; QR-01; QR-04; QR-17; QR-31; QR-34 | Firestore/Auth Emulators, focused/full Vitest, Rules, Playwright, Test Lead manual QA, Vercel/Firebase Production | `5d660b016528e75a2a70b49010a84065d884f883`; Vercel `dpl_HfDXpCCDisqAHXL85fyqHjnUd5N9`; Rules-only Production deploy | Public textual record complete | AB-DEF-017 CLOSED / PRODUCTION PASS; atomic Save, root `wishlistOrder`, <=253 supported writes and final owner/public order integrity approved | [Wishlist atomic settings save and order integrity](defects/ab-ev-036-wishlist-atomic-settings-save-and-order-integrity.md) |
+| AB-EV-037 | Clear Map atomic generation reset | AB-DEF-018; QR-01; QR-04; QR-07; QR-31; QR-34 | Firestore/Auth Emulators, Rules, focused Vitest, build, Test Lead Production retest | `add3b5b27f2e38d3be23f2d7ed4a4c2992599a1c`; Vercel `dpl_2ywN1nFvxnoZD4JHo4YMd65ogkrz`; Rules-only Production deploy | Public textual record complete | AB-DEF-018 CLOSED / PRODUCTION PASS; one <=253-write logical Clear Map batch, generation-based stale-public invalidation and modal/error feedback approved | [Clear Map atomic generation reset](defects/ab-ev-037-clear-map-atomic-generation-reset.md) |
 
 ## 3. Evidence-status interpretation
 
@@ -64,13 +65,13 @@ It is not an Application Lifecycle Management system, a complete defect backlog 
 
 | Quality Risk | Applied state | Evidence position |
 |---|---|---|
-| QR-01 | `Regression risk` | AB-EV-008/009/019/026/032/033 progressively protected persistence paths. AB-EV-034 completed the write-path audit and closed the previous Current gap. AB-EV-036 adds a confirmed atomic multi-setting Wishlist Save, real rejected-batch rollback proof and final Production parity/validation. |
+| QR-01 | `Regression risk` | AB-EV-008/009/019/026/032/033 progressively protected persistence paths. AB-EV-034 completed the write-path audit and closed the previous Current gap. AB-EV-036 adds atomic multi-setting Wishlist persistence; AB-EV-037 extends destructive Clear Map persistence to one logical atomic batch with rejected-write containment and Production closure. |
 | QR-02 | `Regression risk` | Visit-history preservation is protected by AB-EV-002 and later visit-history/concurrency evidence. |
 | QR-03 | `Regression risk` | Explicit logout/cache correction recorded in AB-EV-003. |
-| QR-04 | `Regression risk` | AB-EV-013/018/019/022/026/032/033 protect reconciliation, OCC, rapid mutation and public/private persistence behaviour. AB-EV-036 adds one-commit Wishlist settings persistence and confirmed Profile-root refresh after successful order/privacy changes. |
+| QR-04 | `Regression risk` | AB-EV-013/018/019/022/026/032/033 protect reconciliation, OCC, rapid mutation and public/private persistence behaviour. AB-EV-036 adds one-commit Wishlist settings persistence; AB-EV-037 removes the split Clear Map commit boundary and protects atomic logical reset. |
 | QR-05 | `Regression risk` | Explicit-Save memory contract recorded in AB-EV-004. |
 | QR-06 | `Regression risk` | Boundary/character-limit closure recorded in AB-EV-011. |
-| QR-07 | `Regression risk` | Retry-safe deletion AB-EV-010; public/Wishlist cleanup extended by AB-EV-033. |
+| QR-07 | `Regression risk` | Retry-safe account deletion is protected by AB-EV-010; public/Wishlist lifecycle cleanup by AB-EV-033; AB-EV-037 adds destructive Clear Map root/place lifecycle integrity and stale-public-generation invalidation. |
 | QR-08 | `Regression risk` | Password policy closure AB-EV-012. |
 | QR-09 | `Mitigated` | Identity-preserving linking AB-EV-005. |
 | QR-10 | `Mitigated` | Wrong-identity linking closure AB-EV-007. |
@@ -89,10 +90,10 @@ It is not an Application Lifecycle Management system, a complete defect backlog 
 | QR-26 | `Regression risk` | AB-EV-028/030 protect map/Profile interaction. |
 | QR-29 | `Regression risk` | AB-EV-023/027/029 protect UK and World Completion semantics. |
 | QR-30 | `Regression risk` | AB-EV-023/024/026/029/033 protect achievement chronology/reconciliation/public metadata. |
-| QR-31 | `Regression risk` | AB-EV-033 protects private/public Profile and Wishlist privacy boundaries; AB-EV-036 adds public-root `wishlistOrder` only when Wishlist visibility permits it and validates the aligned Rules release in Production. |
+| QR-31 | `Regression risk` | AB-EV-033 protects private/public Profile and Wishlist privacy boundaries; AB-EV-036 protects public root Wishlist order; AB-EV-037 ensures stale pre-Clear public place generations are denied rather than merely hidden by the client. |
 | QR-32 | `Regression risk` | AB-EV-033 protects public-place sanitisation and private-memory exclusion. |
-| QR-33 | `Regression risk` | AB-EV-028/030/032/033 protect public read-only and owner-only interactions; AB-EV-036 protects owner/public Wishlist order rendering from the canonical root order without making public presentation mutable. |
-| QR-34 | `Regression risk` | AB-EV-033 protects public→private cleanup; AB-EV-036 validates the atomic Public→Private settings batch, removes public root order exposure and confirms the final Production transition. |
+| QR-33 | `Regression risk` | AB-EV-028/030/032/033 protect public read-only and owner-only interactions; AB-EV-036 protects canonical Wishlist order rendering; AB-EV-037 restricts versioned public queries/reads to the current projection generation. |
+| QR-34 | `Regression risk` | AB-EV-033 protects public→private cleanup; AB-EV-036 removes public root Wishlist order exposure on private transition; AB-EV-037 invalidates all obsolete public place projections atomically during Clear Map and confirms Production behaviour. |
 | QR-39 | `Regression risk` | AB-EV-018/020/025/028/030/031/032/033 establish responsive baselines. |
 | QR-40 | `Regression risk` | AB-EV-017 establishes the scoped accessibility technical baseline; later increments add targeted interaction regression. |
 
