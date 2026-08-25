@@ -62,13 +62,21 @@ Selected quick/affected-area/integrated regression evidence includes:
 - [AB-EV-034 — QR-01 failed-write recovery closure](regression/ab-ev-034-qr-01-failed-write-recovery-closure.md)
 - [AB-EV-035 — C35 Visited + Passed-through coexistence](regression/ab-ev-035-c35-visited-passed-coexistence.md)
 
-AB-EV-034 is the current closure record for the previous QR-01 `Current gap`; QR-01 now remains as a `Regression risk`. AB-EV-035 records a requirement correction rather than a Product Defect and explicitly states its Production evidence boundary.
+AB-EV-034 is the closure record for the previous QR-01 `Current gap`; QR-01 now remains as a `Regression risk`. AB-EV-035 records a requirement correction rather than a Product Defect.
 
 ### `defects`
 
-Selected examples include persistence, privacy, authentication, responsive, concurrency, achievement and geographic-integrity defects. The [Evidence Register](evidence-register.md) is the authoritative public index for IDs and decisions.
+Selected examples include persistence, privacy, authentication, responsive, concurrency, achievement and geographic-integrity defects.
 
-The Production-validation cycles also found test-harness defects involving target selection, authentication setup, stale accessible names, search assumptions, optimistic-state synchronisation and locator scope. These are QA-process evidence rather than Product Defects.
+The latest material closure is:
+
+- [AB-EV-036 / AB-DEF-017 — Wishlist atomic settings save and order integrity](defects/ab-ev-036-wishlist-atomic-settings-save-and-order-integrity.md)
+
+AB-EV-036 records a confirmed partial-persistence defect, the write-amplification finding that could exceed a Firestore batch at the supported catalogue maximum, the root `wishlistOrder` redesign, real Emulator batch-atomicity proof, a manual-QA read-path defect found during retest, controlled frontend/Rules release parity and final Production approval.
+
+The [Evidence Register](evidence-register.md) is the authoritative public index for IDs and decisions.
+
+The Production-validation cycles also found test-harness/environment defects involving target selection, authentication setup, stale accessible names, search assumptions, optimistic-state synchronisation, Rules parity and browser-session/origin assumptions. These are QA-process evidence rather than Product Defects unless the product itself fails under a valid environment.
 
 ### `production-reset`
 
