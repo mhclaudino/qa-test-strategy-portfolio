@@ -1,7 +1,7 @@
 # AtlasBadge V1.0 System Test Plan
 
 **Document status:** Active / change-controlled  
-**Execution status:** Incremental system testing in progress; latest baseline reviewed through AB-EV-035  
+**Execution status:** Incremental system testing in progress; latest baseline reviewed through AB-EV-036  
 **Product:** AtlasBadge  
 **Target release:** V1.0  
 **Document owner:** Test Lead/Product Owner  
@@ -34,7 +34,7 @@ A material update is required when:
 
 Each update should identify what changed, affected risks/tests, which previous results remain valid, which require re-execution and the Test Lead decision.
 
-AB-EV-033 established the current checkpointed regression baseline; AB-EV-034 and AB-EV-035 demonstrate proportional follow-up validation without unnecessary full-suite repetition.
+AB-EV-033 established the broad checkpointed regression baseline; AB-EV-034 and AB-EV-035 demonstrate proportional follow-up validation; AB-EV-036 demonstrates the same principle for a larger persistence redesign by combining one necessary full baseline with later focused requalification rather than repeatedly rerunning every suite.
 
 ---
 
@@ -64,6 +64,8 @@ AtlasBadge includes authentication/account lifecycle, an interactive travel map,
 The integrated test item includes the browser application plus Firebase Authentication, Cloud Firestore, Firestore Rules, Firebase Storage where relevant, local cache/state, Firebase Emulators, Vercel deployment and geographic data.
 
 The C35 product rule defines **Visited + Passed through** as compatible cumulative statuses. Individual travel occurrences remain represented by `RegisteredVisit`; adding the second status does not by itself create another visit.
+
+C36 establishes that Wishlist membership remains `statuses.wishlist`, while canonical presentation order is root `wishlistOrder`; changed order/privacy/public projection work behind one user-visible Save must use one atomic Firestore batch boundary.
 
 Previous incremental testing is valid evidence when impact analysis confirms that a later change has not invalidated it.
 
@@ -102,9 +104,16 @@ C35 runtime requirement correction:
 29c7ac63748fb823899fb77cdb6ee91bb6194b1f
 fix(status): allow visited and passed through coexistence
 Vercel: dpl_HjnEQUdzS7G19So5hxyDRgkUxLvv — READY / production
+
+C36 / AB-DEF-017 correction:
+5d660b016528e75a2a70b49010a84065d884f883
+fix(wishlist): make settings save atomic and preserve order
+Vercel: dpl_HfDXpCCDisqAHXL85fyqHjnUd5N9 — READY / production
+Firestore Rules-only deployment: SUCCESS / project atlas-badge
+Production smoke: PASS / Test Lead approved
 ```
 
-C35 did not alter Firestore Rules, Firebase configuration or database schema.
+C35 did not alter Firestore Rules. C36 did, so Production validation was blocked until the separate Rules deployment restored frontend/Rules parity.
 
 ---
 
@@ -118,6 +127,7 @@ Objectives include:
 - confirm correct user ownership and isolation;
 - validate all approved status/Wishlist combinations;
 - verify reliable persistence, failed-write recovery, reload and concurrency behaviour;
+- verify one logical multi-resource Save is atomic when the product contract requires all-or-nothing persistence;
 - protect visits/memories/ordering from unintended loss or artificial duplication;
 - confirm the canonical geographic/counter model;
 - confirm private/public Profile projection and sanitisation;
@@ -139,6 +149,7 @@ Release-blocking coverage includes:
 - owner identity and protected routes;
 - travel-status/Wishlist persistence and compatibility;
 - visits/memories/order/concurrency;
+- atomic combined settings/actions where required by user intent;
 - rejected-write recovery where risk-relevant;
 - privacy/user isolation;
 - public projection whitelisting/sanitisation;
@@ -180,19 +191,33 @@ C35 focused QR-24 status/history checkpoint:
 
 AB-EV-034 focused flagSortOrder recovery:
 1 / 1 PASS
+
+C36 focused combined Wishlist persistence:
+19 / 19 PASS
+
+C36 final WishlistModal root-order/refresh:
+5 / 5 PASS
+
+C36 full Vitest checkpoint:
+375 passed / 16 skipped
 ```
 
-### 8.3 Firestore Rules
+### 8.3 Firestore Rules and backend Emulator
 
 Rules validate owner-only private access, public projection boundaries and approved data schemas.
 
-Latest AB-EV-033 Rules checkpoint:
+C36 Rules checkpoint:
 
 ```text
 226 / 226 PASS
 ```
 
-AB-EV-034 and C35 did not modify Rules, so this checkpoint remains valid.
+C36 also adds a permanent real Firestore Emulator backend test. One document write inside the combined Wishlist batch is rejected by Rules and backend re-read confirms no sibling write partially commits:
+
+```text
+travelMap.wishlistAtomicity.emulator.test.ts
+1 / 1 PASS
+```
 
 ### 8.4 Browser E2E — Emulator
 
@@ -207,10 +232,12 @@ Project: demo-atlasbadge-web
 
 The suite fails fast against unexpected real Firebase traffic.
 
-C35 specifically restored the changed browser contract with one focused scenario:
+Relevant focused results include:
 
 ```text
-Visited + Passed-through coexistence/persistence/reload/deselection: 1 / 1 PASS
+C35 Visited + Passed-through coexistence: 1 / 1 PASS
+
+C36 Wishlist persistence/public order baseline: 3 / 3 PASS
 realFirebaseRequests=0
 ```
 
@@ -220,13 +247,27 @@ Used for usability, visual behaviour, edge conditions, unexpected interaction se
 
 C35 received Test Lead manual QA before commit approval, including coexistence, memory/counter behaviour and independent status handling.
 
+C36 demonstrates why manual QA remains material even with strong automation. The first manual retest found that the backend correctly saved root `wishlistOrder`, but the owner read path still rendered legacy/alphabetical order after a combined reorder/privacy Save. Static/backend evidence then isolated the frontend read-path issue, and the final Test Lead retest approved root-order precedence plus confirmed Profile refresh for order/privacy changes.
+
 ### 8.6 Production validation
 
 Executed only after the expected source revision and applicable Firebase Rules are deployed/aligned.
 
 Production testing uses controlled QA accounts/data and only the authorised scope.
 
-For C35, release verification confirmed the exact runtime SHA reached a `READY` Production Vercel deployment and the Production root returned HTTP 200. No separate authenticated post-deployment functional smoke is claimed in AB-EV-035.
+For C35, release verification confirmed the exact runtime SHA reached a `READY` Production Vercel deployment. AB-EV-035 explicitly limits the claim to that recorded evidence boundary.
+
+For C36, both application source and Firestore Rules changed. The Test Lead therefore required:
+
+```text
+Vercel READY at 5d660b016528e75a2a70b49010a84065d884f883
++
+firestore:rules deployment SUCCESS against atlas-badge
++
+focused Production Wishlist smoke PASS
+```
+
+AB-EV-036 records the completed Production approval.
 
 ---
 
@@ -252,6 +293,8 @@ This is not reduced coverage by omission: the carried-forward result and reason 
 
 **C35/AB-EV-035:** central `statusRules.ts` changed, justifying focused QR-24 tests and one full Vitest checkpoint. Browser impact was restored through one focused Emulator E2E; a full Playwright campaign was not required because no wider browser contract was invalidated.
 
+**C36/AB-EV-036:** shared Wishlist persistence/read logic and Rules changed, so one full Vitest/Rules/build baseline was justified. Later focused dependency-injection and owner read-path changes were requalified with their directly affected Emulator/component/E2E/manual paths instead of repeatedly rerunning the full suite. The final Production smoke was also proportional to the released Wishlist contract rather than an unrelated full-system campaign.
+
 The efficiency rules are retained in `docs/12-lessons-learned.md`.
 
 ---
@@ -267,7 +310,9 @@ A failed scenario is classified before correction as:
 
 A later requirement correction is not counted as a Product Defect when the implementation correctly matched the previously approved product rule.
 
-C35 is the reference example: QR24-UT-11/12 were valid tests for the old rule and became stale only after Product Owner/Test Lead redefinition. They were updated without inventing a Product Defect ID.
+C35 is the reference requirement-correction example: tests valid for the old rule became stale after Product Owner/Test Lead redefinition and were updated without inventing a Product Defect ID.
+
+AB-DEF-017 is the contrasting true Product Defect example: fault injection proved partial persisted state from two independent Wishlist commits. During retest, a Rules-parity permission failure was correctly separated as an environment/release mismatch, while lost order under the correctly aligned environment was correctly treated as a product read-path failure until fixed.
 
 ---
 
@@ -284,6 +329,8 @@ Before commits are approved, the candidate is audited for:
 - coherent commit grouping.
 
 Auto-fix/formatting should occur before final validation whenever possible so that the final committed artefact is the artefact that passed the quality gates.
+
+Temporary manual-QA bootstrap/diagnostic scripts are not promoted into product commits merely because they were useful during an investigation.
 
 ---
 
@@ -303,7 +350,15 @@ For releases that alter Firestore Rules:
 9. Start focused Production validation.
 ```
 
-For application-only changes such as C35, a Rules deploy is not performed when Rules did not change.
+C36 followed this gate exactly:
+
+```text
+Commit: 5d660b016528e75a2a70b49010a84065d884f883
+Vercel: dpl_HfDXpCCDisqAHXL85fyqHjnUd5N9 — READY / production
+Rules: firebase deploy --only firestore:rules --project atlas-badge — SUCCESS
+Other Firebase services: none
+Production smoke: PASS
+```
 
 No force push/rebase/deploy shortcut is used to bypass this gate.
 
@@ -311,7 +366,7 @@ No force push/rebase/deploy shortcut is used to bypass this gate.
 
 ## 13. Latest Production/release evidence
 
-AB-EV-033 remains the latest broad authenticated Production validation and recorded Wishlist/public projection, privacy, desktop/mobile and release-parity PASS results.
+AB-EV-033 remains the latest broad authenticated Production validation for the larger Wishlist/public projection release baseline.
 
 Later release evidence:
 
@@ -323,11 +378,16 @@ AB-EV-035 / C35:
 Commit: 29c7ac63748fb823899fb77cdb6ee91bb6194b1f
 Vercel Production: dpl_HjnEQUdzS7G19So5hxyDRgkUxLvv
 State: READY
-Production root: HTTP 200
 Firestore Rules/schema/config: unchanged
-```
 
-The absence of an additional authenticated Production functional smoke for C35 is stated explicitly rather than inferred from deployment readiness.
+AB-EV-036 / AB-DEF-017 / C36:
+Commit: 5d660b016528e75a2a70b49010a84065d884f883
+Vercel Production: dpl_HfDXpCCDisqAHXL85fyqHjnUd5N9
+State: READY
+Firestore Rules-only deploy: PASS / atlas-badge
+Production Wishlist smoke: PASS / Test Lead approved
+Decision: AB-DEF-017 CLOSED
+```
 
 ---
 
@@ -350,7 +410,7 @@ Requirement / rule
 
 The central public index is `evidence/v1.0/evidence-register.md`.
 
-Current recent evidence is AB-EV-033 through AB-EV-035.
+Current recent evidence is AB-EV-033 through AB-EV-036.
 
 ---
 
@@ -375,12 +435,13 @@ The final release decision belongs to the Test Lead/Product Owner.
 ## 16. Current limitations carried into later V1.0 work
 
 - QR-01 is now a Regression risk rather than a Current gap.
+- AB-DEF-017 is closed; Wishlist atomic settings/order behaviour remains permanent regression scope.
 - Browser/device coverage is not comprehensive.
 - Quantitative performance targets are not established.
 - Formal accessibility certification/native assistive-technology coverage is not claimed.
 - No independent penetration/security audit or formal load test has been completed.
 - Remaining V1.0 localisation/final release activities must be assessed separately.
-- C35 has deployment-readiness verification but no separately claimed authenticated post-deployment functional smoke.
+- Manual Emulator QA bootstrap is not yet a formal persisted one-command environment contract; environment readiness rules are documented in `06-test-environments.md`.
 
 ---
 
@@ -390,4 +451,5 @@ The final release decision belongs to the Test Lead/Product Owner.
 - `evidence/v1.0/regression/ab-ev-033-wishlist-public-profile-release-hardening.md`
 - `evidence/v1.0/regression/ab-ev-034-qr-01-failed-write-recovery-closure.md`
 - `evidence/v1.0/regression/ab-ev-035-c35-visited-passed-coexistence.md`
+- `evidence/v1.0/defects/ab-ev-036-wishlist-atomic-settings-save-and-order-integrity.md`
 - `docs/12-lessons-learned.md`
