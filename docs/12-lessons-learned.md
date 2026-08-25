@@ -8,7 +8,7 @@ It is deliberately not a diary of every defect, test run or implementation decis
 
 The emphasis is on reducing avoidable work while preserving risk-based confidence and traceability.
 
-> **Document status:** Active / maintained. Consolidated through AB-EV-036 / AB-DEF-017.
+> **Document status:** Active / maintained. Consolidated through AB-EV-037 / AB-DEF-018.
 
 ---
 
@@ -252,6 +252,22 @@ All three must be true before the environment is called “ready”.
 
 **Benefit:** Prevents a backend-correct migration from remaining functionally wrong in the UI.
 
+### LL-26 — For destructive workflows, atomic logical invalidation can be more important than immediate physical deletion
+
+**Observation:** AB-DEF-018 could not be solved safely by placing 251 private deletes, 251 public deletes and two root updates into one Firestore batch because the full operation would require 504 writes. Sequential chunks would still permit partial persistence.
+
+**Working rule:** Separate the state that must change atomically for user-visible/security correctness from physical garbage collection. In C37, one <=253-write atomic batch clears private state and advances a public projection generation; stale public documents become unreadable/inactive immediately and may be physically removed later without deciding whether Clear Map succeeded.
+
+**Benefit:** Preserves all-or-nothing destructive semantics without exceeding backend limits or weakening the product contract.
+
+### LL-27 — A destructive-operation failure must be visible, not merely leave the confirmation UI open
+
+**Observation:** When Clear Map persistence was rejected, the confirmation modal remained open and the page retained an internal error that was not passed to the modal. The behaviour looked frozen even though the backend had correctly refused the operation.
+
+**Working rule:** Destructive flows must distinguish success and failure explicitly: success closes/reconciles the confirmed state; failure must not pretend success and must expose actionable error feedback. A permanently open confirmation surface without visible failure information is not sufficient recovery UX.
+
+**Benefit:** Users can distinguish a rejected destructive action from an unresponsive interface, and QA can diagnose backend failure without ambiguous UI behaviour.
+
 ---
 
 ## 7. Standing efficiency rules
@@ -272,7 +288,9 @@ The following compact rules apply to future AtlasBadge work:
 12. Use one canonical manual-QA application origin; do not mix `localhost` and `127.0.0.1` casually.
 13. When changing a source of truth, audit write, read/render and confirmed-session refresh paths.
 14. Ordering regression must cover the boundary where the user's reordered state becomes persisted and later rendered.
-15. The Test Lead makes quality decisions and final sign-off; mechanical evidence preparation should be automated wherever possible.
+15. For destructive cross-projection resets, define the atomic logical completion boundary separately from non-critical physical garbage collection.
+16. A rejected destructive action must expose failure feedback and must not be presented as successful completion.
+17. The Test Lead makes quality decisions and final sign-off; mechanical evidence preparation should be automated wherever possible.
 
 ---
 
@@ -287,6 +305,7 @@ Update this document when a project event produces a reusable change in working 
 - reduces release or documentation rework;
 - identifies an environment-readiness failure;
 - changes a data source-of-truth pattern;
+- changes destructive-operation atomicity or cleanup semantics;
 - identifies an architecture decision that should become a standing rule.
 
 Do not add a lesson merely because an isolated defect occurred.
@@ -305,3 +324,4 @@ Do not add a lesson merely because an isolated defect occurred.
 - `evidence/v1.0/regression/ab-ev-034-qr-01-failed-write-recovery-closure.md`
 - `evidence/v1.0/regression/ab-ev-035-c35-visited-passed-coexistence.md`
 - `evidence/v1.0/defects/ab-ev-036-wishlist-atomic-settings-save-and-order-integrity.md`
+- `evidence/v1.0/defects/ab-ev-037-clear-map-atomic-generation-reset.md`
