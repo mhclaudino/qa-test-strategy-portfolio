@@ -86,10 +86,13 @@ Recent evidence includes:
 - [AB-EV-034 — QR-01 failed-write recovery closure](evidence/v1.0/regression/ab-ev-034-qr-01-failed-write-recovery-closure.md)
 - [AB-EV-035 — C35 Visited + Passed-through coexistence](evidence/v1.0/regression/ab-ev-035-c35-visited-passed-coexistence.md)
 - [AB-EV-036 / AB-DEF-017 — Wishlist atomic settings save and order integrity](evidence/v1.0/defects/ab-ev-036-wishlist-atomic-settings-save-and-order-integrity.md)
+- [AB-EV-037 / AB-DEF-018 — Clear Map atomic generation reset](evidence/v1.0/defects/ab-ev-037-clear-map-atomic-generation-reset.md)
 
 AB-EV-034 closes the last documented QR-01 coverage gap and changes its current state from `Current gap` to `Regression risk`. AB-EV-035 records a Product Owner/Test Lead requirement correction: Visited and Passed through are compatible cumulative historical statuses, while `RegisteredVisit` remains the individual-occurrence model.
 
 AB-EV-036 records a true Product Defect found through atomicity analysis: one Wishlist Save could use independent Firestore commits and leave partial persisted state. The final correction replaces per-place Wishlist ordering writes with root `wishlistOrder`, keeps the maximum combined operation at or below 253 document writes, proves rejected-batch atomicity in the Firestore Emulator and closes the defect after controlled Vercel/Firestore Rules deployment plus Test Lead Production validation.
+
+AB-EV-037 extends that data-integrity work to the destructive Clear Map lifecycle. The old implementation could be blocked by the new root Wishlist metadata and also used separate public/private commit boundaries. C37 rejects naive 504-write chunking, introduces generation-based public projection invalidation, performs the logical Clear Map reset in one <=253-write batch, protects stale public data at the Rules/query boundary and closes AB-DEF-018 after aligned application/Rules deployment and Test Lead Production PASS.
 
 The portfolio records true Product Defects separately from stale automation, environment/Rules parity failures and requirement corrections so defect metrics are not artificially inflated.
 
@@ -109,7 +112,9 @@ The portfolio records true Product Defects separately from stale automation, env
 - treat Emulator services, test identity and the Test Lead browser session as separate readiness gates;
 - use one canonical manual-QA browser origin;
 - review write path, read path and confirmed in-memory state whenever a source of truth changes;
-- ensure ordering tests connect user reorder state to persisted and later-rendered order.
+- ensure ordering tests connect user reorder state to persisted and later-rendered order;
+- separate atomic logical invalidation from non-critical physical garbage collection when destructive operations exceed backend transaction limits;
+- expose destructive-operation failure feedback instead of leaving confirmation UI apparently frozen.
 
 This is part of the QA strategy rather than a retrospective appendix: lessons are converted into standing working rules for later AtlasBadge changes.
 
