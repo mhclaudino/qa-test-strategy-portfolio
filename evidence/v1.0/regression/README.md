@@ -2,7 +2,7 @@
 
 This directory contains selected evidence from AtlasBadge V1.0 regression testing.
 
-Evidence may cover quick regression after implementation, affected-area regression, defect retest regression, release regression, final V1.0 regression, browser/device/language coverage and automated regression.
+Evidence may cover quick regression after implementation, affected-area regression, defect retest regression, release regression, browser/device/language coverage and automated regression.
 
 ## Available evidence
 
@@ -13,7 +13,7 @@ Evidence may cover quick regression after implementation, affected-area regressi
 | [AB-EV-011 — QR-06 character-limit closure](./qr-06-character-limits-closure.md) | Character-limit closure and boundary/persistence/layout regression | Local validation and Vercel Production | Approved — QR-06 Regression risk |
 | [AB-EV-012 — QR-08 password-policy closure](./qr-08-password-policy-closure.md) | 15-character minimum, passphrases, boundaries and Firebase responses | Local code audit, Vitest, lint, production build and Firebase policy confirmation | Passed — QR-08 Regression risk |
 | [AB-EV-015 — QR-13 immediate username reuse](./qr-13-immediate-username-reuse-accepted-behaviour.md) | Immediate release, no alias/redirect, containment audit | Local audit, focused/full tests, lint and build | Passed — Accepted behaviour |
-| [AB-EV-016 — QR-24 Passed through detailed-visit workflow](./qr-24-passed-through-detailed-visit-workflow.md) | Multiple passages, explicit Save, private memories and canonical metrics | Static audit, 18 focused tests, full regression, lint and build | Passed — QR-24 Regression risk |
+| [AB-EV-016 — QR-24 Passed through detailed-visit workflow](./qr-24-passed-through-detailed-visit-workflow.md) | Multiple passages, explicit Save, private memories and canonical metrics | Static audit, focused/full tests, lint and build | Passed — QR-24 Regression risk |
 | [AB-EV-017 — QR-40 accessibility technical baseline](./qr-40-accessibility-technical-baseline.md) | WCAG 2.2 AA technical baseline for critical V1.0 flows | Vitest, Playwright/Axe, Edge Windows, Chrome Android and Vercel Production | Passed — QR-40 Regression risk |
 | [AB-EV-018 — QR-39 responsive, touch and constrained-device baseline](./qr-39-responsive-touch-constrained-device-baseline.md) | Responsive/touch/orientation/network/CPU plus Android CSS and rapid-status corrections | Local/Production builds, Emulators, Playwright, Edge and Chrome Android | Passed — QR-39 Regression risk; QR-04 extended |
 | [AB-EV-019 — Status persistence and OCC regression closure](./ab-ev-019-status-persistence-and-occ-regression.md) | Single-intent status persistence, Firestore convergence, subscription reconciliation, reload parity and OCC | Emulators, Playwright, Edge/Chromium and Vercel Production | Passed — AB-DEF-005 closed |
@@ -25,3 +25,4 @@ Evidence may cover quick regression after implementation, affected-area regressi
 | [AB-EV-027 — United Kingdom coverage rule and follow-up counter-integrity observation](./ab-ev-027-uk-coverage-and-geographic-counter-integrity.md) | C26 UK constituent rule plus historical cross-counter observation that triggered C31 | Local unit/regression validation and Vercel Production | C26 Passed; historical QR-25 gap subsequently closed by AB-EV-029 |
 | [AB-EV-029 / AB-DEF-012 — Geographic counter integrity closure](../defects/ab-ev-029-geographic-counter-integrity-252-195-57.md) | Canonical 252 Places / 195 Countries / 57 Territories & Entities model, UK derivation, Antarctica and achievement alignment | Unit/regression gates, Test Lead local QA and Vercel Production | Passed — AB-DEF-012 closed; QR-25 Regression risk |
 | [AB-EV-031 — Dashboard selected-place sorting](./ab-ev-031-dashboard-selected-place-sorting.md) | C33 Visit Order/Alphabetical dashboard sorting, filter/search integrity and responsive layout | Firebase Emulators, Playwright, local gates, Test Lead QA and Vercel Production | Passed — C33 FIXED / PRODUCTION PASS |
+| [AB-EV-033 — Wishlist, public-profile projection and release hardening](./ab-ev-033-wishlist-public-profile-release-hardening.md) | Wishlist membership/privacy/order, sanitised public projection, Emulator isolation, checkpointed regression, release parity and focused Production validation | Firebase Emulators, Firestore Rules, Playwright, Vercel Production and Firebase Production | Passed — AB-DEF-014/015/016 closed; Production approved |
