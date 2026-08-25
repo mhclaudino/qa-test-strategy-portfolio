@@ -6,7 +6,7 @@ This document defines the testing scope for AtlasBadge during incremental V1.0 d
 
 It identifies covered product areas, expected depth, current coverage, mandatory remaining work and intentionally deferred items.
 
-> **Document status:** Completed and maintained through AB-EV-036. AB-EV-034 closes the residual QR-01 failed-write/recovery assessment gap; C35/AB-EV-035 adds the corrected Visited + Passed through compatibility rule; C36/AB-EV-036 closes AB-DEF-017 and establishes atomic Wishlist settings persistence plus canonical root ordering.
+> **Document status:** Completed and maintained through AB-EV-037. AB-EV-034 closes the residual QR-01 failed-write/recovery assessment gap; C35/AB-EV-035 adds the corrected Visited + Passed through compatibility rule; C36/AB-EV-036 closes AB-DEF-017 and establishes atomic Wishlist settings persistence plus canonical root ordering; C37/AB-EV-037 closes AB-DEF-018 and establishes an atomic logical Clear Map reset with generation-based public invalidation.
 
 ---
 
@@ -79,13 +79,16 @@ Coverage includes:
 - Wishlist membership through `statuses.wishlist` and canonical order through root `wishlistOrder`;
 - atomic combined Wishlist order/privacy Save;
 - private/public place/root projection synchronisation;
-- Clear Map cleanup;
+- Clear Map atomic logical reset;
+- generation-based stale public projection invalidation;
 - account deletion lifecycle;
 - impact on counters/achievements/Profile.
 
 AB-EV-034 closes the previous residual QR-01 assessment gap through write-path architectural equivalence plus focused `flagSortOrder` failure/recovery coverage. QR-01 remains a High `Regression risk` because persistence failure remains consequential, but there is no known Current gap in the assessed V1.0 write paths.
 
 AB-EV-036 adds a real Firestore Emulator rejected-batch regression for the combined Wishlist settings helper. One denied write causes the full Save to fail with private root, public root and public place projections unchanged. C36 also removes per-place order write amplification, keeping the largest supported transition at no more than 253 document writes.
+
+AB-EV-037 extends atomic persistence coverage to the destructive Clear Map path. The previous split public/private commit model and stale root `wishlistOrder` lifecycle were replaced by one logical reset batch of at most 253 writes. Rejected core writes leave the old confirmed state intact; obsolete public child documents are invalidated through `placesGeneration` and Rules/query generation checks rather than being required inside the atomic batch.
 
 ### 5.3 Privacy and user isolation — Executed for current model
 
@@ -98,13 +101,15 @@ Coverage includes:
 - public/private whole-profile transitions;
 - Wishlist private/public/public→private transitions;
 - public root `wishlistOrder` only while Wishlist visibility is public;
-- removal of Wishlist-only public projections when privacy is disabled;
+- versioned public place projection through `placesGeneration`;
+- denial of stale-generation public place reads after Clear Map;
+- removal/invalidation of Wishlist-only public projections when privacy/reset logic requires it;
 - preservation/sanitisation of mixed public place documents;
 - public read-only behaviour;
 - viewer-local sorting without persistence;
 - account deletion/public projection cleanup.
 
-AB-EV-033 established the public/private projection baseline. AB-EV-036 extends it with the atomic root-order/privacy model, aligned Firestore Rules and final Production validation.
+AB-EV-033 established the public/private projection baseline. AB-EV-036 extends it with the atomic root-order/privacy model, aligned Firestore Rules and final Production validation. AB-EV-037 adds backward-compatible generation-0 public reads plus strict stale-generation denial after a versioned Clear Map reset.
 
 Per-memory visibility remains future/conditional scope and is not implied by public Wishlist support.
 
@@ -135,11 +140,13 @@ C36/AB-EV-036 protects the separate Wishlist settings contract:
 - owner and public views must render canonical saved order after reload;
 - successful owner settings changes refresh the confirmed Profile-root state used by the modal.
 
+C37/AB-EV-037 adds the destructive lifecycle requirement that Clear Map removes root Wishlist order/public visibility inside the same atomic logical reset and that obsolete public Wishlist/place projections cannot reappear as current data after a later place write.
+
 ### 5.5 Account and data deletion — Executed / regression risk
 
 Coverage includes identity deletion, private/public Firestore cleanup, username release, repeat/retry behaviour and absence of orphaned public records.
 
-AB-EV-033 extends lifecycle expectations to Wishlist membership/ranks/public preference and public-profile places. C36 changes the canonical order source to the user/public root; deletion/Clear Map regression must continue to treat root Wishlist order as owned lifecycle state.
+AB-EV-033 extends lifecycle expectations to Wishlist membership/ranks/public preference and public-profile places. C36 changes the canonical order source to the user/public root. C37 extends the destructive reset model so Clear Map removes private place/root state atomically while public child cleanup is represented by secure generation invalidation rather than a correctness-dependent second commit.
 
 ---
 
@@ -151,6 +158,8 @@ Coverage includes all 251 directly selectable records, status colouring, search/
 
 The technical UK aggregate remains non-selectable/derived.
 
+Clear Map regression includes the supported maximum of 251 private place deletes plus two root writes, for a maximum atomic logical boundary of 253 writes.
+
 ### 6.2 Visits, memories and ordering — Executed for current V1.0 behaviour
 
 Coverage includes repeated/detailed visits, explicit-Save memories, visit-count derivation, rapid add/remove/save, Manual Visit Order, Born there integrity and independent Wishlist ordering.
@@ -159,13 +168,17 @@ C35 adds explicit coverage that adding another compatible place status does not 
 
 C36 separates ordering domains explicitly: Manual Visit Order remains per-place `visitOrderRank`; Wishlist presentation order is root `wishlistOrder` with legacy rank fallback only.
 
+C37 ensures the destructive Clear Map path removes ordering/lifecycle state without depending on a second public cleanup batch.
+
 Future photos per RegisteredVisit are deferred beyond current V1.0 scope.
 
 ### 6.3 Personal Profile — Executed
 
-Coverage includes profile fields, username/display/bio/social data, profile visibility, Wishlist visibility preference, canonical Wishlist root order, flag-sort persistence/recovery, responsive behaviour and relationship with the public projection.
+Coverage includes profile fields, username/display/bio/social data, profile visibility, Wishlist visibility preference, canonical Wishlist root order, `placesGeneration`, flag-sort persistence/recovery, responsive behaviour and relationship with the public projection.
 
 The C36 owner modal is covered for root-order precedence and confirmed Profile refresh after order-only, privacy-only or combined settings changes.
+
+C37 adds regression that unrelated public-profile updates preserve both `wishlistOrder` and `placesGeneration` rather than dropping root lifecycle metadata.
 
 ### 6.4 Public Profile — Executed for implemented V1.0 baseline
 
@@ -179,6 +192,9 @@ Coverage includes:
 - public achievements from sanitised metadata;
 - public Wishlist tile/modal only when public and non-empty;
 - canonical public Wishlist order from sanitised root `wishlistOrder`;
+- legacy generation-0 public place compatibility;
+- current-generation public place queries;
+- stale-generation direct-read denial;
 - no status/privacy/save/reorder controls in the public Wishlist modal;
 - desktop/mobile layout and modal scroll lock;
 - sanitisation of public root/place fields.
@@ -190,6 +206,8 @@ Broader localisation/performance/compatibility refinements remain separate V1.0 
 Coverage includes countries, territories/entities, conceptual Places, continents, Total Visits, status summaries, repeated visits and cross-screen consistency.
 
 Wishlist-only status/order must not change physical-presence counters. Multiple compatible physical statuses still count a place once, and C35 confirms that adding Visited/Passed-through compatibility does not itself increase Total Visits.
+
+Clear Map remains responsible for resetting the established private statistics in the same logical destructive operation.
 
 ### 6.6 Badges and achievements — Executed baseline / continued regression
 
@@ -240,6 +258,8 @@ Real Firebase requests are fail-fast blockers in Emulator regression. The C36 fo
 
 C36 permanent coverage includes real Emulator batch rejection rather than relying only on a mocked `commit()` failure. Ordering coverage also includes the owner read-path/root-order precedence that manual QA initially exposed as missing.
 
+C37 permanent coverage includes real Emulator logical-reset atomicity, maximum-size coverage, legacy/current/stale generation read rules, later-new-place protection, Profile-root metadata preservation and focused Clear Map confirmation-modal success/failure behaviour.
+
 Stale test assumptions are test-maintenance defects, not product defects. They are corrected without weakening functional acceptance criteria.
 
 ---
@@ -248,13 +268,15 @@ Stale test assumptions are test-maintenance defects, not product defects. They a
 
 ### Core checkpoints
 
-High-value checkpoints include static quality gates, unit/domain tests, Rules, persistence/privacy E2E, backend atomicity, geographic/map regression, lifecycle scenarios and responsive/profile flows.
+High-value checkpoints include static quality gates, unit/domain tests, Rules, persistence/privacy E2E, backend atomicity, geographic/map regression, lifecycle/destructive scenarios and responsive/profile flows.
 
 ### Checkpoint rule
 
 A green checkpoint is retained unless a later change directly invalidates it. Before a broad rerun, the invalidated evidence and reason should be identified.
 
 AB-EV-034/035 demonstrate proportional gap/requirement validation. AB-EV-036 extends the principle: the central Wishlist persistence redesign justified one full Vitest/Rules/build baseline, while later read-path corrections were requalified through focused Wishlist tests and Test Lead retest rather than repeatedly rerunning unrelated suites.
+
+AB-EV-037 follows the same model: Rules/build/static checkpoints were rerun because their artefacts changed; focused Clear Map, public-source, Wishlist/upsert and modal tests restored the affected boundaries without an unnecessary full browser campaign.
 
 ---
 
@@ -279,6 +301,16 @@ Rules result: SUCCESS
 Production smoke: PASS / Test Lead approved
 ```
 
+C37 also changed both application source and Firestore Rules. The controlled release recorded:
+
+```text
+Product SHA: add3b5b27f2e38d3be23f2d7ed4a4c2992599a1c
+Vercel: dpl_2ywN1nFvxnoZD4JHo4YMd65ogkrz — READY / production
+Rules command: firebase deploy --only firestore:rules --project atlas-badge
+Rules result: SUCCESS
+Production Clear Map retest: PASS / Test Lead approved
+```
+
 Production uses controlled QA accounts/data only. Destructive operations require separate explicit authorisation and are not implied by a normal release smoke.
 
 ---
@@ -296,6 +328,8 @@ Current gaps/deferred areas include:
 - future RegisteredVisit photos;
 - future Story/social features beyond current scope.
 
+Physical garbage collection of stale public-generation place documents is not an open functional defect. It is optional housekeeping because correctness and public-read safety no longer depend on immediate physical deletion.
+
 ---
 
 ## 11. Release-blocking principles
@@ -304,6 +338,7 @@ Release approval is blocked by evidence of:
 
 - material data loss or partial persistence contrary to an atomic user action;
 - private-data exposure or unauthorised private reads;
+- stale public-generation data remaining readable after a destructive reset;
 - broken account/authentication essentials;
 - persistence that cannot be trusted;
 - broken status/Wishlist compatibility;
@@ -321,4 +356,5 @@ Release approval is blocked by evidence of:
 - `evidence/v1.0/regression/ab-ev-034-qr-01-failed-write-recovery-closure.md`
 - `evidence/v1.0/regression/ab-ev-035-c35-visited-passed-coexistence.md`
 - `evidence/v1.0/defects/ab-ev-036-wishlist-atomic-settings-save-and-order-integrity.md`
+- `evidence/v1.0/defects/ab-ev-037-clear-map-atomic-generation-reset.md`
 - `docs/12-lessons-learned.md`
