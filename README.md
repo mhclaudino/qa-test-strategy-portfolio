@@ -2,94 +2,112 @@
 
 A practical, risk-based Quality Assurance portfolio using AtlasBadge as a real-world case study.
 
-This repository demonstrates how I approach test strategy, quality risks, test planning, exploratory testing, release readiness, defect management, and quality reporting as a Test Lead.
+This repository demonstrates how I approach test strategy, quality risks, test planning, exploratory testing, release readiness, defect management, quality reporting and continuous process improvement as a Test Lead.
 
-> **Project status:** This portfolio and the AtlasBadge application are both under active development. The documentation evolves under change control as new features, risks, defects and release evidence are produced.
+> **Project status:** This portfolio and the AtlasBadge application are both under active development. Documentation evolves under change control as new features, risks, defects, requirement corrections and release evidence are produced.
 
 ## Case study: AtlasBadge
 
-AtlasBadge is an interactive travel platform where users can track places they have visited or want to visit, assign travel statuses, monitor their progress, manage a private/public Wishlist, and build a public traveller profile.
+AtlasBadge is an interactive travel platform where users can track places they have visited or want to visit, assign cumulative travel statuses, maintain detailed visit history, monitor progress, manage a private/public Wishlist and build a public traveller profile.
 
-The application was selected as the case study because it provides realistic testing challenges involving:
+The application provides realistic testing challenges involving:
 
-- User authentication and account management
-- Persistent user data
-- Travel status and Wishlist management
-- Interactive maps and user interfaces
-- Public/private profile projection and privacy
-- Responsive behaviour across devices
-- Data integrity and synchronisation
-- Accessibility and usability
-- Third-party services and integrations
+- user authentication and account management;
+- persistent user data and failed-write recovery;
+- travel status and Wishlist management;
+- interactive maps and user interfaces;
+- public/private profile projection and privacy;
+- responsive behaviour across devices;
+- data integrity and synchronisation;
+- accessibility and usability;
+- third-party services and deployment integration.
 
 ## My involvement
 
 My responsibilities within the AtlasBadge project include:
 
-- Product and feature definition
-- Requirements analysis and clarification
-- Quality risk identification
-- Manual and exploratory testing
-- Workflow and usability validation
-- Defect investigation and reporting
-- Regression testing
-- Release readiness assessment
-- AI-assisted development coordination
-- Continuous improvement of the product and testing process
+- Product and feature definition;
+- Requirements analysis and clarification;
+- Quality risk identification;
+- Manual and exploratory testing;
+- Workflow and usability validation;
+- Defect investigation and reporting;
+- Regression strategy and checkpoint management;
+- Release readiness assessment;
+- AI-assisted development coordination;
+- Continuous improvement of the product and testing process.
 
 ## Quality approach
 
 The strategy documented in this repository is based on the following principles:
 
-- Prioritise testing according to business and technical risk
-- Begin quality discussions during requirement and feature definition
-- Combine structured testing with exploratory investigation
-- Focus automation on stable, repetitive, and valuable scenarios
-- Maintain clear traceability between risks, requirements, tests, defects, evidence and releases
-- Communicate quality status in a concise and decision-oriented way
-- Treat quality as a shared responsibility across the delivery process
+- prioritise testing according to business and technical risk;
+- begin quality discussions during requirement and feature definition;
+- combine structured testing with exploratory investigation;
+- focus automation on stable, repetitive and valuable scenarios;
+- maintain traceability between risks, requirements, tests, defects, evidence and releases;
+- preserve green checkpoints unless a later change invalidates what they proved;
+- distinguish Product Defects from stale automation, infrastructure failures and requirement corrections;
+- communicate quality status in a concise and decision-oriented way;
+- treat quality as a shared responsibility across delivery.
 
 ## Portfolio deliverables
 
 | Document | Purpose | Status |
 |---|---|---|
-| [Product Overview](docs/01-product-overview.md) | Describe the product, users, features, and business context | Completed / maintained |
+| [Product Overview](docs/01-product-overview.md) | Describe the product, users, features and business context | Completed / maintained |
 | [Quality Risk Analysis](docs/02-quality-risk-analysis.md) | Identify and prioritise product and project risks | Completed / maintained |
 | [Test Strategy](docs/03-test-strategy.md) | Define the overall testing approach and responsibilities | Completed / maintained |
 | [Test Scope](docs/04-test-scope.md) | Define what will and will not be tested | Completed / maintained |
 | [Entry and Exit Criteria](docs/05-entry-exit-criteria.md) | Define conditions for starting and completing testing | Completed |
 | [Test Environments](docs/06-test-environments.md) | Describe environments, test data, dependencies and Emulator isolation | Completed / maintained |
-| [Defect Management](docs/07-defect-management.md) | Define defect reporting, severity, priority, and triage | Completed |
+| [Defect Management](docs/07-defect-management.md) | Define defect reporting, severity, priority and triage | Completed |
 | [Metrics and Reporting](docs/08-metrics-and-reporting.md) | Define useful quality indicators and reporting methods | Completed |
-| [System Test Plan](docs/09-system-test-plan.md) | Define the V1.0 system-level test execution and release validation plan | Completed |
-| [C31–C32 Production Traceability](docs/10-c31-c32-production-traceability.md) | Connect the counter-integrity correction and Profile map navigation to requirements, risks, tests, evidence, commits and Production sign-off | Completed |
-| [C33–C34 Production Traceability](docs/11-c33-c34-production-traceability.md) | Connect dashboard sorting, manual visit order, rapid-visit concurrency, birthplace integrity, tests, defects and Production sign-off | Completed |
+| [System Test Plan](docs/09-system-test-plan.md) | Define the V1.0 system-level execution and release-validation plan | Completed / maintained |
+| [C31–C32 Production Traceability](docs/10-c31-c32-production-traceability.md) | Connect counter integrity and Profile map navigation to risks/tests/evidence/release | Completed |
+| [C33–C34 Production Traceability](docs/11-c33-c34-production-traceability.md) | Connect dashboard/manual ordering, concurrency and birthplace integrity | Completed |
+| [Lessons Learned](docs/12-lessons-learned.md) | Convert recurring product/QA experience into reusable efficiency and quality rules | Active / maintained |
 | Exploratory Test Charters | Provide focused exploratory testing missions | Planned |
 | Sample Test Cases | Demonstrate selected functional and risk-based tests | Planned |
 | Test Summary Report | Demonstrate release-level quality reporting | Planned |
-| [V1.0 Test Evidence](evidence/v1.0/README.md) | Organise selected environment, smoke, regression, defect, and production-reset evidence | In Progress |
+| [V1.0 Test Evidence](evidence/v1.0/README.md) | Organise environment, smoke, regression, defect and reset evidence | In Progress |
 
-The permanent numbered documents are intentionally kept concise. Later feature/release history is integrated into the living strategy/risk/environment documents and into the evidence register rather than creating a new top-level document for every increment.
+The numbered documents are intentionally maintained as living control artefacts rather than creating a new top-level strategy document for every increment. Material increments are captured through evidence and traceability records.
 
-## Test evidence
+## Recent quality traceability
 
-Selected and sanitised evidence from the AtlasBadge V1.0 quality process is organised in the [V1.0 Test Evidence](evidence/v1.0/README.md) directory.
-
-Recent Production traceability includes:
+Recent evidence includes:
 
 - [AB-EV-029 / AB-DEF-012 — Geographic counter integrity: 252 / 195 / 57](evidence/v1.0/defects/ab-ev-029-geographic-counter-integrity-252-195-57.md)
 - [AB-EV-030 — Profile map to earned-flag navigation](evidence/v1.0/smoke/ab-ev-030-profile-map-to-earned-flag-navigation.md)
 - [AB-EV-031 — Dashboard selected-place sorting](evidence/v1.0/regression/ab-ev-031-dashboard-selected-place-sorting.md)
-- [AB-EV-032 / AB-DEF-013 — Manual visit order and rapid-visit concurrency closure](evidence/v1.0/defects/ab-ev-032-manual-visit-order-and-rapid-visit-concurrency.md)
+- [AB-EV-032 / AB-DEF-013 — Manual visit order and rapid-visit concurrency](evidence/v1.0/defects/ab-ev-032-manual-visit-order-and-rapid-visit-concurrency.md)
 - [AB-EV-033 — Wishlist, public-profile projection and release hardening](evidence/v1.0/regression/ab-ev-033-wishlist-public-profile-release-hardening.md)
+- [AB-EV-034 — QR-01 failed-write recovery closure](evidence/v1.0/regression/ab-ev-034-qr-01-failed-write-recovery-closure.md)
+- [AB-EV-035 — C35 Visited + Passed-through coexistence](evidence/v1.0/regression/ab-ev-035-c35-visited-passed-coexistence.md)
 
-AB-EV-033 also records the closure of three product defects found during affected-area regression:
+AB-EV-034 closes the last documented QR-01 coverage gap and changes its current state from `Current gap` to `Regression risk`. AB-EV-035 records a Product Owner/Test Lead requirement correction: Visited and Passed through are compatible cumulative historical statuses, while `RegisteredVisit` remains the individual-occurrence model.
 
-- [AB-DEF-014 — Public place projection missing for normal public statuses](evidence/v1.0/defects/ab-def-014-public-place-projection-missing.md)
-- [AB-DEF-015 — Public achievement metadata was not synchronised](evidence/v1.0/defects/ab-def-015-public-achievement-metadata-not-synchronised.md)
-- [AB-DEF-016 — Mobile dashboard control grid collapsed to zero width](evidence/v1.0/defects/ab-def-016-mobile-dashboard-grid-collapse.md)
+The portfolio also records significant true Product Defects separately from stale automation or requirement corrections so defect metrics are not artificially inflated.
 
-The evidence structure includes environment/configuration verification, smoke evidence, affected-area and integrated regression, selected defect examples and final production-reset evidence.
+## Lessons learned and efficiency
+
+[AtlasBadge Lessons Learned](docs/12-lessons-learned.md) consolidates reusable rules developed through the V1.0 work. Key themes include:
+
+- do not rerun a green checkpoint without a concrete invalidation reason;
+- use the smallest test layer capable of proving the changed behaviour;
+- perform format/auto-fix work before final gates;
+- preserve historical evidence rather than rewriting past decisions;
+- validate temporal user journeys before imposing mutually exclusive historical states;
+- treat optimistic UI separately from confirmed persistence;
+- use actual Firestore commit boundaries when assessing atomicity;
+- keep Emulator isolation observable and fail-fast.
+
+This is part of the QA strategy rather than a retrospective appendix: lessons are converted into standing working rules for later AtlasBadge changes.
+
+## Test evidence
+
+Selected and sanitised evidence is organised in [V1.0 Test Evidence](evidence/v1.0/README.md). The central [Evidence Register](evidence/v1.0/evidence-register.md) is the authoritative public index of evidence IDs, related risks/defects, environments, commits, decisions and artefacts.
 
 Only material appropriate for a public professional portfolio is committed. Personal data, credentials, tokens, private environment variables, raw test-account payloads and sensitive configuration are not published.
 
@@ -99,7 +117,6 @@ Only material appropriate for a public professional portfolio is committed. Pers
 qa-test-strategy-portfolio/
 │
 ├── README.md
-│
 ├── docs/
 │   ├── 01-product-overview.md
 │   ├── 02-quality-risk-analysis.md
@@ -111,8 +128,8 @@ qa-test-strategy-portfolio/
 │   ├── 08-metrics-and-reporting.md
 │   ├── 09-system-test-plan.md
 │   ├── 10-c31-c32-production-traceability.md
-│   └── 11-c33-c34-production-traceability.md
-│
+│   ├── 11-c33-c34-production-traceability.md
+│   └── 12-lessons-learned.md
 ├── evidence/
 │   └── v1.0/
 │       ├── README.md
@@ -122,31 +139,21 @@ qa-test-strategy-portfolio/
 │       ├── regression/
 │       ├── defects/
 │       └── production-reset/
-│
 ├── test-assets/
 │   ├── exploratory-test-charters.md
 │   └── sample-test-cases.md
-│
 └── reports/
     └── test-summary-report.md
 ```
 
 ## Portfolio boundaries
 
-This repository is a professional portfolio and learning project.
+This repository is a professional portfolio and learning project. It does not contain confidential employer/client documentation, Production credentials/tokens, real customer information or proprietary test cases from previous employers.
 
-It does not contain:
-
-- Confidential employer or client documentation
-- Production credentials or access tokens
-- Real customer information
-- Proprietary test cases from previous employers
-- Private business or personal user data
-
-All examples are based on AtlasBadge, controlled test information, and general Quality Assurance practices.
+All examples are based on AtlasBadge, controlled test information and general Quality Assurance practices.
 
 ## About me
 
-I am a Test Lead based in Northern Ireland, United Kingdom, with experience in QA strategy, enterprise testing, project coordination, regulated environments, Oracle E-Business Suite, and cross-functional delivery.
+I am a Test Lead based in Northern Ireland, United Kingdom, with experience in QA strategy, enterprise testing, project coordination, regulated environments, Oracle E-Business Suite and cross-functional delivery.
 
 [Connect with me on LinkedIn](https://www.linkedin.com/in/mhclaudino/)
