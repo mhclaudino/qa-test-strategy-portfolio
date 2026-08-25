@@ -6,13 +6,13 @@ This document identifies, evaluates and prioritises the main quality risks assoc
 
 This is a living analysis. Risk scores and priorities must be reviewed whenever the product, architecture, geographic catalogue, privacy model or release scope changes.
 
-> **Document status:** Reviewed through AB-EV-033 and the AtlasBadge Wishlist/public-profile Production baseline. C31 established the canonical `252 Places / 195 Countries / 57 Territories and Entities` model; C32 added read-only Profile map-to-flag navigation; C33 added non-persistent dashboard sorting; C34 added owner-only Manual Visit Order and closed the P0 rapid-visit concurrency regression; AB-EV-033 adds Wishlist privacy/order, sanitised public projections, isolated Emulator E2E and closes three release-hardening product defects.
+> **Document status:** Reviewed through AB-EV-035. AB-EV-034 closes the remaining QR-01 failed-write/recovery coverage gap and moves QR-01 from `Current gap` to `Regression risk`. C35/AB-EV-035 corrects the status model so **Visited** and **Passed through** may coexist without creating artificial visits. Earlier C31-C34 and AB-EV-033 baselines remain valid where not invalidated by these changes.
 
 ---
 
 ## 2. Assessment basis
 
-This analysis is based on direct review of the deployed application, confirmed Product Owner/Test Lead rules, static implementation review, Firestore/Rules validation, Firebase Emulator regression, Playwright browser regression, local/manual QA, controlled release operations and Vercel/Firebase Production validation.
+This analysis is based on direct review of the deployed application, confirmed Product Owner/Test Lead rules, static implementation review, Firestore/Rules validation, Firebase Emulator regression, Playwright browser regression, local/manual QA, controlled release operations and Vercel/Firebase Production verification.
 
 An intended behaviour is not assumed to be implemented unless evidence supports it. Incomplete areas are classified explicitly as gaps, assumptions, future risks or accepted behaviour.
 
@@ -32,19 +32,23 @@ AtlasBadge supports six travel statuses: **Visited**, **Lived / Live there**, **
 
 The Wishlist uses `statuses.wishlist === true` / Want to visit as its source of truth rather than maintaining a duplicate status model.
 
-Multiple compatible statuses may coexist. Confirmed incompatible combinations are normalised by product rules. Selecting **Born there** or **Lived / Live there** automatically selects **Visited**. Selecting an incompatible physical-presence status removes **Want to visit**.
+Multiple compatible statuses may coexist. **Born there** and **Lived / Live there** imply **Visited**. C35 establishes that **Passed through is cumulative historical information and may coexist with Visited, Lived or Born**. A person may have passed through a place during one occurrence and visited/lived there during another.
+
+Selecting a proper physical-presence status continues to remove **Want to visit** according to the approved compatibility rules. Passed through + Wishlist may remain valid when no incompatible visited/lived/born state is active.
 
 Wishlist-only records do not represent physical presence, do not increase physical metrics and do not enter Manual Visit Order. Wishlist ordering is independently persisted through `wishlistOrderRank`.
 
 ### 3.3 Visits and memories
 
-`visitsCount` has a minimum of zero. Selecting **Visited** or **Passed through** changes zero to one where applicable. Passed through supports detailed passage records and multiple occurrences.
+`RegisteredVisit` represents an individual travel occurrence; status flags represent accumulated place history. Adding a second compatible status does **not** create a new occurrence or increment `visitsCount` by itself.
 
-**Total Visits** is the sum of active individual `visitsCount` values. A place counts once as conquered regardless of repeated visits. Memory text uses local draft state and persists only after explicit **Save**. Non-visit memories may use `generalNote` without an artificial registered visit or visit-count increase.
+Where applicable, the first physical-presence state initialises the first visit. Later occurrences are added through the visit workflow. `visitsCount` is derived from the active `registeredVisits` history rather than from the number of status flags.
 
-Current V1.0 behaviour preserves visit counts and user-created memories when **Visited** is deselected; they are hidden while inactive and restored when Visited returns.
+**Total Visits** is the sum of active individual `visitsCount` values. A place counts once as conquered regardless of repeated visits or multiple compatible statuses.
 
-AB-EV-032 extends the concurrency baseline for visit history. Rapid add/remove/save operations use replayable semantic intents; add uses a stable idempotent visit ID, remove is idempotent by visit ID, save updates the target visit on the latest state, and `visitsCount` is derived from `registeredVisits.length`.
+Memory text uses local draft state and persists only after explicit **Save**. Non-visit memories may use `generalNote` without an artificial registered visit or visit-count increase. Detailed memories for physical occurrences remain associated with `RegisteredVisit`.
+
+Current V1.0 behaviour preserves user-created visit history/memories across supported status transitions. AB-EV-032 protects replayable/idempotent rapid visit mutations; AB-EV-035 adds explicit protection that combining Visited + Passed through does not duplicate visits or memories.
 
 ### 3.4 Persistence and data model
 
@@ -59,11 +63,11 @@ users/{uid}/places/{placeId}
 
 and may contain statuses, visitsCount, registeredVisits, generalNote, optional `visitOrderRank` and optional `wishlistOrderRank`.
 
-Authenticated place data uses a real-time Firestore subscription and confirmed-state reconciliation. Explicit status/visit intents preserve latest-valid-local-intent semantics. AB-EV-013, AB-EV-018, AB-EV-019, AB-EV-022, AB-EV-026, AB-EV-032 and AB-EV-033 provide the main persistence/concurrency evidence.
+Authenticated place data uses a real-time Firestore subscription and confirmed-state reconciliation. Explicit status/visit intents preserve latest-valid-local-intent semantics.
 
-C34 made the persistence callback intent-aware so Born there continues to use the transaction that keeps `users/{uid}.birthplacePlaceId` and `users/{uid}/places/{placeId}.statuses.born` consistent.
+The main persistence/concurrency evidence includes AB-EV-013, AB-EV-018, AB-EV-019, AB-EV-022, AB-EV-026, AB-EV-032, AB-EV-033 and AB-EV-034.
 
-AB-EV-033 extends the model to private/public Wishlist and place projection changes. Public and private mutations are kept coherent in the same persistence operation where applicable, and empty/stale place records are removed according to the approved lifecycle rules.
+AB-EV-034 completes the QR-01 write-path audit using architectural/risk equivalence and adds deterministic failed-write/recovery coverage for the remaining Profile `flagSortOrder` path. The risk remains important, but the known coverage gap is closed.
 
 ### 3.5 Public profile, Wishlist privacy and public projection
 
@@ -103,20 +107,6 @@ AB-EV-033 validates private→public and public→private Wishlist transitions, 
 
 AtlasBadge contains **251 directly selectable geographic records**.
 
-The audited selectable catalogue is:
-
-```text
-194 sovereign_country
-47 territory
-5 limited_recognition
-4 constituent_country
-1 special_region (Antarctica)
---------------------------------
-251 directly selectable records
-```
-
-The United Kingdom aggregate is non-selectable and derived.
-
 The approved conceptual progress model is:
 
 ```text
@@ -131,7 +121,7 @@ with the invariant:
 252 = 195 + 57
 ```
 
-Countries consist of 194 directly selectable sovereign countries plus one derived United Kingdom. Territories and Entities consist of 47 territories, 5 limited-recognition entities, 4 UK constituent countries and Antarctica.
+The United Kingdom aggregate is non-selectable and derived from its four constituent countries. Countries consist of 194 directly selectable sovereign countries plus the derived United Kingdom. Territories and Entities consist of 47 territories, 5 limited-recognition entities, 4 UK constituent countries and Antarctica.
 
 AB-EV-027 preserves the historical observation that exposed the previous inconsistency. AB-EV-029 records the C31 catalogue audit, correction, achievement alignment and Production closure.
 
@@ -146,13 +136,11 @@ C31 aligned the affected geographic achievements:
 - **A31 — Mundo Completo:** `195/195 Countries`;
 - **A32 — Além das Fronteiras:** `57/57 Territories and Entities`.
 
-AB-EV-033 closes a public-profile projection gap: public `achievementMetadata` is synchronised from the private chronology while exposing only `{unlockedAt, sequence}` per entry.
+AB-EV-033 closes the missing public achievement-metadata projection while exposing only `{unlockedAt, sequence}` per achievement entry.
 
 ### 3.8 Compatibility, responsive and accessibility baseline
 
 Manual and automated evidence includes Edge/Windows, Chrome/Android, desktop/mobile responsive matrices, touch contexts, constrained-device checks and a scoped WCAG 2.2 AA technical baseline.
-
-AB-EV-020 covers responsive navigation/paint stability. AB-EV-025 covers Badge Unlock polish. AB-EV-028 covers map/profile parity. AB-EV-030 covers mobile Profile map-to-flag navigation. AB-EV-031 covers responsive dashboard sorting. AB-EV-032 covers mobile/manual-order regression. AB-EV-033 closes the mobile zero-width dashboard control-grid defect and validates Wishlist UI, horizontal-overflow protection and modal scroll lock.
 
 Universal browser/device support and formal accessibility certification are not claimed. Untested browser/device combinations remain QR-38.
 
@@ -180,8 +168,6 @@ Universal browser/device support and formal accessibility certification are not 
 | 4 | Likely during normal or repeated use. |
 | 5 | Almost certain or easily reproducible. |
 
-### 4.3 Risk score and priority
-
 `Risk score = Impact × Likelihood`
 
 | Score | Test priority |
@@ -191,7 +177,7 @@ Universal browser/device support and formal accessibility certification are not 
 | 6–11 | Medium |
 | 1–5 | Low |
 
-### 4.4 Risk state
+### 4.3 Risk state
 
 | State | Meaning |
 |---|---|
@@ -210,15 +196,15 @@ Universal browser/device support and formal accessibility certification are not 
 
 | ID | Risk statement | State | Impact | Likelihood | Score | Priority |
 |---|---|---|---:|---:|---:|---|
-| QR-01 | A Firestore write may fail while the interface/cache continue to show the change as saved, causing silent data loss later. | Current gap | 5 | 3 | 15 | High |
-| QR-02 | Visit-history preservation may regress when **Visited** is deselected and later restored. | Regression risk | 4 | 4 | 16 | High |
+| QR-01 | A Firestore write may fail while the interface/cache continue to show the change as saved, causing silent data loss later. | Regression risk | 5 | 3 | 15 | High |
+| QR-02 | Visit-history preservation may regress when a qualifying status is removed and later restored. | Regression risk | 4 | 4 | 16 | High |
 | QR-03 | Explicit logout may fail to remove UID-scoped private travel data from browser storage. | Regression risk | 4 | 3 | 12 | High |
 | QR-04 | Listener/reconciliation or optimistic concurrency may regress, allowing stale tabs/actions to lose confirmed changes. | Regression risk | 4 | 2 | 8 | Medium |
 | QR-05 | A memory editor may bypass the explicit-Save contract. | Regression risk | 3 | 4 | 12 | High |
 | QR-06 | Approved character-limit enforcement may regress. | Regression risk | 3 | 4 | 12 | High |
 | QR-07 | Account deletion may partially fail and leave private/public/authentication records. | Regression risk | 5 | 3 | 15 | High |
 
-**Applied decisions:** QR-02 AB-EV-002; QR-03 AB-EV-003; QR-04 AB-EV-013/018/019/022/026/032/033; QR-05 AB-EV-004; QR-06 AB-EV-011; QR-07 AB-EV-010/033. AB-EV-033 strengthens Wishlist/private-public persistence evidence, but QR-01 remains Current gap because equivalent failure/recovery coverage is not complete for every persistence path.
+**Applied decisions:** AB-EV-034 closes the remaining QR-01 assessment/coverage gap through a full write-path audit plus focused failed-write/recovery evidence for `flagSortOrder`; QR-01 is now retained as a High `Regression risk`, not a Current gap. QR-02 AB-EV-002; QR-03 AB-EV-003; QR-04 AB-EV-013/018/019/022/026/032/033; QR-05 AB-EV-004; QR-06 AB-EV-011; QR-07 AB-EV-010/033.
 
 ### 5.2 Authentication and account identity
 
@@ -244,10 +230,10 @@ Universal browser/device support and formal accessibility certification are not 
 | QR-20 | **Nationality** or **Wishlist/Want to visit** may incorrectly increase physical-presence metrics. | Regression risk | 3 | 3 | 9 | Medium |
 | QR-21 | A place with multiple physical statuses may be counted more than once as conquered. | Regression risk | 4 | 3 | 12 | High |
 | QR-22 | Automatic status transitions may incorrectly reset visit counts or delete memories. | Regression risk | 4 | 3 | 12 | High |
-| QR-23 | **Born there** or **Lived** may fail to select **Visited** and initialise visit count. | Regression risk | 3 | 3 | 9 | Medium |
+| QR-23 | **Born there** or **Lived** may fail to select **Visited** and initialise visit behaviour correctly. | Regression risk | 3 | 3 | 9 | Medium |
 | QR-24 | The approved **Passed through** workflow may regress. | Regression risk | 2 | 4 | 8 | Medium |
 
-**Applied decisions:** AB-EV-033 adds explicit Wishlist compatibility, non-physical semantics and independent-order regression to the status/counter baseline.
+**Applied decisions:** AB-EV-035 rebaselines QR-16/QR-24 after the C35 requirement correction. Visited + Passed through is now a valid cumulative combination; Passed through may coexist with Lived/Born through their Visited dependency; adding a second compatible status does not itself create an additional `RegisteredVisit` or increment Total Visits. Focused domain and Emulator E2E coverage protects the new contract. AB-EV-033 continues to protect Wishlist compatibility/non-physical semantics.
 
 ### 5.4 Geographic catalogue, map and achievements
 
@@ -259,8 +245,6 @@ Universal browser/device support and formal accessibility certification are not 
 | QR-28 | Map intensity may be wrong when multiple statuses are present. | Regression risk | 3 | 3 | 9 | Medium |
 | QR-29 | United Kingdom achievement/progress may use incorrect constituent/derived semantics. | Regression risk | 3 | 3 | 9 | Medium |
 | QR-30 | Achievement lock/relock, metadata, chronology, reconquest or notification delivery may become inconsistent across private/public sources. | Regression risk | 3 | 3 | 9 | Medium |
-
-AB-EV-033 extends QR-30 by closing the missing public achievement metadata projection and validating sanitised public chronology.
 
 ### 5.5 Public profile and sharing
 
@@ -274,8 +258,6 @@ AB-EV-033 extends QR-30 by closing the missing public achievement metadata proje
 | QR-36 | Future per-memory visibility/default logic may publish content contrary to preference. | Future risk | 5 | 3 | 15 | High |
 | QR-37 | A future generated Story may expose unexpected information or fail across sharing flows. | Future risk | 4 | 3 | 12 | High |
 
-**Applied decision:** AB-EV-033 confirms the public Profile uses `publicProfiles` rather than the private source, validates public-place sanitisation, records zero private viewer reads, validates Wishlist private/public transitions and confirms viewer-local sorting does not persist owner state.
-
 ### 5.6 Compatibility, usability, performance and accessibility
 
 | ID | Risk statement | State | Impact | Likelihood | Score | Priority |
@@ -284,15 +266,13 @@ AB-EV-033 extends QR-30 by closing the missing public achievement metadata proje
 | QR-39 | Responsive/touch/constrained-device/CSS/navigation/card-paint/map-layout baselines may regress. | Regression risk | 3 | 3 | 9 | Medium |
 | QR-40 | Keyboard access, focus, accessible names, dialogs, contrast or other accessibility behaviour may regress. | Regression risk | 4 | 3 | 12 | High |
 
-**Applied decisions:** QR-39 is protected by AB-EV-018/020/025/028/030/031/032/033. AB-DEF-016 specifically proves that DOM presence is insufficient when responsive CSS collapses a functional control to zero width.
-
 ---
 
 ## 6. Highest-priority test focus
 
-Priority focus includes silent persistence failure; visit-history preservation; account-deletion integrity; status/Wishlist compatibility; `252/195/57` counter integrity; geographic catalogue integrity; private/public projection and privacy transitions; explicit logout/local-data exposure; explicit-Save integrity; real-time concurrency/cache authority; rapid visit convergence; Manual Visit Order; independent Wishlist ordering; birthplace pointer/status atomicity; achievement chronology/public metadata; responsive/constrained-device behaviour; Profile read-only interaction; and accessibility.
+Priority focus includes failed-write/recovery regression; visit-history preservation; account-deletion integrity; status/Wishlist compatibility; `252/195/57` counter integrity; geographic catalogue integrity; private/public projection and privacy transitions; explicit logout/local-data exposure; explicit-Save integrity; real-time concurrency/cache authority; rapid visit convergence; Manual Visit Order; independent Wishlist ordering; birthplace pointer/status atomicity; achievement chronology/public metadata; responsive/constrained-device behaviour; Profile read-only interaction; and accessibility.
 
-QR-25 is no longer an open arithmetic investigation. Its residual concern is regression.
+QR-01 and QR-25 are no longer open investigations. Their residual concern is regression.
 
 ---
 
@@ -300,11 +280,13 @@ QR-25 is no longer an open arithmetic investigation. Its residual concern is reg
 
 - a place is counted once as conquered even with multiple compatible statuses;
 - repeated visits increase Total Visits but do not create additional selectable records;
+- adding a second compatible status does not itself create another RegisteredVisit;
+- **Visited and Passed through may coexist** as cumulative historical statuses;
+- Passed through may coexist with Lived/Born because those statuses imply Visited;
 - Nationality and Wishlist/Want to visit alone do not represent physical presence;
 - Wishlist membership uses the existing Want-to-visit status source rather than a duplicate status system;
 - Wishlist order is independent from visit order;
 - Wishlist privacy defaults to private and its public preference is independent from whole-profile visibility;
-- a public Wishlist tile is shown only when public and non-empty, including when the owner views their Profile;
 - public Wishlist/Profile presentation is read-only;
 - viewer-local sorting may change presentation but must not persist the owner's preference;
 - public viewers read the sanitised `publicProfiles` projection, not private user/place documents;
@@ -323,7 +305,7 @@ QR-25 is no longer an open arithmetic investigation. Its residual concern is reg
 1. Social-link validation rejects unsafe protocols and unsuitable formats.
 2. The geographic fixture and deployed application continue to contain the same 251 selectable records.
 3. Responsive behaviour remains acceptable outside the validated browser/device sample.
-4. Map-status priority remains identical across map, profile, cards and legends.
+4. Map-status priority remains identical across map, profile, cards and legends when multiple statuses coexist.
 5. Future geographic changes trigger explicit re-audit of `252/195/57`.
 6. Future changes to public-profile fields extend the whitelist intentionally rather than reintroducing direct private reads.
 
@@ -331,7 +313,7 @@ QR-25 is no longer an open arithmetic investigation. Its residual concern is reg
 
 ## 9. Open product and quality questions
 
-Resolved V1.0 decisions must not be reopened without new evidence: explicit Save for memories, character-limit policy, retry-safe account deletion, real-time/OCC controls, password minimum/passphrases, canonical usernames, immediate username reuse, Passed-through workflow, accessibility technical baseline, responsive baseline, last-intent chronology, achievement chronology, production runner safety, Badge Unlock polish, Clear Map reconciliation, C27–C30 map/profile parity, C31 counters, C32 map-to-flag navigation, C33 dashboard sorting, C34 Manual Visit Order/rapid visits/birthplace integrity, and AB-EV-033 Wishlist/public-profile projection/release hardening.
+Resolved V1.0 decisions must not be reopened without new evidence or an explicit requirement correction: explicit Save for memories, character-limit policy, retry-safe account deletion, real-time/OCC controls, password minimum/passphrases, canonical usernames, immediate username reuse, Passed-through detailed-visit workflow, QR-01 failed-write recovery baseline, C35 Visited + Passed-through coexistence, accessibility technical baseline, responsive baseline, achievement chronology, map/profile parity, geographic counters, dashboard/manual ordering and Wishlist/public-profile projection.
 
 Open questions remain around username allowed characters, future memory visibility, broader browser/device support, native assistive-technology coverage, localisation completion, quantitative performance targets and future Story/photo scope.
 
@@ -339,7 +321,7 @@ Open questions remain around username allowed characters, future memory visibili
 
 ## 10. Risk-based release implications
 
-Release confidence requires evidence that travel data is not silently lost; private content is not exposed; public content is projected intentionally; account deletion/linking preserve integrity; status/Wishlist transitions follow rules; calculations remain consistent; public profiles remain read-only; frontend and Firestore Rules are release-aligned; known gaps are resolved or explicitly accepted; and the supported compatibility/accessibility baseline is defined.
+Release confidence requires evidence that travel data is not silently lost; private content is not exposed; public content is projected intentionally; account deletion/linking preserve integrity; status/Wishlist transitions follow approved rules; calculations remain consistent; public profiles remain read-only; frontend and Firestore Rules are release-aligned when both change; known gaps are resolved or explicitly accepted; and the supported compatibility/accessibility baseline is defined.
 
 Any unresolved High risk must be reviewed before release and recorded as mitigated, accepted, reduced by control, deferred with limitation/follow-up, or a release blocker.
 
@@ -347,9 +329,9 @@ Any unresolved High risk must be reviewed before release and recorded as mitigat
 
 ## 11. Review triggers
 
-Review this analysis when travel statuses/combinations, Wishlist privacy/order, geographic catalogue/classification, map implementation, private/public profile projection, save/limit behaviour, auth/linking/password rules, account deletion, real-time/OCC behaviour, `visitOrderRank`, `wishlistOrderRank`, birthplace transactions, public achievement metadata, sharing, supported browsers/devices/accessibility targets or release-parity controls change.
+Review this analysis when travel statuses/combinations, Wishlist privacy/order, geographic catalogue/classification, map implementation, private/public profile projection, save/limit behaviour, auth/linking/password rules, account deletion, real-time/OCC behaviour, visit/wishlist ordering, birthplace transactions, public achievement metadata, sharing, supported browsers/devices/accessibility targets or release-parity controls change.
 
-A change to the public projection whitelist, Wishlist privacy model, UK/Antarctica classification, `252/195/57` denominators, achievement criteria, Profile interaction, manual order persistence or mutation orchestration requires explicit affected-area regression and documentation review.
+A change to the public projection whitelist, Wishlist privacy model, status compatibility matrix, `252/195/57` denominators, achievement criteria, Profile interaction, manual order persistence or mutation orchestration requires explicit affected-area regression and documentation review.
 
 ---
 
@@ -364,8 +346,7 @@ A change to the public projection whitelist, Wishlist privacy model, UK/Antarcti
 - `docs/09-system-test-plan.md`
 - `docs/10-c31-c32-production-traceability.md`
 - `docs/11-c33-c34-production-traceability.md`
+- `docs/12-lessons-learned.md`
 - `evidence/v1.0/evidence-register.md`
-- `evidence/v1.0/regression/ab-ev-033-wishlist-public-profile-release-hardening.md`
-- `evidence/v1.0/defects/ab-def-014-public-place-projection-missing.md`
-- `evidence/v1.0/defects/ab-def-015-public-achievement-metadata-not-synchronised.md`
-- `evidence/v1.0/defects/ab-def-016-mobile-dashboard-grid-collapse.md`
+- `evidence/v1.0/regression/ab-ev-034-qr-01-failed-write-recovery-closure.md`
+- `evidence/v1.0/regression/ab-ev-035-c35-visited-passed-coexistence.md`
