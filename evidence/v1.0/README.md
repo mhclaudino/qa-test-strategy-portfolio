@@ -68,11 +68,14 @@ AB-EV-034 is the closure record for the previous QR-01 `Current gap`; QR-01 now 
 
 Selected examples include persistence, privacy, authentication, responsive, concurrency, achievement and geographic-integrity defects.
 
-The latest material closure is:
+The latest material closures are:
 
 - [AB-EV-036 / AB-DEF-017 — Wishlist atomic settings save and order integrity](defects/ab-ev-036-wishlist-atomic-settings-save-and-order-integrity.md)
+- [AB-EV-037 / AB-DEF-018 — Clear Map atomic generation reset](defects/ab-ev-037-clear-map-atomic-generation-reset.md)
 
 AB-EV-036 records a confirmed partial-persistence defect, the write-amplification finding that could exceed a Firestore batch at the supported catalogue maximum, the root `wishlistOrder` redesign, real Emulator batch-atomicity proof, a manual-QA read-path defect found during retest, controlled frontend/Rules release parity and final Production approval.
+
+AB-EV-037 records the Clear Map lifecycle regression introduced by the new root Wishlist metadata, the previously existing split-commit consistency risk, rejection of a naive 504-write/chunked design, the `placesGeneration` logical-invalidation architecture, one atomic <=253-write Clear Map core, strict stale-public-generation Rules, focused modal/error-path regression, controlled frontend/Rules release and Test Lead Production PASS.
 
 The [Evidence Register](evidence-register.md) is the authoritative public index for IDs and decisions.
 
