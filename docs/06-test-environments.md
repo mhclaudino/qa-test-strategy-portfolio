@@ -15,6 +15,7 @@ It defines:
 
 - local development/manual validation;
 - isolated Firebase Emulator browser regression;
+- manual Emulator QA readiness;
 - technical Rules/backend validation;
 - controlled Production validation;
 - browser/device coverage;
@@ -33,9 +34,12 @@ AtlasBadge does not claim an artificial enterprise test estate. It does not curr
 4. A failed Emulator preflight must fail closed; it must not fall back to real Firebase.
 5. Production validation uses controlled QA accounts/data only and requires Test Lead approval.
 6. A Vercel frontend deployment and changed Firestore Rules are treated as separate release resources whose parity must be confirmed before Production sign-off.
-7. Environmental unavailability is reported as blocked/inconclusive rather than converted into a false product result.
-8. No universal compatibility/accessibility claim is made from the available sample.
-9. The Test Lead has final authority over Production testing, destructive validation and environmental exceptions.
+7. A local browser URL does not identify the Firebase backend; effective project/Emulator routing must be proven separately.
+8. Manual Emulator QA is not ready until the services, required QA identity/state and the actual Test Lead browser session are all ready.
+9. One canonical manual-QA application origin must be used for a session; `localhost` and `127.0.0.1` are not treated as interchangeable browser origins.
+10. Environmental unavailability or parity mismatch is reported as blocked/inconclusive rather than converted into a false product result.
+11. No universal compatibility/accessibility claim is made from the available sample.
+12. The Test Lead has final authority over Production testing, destructive validation and environmental exceptions.
 
 ---
 
@@ -44,6 +48,7 @@ AtlasBadge does not claim an artificial enterprise test estate. It does not curr
 | Context | Purpose | Application target | Firebase target | Status |
 |---|---|---|---|---|
 | Local manual development | Implementation review, exploratory/manual QA, selected real-backend checks while authorised | Local Next.js runtime on Windows | Real `atlas-badge` when intentionally configured | Active / controlled |
+| Manual Emulator QA | Manual validation requiring current local Rules/backend behaviour without Production deploy | Canonical local browser origin for the active session | Auth/Firestore/Storage Emulators with explicit QA identity/session | Active / controlled |
 | Browser E2E Emulator | Normal automated persistence/privacy/regression | `127.0.0.1:3100` | Auth/Firestore Emulators, demonstration project `demo-atlasbadge-web` | Active / primary automated E2E |
 | Technical Emulator/Rules | Firestore Rules, account-deletion and backend-focused tests | Scripts/test runners | Firebase Emulators | Active |
 | Production | Post-deployment smoke and approved real-integration validation | Vercel Production | Real Firebase project `atlas-badge` | Active / controlled |
@@ -66,7 +71,19 @@ Local manual validation may include:
 
 Because the pre-V1.0 Firebase data is controlled/disposable test data, local real-Firebase access can be intentional. Evidence must identify whether the real backend or Emulator was actually used.
 
-No automated test is allowed to silently infer that a local application is safe merely because it runs on localhost.
+No automated or manual conclusion may infer that a local application is isolated merely because the browser address contains `localhost`.
+
+The effective environment record should identify, where relevant:
+
+```text
+Application origin
+Firebase project ID
+Auth backend
+Firestore backend
+Storage backend
+connect*Emulator state
+Rules source enforcing the request
+```
 
 ---
 
@@ -100,7 +117,7 @@ The suite must fail rather than continue if:
 - configuration points to the real Firebase project unexpectedly;
 - a request attempts to reach real Firebase hosts during an Emulator test.
 
-The final release-hardening runs recorded:
+Current isolated Wishlist regression evidence includes:
 
 ```text
 realFirebaseRequests = 0
@@ -124,32 +141,85 @@ It is not a public staging environment and does not attempt to reproduce Vercel 
 
 ---
 
-## 6. Technical Emulator and Firestore Rules context
+## 6. Manual Emulator QA readiness
+
+AB-EV-036 exposed an important distinction between automated Emulator execution and a usable manual Test Lead environment.
+
+### 6.1 Readiness contract
+
+The environment is not described as **ready for Test Lead manual QA** until all three conditions are true:
+
+```text
+1. Required Emulator services are running with the intended local Rules
+2. Required disposable QA identity/baseline state is available
+3. The actual Test Lead browser is authenticated on the canonical application origin
+```
+
+Starting the Emulator processes alone satisfies only the first condition.
+
+### 6.2 Real Firebase identity versus Auth Emulator identity
+
+A user authenticated in real Firebase Authentication is not automatically present in the isolated Auth Emulator. Switching an application from real Firebase to the Emulator therefore invalidates the prior authentication context unless an Emulator identity/state already exists.
+
+The environment must not silently create replacement identities during a manual-QA handoff. Any seed/restore operation is part of environment setup and must follow the Test Lead's approved test-data policy.
+
+### 6.3 Browser-context boundary
+
+An authenticated Playwright/scripted browser is a separate browser context. It must not be reported as the Test Lead's existing manual browser session.
+
+Likewise:
+
+```text
+http://localhost:3000
+```
+
+and
+
+```text
+http://127.0.0.1:3000
+```
+
+are treated as different application origins for browser persistence/session purposes.
+
+A manual QA session chooses one canonical application origin and keeps it for the duration of the test.
+
+### 6.4 Preferred future hardening
+
+Future environment hardening should minimise repeated Test Lead setup by providing a controlled reusable manual-QA bootstrap that can restore or deterministically prepare disposable Emulator identity/state without touching Production.
+
+The implementation may use Emulator import/export, deterministic seeding or a justified combination, but the readiness check must still verify the actual Test Lead browser session rather than assuming a script's browser context is sufficient.
+
+---
+
+## 7. Technical Emulator and Firestore Rules context
 
 The Firebase Emulator Suite is used for backend-focused verification including:
 
 - Firestore Rules allow/deny behaviour;
 - owner/non-owner/anonymous access;
 - public-profile projection whitelists;
-- valid/invalid rank fields;
+- valid/invalid order/rank fields;
 - account-deletion failure/retry logic;
 - Clear Map/private-public cleanup;
 - achievement metadata projection;
+- real backend batch-atomicity fault injection;
 - test fixtures requiring deterministic isolated state.
 
-The final AB-EV-033 Rules checkpoint recorded:
+AB-EV-036 includes a permanent real-Firestore-Emulator regression that denies one document write inside the combined Wishlist settings batch and proves that no sibling write is partially committed.
+
+The C36 Rules checkpoint recorded:
 
 ```text
 226 / 226 PASS
 ```
 
-The Emulator project identifier is deliberately distinct from Production.
+The Emulator project identifier is deliberately distinct from Production for isolated automated runs.
 
 ---
 
-## 7. Production environment
+## 8. Production environment
 
-### 7.1 Application and backend
+### 8.1 Application and backend
 
 Production application:
 
@@ -172,9 +242,9 @@ Production is used for:
 - selected desktop/mobile manual checks;
 - approved Production-only browser validation.
 
-### 7.2 Release-parity gate
+### 8.2 Release-parity gate
 
-AB-DEF-002 established that frontend and Firestore Rules can be out of sync even when the Vercel deployment is healthy.
+AB-DEF-002 established that frontend and Firestore Rules can be out of sync even when the Vercel deployment is healthy. C36 reproduced the same risk locally when new application behaviour was accidentally tested against older deployed Production Rules.
 
 Therefore, when a release changes Rules:
 
@@ -186,17 +256,18 @@ Therefore, when a release changes Rules:
 5. only then begin focused Production validation.
 ```
 
-For the AB-EV-033 release:
+For AB-EV-036:
 
 ```text
-Product SHA: 7bbdb9402145523f6a2f36d41cc74e55479cc664
-Vercel: dpl_HEKQuz6MAXiW413m6cqnH25zWrRg — READY
+Product SHA: 5d660b016528e75a2a70b49010a84065d884f883
+Vercel: dpl_HfDXpCCDisqAHXL85fyqHjnUd5N9 — READY / production
 Firestore Rules project: atlas-badge
 Rules-only deployment: SUCCESS
 Other Firebase resources deployed: none
+Production smoke: PASS / Test Lead approved
 ```
 
-### 7.3 Production test-data safety
+### 8.3 Production test-data safety
 
 Production tests use controlled QA accounts and disposable data.
 
@@ -207,13 +278,11 @@ They must not:
 - expose credentials/tokens in reports;
 - perform destructive operations outside the explicitly approved scope.
 
-The AB-EV-033 focused Production validation recorded zero destructive operations and zero non-QA accounts modified.
-
 Temporary Production-only test files are removed after execution unless intentionally retained as permanent regression assets.
 
 ---
 
-## 8. Browser and device baseline
+## 9. Browser and device baseline
 
 Current evidence includes:
 
@@ -230,7 +299,7 @@ QR-38 remains an Assessment gap for untested combinations.
 
 ---
 
-## 9. Responsive and accessibility environment use
+## 10. Responsive and accessibility environment use
 
 Responsive validation combines physical-device review and automated viewport coverage.
 
@@ -249,11 +318,13 @@ A scoped WCAG 2.2 AA technical baseline is recorded in AB-EV-017. This is not fo
 
 ---
 
-## 10. Test data and cleanup
+## 11. Test data and cleanup
 
 ### Emulator data
 
-Emulator tests create deterministic isolated data and may freely create/update/delete test records within the demonstration project.
+Emulator tests create deterministic isolated data and may freely create/update/delete test records within the approved demonstration project.
+
+Manual Emulator QA data is disposable but its creation/restoration must be deliberate. Temporary diagnostic/bootstrap scripts are not automatically permanent project assets.
 
 ### Production QA data
 
@@ -267,22 +338,26 @@ A release smoke does not automatically authorise destructive retesting.
 
 ---
 
-## 11. Environment failure classification
+## 12. Environment failure classification
 
-A run is not classified as a product failure when execution cannot start because of an infrastructure condition such as:
+A run is not classified as a product failure when execution cannot start or is invalid because of an infrastructure/environment condition such as:
 
 - Emulator service not running;
 - residual local port conflict;
 - unavailable dependency;
+- application pointing to an unintended Firebase backend;
+- frontend/Rules parity mismatch;
+- missing Emulator identity/state required for the intended manual scenario;
+- browser-origin/session mismatch;
 - missing authorised credential required for a specific destructive/Admin scenario.
 
-The condition is reported as environment/infrastructure blocked, corrected where safe, and the valid execution result is recorded separately.
+The condition is reported as environment/infrastructure blocked or parity mismatch, corrected where safe, and the valid execution result is recorded separately.
 
-The AB-EV-033 final seven-spec run, for example, had preliminary infrastructure attempts with missing Emulators/residual port state; the subsequent valid isolated run passed 26/26 scenarios.
+This classification does not hide true product defects. In C36, the Rules-parity permission failure was environmental, while the later lost-order behaviour reproduced under the correct environment was correctly treated as a product implementation failure and fixed before release.
 
 ---
 
-## 12. Security and secrets controls
+## 13. Security and secrets controls
 
 Public and test repositories must not contain:
 
@@ -291,15 +366,15 @@ Public and test repositories must not contain:
 - service-account private keys;
 - real Admin credentials;
 - `.env` secrets;
-- test-account identifiers where publication is unnecessary.
+- disposable test-account credentials where publication is unnecessary.
 
 Mock/dummy credentials used only to prove Emulator isolation must be clearly fictitious.
 
-The AB-EV-033 pre-commit Quality Inventory confirmed secrets clean and no real Firebase credentials hardcoded in the candidate release.
+Raw Auth Emulator identities, passwords and manual browser session state created during C36 troubleshooting were intentionally excluded from public evidence.
 
 ---
 
-## 13. Current environmental limitations
+## 14. Current environmental limitations
 
 Known limitations include:
 
@@ -308,32 +383,35 @@ Known limitations include:
 - no independent security lab/penetration-test environment;
 - no formal load/stress environment;
 - no comprehensive native assistive-technology/device laboratory;
+- manual Emulator QA bootstrap is not yet a formal one-command persisted environment contract;
 - some Production destructive/Admin validations may remain blocked if legitimate required credentials are unavailable.
 
 These limitations must remain visible in release/residual-risk decisions rather than being interpreted as passed coverage.
 
 ---
 
-## 14. Review triggers
+## 15. Review triggers
 
 Review this document when:
 
 - Firebase project/environment routing changes;
 - Emulator ports/services change;
 - Playwright server/build isolation changes;
+- manual Emulator QA bootstrap/import/export is formalised;
 - Production/Preview deployments become formal test environments;
 - staging/QA infrastructure is introduced;
 - browser/device support changes;
 - the final pre-launch Firebase reset changes local-data policy;
 - CI starts managing Emulator services;
-- a new Production safety or parity failure is discovered.
+- a new Production safety, parity or session-origin failure is discovered.
 
 ---
 
-## 15. Related evidence
+## 16. Related evidence
 
 - `evidence/v1.0/environments/`
 - `evidence/v1.0/regression/ab-ev-021-v1-release-hardening-and-integrated-regression.md`
 - `evidence/v1.0/smoke/ab-ev-024-production-release-validation-and-harness-hardening.md`
 - `evidence/v1.0/defects/production-deployment-parity-failure.md`
 - `evidence/v1.0/regression/ab-ev-033-wishlist-public-profile-release-hardening.md`
+- `evidence/v1.0/defects/ab-ev-036-wishlist-atomic-settings-save-and-order-integrity.md`
