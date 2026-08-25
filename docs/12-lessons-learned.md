@@ -8,7 +8,7 @@ It is deliberately not a diary of every defect, test run or implementation decis
 
 The emphasis is on reducing avoidable work while preserving risk-based confidence and traceability.
 
-> **Document status:** Active / maintained. Initial baseline consolidated from AtlasBadge V1.0 work through AB-EV-035.
+> **Document status:** Active / maintained. Consolidated through AB-EV-036 / AB-DEF-017.
 
 ---
 
@@ -162,15 +162,23 @@ Lessons do not replace the Test Strategy, Quality Risk Analysis or System Test P
 
 **Benefit:** Destructive/failure scenarios remain controlled and repeatable.
 
+### LL-19 — A helper-level ordering test is not enough when the order originates in interactive UI state
+
+**Observation:** C36 helper tests proved that a supplied `wishlistOrder` could be persisted correctly, but the Test Lead still found that a real reorder + privacy Save lost the displayed order. The missing coverage was the boundary where drag state became the Save payload and later returned through the read path.
+
+**Working rule:** For ordering features, at least one test must connect **reorder interaction/state → persistence payload → confirmed read/reload/render order**. Lower-level helpers may cover permutations, but they cannot replace the state-production boundary.
+
+**Benefit:** Prevents green automation from missing an integration error in the actual user journey.
+
 ---
 
-## 6. Architecture, release and documentation lessons
+## 6. Architecture, release and environment lessons
 
 ### LL-17 — Judge atomicity by real commit boundaries, not by the UI action
 
-**Observation:** One Save button or one `Promise.all()` can still represent multiple independent Firestore commits. A visually single action is not automatically atomic.
+**Observation:** One Save button or one `Promise.all()` can still represent multiple independent Firestore commits. A visually single action is not automatically atomic. AB-DEF-017 proved that Wishlist order could commit while privacy failed.
 
-**Working rule:** Data-consistency analysis must identify the actual transaction/batch boundaries and classify partial-persistence risk before calling a behaviour corruption or a defect.
+**Working rule:** Data-consistency analysis must identify the actual transaction/batch boundaries and prove failure behaviour at the backend boundary when atomicity matters.
 
 **Benefit:** More accurate risk analysis and better targeted fault-injection tests.
 
@@ -181,6 +189,68 @@ Lessons do not replace the Test Strategy, Quality Risk Analysis or System Test P
 **Working rule:** Investigation → implementation → focused validation → affected regression → Test Lead decision → commit/push → deployment/Production evidence → documentation. Historical evidence remains unchanged; later evidence records the new state.
 
 **Benefit:** Clear chronology, less documentation churn and defensible traceability.
+
+### LL-20 — Quantify the supported maximum before accepting an “atomic batch” redesign
+
+**Observation:** The first obvious AB-DEF-017 remediation was to put the existing per-place order writes into one batch. At the supported maximum, 251 private + 251 public rank writes would require 502 writes and exceed Firestore's 500-write batch limit.
+
+**Working rule:** Before accepting a batch/transaction redesign, calculate the maximum write/read cardinality using the product's supported maximum state. Fix write amplification instead of merely relocating it.
+
+**Benefit:** Prevents a local fix from preserving or creating a deterministic scale limit.
+
+### LL-21 — Verify application/Rules parity before investigating Firestore permission failures
+
+**Observation:** C36 local manual QA initially produced `Missing or insufficient permissions`. The localhost application was using real Firebase with the newly changed application model while Production still enforced the pre-C36 Rules whitelist.
+
+**Working rule:** A Firestore permission failure is not classified as a Product Defect until the effective Firebase backend and Rules version are identified. When application and Rules change together, QA must run in an environment where both revisions are aligned.
+
+**Benefit:** Avoids wasted defect investigation and unnecessary code changes caused by release/environment mismatch.
+
+### LL-22 — “localhost” does not mean “local Firebase”
+
+**Observation:** AtlasBadge intentionally allows local development to use real Firebase. During C36, the browser URL alone created a false assumption about the backend actually evaluating writes.
+
+**Working rule:** Environment evidence must state application origin, Firebase project, Emulator connectivity and effective Rules source separately. Never infer backend isolation from `localhost`.
+
+**Benefit:** Makes environment classification explicit and prevents accidental Production interaction assumptions.
+
+### LL-23 — An Emulator environment is not ready until backend, identity and browser session are ready
+
+**Observation:** Switching to the Auth/Firestore Emulators removed access to the previously authenticated real-Firebase account. Starting services alone did not provide a reusable manual-QA identity or an authenticated Test Lead browser session.
+
+**Working rule:** Manual Emulator readiness has three separate gates:
+
+```text
+Emulators running
++
+required QA identity/state available
++
+Test Lead browser authenticated on the canonical application origin
+```
+
+All three must be true before the environment is called “ready”.
+
+**Benefit:** Stops repeated environment-preparation work from consuming functional QA time.
+
+### LL-24 — A scripted/Playwright browser session is not the Test Lead's browser session
+
+**Observation:** A temporary script authenticated an isolated browser context and reported the manual-QA environment as authenticated even though the Test Lead's existing browser was still logged out. `localhost` and `127.0.0.1` also behaved as distinct browser origins for persistence.
+
+**Working rule:** Manual QA uses one canonical application origin and readiness must be verified in the actual Test Lead browser context. Automated browser authentication cannot be reported as manual-session authentication.
+
+**Benefit:** Prevents false environment-ready reports and origin/session churn.
+
+### LL-25 — A source-of-truth change requires write-path, read-path and in-memory-state review
+
+**Observation:** C36 correctly moved Wishlist ordering from per-place `wishlistOrderRank` to root `wishlistOrder`, but the owner modal initially continued to render legacy/alphabetical order. After that was corrected, an order-only Save still required an explicit Profile refresh because `AuthContext.profile` was not a live root-document subscription.
+
+**Working rule:** Whenever a source of truth moves, inspect all three paths:
+
+1. **write** — what persists the new value;
+2. **read/render** — which consumers select it over legacy fallback;
+3. **confirmed in-memory state** — how the current session receives the committed value.
+
+**Benefit:** Prevents a backend-correct migration from remaining functionally wrong in the UI.
 
 ---
 
@@ -193,11 +263,16 @@ The following compact rules apply to future AtlasBadge work:
 3. Prefer focused deterministic tests over broad repetitive execution.
 4. Finish formatting/fixes before final gates.
 5. Do not reopen approved product decisions without new evidence or an explicit requirement change.
-6. Do not classify infrastructure or stale automation as Product Defects.
+6. Do not classify infrastructure, Rules-parity mismatch or stale automation as Product Defects.
 7. Keep commits semantically small enough to audit and roll back.
 8. Test-only commits do not require runtime deployment validation merely because repository HEAD changed.
 9. Production-source changes require proportional release validation; Rules deploys remain separately authorised.
-10. The Test Lead makes quality decisions and final sign-off; mechanical evidence preparation should be automated wherever possible.
+10. When application and Rules change together, identify and close the temporary parity window before Production smoke.
+11. For Emulator manual QA, confirm backend + test identity/state + actual Test Lead browser session before declaring the environment ready.
+12. Use one canonical manual-QA application origin; do not mix `localhost` and `127.0.0.1` casually.
+13. When changing a source of truth, audit write, read/render and confirmed-session refresh paths.
+14. Ordering regression must cover the boundary where the user's reordered state becomes persisted and later rendered.
+15. The Test Lead makes quality decisions and final sign-off; mechanical evidence preparation should be automated wherever possible.
 
 ---
 
@@ -210,6 +285,8 @@ Update this document when a project event produces a reusable change in working 
 - exposes a recurring automation weakness;
 - improves persistence/recovery validation;
 - reduces release or documentation rework;
+- identifies an environment-readiness failure;
+- changes a data source-of-truth pattern;
 - identifies an architecture decision that should become a standing rule.
 
 Do not add a lesson merely because an isolated defect occurred.
@@ -221,8 +298,10 @@ Do not add a lesson merely because an isolated defect occurred.
 - `docs/02-quality-risk-analysis.md`
 - `docs/03-test-strategy.md`
 - `docs/04-test-scope.md`
+- `docs/06-test-environments.md`
 - `docs/08-metrics-and-reporting.md`
 - `docs/09-system-test-plan.md`
 - `evidence/v1.0/evidence-register.md`
 - `evidence/v1.0/regression/ab-ev-034-qr-01-failed-write-recovery-closure.md`
 - `evidence/v1.0/regression/ab-ev-035-c35-visited-passed-coexistence.md`
+- `evidence/v1.0/defects/ab-ev-036-wishlist-atomic-settings-save-and-order-integrity.md`
