@@ -6,7 +6,7 @@ This document provides a high-level overview of AtlasBadge, including its purpos
 
 It establishes the product context required for the risk analysis and test strategy documented in this repository.
 
-> **Document status:** Completed and maintained through AB-EV-035, including the C35 Visited + Passed through requirement correction and the AB-EV-034 QR-01 coverage closure.
+> **Document status:** Completed and maintained through AB-EV-036, including the C35 Visited + Passed through requirement correction, AB-EV-034 QR-01 coverage closure and C36/AB-DEF-017 Wishlist atomic persistence/order redesign.
 
 ## 2. Product summary
 
@@ -99,13 +99,16 @@ Confirmed rules include:
 - Passed through + Want to visit may coexist when no incompatible visited/lived/born state is active;
 - Wishlist-only records do not count as physical presence;
 - Wishlist-only records do not participate in Manual Visit Order;
-- Wishlist ordering uses `wishlistOrderRank`, independently from `visitOrderRank`;
+- Wishlist membership remains on place documents, while canonical Wishlist presentation order is stored in root `wishlistOrder` independently from `visitOrderRank`;
+- legacy `wishlistOrderRank` may be read as backward-compatible fallback but is no longer the canonical ordering source after C36;
+- one user-visible Wishlist Save persists changed order/privacy through one Firestore atomic batch boundary;
 - Wishlist privacy defaults to private;
+- public root `wishlistOrder` is exposed only while the Wishlist is public;
 - the saved Wishlist-public preference survives unrelated profile-visibility changes;
-- Clear Map removes Wishlist membership/ranks and resets its public preference;
+- Clear Map removes Wishlist membership/order state and resets its public preference;
 - account deletion removes the associated private/public Wishlist data.
 
-C35/AB-EV-035 is the current source for the corrected Visited + Passed through rule.
+C35/AB-EV-035 is the current source for the corrected Visited + Passed through rule. C36/AB-EV-036 is the current source for Wishlist atomic settings persistence and root order semantics.
 
 ### 5.4 Visits, memories and manual order
 
@@ -134,11 +137,11 @@ users/{uid}
 users/{uid}/places/{placeId}
 ```
 
-Private user/place records are owner-only.
+Private user/place records are owner-only. Root user state may include Profile/lifecycle settings such as `isWishlistPublic` and canonical `wishlistOrder`; place records hold travel-status membership/history and may retain legacy order fields only for compatibility.
 
 Relevant behaviours include loading/saving status, visit and order changes; handling delayed/rejected/concurrent writes; maintaining consistency between optimistic UI, confirmed state and cache; and recovering safely across reload/session boundaries.
 
-AB-EV-034 closes the previous QR-01 failed-write/recovery coverage gap using architectural equivalence and focused deterministic rollback evidence.
+AB-EV-034 closes the previous QR-01 failed-write/recovery coverage gap using architectural equivalence and focused deterministic rollback evidence. AB-EV-036 adds a real Firestore Emulator rejected-batch proof for combined Wishlist settings and confirms no sibling write partially persists when the atomic batch is denied.
 
 ### 5.6 Public profile and sanitised projection
 
@@ -153,11 +156,13 @@ publicProfiles/{uid}/places/{placeId}
 
 A non-owner or anonymous Profile viewer reads the public source only.
 
+The public root may expose only approved presentation fields. When the Wishlist is public, the approved root projection may include `isWishlistPublic` and sanitised `wishlistOrder`; private Wishlist order is not exposed when visibility is disabled.
+
 Public place projections must not expose `generalNote`, `registeredVisits`, memories/private visit details, `firstPhysicalPresenceAt`, `statusActivatedAt` or `visitsCount`.
 
 Public achievement metadata contains only `unlockedAt` and `sequence`.
 
-A public Wishlist tile appears only when Wishlist visibility is public and the Wishlist is non-empty. Its modal is read-only.
+A public Wishlist tile appears only when Wishlist visibility is public and the Wishlist is non-empty. Its modal is read-only and renders owner order from the sanitised public root.
 
 ### 5.7 Responsive experience
 
@@ -192,9 +197,10 @@ AtlasBadge supports desktop and mobile web use. Testing considers navigation, ma
 1. The user applies Want to visit to one or more places.
 2. The Wishlist surface shows those places.
 3. The user may reorder them independently from visit chronology.
-4. The user chooses public/private Wishlist visibility.
-5. Membership, order and privacy persist after reload.
-6. If public and non-empty, the read-only public Profile displays the Wishlist.
+4. The user may change order and privacy in the same Save.
+5. The logical Save commits the root order/privacy and required public projection changes atomically.
+6. Membership, order and privacy persist after reload.
+7. If public and non-empty, the read-only public Profile displays the Wishlist in the canonical saved order.
 
 ### Journey 5: View a public profile
 
@@ -210,7 +216,7 @@ AtlasBadge supports desktop and mobile web use. Testing considers navigation, ma
 | Account data | User identifier, authentication state | Security, privacy, account isolation |
 | Private profile data | User settings and owner-only lifecycle state | Authorisation, deletion, integrity |
 | Private travel data | Statuses, visits, memories, ranks | Accuracy, persistence, ownership, concurrency |
-| Wishlist data | Membership, `wishlistOrderRank`, `isWishlistPublic` | Status compatibility, privacy, independent ordering |
+| Wishlist data | Place membership, root `wishlistOrder`, `isWishlistPublic` | Atomicity, status compatibility, privacy, independent ordering |
 | Progress data | Counts, percentages, achievements | Calculation consistency, chronology |
 | Local cache | UID-scoped browser state | Synchronisation, stale information |
 | Public projection | `publicProfiles` root and places | Whitelisting, sanitisation, read-only access |
@@ -239,7 +245,7 @@ A release that changes both frontend behaviour and Firestore Rules must preserve
 
 Key characteristics are functional correctness, data integrity, security/privacy, usability, reliability, compatibility, performance, accessibility and maintainability.
 
-Maintainability includes keeping business rules central, maintaining automated expectations when requirements legitimately change, and avoiding unnecessary regression work when earlier checkpoints remain valid.
+Maintainability includes keeping business rules central, maintaining automated expectations when requirements legitimately change, avoiding unnecessary regression work when earlier checkpoints remain valid, and reviewing write/read/session-refresh paths when a canonical data source changes.
 
 ## 11. Known areas requiring clarification or future work
 
@@ -258,8 +264,10 @@ These items are not automatically defects. They are open product/quality questio
 - `docs/02-quality-risk-analysis.md`
 - `docs/03-test-strategy.md`
 - `docs/04-test-scope.md`
+- `docs/06-test-environments.md`
 - `docs/09-system-test-plan.md`
 - `docs/12-lessons-learned.md`
 - `evidence/v1.0/evidence-register.md`
 - `evidence/v1.0/regression/ab-ev-034-qr-01-failed-write-recovery-closure.md`
 - `evidence/v1.0/regression/ab-ev-035-c35-visited-passed-coexistence.md`
+- `evidence/v1.0/defects/ab-ev-036-wishlist-atomic-settings-save-and-order-integrity.md`
