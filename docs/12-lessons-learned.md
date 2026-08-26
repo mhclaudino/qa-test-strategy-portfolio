@@ -8,7 +8,7 @@ It is deliberately not a diary of every defect, test run or implementation decis
 
 The emphasis is on reducing avoidable work while preserving risk-based confidence and traceability.
 
-> **Document status:** Active / maintained. Consolidated through AB-EV-038 / C38.
+> **Document status:** Active / maintained. Consolidated through AB-EV-041 / C41.
 
 ---
 
@@ -282,6 +282,30 @@ All three must be true before the environment is called “ready”.
 
 **Benefit:** Removes friction from routine Test Lead work while preserving safe isolation where actually needed.
 
+### LL-29 — A public surface must use the public projection even when the owner is the viewer
+
+**Observation:** C41 initially worked for anonymous viewers but not for the owner viewing their own public Profile because owner-specific page state used private place objects that did not contain `publicMemories`. An intermediate fallback rebuilt the public projection in the browser from private data.
+
+**Working rule:** Public-facing content uses the canonical sanitised public projection for every viewer role. Owner-only data may support owner-specific controls, but it must not become an alternate source of truth for content presented as public.
+
+**Benefit:** Prevents privacy drift and different public behaviour for owner versus visitor.
+
+### LL-30 — Diagnose stale public projections before adding migrations or compensating code
+
+**Observation:** After C41 added exact `VISITA n` labels, the existing Brazil public document still showed the legacy generic label because it had not yet been rewritten with the new projection shape.
+
+**Working rule:** When code and current projection logic are correct but a persisted public document lacks a backward-compatible new field, inspect the stored projection first. Prefer the normal product persistence path to rebuild test data before introducing migrations, admin edits or client-side reconstruction.
+
+**Benefit:** Avoids unnecessary code and distinguishes legacy test-data state from product defects.
+
+### LL-31 — When a requirement names an existing UI pattern, inspect and reuse that pattern before designing
+
+**Observation:** C41 first rendered an inline panel even though the intended interaction was the established Wishlist modal family. A later Profile sort-toggle correction matched compact styling but initially missed the reference header placement and spacing.
+
+**Working rule:** If the acceptance criterion says “same as” an existing AtlasBadge control/surface, inspect the actual reference component/layout before editing. Validate placement, spacing, responsive behaviour and interaction—not only internal colours/classes.
+
+**Benefit:** Reduces avoidable visual rework and preserves interface consistency.
+
 ---
 
 ## 7. Standing efficiency rules
@@ -305,6 +329,9 @@ The following compact rules apply to future AtlasBadge work:
 15. For destructive cross-projection resets, define the atomic logical completion boundary separately from non-critical physical garbage collection.
 16. A rejected destructive action must expose failure feedback and must not be presented as successful completion.
 17. The Test Lead makes quality decisions and final sign-off; mechanical evidence preparation should be automated wherever possible.
+18. Public Profile content uses the sanitised public projection for owner and non-owner viewers alike; private owner data is not a public-rendering fallback.
+19. Before compensating for missing public projection fields, inspect whether the persisted test document is legacy/stale and can be rebuilt through the normal product write path.
+20. When a requirement references an existing AtlasBadge visual pattern, inspect/reuse the exact reference surface and validate layout as well as styling.
 
 ---
 
@@ -340,3 +367,7 @@ Do not add a lesson merely because an isolated defect occurred.
 - `evidence/v1.0/defects/ab-ev-036-wishlist-atomic-settings-save-and-order-integrity.md`
 - `evidence/v1.0/defects/ab-ev-037-clear-map-atomic-generation-reset.md`
 - `evidence/v1.0/environments/ab-ev-038-manual-qa-environment-contract.md`
+- `docs/13-c39-c41-memory-privacy-order-public-profile-traceability.md`
+- `evidence/v1.0/regression/ab-ev-039-c39-individual-memory-privacy.md`
+- `evidence/v1.0/regression/ab-ev-040-c40-manual-memory-ordering.md`
+- `evidence/v1.0/regression/ab-ev-041-c41-public-memory-flag-modal.md`

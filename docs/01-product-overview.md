@@ -6,7 +6,7 @@ This document provides a high-level overview of AtlasBadge, including its purpos
 
 It establishes the product context required for the risk analysis and test strategy documented in this repository.
 
-> **Document status:** Completed and maintained through AB-EV-036, including the C35 Visited + Passed through requirement correction, AB-EV-034 QR-01 coverage closure and C36/AB-DEF-017 Wishlist atomic persistence/order redesign.
+> **Document status:** Completed and maintained through AB-EV-041. C39/AB-EV-039 implements individual memory privacy; C40/AB-EV-040 adds manual memory presentation ordering; C41/AB-EV-041 adds public-memory access from earned flags. C41 is committed and automatically deployed successfully; final Production smoke remains pending.
 
 ## 2. Product summary
 
@@ -39,10 +39,10 @@ A registered traveller can:
 - create and access an account;
 - select countries or places on the map;
 - assign and change travel statuses;
-- save visits and private memories;
+- save visits and memories with explicit per-memory privacy;
 - maintain a Wishlist based on the Want to visit status;
 - choose whether the Wishlist is public or private;
-- reorder visits and Wishlist items independently where supported;
+- reorder visited places, memory presentation and Wishlist items independently where supported;
 - review saved travel progress and achievements;
 - manage personal profile information;
 - publish or hide a public profile.
@@ -55,8 +55,9 @@ A public visitor can:
 - view only information intentionally projected for public presentation;
 - browse the public map, progress, flags and achievements;
 - view a public Wishlist only when the owner enabled it and the Wishlist is non-empty;
+- click an earned country/territory flag to view only that place's intentionally public memories;
 - use local presentation controls without modifying or persisting changes to the owner's data;
-- browse without access to private visits, memories, notes or owner-only records.
+- browse without access to private visits, private memories/notes or owner-only records.
 
 ### 4.3 Product administrator
 
@@ -112,19 +113,29 @@ C35/AB-EV-035 is the current source for the corrected Visited + Passed through r
 
 ### 5.4 Visits, memories and manual order
 
-Qualifying physical-presence places may contain registered visits and private memories.
+Qualifying physical-presence places may contain registered visits and memories. Memory visibility is controlled per memory.
 
-`RegisteredVisit` represents an individual occurrence; travel status represents accumulated place history. Therefore a status transition such as Passed through → Visited does not manufacture a second visit. Additional actual occurrences are recorded through the visit-add workflow.
+`RegisteredVisit` represents an individual occurrence; travel status represents accumulated place history. A status transition such as Passed through → Visited does not manufacture a second visit. Additional actual occurrences are recorded through the visit-add workflow.
 
 Relevant behaviours include:
 
 - repeated visit creation/removal/editing;
 - `visitsCount` derived from registered visits where applicable;
-- explicit Save for memory text rather than persistence on every keystroke;
-- preservation of private memories across supported status transitions;
+- explicit Save for memory text/privacy rather than persistence on every keystroke;
+- `RegisteredVisit.isMemoryPublic?: boolean` for visit-memory visibility;
+- `UserCountry.isGeneralNotePublic?: boolean` for general-memory visibility;
+- legacy/missing privacy flags defaulting to private;
+- a public visit requiring at least one approved shareable value (duration, date/time or note), with note not mandatory;
+- empty general memory remaining non-public;
+- `memoryOrder?: string[]` storing presentation order independently from the `registeredVisits` source/history array;
+- stale/duplicate order IDs being ignored and newly added visits appended deterministically;
+- deleting a visit cleaning its presentation-order ID in the same logical mutation;
+- preservation of original `VISITA n` identity even when memory presentation order changes;
 - Manual Visit Order for qualifying physical-presence places only;
 - independent Wishlist order;
 - transactional integrity for the Born there user pointer/status relationship.
+
+C39/AB-EV-039 is the current privacy contract for memories. C40/AB-EV-040 is the current manual memory-order contract.
 
 ### 5.5 Persistent user data
 
@@ -137,7 +148,7 @@ users/{uid}
 users/{uid}/places/{placeId}
 ```
 
-Private user/place records are owner-only. Root user state may include Profile/lifecycle settings such as `isWishlistPublic` and canonical `wishlistOrder`; place records hold travel-status membership/history and may retain legacy order fields only for compatibility.
+Private user/place records are owner-only. Root user state may include Profile/lifecycle settings such as `isWishlistPublic` and canonical `wishlistOrder`; place records hold travel-status membership/history, per-memory privacy, optional `memoryOrder` presentation metadata and may retain legacy order fields only for compatibility.
 
 Relevant behaviours include loading/saving status, visit and order changes; handling delayed/rejected/concurrent writes; maintaining consistency between optimistic UI, confirmed state and cache; and recovering safely across reload/session boundaries.
 
@@ -154,15 +165,19 @@ publicProfiles/{uid}
 publicProfiles/{uid}/places/{placeId}
 ```
 
-A non-owner or anonymous Profile viewer reads the public source only.
+A non-owner or anonymous Profile viewer reads the public source only. C41 applies the same source rule to the owner viewing their own public Profile: public-memory rendering consumes the public projection rather than reconstructing it from private `RegisteredVisit` data.
 
 The public root may expose only approved presentation fields. When the Wishlist is public, the approved root projection may include `isWishlistPublic` and sanitised `wishlistOrder`; private Wishlist order is not exposed when visibility is disabled.
 
-Public place projections must not expose `generalNote`, `registeredVisits`, memories/private visit details, `firstPhysicalPresenceAt`, `statusActivatedAt` or `visitsCount`.
+Public place projections must not expose raw `generalNote`, `registeredVisits`, privacy flags, `memoryOrder`, private visit content, `firstPhysicalPresenceAt`, `statusActivatedAt` or `visitsCount`. They may expose the sanitised `publicMemories` list created by C39.
+
+For visit memories, the projection contains only approved shareable values and, from C41, a sanitised exact presentation label such as `VISITA 1`. C40 ordering is resolved before privacy filtering, so relative public order is preserved without exposing `memoryOrder` itself.
 
 Public achievement metadata contains only `unlockedAt` and `sequence`.
 
 A public Wishlist tile appears only when Wishlist visibility is public and the Wishlist is non-empty. Its modal is read-only and renders owner order from the sanitised public root.
+
+A normal earned country/territory flag opens a read-only public-memory modal. The Wishlist tile remains a separate interaction.
 
 ### 5.7 Responsive experience
 
@@ -207,7 +222,9 @@ AtlasBadge supports desktop and mobile web use. Testing considers navigation, ma
 1. A visitor opens a valid public profile address.
 2. Publicly projected travel information is displayed.
 3. Private user/place records are not read by the visitor.
-4. Private memories/visits remain absent from public responses.
+4. Clicking an earned country/territory flag opens the public-memory modal for that place.
+5. Only memories included in the sanitised `publicMemories` projection are displayed, preserving C40 order and exact projected `VISITA n` identity.
+6. Private memories/visits remain absent from the public response.
 
 ## 7. Data overview
 
@@ -219,7 +236,7 @@ AtlasBadge supports desktop and mobile web use. Testing considers navigation, ma
 | Wishlist data | Place membership, root `wishlistOrder`, `isWishlistPublic` | Atomicity, status compatibility, privacy, independent ordering |
 | Progress data | Counts, percentages, achievements | Calculation consistency, chronology |
 | Local cache | UID-scoped browser state | Synchronisation, stale information |
-| Public projection | `publicProfiles` root and places | Whitelisting, sanitisation, read-only access |
+| Public projection | `publicProfiles` root/places, sanitised `publicMemories` | Whitelisting, per-memory privacy, ordering, read-only access |
 
 No real user credentials or personal data are included in this portfolio.
 
@@ -252,7 +269,6 @@ Maintainability includes keeping business rules central, maintaining automated e
 - Final localisation completeness across all V1.0 locales;
 - broader browser/device compatibility beyond the current validated sample;
 - quantitative performance targets;
-- future per-memory visibility rules;
 - future photos per RegisteredVisit;
 - future Story/share scope;
 - administrative/moderation capabilities if introduced.
@@ -267,7 +283,8 @@ These items are not automatically defects. They are open product/quality questio
 - `docs/06-test-environments.md`
 - `docs/09-system-test-plan.md`
 - `docs/12-lessons-learned.md`
+- `docs/13-c39-c41-memory-privacy-order-public-profile-traceability.md`
 - `evidence/v1.0/evidence-register.md`
-- `evidence/v1.0/regression/ab-ev-034-qr-01-failed-write-recovery-closure.md`
-- `evidence/v1.0/regression/ab-ev-035-c35-visited-passed-coexistence.md`
-- `evidence/v1.0/defects/ab-ev-036-wishlist-atomic-settings-save-and-order-integrity.md`
+- `evidence/v1.0/regression/ab-ev-039-c39-individual-memory-privacy.md`
+- `evidence/v1.0/regression/ab-ev-040-c40-manual-memory-ordering.md`
+- `evidence/v1.0/regression/ab-ev-041-c41-public-memory-flag-modal.md`

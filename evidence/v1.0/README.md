@@ -65,8 +65,13 @@ Selected quick/affected-area/integrated regression evidence includes:
 - [AB-EV-033 — Wishlist/public-profile release hardening](regression/ab-ev-033-wishlist-public-profile-release-hardening.md)
 - [AB-EV-034 — QR-01 failed-write recovery closure](regression/ab-ev-034-qr-01-failed-write-recovery-closure.md)
 - [AB-EV-035 — C35 Visited + Passed-through coexistence](regression/ab-ev-035-c35-visited-passed-coexistence.md)
+- [AB-EV-039 — C39 Individual memory privacy](regression/ab-ev-039-c39-individual-memory-privacy.md)
+- [AB-EV-040 — C40 Manual memory ordering](regression/ab-ev-040-c40-manual-memory-ordering.md)
+- [AB-EV-041 — C41 Public memories from earned flags](regression/ab-ev-041-c41-public-memory-flag-modal.md)
 
 AB-EV-034 is the closure record for the previous QR-01 `Current gap`; QR-01 now remains as a `Regression risk`. AB-EV-035 records a requirement correction rather than a Product Defect.
+
+AB-EV-039 records per-memory privacy and sanitised public projection. AB-EV-040 records manual memory presentation order plus the correctly classified Rules-parity blocker. AB-EV-041 records public-memory access from earned flags, owner/anonymous public-source parity, exact visit labels and the final Profile sort-layout correction; its automatic deployment is successful and its final Production smoke remains pending.
 
 ### `defects`
 

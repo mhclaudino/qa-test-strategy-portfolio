@@ -67,6 +67,7 @@ The strategy documented in this repository is based on the following principles:
 | [C31–C32 Production Traceability](docs/10-c31-c32-production-traceability.md) | Connect counter integrity and Profile map navigation to risks/tests/evidence/release | Completed |
 | [C33–C34 Production Traceability](docs/11-c33-c34-production-traceability.md) | Connect dashboard/manual ordering, concurrency and birthplace integrity | Completed |
 | [Lessons Learned](docs/12-lessons-learned.md) | Convert recurring product/QA experience into reusable efficiency and quality rules | Active / maintained |
+| [C39–C41 Memory Traceability](docs/13-c39-c41-memory-privacy-order-public-profile-traceability.md) | Connect per-memory privacy, manual memory ordering and public-memory flag access to risks/tests/releases | Active — C41 Production smoke pending |
 | Exploratory Test Charters | Provide focused exploratory testing missions | Planned |
 | Sample Test Cases | Demonstrate selected functional and risk-based tests | Planned |
 | Test Summary Report | Demonstrate release-level quality reporting | Planned |
@@ -87,12 +88,18 @@ Recent evidence includes:
 - [AB-EV-035 — C35 Visited + Passed-through coexistence](evidence/v1.0/regression/ab-ev-035-c35-visited-passed-coexistence.md)
 - [AB-EV-036 / AB-DEF-017 — Wishlist atomic settings save and order integrity](evidence/v1.0/defects/ab-ev-036-wishlist-atomic-settings-save-and-order-integrity.md)
 - [AB-EV-037 / AB-DEF-018 — Clear Map atomic generation reset](evidence/v1.0/defects/ab-ev-037-clear-map-atomic-generation-reset.md)
+- [AB-EV-038 — Manual QA Environment Contract](evidence/v1.0/environments/ab-ev-038-manual-qa-environment-contract.md)
+- [AB-EV-039 — C39 Individual memory privacy](evidence/v1.0/regression/ab-ev-039-c39-individual-memory-privacy.md)
+- [AB-EV-040 — C40 Manual memory ordering](evidence/v1.0/regression/ab-ev-040-c40-manual-memory-ordering.md)
+- [AB-EV-041 — C41 Public memories from earned flags](evidence/v1.0/regression/ab-ev-041-c41-public-memory-flag-modal.md)
 
 AB-EV-034 closes the last documented QR-01 coverage gap and changes its current state from `Current gap` to `Regression risk`. AB-EV-035 records a Product Owner/Test Lead requirement correction: Visited and Passed through are compatible cumulative historical statuses, while `RegisteredVisit` remains the individual-occurrence model.
 
 AB-EV-036 records a true Product Defect found through atomicity analysis: one Wishlist Save could use independent Firestore commits and leave partial persisted state. The final correction replaces per-place Wishlist ordering writes with root `wishlistOrder`, keeps the maximum combined operation at or below 253 document writes, proves rejected-batch atomicity in the Firestore Emulator and closes the defect after controlled Vercel/Firestore Rules deployment plus Test Lead Production validation.
 
 AB-EV-037 extends that data-integrity work to the destructive Clear Map lifecycle. The old implementation could be blocked by the new root Wishlist metadata and also used separate public/private commit boundaries. C37 rejects naive 504-write chunking, introduces generation-based public projection invalidation, performs the logical Clear Map reset in one <=253-write batch, protects stale public data at the Rules/query boundary and closes AB-DEF-018 after aligned application/Rules deployment and Test Lead Production PASS.
+
+AB-EV-039 establishes explicit per-memory privacy with sanitised `publicMemories`; AB-EV-040 adds independent `memoryOrder` presentation metadata while preserving `registeredVisits` identity/history; AB-EV-041 connects those contracts to the public Profile through an earned-flag modal, a single public data source for owner/viewer rendering and exact original `VISITA n` labels. C41 is committed and automatically deployed successfully; its final Production smoke remains pending in the evidence record.
 
 The portfolio records true Product Defects separately from stale automation, environment/Rules parity failures and requirement corrections so defect metrics are not artificially inflated.
 
@@ -114,7 +121,10 @@ The portfolio records true Product Defects separately from stale automation, env
 - review write path, read path and confirmed in-memory state whenever a source of truth changes;
 - ensure ordering tests connect user reorder state to persisted and later-rendered order;
 - separate atomic logical invalidation from non-critical physical garbage collection when destructive operations exceed backend transaction limits;
-- expose destructive-operation failure feedback instead of leaving confirmation UI apparently frozen.
+- expose destructive-operation failure feedback instead of leaving confirmation UI apparently frozen;
+- keep public Profile rendering on the sanitised public projection even when the owner views their own Profile;
+- diagnose stale legacy projection data before adding compensating code or migrations;
+- reuse an explicitly referenced existing UI pattern before inventing a new layout.
 
 This is part of the QA strategy rather than a retrospective appendix: lessons are converted into standing working rules for later AtlasBadge changes.
 
@@ -142,7 +152,8 @@ qa-test-strategy-portfolio/
 │   ├── 09-system-test-plan.md
 │   ├── 10-c31-c32-production-traceability.md
 │   ├── 11-c33-c34-production-traceability.md
-│   └── 12-lessons-learned.md
+│   ├── 12-lessons-learned.md
+│   └── 13-c39-c41-memory-privacy-order-public-profile-traceability.md
 ├── evidence/
 │   └── v1.0/
 │       ├── README.md

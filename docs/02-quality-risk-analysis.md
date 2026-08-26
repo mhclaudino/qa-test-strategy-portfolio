@@ -6,7 +6,7 @@ This document identifies, evaluates and prioritises the main quality risks assoc
 
 This is a living analysis. Risk scores and priorities must be reviewed whenever the product, architecture, geographic catalogue, privacy model or release scope changes.
 
-> **Document status:** Reviewed through AB-EV-037. AB-EV-034 closed the remaining QR-01 failed-write/recovery coverage gap; C35/AB-EV-035 corrected the status model so Visited and Passed through may coexist; C36/AB-EV-036 closes AB-DEF-017 by replacing independent Wishlist settings commits/per-place order amplification with one atomic root-order settings Save; C37/AB-EV-037 closes AB-DEF-018 by replacing split Clear Map commits with one <=253-write logical reset plus generation-based public invalidation, aligned Rules and Production validation.
+> **Document status:** Reviewed through AB-EV-041. C39 implements per-memory privacy and moves QR-36 from Future risk to Regression risk; C40 adds manual memory ordering with Rules-parity validation; C41 integrates sanitised public memories into the public Profile. C41 automatic deployment is successful; final Production smoke remains pending.
 
 ---
 
@@ -58,6 +58,8 @@ Where applicable, the first physical-presence state initialises the first visit.
 Memory text uses local draft state and persists only after explicit **Save**. Non-visit memories may use `generalNote` without an artificial registered visit or visit-count increase. Detailed memories for physical occurrences remain associated with `RegisteredVisit`.
 
 Current V1.0 behaviour preserves user-created visit history/memories across supported status transitions. AB-EV-032 protects replayable/idempotent rapid visit mutations; AB-EV-035 adds explicit protection that combining Visited + Passed through does not duplicate visits or memories.
+
+C39/AB-EV-039 adds explicit per-memory visibility while retaining the explicit-Save contract. Legacy privacy flags default to private; a visit may be public with valid duration/date even when note is empty; an empty general memory cannot be public. C40/AB-EV-040 adds `memoryOrder` as presentation metadata without reordering `registeredVisits` or exposing the order field publicly.
 
 ### 3.4 Persistence and data model
 
@@ -112,13 +114,15 @@ username
 wishlistOrder   // only while Wishlist visibility permits public order
 ```
 
-Public place projections must not expose `generalNote`, `registeredVisits`, memories/private visit details, `firstPhysicalPresenceAt`, `statusActivatedAt` or `visitsCount`.
+Public place projections must not expose raw `generalNote`, `registeredVisits`, privacy flags, `memoryOrder`, private memory/visit details, `firstPhysicalPresenceAt`, `statusActivatedAt` or `visitsCount`. C39 permits only the sanitised `publicMemories` list, and C41 adds only the exact sanitised visit presentation label required by the public modal.
 
 Current-generation public place projections include `placesGeneration`. Existing legacy public roots/places without the field remain compatible as generation 0. Once a root is versioned, stale generation public-place reads are denied to non-owner/anonymous viewers and current public queries target the active generation.
 
 Wishlist privacy defaults to private. A public Wishlist tile is rendered only when `isWishlistPublic` is true and Wishlist membership is non-empty. The tile/modal is read-only. Viewer-local presentation sorting is permitted but must not persist the owner's preference.
 
 AB-EV-033 validates private→public and public→private Wishlist transitions, public-only cleanup, mixed-document sanitisation and zero private viewer reads in Production. AB-EV-036 extends that baseline by atomically coupling privacy/order changes, exposing root order only in the approved public state and validating the aligned Rules release in Production. AB-EV-037 extends the lifecycle boundary further: Clear Map invalidates all obsolete public travel-place generations atomically without requiring 251 public child deletes inside the logical reset.
+
+AB-EV-039 protects individual-memory privacy and sanitised public-memory projection. AB-EV-040 proves public-memory ordering can follow owner presentation order without exposing `memoryOrder`. AB-EV-041 makes owner and anonymous public-memory rendering consume the same public projection and keeps the public Profile read-only.
 
 ### 3.6 Geographic catalogue and progress model
 
@@ -272,10 +276,10 @@ Universal browser/device support and formal accessibility certification are not 
 | QR-33 | A public-profile component may allow editing or unauthorised persistence. | Regression risk | 5 | 2 | 10 | Medium |
 | QR-34 | Public→private transitions or destructive resets may leave previously public profile/Wishlist/place projections accessible. | Regression risk | 4 | 3 | 12 | High |
 | QR-35 | Social-link validation may permit an unsafe destination. | Regression risk | 4 | 2 | 8 | Medium |
-| QR-36 | Future per-memory visibility/default logic may publish content contrary to preference. | Future risk | 5 | 3 | 15 | High |
+| QR-36 | Per-memory visibility/default or public-memory rendering may publish content contrary to the owner's explicit preference. | Regression risk | 5 | 3 | 15 | High |
 | QR-37 | A future generated Story may expose unexpected information or fail across sharing flows. | Future risk | 4 | 3 | 12 | High |
 
-**Applied decisions:** AB-EV-036 adds `wishlistOrder` to the intentional public-root contract only when Wishlist visibility permits it, preserves private order while public visibility is off, validates public→private atomic cleanup and restores frontend/Rules parity before the Production smoke. AB-EV-037 adds `placesGeneration` to the root/place projection lifecycle, keeps legacy generation-0 compatibility, denies stale-generation public reads after Clear Map and validates the aligned application/Rules release in Production. QR-31/QR-34 remain regression risks because privacy and destructive transitions remain consequential.
+**Applied decisions:** AB-EV-036 adds `wishlistOrder` to the intentional public-root contract only when Wishlist visibility permits it, preserves private order while public visibility is off, validates public→private atomic cleanup and restores frontend/Rules parity before the Production smoke. AB-EV-037 adds `placesGeneration` to the root/place projection lifecycle, keeps legacy generation-0 compatibility and denies stale-generation public reads after Clear Map. AB-EV-039 implements the previously future QR-36 control through explicit per-memory privacy and sanitised `publicMemories`; AB-EV-040 preserves that privacy while applying independent presentation order; AB-EV-041 renders the public projection through earned-flag modals without private-source fallback. QR-31/QR-32/QR-34/QR-36 remain regression risks because privacy and public-projection failures remain consequential.
 
 ### 5.6 Compatibility, usability, performance and accessibility
 
@@ -289,7 +293,7 @@ Universal browser/device support and formal accessibility certification are not 
 
 ## 6. Highest-priority test focus
 
-Priority focus includes failed-write/recovery regression; atomic multi-resource Save/destructive-reset behaviour; visit-history preservation; account-deletion integrity; status/Wishlist compatibility; `252/195/57` counter integrity; geographic catalogue integrity; private/public projection and privacy transitions; explicit logout/local-data exposure; explicit-Save integrity; real-time concurrency/cache authority; rapid visit convergence; Manual Visit Order; independent Wishlist root ordering; Clear Map generation invalidation; birthplace pointer/status atomicity; achievement chronology/public metadata; responsive/constrained-device behaviour; Profile read-only interaction; and accessibility.
+Priority focus includes failed-write/recovery regression; atomic multi-resource Save/destructive-reset behaviour; visit-history preservation; account-deletion integrity; status/Wishlist compatibility; `252/195/57` counter integrity; geographic catalogue integrity; private/public projection and privacy transitions; explicit logout/local-data exposure; explicit-Save integrity; real-time concurrency/cache authority; rapid visit convergence; Manual Visit Order; independent Wishlist root ordering; per-memory privacy; manual memory ordering; public-memory flag-modal rendering; Clear Map generation invalidation; birthplace pointer/status atomicity; achievement chronology/public metadata; responsive/constrained-device behaviour; Profile read-only interaction; and accessibility.
 
 QR-01 and QR-25 are no longer open investigations. Their residual concern is regression. AB-DEF-017 and AB-DEF-018 are closed; atomic Wishlist settings/order and atomic logical Clear Map integrity are permanent regression scope.
 

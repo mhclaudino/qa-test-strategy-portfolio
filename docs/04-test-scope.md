@@ -6,7 +6,7 @@ This document defines the testing scope for AtlasBadge during incremental V1.0 d
 
 It identifies covered product areas, expected depth, current coverage, mandatory remaining work and intentionally deferred items.
 
-> **Document status:** Completed and maintained through AB-EV-037. AB-EV-034 closes the residual QR-01 failed-write/recovery assessment gap; C35/AB-EV-035 adds the corrected Visited + Passed through compatibility rule; C36/AB-EV-036 closes AB-DEF-017 and establishes atomic Wishlist settings persistence plus canonical root ordering; C37/AB-EV-037 closes AB-DEF-018 and establishes an atomic logical Clear Map reset with generation-based public invalidation.
+> **Document status:** Completed and maintained through AB-EV-041. C39 adds executed per-memory privacy scope; C40 adds executed manual memory-order scope; C41 adds public-memory flag-modal coverage. C41 automatic deployment is successful; final Production smoke remains pending.
 
 ---
 
@@ -76,6 +76,7 @@ Coverage includes:
 - rejected-write rollback/recovery;
 - repeated/rapid mutation;
 - Manual Visit Order through `visitOrderRank`;
+- manual memory presentation order through `memoryOrder`, without changing `registeredVisits` source order;
 - Wishlist membership through `statuses.wishlist` and canonical order through root `wishlistOrder`;
 - atomic combined Wishlist order/privacy Save;
 - private/public place/root projection synchronisation;
@@ -98,6 +99,10 @@ Coverage includes:
 - public Profile access by owner/non-owner/anonymous sessions;
 - sanitised `publicProfiles/{uid}` and public place projections;
 - absence of private memory/visit fields in public responses;
+- per-memory public/private controls and legacy-private default;
+- sanitised `publicMemories` only for memories explicitly eligible for publication;
+- owner and anonymous public-memory UI consuming the same public projection;
+- earned country/territory flags opening the read-only public-memory modal;
 - public/private whole-profile transitions;
 - Wishlist private/public/public→private transitions;
 - public root `wishlistOrder` only while Wishlist visibility is public;
@@ -111,7 +116,7 @@ Coverage includes:
 
 AB-EV-033 established the public/private projection baseline. AB-EV-036 extends it with the atomic root-order/privacy model, aligned Firestore Rules and final Production validation. AB-EV-037 adds backward-compatible generation-0 public reads plus strict stale-generation denial after a versioned Clear Map reset.
 
-Per-memory visibility remains future/conditional scope and is not implied by public Wishlist support.
+C39/AB-EV-039 moves per-memory visibility into executed V1.0 scope. C40/AB-EV-040 protects memory presentation order independently from visit-history source order. C41/AB-EV-041 adds public-memory display from earned flags and confirms the public modal uses the sanitised projection for both owner and anonymous viewing.
 
 ### 5.4 Travel status and Wishlist rules — Executed
 

@@ -1,11 +1,11 @@
 # AtlasBadge V1.0 System Test Plan
 
 **Document status:** Active / change-controlled  
-**Execution status:** Incremental system testing in progress; latest baseline reviewed through AB-EV-038
+**Execution status:** Incremental system testing in progress; latest baseline reviewed through AB-EV-041; C41 Production smoke pending
 **Product:** AtlasBadge  
 **Target release:** V1.0  
 **Document owner:** Test Lead/Product Owner  
-**Last updated:** 26 August 2026
+**Last updated:** 27 August 2026
 
 ---
 
@@ -34,7 +34,7 @@ A material update is required when:
 
 Each update should identify what changed, affected risks/tests, which previous results remain valid, which require re-execution and the Test Lead decision.
 
-AB-EV-033 established the broad checkpointed regression baseline; AB-EV-034 and AB-EV-035 demonstrate proportional follow-up validation; AB-EV-036 applies the same principle to Wishlist atomic persistence; AB-EV-037 extends it to a destructive Clear Map redesign by rerunning the Rules/build/static and focused persistence/public-source/modal boundaries actually invalidated rather than repeating an unrelated full browser campaign. AB-EV-038 hardens the manual-QA environment documentation without requiring a product regression.
+AB-EV-033 established the broad checkpointed regression baseline; AB-EV-034 and AB-EV-035 demonstrate proportional follow-up validation; AB-EV-036 applies the same principle to Wishlist atomic persistence; AB-EV-037 extends it to a destructive Clear Map redesign; AB-EV-038 hardens the manual-QA environment contract. AB-EV-039/040/041 extend the same checkpoint model to per-memory privacy, manual memory ordering and public-memory Profile presentation, rerunning focused Rules/privacy/public-source/UI boundaries plus full local gates only when the changed layer invalidated them.
 
 ---
 
@@ -68,6 +68,8 @@ The C35 product rule defines **Visited + Passed through** as compatible cumulati
 C36 establishes that Wishlist membership remains `statuses.wishlist`, while canonical presentation order is root `wishlistOrder`; changed order/privacy/public projection work behind one user-visible Save must use one atomic Firestore batch boundary.
 
 C37 establishes that Clear Map is one logical destructive operation. The private place reset, private root lifecycle reset and public root invalidation are committed through one atomic batch of at most 253 writes. Public child projections use `placesGeneration`; stale generations are no longer current/readable public travel state and their later physical deletion is housekeeping rather than part of the Clear Map success criterion.
+
+C39 establishes explicit per-memory privacy and sanitised `publicMemories`; C40 stores memory presentation order separately in `memoryOrder` while preserving `registeredVisits` history; C41 displays those authorised public memories from earned flags using the same public projection for owner and anonymous viewers.
 
 Previous incremental testing is valid evidence when impact analysis confirms that a later change has not invalidated it.
 
@@ -127,6 +129,26 @@ No application runtime behaviour changed. No Firebase Rules changed. No deployme
 Routine manual QA uses localhost:3000 + real atlas-badge Firebase.
 Emulator remains primary for isolated automated/fault-injection coverage.
 Manual Emulator QA is scenario-specific rather than default.
+
+C39 / AB-EV-039 individual memory privacy:
+daf37e7f24950137473917f6b4e898428b5de20e
+feat(memories): add per-memory privacy controls
+GitHub/Vercel commit status: success
+Test Lead manual QA: PASS
+
+C40 / AB-EV-040 manual memory ordering:
+2db201bf89c649655c6e86ccb4c03dc7a5ac621a
+feat(memories): add manual memory ordering
+Firestore Rules-only deployment: SUCCESS / project atlas-badge
+GitHub/Vercel commit status: success
+Test Lead manual QA: PASS
+
+C41 / AB-EV-041 public memories from flags:
+bb57a004d7b0c64420d093fc4000a67e226eba1e
+feat(profile): show public memories from flags
+GitHub/Vercel commit status: success
+Local Test Lead functional/visual QA: PASS
+Final Production smoke: PENDING
 ```
 
 C35 did not alter Firestore Rules. C36 and C37 did, so their Production functional validation was blocked until the separate Rules-only deployment restored application/Rules parity.
@@ -145,6 +167,9 @@ Objectives include:
 - verify reliable persistence, failed-write recovery, reload and concurrency behaviour;
 - verify one logical multi-resource Save or destructive reset is atomic when the product contract requires all-or-nothing persistence;
 - protect visits/memories/ordering from unintended loss or artificial duplication;
+- verify explicit per-memory privacy defaults, Save semantics and public projection;
+- verify manual memory presentation order without mutating source visit history;
+- verify the public Profile flag modal renders only the sanitised public-memory source and preserves exact visit identity/order;
 - confirm destructive Clear Map cannot expose a partially cleared private/public state;
 - confirm stale public projection generations are not returned as current travel data;
 - confirm the canonical geographic/counter model;
@@ -295,6 +320,8 @@ C36 demonstrates why manual QA remains material even with strong automation. The
 
 C37 similarly retained a focused manual boundary. Before release, a local working-tree C37 application was briefly exercised against the still-deployed C36 Production Rules; the resulting permission rejection was classified as an application/Rules parity mismatch, not a second product failure. The actual C36 Production baseline independently reproduced the real AB-DEF-018 Clear Map failure. After C37 application and Rules parity was restored, the Test Lead performed the destructive Production retest and approved the correction.
 
+C39 manual QA validated per-memory privacy, explicit Save and no-note visit eligibility. C40 manual QA first exposed a real-backend Rules-parity blocker for the new `memoryOrder` field; after the approved Rules-only deploy, the same scenario persisted correctly and manual reorder/reload/delete behaviour passed. C41 manual/visual QA rejected an inline memory panel in favour of the established Wishlist modal pattern, corrected owner public-memory source selection, verified exact `VISITA n` identity and restored the Profile sort-toggle layout before release.
+
 ### 8.6 Production validation
 
 Executed only after the expected source revision and applicable Firebase Rules are deployed/aligned.
@@ -324,6 +351,8 @@ focused destructive Clear Map Production retest PASS
 ```
 
 AB-EV-036 and AB-EV-037 record the completed Production approvals.
+
+C39 and C40 both reached successful automatic Vercel deployment after their approved local/manual gates; C40 additionally required a separately authorised Firestore Rules-only deployment before manual real-backend QA could proceed. C41 commit `bb57a004d7b0c64420d093fc4000a67e226eba1e` has a successful Vercel commit status, but its final focused Production smoke remains pending and must not be reported as Production PASS until the Test Lead records that result.
 
 ---
 
@@ -469,7 +498,7 @@ Decision: AB-DEF-018 CLOSED
 AB-EV-038 / C38:
 Environment documentation hardening.
 No runtime deployment, Rules changes, or system regression required.
-Decision: PASS — Test Lead approved — 26 August 2026
+Decision: PASS â€” Test Lead approved â€” 26 August 2026
 ```
 
 ---
