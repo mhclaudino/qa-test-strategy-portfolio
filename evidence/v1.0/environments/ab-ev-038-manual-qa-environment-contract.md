@@ -36,4 +36,4 @@ That was unnecessary for the normal pre-V1.0 Test Lead workflow and created avoi
 - AC9 — documentation is internally consistent.
 - AC10 — no secrets or credentials are exposed.
 
-**Result:** PASS � Test Lead approved � 26 August 2026
+**Result:** PASS — Test Lead approved — 26 August 2026
