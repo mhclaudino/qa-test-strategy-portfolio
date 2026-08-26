@@ -26,6 +26,10 @@ evidence/
 
 Environment/browser/device/configuration evidence, including Firebase Emulator and Playwright execution context.
 
+Selected environment evidence includes:
+
+- [AB-EV-038 — Manual QA Environment Contract](environments/ab-ev-038-manual-qa-environment-contract.md)
+
 ### `smoke`
 
 Selected Production/release smoke evidence includes:

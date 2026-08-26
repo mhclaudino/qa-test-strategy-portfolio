@@ -3,7 +3,7 @@
 **Document status:** Completed and maintained  
 **Product:** AtlasBadge  
 **Document owner:** Test Lead  
-**Last updated:** 25 August 2026
+**Last updated:** 26 August 2026
 
 ---
 
@@ -183,11 +183,15 @@ are treated as different application origins for browser persistence/session pur
 
 A manual QA session chooses one canonical application origin and keeps it for the duration of the test.
 
-### 6.4 Preferred future hardening
+### 6.4 Routine manual QA environment
 
-Future environment hardening should minimise repeated Test Lead setup by providing a controlled reusable manual-QA bootstrap that can restore or deterministically prepare disposable Emulator identity/state without touching Production.
+Default routine manual QA uses:
 
-The implementation may use Emulator import/export, deterministic seeding or a justified combination, but the readiness check must still verify the actual Test Lead browser session rather than assuming a script's browser context is sufficient.
+- **Application:** `http://localhost:3000`
+- **Backend:** REAL Firebase project `atlas-badge`
+- **Identity/Browser:** The existing real Firebase QA account and Test Lead browser session.
+
+Manual Emulator QA remains available only when specifically justified by a scenario requiring isolation. A reusable one-command manual Emulator bootstrap is not a requirement for routine QA.
 
 ---
 
@@ -383,7 +387,6 @@ Known limitations include:
 - no independent security lab/penetration-test environment;
 - no formal load/stress environment;
 - no comprehensive native assistive-technology/device laboratory;
-- manual Emulator QA bootstrap is not yet a formal one-command persisted environment contract;
 - some Production destructive/Admin validations may remain blocked if legitimate required credentials are unavailable.
 
 These limitations must remain visible in release/residual-risk decisions rather than being interpreted as passed coverage.
@@ -397,7 +400,6 @@ Review this document when:
 - Firebase project/environment routing changes;
 - Emulator ports/services change;
 - Playwright server/build isolation changes;
-- manual Emulator QA bootstrap/import/export is formalised;
 - Production/Preview deployments become formal test environments;
 - staging/QA infrastructure is introduced;
 - browser/device support changes;

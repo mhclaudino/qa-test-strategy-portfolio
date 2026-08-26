@@ -1,11 +1,11 @@
 # AtlasBadge V1.0 System Test Plan
 
 **Document status:** Active / change-controlled  
-**Execution status:** Incremental system testing in progress; latest baseline reviewed through AB-EV-037  
+**Execution status:** Incremental system testing in progress; latest baseline reviewed through AB-EV-038
 **Product:** AtlasBadge  
 **Target release:** V1.0  
 **Document owner:** Test Lead/Product Owner  
-**Last updated:** 25 August 2026
+**Last updated:** 26 August 2026
 
 ---
 
@@ -34,7 +34,7 @@ A material update is required when:
 
 Each update should identify what changed, affected risks/tests, which previous results remain valid, which require re-execution and the Test Lead decision.
 
-AB-EV-033 established the broad checkpointed regression baseline; AB-EV-034 and AB-EV-035 demonstrate proportional follow-up validation; AB-EV-036 applies the same principle to Wishlist atomic persistence; AB-EV-037 extends it to a destructive Clear Map redesign by rerunning the Rules/build/static and focused persistence/public-source/modal boundaries actually invalidated rather than repeating an unrelated full browser campaign.
+AB-EV-033 established the broad checkpointed regression baseline; AB-EV-034 and AB-EV-035 demonstrate proportional follow-up validation; AB-EV-036 applies the same principle to Wishlist atomic persistence; AB-EV-037 extends it to a destructive Clear Map redesign by rerunning the Rules/build/static and focused persistence/public-source/modal boundaries actually invalidated rather than repeating an unrelated full browser campaign. AB-EV-038 hardens the manual-QA environment documentation without requiring a product regression.
 
 ---
 
@@ -120,6 +120,13 @@ fix(clear-map): make logical reset atomic
 Vercel: dpl_2ywN1nFvxnoZD4JHo4YMd65ogkrz â€” READY / production
 Firestore Rules-only deployment: SUCCESS / project atlas-badge
 Production Clear Map retest: PASS / Test Lead approved
+
+C38 / AB-EV-038 documentation hardening:
+QA-environment/documentation hardening for the manual-QA contract.
+No application runtime behaviour changed. No Firebase Rules changed. No deployment required.
+Routine manual QA uses localhost:3000 + real atlas-badge Firebase.
+Emulator remains primary for isolated automated/fault-injection coverage.
+Manual Emulator QA is scenario-specific rather than default.
 ```
 
 C35 did not alter Firestore Rules. C36 and C37 did, so their Production functional validation was blocked until the separate Rules-only deployment restored application/Rules parity.
@@ -458,6 +465,11 @@ State: READY
 Firestore Rules-only deploy: PASS / atlas-badge
 Production Clear Map retest: PASS / Test Lead approved
 Decision: AB-DEF-018 CLOSED
+
+AB-EV-038 / C38:
+Environment documentation hardening.
+No runtime deployment, Rules changes, or system regression required.
+Decision: PASS — Test Lead approved — 26 August 2026
 ```
 
 ---
@@ -481,7 +493,7 @@ Requirement / rule
 
 The central public index is `evidence/v1.0/evidence-register.md`.
 
-Current recent evidence is AB-EV-033 through AB-EV-037.
+Current recent evidence is AB-EV-033 through AB-EV-038.
 
 ---
 
@@ -514,7 +526,6 @@ The final release decision belongs to the Test Lead/Product Owner.
 - Formal accessibility certification/native assistive-technology coverage is not claimed.
 - No independent penetration/security audit or formal load test has been completed.
 - Remaining V1.0 localisation/final release activities must be assessed separately.
-- Manual Emulator QA bootstrap is not a formal persisted one-command environment contract; environment readiness rules are documented in `06-test-environments.md`.
 
 ---
 
@@ -526,4 +537,5 @@ The final release decision belongs to the Test Lead/Product Owner.
 - `evidence/v1.0/regression/ab-ev-035-c35-visited-passed-coexistence.md`
 - `evidence/v1.0/defects/ab-ev-036-wishlist-atomic-settings-save-and-order-integrity.md`
 - `evidence/v1.0/defects/ab-ev-037-clear-map-atomic-generation-reset.md`
+- `evidence/v1.0/environments/ab-ev-038-manual-qa-environment-contract.md`
 - `docs/12-lessons-learned.md`

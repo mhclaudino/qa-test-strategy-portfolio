@@ -8,7 +8,7 @@ It is deliberately not a diary of every defect, test run or implementation decis
 
 The emphasis is on reducing avoidable work while preserving risk-based confidence and traceability.
 
-> **Document status:** Active / maintained. Consolidated through AB-EV-037 / AB-DEF-018.
+> **Document status:** Active / maintained. Consolidated through AB-EV-038 / C38.
 
 ---
 
@@ -268,6 +268,20 @@ All three must be true before the environment is called “ready”.
 
 **Benefit:** Users can distinguish a rejected destructive action from an unresponsive interface, and QA can diagnose backend failure without ambiguous UI behaviour.
 
+### LL-28 — Do not turn an isolated automated test environment into a mandatory manual QA environment
+
+**Observation:** While automated Emulator E2E is vital for isolation, earlier troubleshooting assumed routine manual QA should also depend on restoring an Emulator identity and browser state. This created unnecessary operational friction because the local real-backend workflow was already safe.
+
+**Working rule:** For manual QA, use the environment proportional to the task.
+- identify application origin and backend independently;
+- prove the actual backend before reporting environment readiness;
+- distinguish service readiness from browser-session readiness;
+- reuse the existing real QA account for routine manual QA;
+- do not create Emulator identity/bootstrap work without a scenario that actually requires Emulator;
+- keep deterministic Emulator coverage for Rules, fault injection and isolation.
+
+**Benefit:** Removes friction from routine Test Lead work while preserving safe isolation where actually needed.
+
 ---
 
 ## 7. Standing efficiency rules
@@ -325,3 +339,4 @@ Do not add a lesson merely because an isolated defect occurred.
 - `evidence/v1.0/regression/ab-ev-035-c35-visited-passed-coexistence.md`
 - `evidence/v1.0/defects/ab-ev-036-wishlist-atomic-settings-save-and-order-integrity.md`
 - `evidence/v1.0/defects/ab-ev-037-clear-map-atomic-generation-reset.md`
+- `evidence/v1.0/environments/ab-ev-038-manual-qa-environment-contract.md`
