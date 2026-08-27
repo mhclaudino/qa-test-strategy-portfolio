@@ -367,7 +367,6 @@ Do not add a lesson merely because an isolated defect occurred.
 - `evidence/v1.0/defects/ab-ev-036-wishlist-atomic-settings-save-and-order-integrity.md`
 - `evidence/v1.0/defects/ab-ev-037-clear-map-atomic-generation-reset.md`
 - `evidence/v1.0/environments/ab-ev-038-manual-qa-environment-contract.md`
-- `docs/13-c39-c41-memory-privacy-order-public-profile-traceability.md`
 - `evidence/v1.0/regression/ab-ev-039-c39-individual-memory-privacy.md`
 - `evidence/v1.0/regression/ab-ev-040-c40-manual-memory-ordering.md`
 - `evidence/v1.0/regression/ab-ev-041-c41-public-memory-flag-modal.md`

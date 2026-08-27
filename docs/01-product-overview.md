@@ -283,7 +283,6 @@ These items are not automatically defects. They are open product/quality questio
 - `docs/06-test-environments.md`
 - `docs/09-system-test-plan.md`
 - `docs/12-lessons-learned.md`
-- `docs/13-c39-c41-memory-privacy-order-public-profile-traceability.md`
 - `evidence/v1.0/evidence-register.md`
 - `evidence/v1.0/regression/ab-ev-039-c39-individual-memory-privacy.md`
 - `evidence/v1.0/regression/ab-ev-040-c40-manual-memory-ordering.md`

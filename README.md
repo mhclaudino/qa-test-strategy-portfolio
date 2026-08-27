@@ -67,7 +67,6 @@ The strategy documented in this repository is based on the following principles:
 | [C31–C32 Production Traceability](docs/10-c31-c32-production-traceability.md) | Connect counter integrity and Profile map navigation to risks/tests/evidence/release | Completed |
 | [C33–C34 Production Traceability](docs/11-c33-c34-production-traceability.md) | Connect dashboard/manual ordering, concurrency and birthplace integrity | Completed |
 | [Lessons Learned](docs/12-lessons-learned.md) | Convert recurring product/QA experience into reusable efficiency and quality rules | Active / maintained |
-| [C39–C41 Memory Traceability](docs/13-c39-c41-memory-privacy-order-public-profile-traceability.md) | Connect per-memory privacy, manual memory ordering and public-memory flag access to risks/tests/releases | Active — C41 Production smoke pending |
 | Exploratory Test Charters | Provide focused exploratory testing missions | Planned |
 | Sample Test Cases | Demonstrate selected functional and risk-based tests | Planned |
 | Test Summary Report | Demonstrate release-level quality reporting | Planned |
@@ -152,8 +151,7 @@ qa-test-strategy-portfolio/
 │   ├── 09-system-test-plan.md
 │   ├── 10-c31-c32-production-traceability.md
 │   ├── 11-c33-c34-production-traceability.md
-│   ├── 12-lessons-learned.md
-│   └── 13-c39-c41-memory-privacy-order-public-profile-traceability.md
+│   └── 12-lessons-learned.md
 ├── evidence/
 │   └── v1.0/
 │       ├── README.md
