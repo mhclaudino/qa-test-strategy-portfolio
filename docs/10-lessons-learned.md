@@ -8,7 +8,7 @@ It is deliberately not a diary of every defect, test run or implementation decis
 
 The emphasis is on reducing avoidable work while preserving risk-based confidence and traceability.
 
-> **Document status:** Active / maintained. Consolidated through AB-EV-041 / C41.
+> **Document status:** Active / maintained. Consolidated through AB-EV-042 / C42.
 
 ---
 
@@ -338,6 +338,13 @@ All three must be true before the environment is called “ready”.
 
 **Benefit:** Prevents document sprawl, duplicate sources of truth and repeated maintenance.
 
+### LL-36 — Visual affordance is a rendered-browser acceptance criterion, not a class-name assertion
+
+**Observation:** During C42, JSDOM correctly reported focus on the visit-name input while the real interaction still looked non-functional to the Test Lead. Later, hover utility classes were present in the DOM but did not produce the intended perceptible result in the browser. A technically stronger neon treatment then over-corrected the problem and was rejected as inconsistent with the premium visual language.
+
+**Working rule:** Unit/component tests verify semantics, state transitions and accessibility hooks; they do not prove visual perceptibility. For important micro-interactions, validate the rendered browser result and prefer the smallest visual change that makes the control understandable. Do not equate class presence, document.activeElement or a computed event state with acceptable product UX.
+
+**Benefit:** Prevents false confidence from headless assertions and avoids oscillating from invisible affordance to visually excessive correction.
 ---
 
 ## 7. Standing efficiency rules
@@ -368,6 +375,7 @@ The following compact rules apply to future AtlasBadge work:
 22. Do not bypass a stronger transaction/Rules invariant merely to solve concurrency on a narrower path.
 23. Use presentation-order metadata rather than fabricating domain/history data.
 24. Keep `docs/` fixed to the approved `01`–`10` control set; merge increment updates into those files and publish new change-level material only under `evidence/` unless the Test Lead explicitly approves another control document.
+25. For visual affordance, do not treat class presence or JSDOM focus as visual acceptance; verify the rendered browser result and prefer subtle, brand-consistent correction.
 
 ---
 
@@ -406,3 +414,4 @@ Do not add a lesson merely because an isolated defect occurred.
 - `evidence/v1.0/regression/ab-ev-039-c39-individual-memory-privacy.md`
 - `evidence/v1.0/regression/ab-ev-040-c40-manual-memory-ordering.md`
 - `evidence/v1.0/regression/ab-ev-041-c41-public-memory-flag-modal.md`
+- `evidence/v1.0/regression/ab-ev-042-editable-visit-names.md`

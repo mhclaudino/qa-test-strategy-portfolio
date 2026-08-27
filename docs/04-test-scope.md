@@ -6,7 +6,7 @@ This document defines the testing scope for AtlasBadge during incremental V1.0 d
 
 It identifies covered product areas, expected depth, current coverage, mandatory remaining work and intentionally deferred items.
 
-> **Document status:** Completed and maintained through AB-EV-041. C39 adds executed per-memory privacy scope; C40 adds executed manual memory-order scope; C41 adds public-memory flag-modal coverage. C41 automatic deployment and final Test Lead Production smoke passed.
+> **Document status:** Completed and maintained through AB-EV-042. C39 adds executed per-memory privacy scope; C40 adds executed manual memory-order scope; C41 adds public-memory flag-modal coverage; C42 adds editable per-visit presentation names with explicit Save, stable identity and public-projection compatibility. C42 automatic deployment and final Test Lead Production smoke passed.
 
 ---
 
@@ -116,7 +116,7 @@ Coverage includes:
 
 AB-EV-033 established the public/private projection baseline. AB-EV-036 extends it with the atomic root-order/privacy model, aligned Firestore Rules and final Production validation. AB-EV-037 adds backward-compatible generation-0 public reads plus strict stale-generation denial after a versioned Clear Map reset.
 
-C39/AB-EV-039 moves per-memory visibility into executed V1.0 scope. C40/AB-EV-040 protects memory presentation order independently from visit-history source order. C41/AB-EV-041 adds public-memory display from earned flags and confirms the public modal uses the sanitised projection for both owner and anonymous viewing.
+C39/AB-EV-039 moves per-memory visibility into executed V1.0 scope. C40/AB-EV-040 protects memory presentation order independently from visit-history source order. C41/AB-EV-041 adds public-memory display from earned flags and confirms the public modal uses the sanitised projection for both owner and anonymous viewing. C42/AB-EV-042 adds optional editable visit names while preserving stable visit IDs, explicit Save, manual memory order, legacy `VISITA n` fallback and private/public projection boundaries.
 
 ### 5.4 Travel status and Wishlist rules — Executed
 
@@ -366,4 +366,5 @@ Release approval is blocked by evidence of:
 - `evidence/v1.0/regression/ab-ev-035-c35-visited-passed-coexistence.md`
 - `evidence/v1.0/defects/ab-ev-036-wishlist-atomic-settings-save-and-order-integrity.md`
 - `evidence/v1.0/defects/ab-ev-037-clear-map-atomic-generation-reset.md`
+- `evidence/v1.0/regression/ab-ev-042-editable-visit-names.md`
 - `docs/10-lessons-learned.md`
