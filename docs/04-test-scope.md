@@ -6,7 +6,7 @@ This document defines the testing scope for AtlasBadge during incremental V1.0 d
 
 It identifies covered product areas, expected depth, current coverage, mandatory remaining work and intentionally deferred items.
 
-> **Document status:** Completed and maintained through AB-EV-042. C39 adds executed per-memory privacy scope; C40 adds executed manual memory-order scope; C41 adds public-memory flag-modal coverage; C42 adds editable per-visit presentation names with explicit Save, stable identity and public-projection compatibility. C42 automatic deployment and final Test Lead Production smoke passed.
+> **Document status:** Completed and maintained through AB-EV-043. C39–C42 cover the current memory/visit privacy, ordering, public-display and editable-name baseline. C43 adds the repository-wide AtlasBadge visual-identity alignment, with automatic Production deployment and final Test Lead Production Visual PASS.
 
 ---
 
@@ -241,11 +241,13 @@ System-controlled UI requires localisation coverage; user-authored content is no
 
 Executed coverage includes map interaction, responsive layouts, repeated interaction, desktop/mobile viewports and important modal/control behaviour.
 
+AB-EV-043 adds a cross-product desktop/mobile visual pass over Home/auth, dashboard/map, picker/filter, editors, Wishlist, Profile, badges and shared modals. The pass harmonised brand tokens and surfaces without changing layout or functional behaviour.
+
 Quantitative performance targets and broader device/browser evidence remain incomplete.
 
 ### 6.9 Accessibility — Technical baseline executed
 
-AB-EV-017 establishes a scoped WCAG 2.2 AA technical baseline; later features include targeted keyboard/semantic/dialog regression.
+AB-EV-017 establishes a scoped WCAG 2.2 AA technical baseline; later features include targeted keyboard/semantic/dialog regression. AB-EV-043 preserves visible keyboard focus while moving generic interaction emphasis to Atlas Gold and retaining semantic feedback/status colours.
 
 Formal accessibility certification and comprehensive native assistive-technology coverage remain out of claim.
 
@@ -320,6 +322,8 @@ Rules result: SUCCESS
 Production Clear Map retest: PASS / Test Lead approved
 ```
 
+C43 was presentation-only and required no Rules/backend change. Product SHA `bcc10d63e0f3363d39f3029c0498deb49c30180f` reached Vercel deployment `dpl_FHmZdquA35oa6FVQjtpHVLZAcfyt` in READY/production state, followed by Test Lead **Production Visual PASS**.
+
 Production uses controlled QA accounts/data only. Destructive operations require separate explicit authorisation and are not implied by a normal release smoke.
 
 ---
@@ -367,4 +371,5 @@ Release approval is blocked by evidence of:
 - `evidence/v1.0/defects/ab-ev-036-wishlist-atomic-settings-save-and-order-integrity.md`
 - `evidence/v1.0/defects/ab-ev-037-clear-map-atomic-generation-reset.md`
 - `evidence/v1.0/regression/ab-ev-042-editable-visit-names.md`
+- `evidence/v1.0/regression/ab-ev-043-visual-identity-alignment.md`
 - `docs/10-lessons-learned.md`

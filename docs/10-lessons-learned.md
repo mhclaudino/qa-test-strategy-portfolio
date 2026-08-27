@@ -8,7 +8,7 @@ It is deliberately not a diary of every defect, test run or implementation decis
 
 The emphasis is on reducing avoidable work while preserving risk-based confidence and traceability.
 
-> **Document status:** Active / maintained. Consolidated through AB-EV-042 / C42.
+> **Document status:** Active / maintained. Consolidated through AB-EV-043 / C43.
 
 ---
 
@@ -345,6 +345,14 @@ All three must be true before the environment is called “ready”.
 **Working rule:** Unit/component tests verify semantics, state transitions and accessibility hooks; they do not prove visual perceptibility. For important micro-interactions, validate the rendered browser result and prefer the smallest visual change that makes the control understandable. Do not equate class presence, document.activeElement or a computed event state with acceptable product UX.
 
 **Benefit:** Prevents false confidence from headless assertions and avoids oscillating from invisible affordance to visually excessive correction.
+
+### LL-37 — Brand cleanup must classify colour semantics before replacement
+
+**Observation:** C43 found the same neon tokens serving very different roles: some were generic UI focus/CTA styling that conflicted with the AtlasBadge brand, while others represented valid travel-status or geographic/data-visualisation semantics. A mechanical goal such as “zero purple” would have damaged product meaning.
+
+**Working rule:** Before a broad visual-token cleanup, classify each occurrence as brand, status, feedback, data visualisation, external brand, neutral or legacy/inconsistent. Replace only the inconsistent structural usage. Zero grep-count is not an acceptance criterion when a remaining colour has a valid semantic role.
+
+**Benefit:** Improves visual consistency without erasing functional meaning, accessibility cues or legitimate third-party/data-visualisation identity.
 ---
 
 ## 7. Standing efficiency rules
@@ -376,6 +384,7 @@ The following compact rules apply to future AtlasBadge work:
 23. Use presentation-order metadata rather than fabricating domain/history data.
 24. Keep `docs/` fixed to the approved `01`–`10` control set; merge increment updates into those files and publish new change-level material only under `evidence/` unless the Test Lead explicitly approves another control document.
 25. For visual affordance, do not treat class presence or JSDOM focus as visual acceptance; verify the rendered browser result and prefer subtle, brand-consistent correction.
+26. For brand/token cleanup, classify colour semantics before replacement; preserve valid status, feedback, data-visualisation and external-brand colours instead of optimising for zero search matches.
 
 ---
 
@@ -415,3 +424,4 @@ Do not add a lesson merely because an isolated defect occurred.
 - `evidence/v1.0/regression/ab-ev-040-c40-manual-memory-ordering.md`
 - `evidence/v1.0/regression/ab-ev-041-c41-public-memory-flag-modal.md`
 - `evidence/v1.0/regression/ab-ev-042-editable-visit-names.md`
+- `evidence/v1.0/regression/ab-ev-043-visual-identity-alignment.md`
