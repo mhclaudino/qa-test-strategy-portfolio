@@ -75,7 +75,11 @@ Relevant behaviours include account creation, login/logout, e-mail verification/
 
 The map is a central element of the product. Users can select places, view status, assign/remove supported statuses, search/filter selected places and navigate between map and related flag presentation.
 
-AtlasBadge contains 251 directly selectable geographic records. The conceptual global progress model is 252 Places / 195 Countries / 57 Territories and Entities because completing all four UK constituent countries derives one additional United Kingdom Place/Country.
+AtlasBadge contains 251 directly selectable geographic records. C31/AB-EV-029 established the canonical catalogue as 194 sovereign countries, 47 territories, 5 limited-recognition entities, 4 UK constituent countries and Antarctica as a special region. The conceptual global progress model is 252 Places / 195 Countries / 57 Territories and Entities because completing England, Scotland, Wales and Northern Ireland derives one additional United Kingdom Place/Country. Antarctica contributes to Places and Territories/Entities, not Countries, preserving the invariant `252 = 195 + 57`.
+
+C32/AB-EV-030 adds read-only Profile map-to-flag navigation: clicking a conquered place resolves the canonical `countryId`, scrolls to the exact earned flag and applies a temporary highlight without mutating travel data. The behaviour is protected for normal geographies, micro-markers, sort changes and representative mobile layout.
+
+C33/AB-EV-031 adds the Map selected-place presentation toggle between **Ordem de Visita** and **Ordem Alfabética**. Visit Order is the default Map presentation, the choice is local/session-only, non-physical selected records remain visible after physical records, and alphabetical order uses deterministic `pt-BR` comparison without changing persisted data.
 
 ### 5.3 Travel status and Wishlist management
 
@@ -132,10 +136,14 @@ Relevant behaviours include:
 - deleting a visit cleaning its presentation-order ID in the same logical mutation;
 - preservation of original `VISITA n` identity even when memory presentation order changes;
 - Manual Visit Order for qualifying physical-presence places only;
+- owner-only Manual Visit Order editing in the Map surface through optional `visitOrderRank >= 1`;
+- Born there fixed at the top of Manual Visit Order, with Wishlist-only/Nationality-only records excluded;
+- Cancel performing no persistence and Save updating presentation ranks without fabricating visits, memories, statuses or chronology;
+- rapid visit add/remove/save handled as replayable semantic intents so confirmed concurrent changes are preserved;
 - independent Wishlist order;
 - transactional integrity for the Born there user pointer/status relationship.
 
-C39/AB-EV-039 is the current privacy contract for memories. C40/AB-EV-040 is the current manual memory-order contract.
+C34/AB-EV-032 is the current Manual Visit Order and rapid-visit concurrency baseline. It preserves the atomic `birthplacePlaceId` + `statuses.born` invariant and records AB-DEF-013 as closed. C39/AB-EV-039 is the current privacy contract for memories. C40/AB-EV-040 is the current manual memory-order contract.
 
 ### 5.5 Persistent user data
 
@@ -282,7 +290,7 @@ These items are not automatically defects. They are open product/quality questio
 - `docs/04-test-scope.md`
 - `docs/06-test-environments.md`
 - `docs/09-system-test-plan.md`
-- `docs/12-lessons-learned.md`
+- `docs/10-lessons-learned.md`
 - `evidence/v1.0/evidence-register.md`
 - `evidence/v1.0/regression/ab-ev-039-c39-individual-memory-privacy.md`
 - `evidence/v1.0/regression/ab-ev-040-c40-manual-memory-ordering.md`

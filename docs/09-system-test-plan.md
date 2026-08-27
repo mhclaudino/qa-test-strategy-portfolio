@@ -50,7 +50,7 @@ This plan applies:
 - [Test Environments](06-test-environments.md)
 - [Defect Management](07-defect-management.md)
 - [Metrics and Reporting](08-metrics-and-reporting.md)
-- [Lessons Learned](12-lessons-learned.md)
+- [Lessons Learned](10-lessons-learned.md)
 - [V1.0 Evidence Register](../evidence/v1.0/evidence-register.md)
 
 Where documents disagree, the inconsistency must be resolved before the affected release decision.
@@ -62,6 +62,8 @@ Where documents disagree, the inconsistency must be resolved before the affected
 AtlasBadge includes authentication/account lifecycle, an interactive travel map, six travel statuses, detailed visits/memories, Wishlist management, Manual Visit Order, geographic counters, achievements, private/public profiles, public sanitised projections, account deletion, destructive Clear Map, responsiveness, localisation, privacy and security controls.
 
 The integrated test item includes the browser application plus Firebase Authentication, Cloud Firestore, Firestore Rules, Firebase Storage where relevant, local cache/state, Firebase Emulators, Vercel deployment and geographic data.
+
+C31 establishes the canonical geographic model of 251 selectable records and 252 conceptual Places = 195 Countries + 57 Territories/Entities, including the derived United Kingdom rule. C32 adds read-only public Profile map-to-earned-flag navigation. C33 adds local selected-place sorting on the Map. C34 adds owner-only Manual Visit Order through `visitOrderRank`, replayable rapid visit intents and preserved birthplace transaction integrity.
 
 The C35 product rule defines **Visited + Passed through** as compatible cumulative statuses. Individual travel occurrences remain represented by `RegisteredVisit`; adding the second status does not by itself create another visit.
 
@@ -95,6 +97,34 @@ The branch name `main` alone is not sufficient evidence because its content chan
 The latest sequence is:
 
 ```text
+C31 / AB-EV-029 geographic counter integrity:
+627f4f948f7b6af0151fec77ffe800380e73e989
+fix(stats): align world coverage counters
+Vercel automatic Production deployment: READY
+Production Guard / validate-production / validate-clear-map: PASS
+AB-DEF-012: CLOSED
+
+C32 / AB-EV-030 Profile map-to-earned-flag navigation:
+c75891b68836ca495e319c31878c3cb230f4f92e
+feat(profile): navigate map clicks to earned flags
+Vercel automatic Production deployment: READY
+Dedicated navigation regression + Production validators: PASS
+
+C33 / AB-EV-031 dashboard selected-place sorting:
+0164b8c6f2cb25dc510248b43d39a7d1ca1dc538
+C33 final hardening baseline
+Vercel: dpl_4a94LAa8p1D57y3cHpzNHRGATQMq — READY / production
+Focused C33/C32/flag-sort E2E + Production validators: PASS
+
+C34 / AB-EV-032 manual visit order + rapid visit concurrency:
+8474a78d1f7e6d046b3e918b3be8ac2af01188fc
+fix(data): preserve birthplace integrity and clean C34 artifacts
+Vercel: dpl_9a5e9rQNraTZpTHrtYJ7h7QtzPfi — READY / production
+Firestore Rules-only deployment: SUCCESS
+Final gate: 308 Vitest PASS / 7 skipped; 224 Rules PASS; 9 focused Emulator E2E PASS
+Production Manual Visit Order / Rapid Visits / Birthplace integrity: PASS
+AB-DEF-013: CLOSED
+
 AB-EV-033 runtime/security baseline:
 7bbdb9402145523f6a2f36d41cc74e55479cc664
 Vercel: dpl_HEKQuz6MAXiW413m6cqnH25zWrRg — READY
@@ -314,6 +344,8 @@ C37 did not require a new broad Playwright campaign because the affected destruc
 
 Used for usability, visual behaviour, edge conditions, unexpected interaction sequences and Test Lead sign-off.
 
+C31 manual QA confirmed the corrected counters/achievements against the audited catalogue. C32 manual QA confirmed exact flag targeting/highlight without editing. C33 manual QA confirmed the local dashboard sort and responsive header. C34 manual QA rejected intermediate states with live-Rules mismatch, unsafe blanket concurrency bypass and unrelated repository artefacts; the final clean baseline passed Manual Visit Order, rapid-visit and birthplace-integrity validation.
+
 C35 received Test Lead manual QA before commit approval, including coexistence, memory/counter behaviour and independent status handling.
 
 C36 demonstrates why manual QA remains material even with strong automation. The first manual retest found that the backend correctly saved root `wishlistOrder`, but the owner read path still rendered legacy/alphabetical order after a combined reorder/privacy Save. Static/backend evidence then isolated the frontend read-path issue, and the final Test Lead retest approved root-order precedence plus confirmed Profile refresh for order/privacy changes.
@@ -327,6 +359,8 @@ C39 manual QA validated per-memory privacy, explicit Save and no-note visit elig
 Executed only after the expected source revision and applicable Firebase Rules are deployed/aligned.
 
 Production testing uses controlled QA accounts/data and only the authorised scope.
+
+C31 and C32 reached automatic Vercel READY plus focused Production validators. C33 closed at `0164b8c6...` / `dpl_4a94...` with selected-place sorting and Production validators PASS. C34 required both the clean runtime baseline `8474a78...` / `dpl_9a5e...` and a separately deployed Rules-only change before Production Manual Visit Order, Rapid Visits and Birthplace integrity could be approved.
 
 For C35, release verification confirmed the exact runtime SHA reached a `READY` Production Vercel deployment. AB-EV-035 explicitly limits the claim to that recorded evidence boundary.
 
@@ -382,7 +416,7 @@ This is not reduced coverage by omission: the carried-forward result and reason 
 
 **C37/AB-EV-037:** `travelMap.ts`, public source handling, profile projection and Firestore Rules changed materially, so the full Rules checkpoint and Production build were rerun. Focused Clear Map, Wishlist/upsert, public-source/profile and modal tests restored the invalidated functional boundaries. The previous full Vitest and broad Playwright checkpoints were carried forward because no failing focused evidence or shared-domain change justified another complete campaign.
 
-The efficiency rules are retained in `docs/12-lessons-learned.md`.
+The efficiency rules are retained in `docs/10-lessons-learned.md`.
 
 ---
 
@@ -567,4 +601,4 @@ The final release decision belongs to the Test Lead/Product Owner.
 - `evidence/v1.0/defects/ab-ev-036-wishlist-atomic-settings-save-and-order-integrity.md`
 - `evidence/v1.0/defects/ab-ev-037-clear-map-atomic-generation-reset.md`
 - `evidence/v1.0/environments/ab-ev-038-manual-qa-environment-contract.md`
-- `docs/12-lessons-learned.md`
+- `docs/10-lessons-learned.md`

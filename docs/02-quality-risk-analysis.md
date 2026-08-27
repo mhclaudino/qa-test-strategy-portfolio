@@ -225,7 +225,7 @@ Universal browser/device support and formal accessibility certification are not 
 | QR-06 | Approved character-limit enforcement may regress. | Regression risk | 3 | 4 | 12 | High |
 | QR-07 | Account deletion or destructive data reset may partially fail and leave private/public/authentication or lifecycle records inconsistent. | Regression risk | 5 | 3 | 15 | High |
 
-**Applied decisions:** AB-EV-034 closes the remaining QR-01 assessment/coverage gap through a full write-path audit plus focused failed-write/recovery evidence for `flagSortOrder`; QR-01 remains a High `Regression risk`, not a Current gap. AB-EV-036 adds atomic combined Wishlist settings persistence, a real rejected-batch rollback proof and confirmed Profile-root refresh/read behaviour. AB-EV-037 adds an atomic logical Clear Map reset, rejected-batch containment, root Wishlist cleanup and versioned stale-public invalidation. QR-02 AB-EV-002; QR-03 AB-EV-003; QR-04 AB-EV-013/018/019/022/026/032/033/036/037; QR-05 AB-EV-004; QR-06 AB-EV-011; QR-07 AB-EV-010/033/037.
+**Applied decisions:** AB-EV-034 closes the remaining QR-01 assessment/coverage gap through a full write-path audit plus focused failed-write/recovery evidence for `flagSortOrder`; QR-01 remains a High `Regression risk`, not a Current gap. C34/AB-EV-032 closes AB-DEF-013 by making rapid visit mutations replayable/idempotent while retaining the birthplace transaction instead of weakening concurrency or Rules safeguards. AB-EV-036 adds atomic combined Wishlist settings persistence, a real rejected-batch rollback proof and confirmed Profile-root refresh/read behaviour. AB-EV-037 adds an atomic logical Clear Map reset, rejected-batch containment, root Wishlist cleanup and versioned stale-public invalidation. QR-02 AB-EV-002; QR-03 AB-EV-003; QR-04 AB-EV-013/018/019/022/026/032/033/036/037; QR-05 AB-EV-004; QR-06 AB-EV-011; QR-07 AB-EV-010/033/037.
 
 ### 5.2 Authentication and account identity
 
@@ -266,6 +266,8 @@ Universal browser/device support and formal accessibility certification are not 
 | QR-28 | Map intensity may be wrong when multiple statuses are present. | Regression risk | 3 | 3 | 9 | Medium |
 | QR-29 | United Kingdom achievement/progress may use incorrect constituent/derived semantics. | Regression risk | 3 | 3 | 9 | Medium |
 | QR-30 | Achievement lock/relock, metadata, chronology, reconquest or notification delivery may become inconsistent across private/public sources. | Regression risk | 3 | 3 | 9 | Medium |
+
+**Applied decisions:** C31/AB-EV-029 closes the previous QR-25 catalogue/counter gap with the canonical `251 selectable / 252 Places / 195 Countries / 57 Territories and Entities` model and aligned A15/A18/A31/A32 achievement criteria. C32/AB-EV-030 protects read-only Profile map-to-earned-flag navigation across normal places, micro-markers, sorting and mobile presentation. C33/AB-EV-031 protects deterministic local dashboard sorting without persistence. C34/AB-EV-032 protects owner-only Manual Visit Order, rapid visit convergence and the birthplace pointer/status invariant.
 
 ### 5.5 Public profile and sharing
 
@@ -325,7 +327,7 @@ QR-01 and QR-25 are no longer open investigations. Their residual concern is reg
 - Manual Visit Order exists only on the owner Map tab;
 - Wishlist-only and Nationality-only records do not participate in Manual Visit Order;
 - Born there remains fixed at the top of Manual Visit Order and the user pointer/status remains transactionally consistent;
-- memories are currently private.
+- memory visibility is controlled per memory; missing/legacy visibility flags default to private, and only sanitised eligible memories may enter the public projection.
 
 ---
 
@@ -375,9 +377,7 @@ A change to the public projection whitelist, Wishlist source of truth, Wishlist 
 - `docs/07-defect-management.md`
 - `docs/08-metrics-and-reporting.md`
 - `docs/09-system-test-plan.md`
-- `docs/10-c31-c32-production-traceability.md`
-- `docs/11-c33-c34-production-traceability.md`
-- `docs/12-lessons-learned.md`
+- - - `docs/10-lessons-learned.md`
 - `evidence/v1.0/evidence-register.md`
 - `evidence/v1.0/regression/ab-ev-034-qr-01-failed-write-recovery-closure.md`
 - `evidence/v1.0/regression/ab-ev-035-c35-visited-passed-coexistence.md`

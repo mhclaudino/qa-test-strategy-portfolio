@@ -306,6 +306,38 @@ All three must be true before the environment is called “ready”.
 
 **Benefit:** Reduces avoidable visual rework and preserves interface consistency.
 
+### LL-32 — Reject integration commits that contain unrelated file churn
+
+**Observation:** During C34, an intermediate implementation commit contained unrelated mass edits to existing E2E files plus an accidental planning artefact. The behavioural correction could not be treated as a clean release baseline until those changes were removed.
+
+**Working rule:** Before approval, audit the exact staged/committed file scope. Unrelated test rewrites, scratch plans and accidental artefacts are removed or isolated before a release baseline is accepted.
+
+**Benefit:** Keeps traceability credible and reduces hidden regression risk.
+
+### LL-33 — A concurrency shortcut must not bypass a stronger domain invariant
+
+**Observation:** C34 rapid-visit work considered a blanket concurrency bypass that would also have skipped the transaction maintaining `users/{uid}.birthplacePlaceId` with `statuses.born`.
+
+**Working rule:** Concurrency optimisation is intent-aware. A safe replay/bypass path may be used only when it does not bypass a transaction or Rules invariant required by the semantic intent.
+
+**Benefit:** Fixes lost-update/concurrency problems without trading them for cross-document corruption.
+
+### LL-34 — Presentation order metadata must not manufacture domain history
+
+**Observation:** C34 needed user-correctable travel presentation order even when chronology was incomplete. The correct solution was `visitOrderRank`, not fabricated visits, timestamps or statuses.
+
+**Working rule:** When the user is correcting presentation order, persist presentation metadata. Do not mutate the domain/history model solely to make sorting easier.
+
+**Benefit:** Preserves historical truth and keeps ordering concerns independent from visit semantics.
+
+### LL-35 — Do not create increment-specific control documents under docs
+
+**Observation:** C31–C34 traceability was previously split into standalone `docs/10...` and `docs/11...` files, and a later C39–C41 increment briefly repeated the same mistake.
+
+**Working rule:** The `docs/` directory is the fixed living control set `01`–`10`. Product, risk, strategy, scope, plan and lessons changes are merged into those existing files. Increment-specific public traceability is added only under `evidence/`, unless the Test Lead explicitly approves a new control document.
+
+**Benefit:** Prevents document sprawl, duplicate sources of truth and repeated maintenance.
+
 ---
 
 ## 7. Standing efficiency rules
@@ -332,6 +364,10 @@ The following compact rules apply to future AtlasBadge work:
 18. Public Profile content uses the sanitised public projection for owner and non-owner viewers alike; private owner data is not a public-rendering fallback.
 19. Before compensating for missing public projection fields, inspect whether the persisted test document is legacy/stale and can be rebuilt through the normal product write path.
 20. When a requirement references an existing AtlasBadge visual pattern, inspect/reuse the exact reference surface and validate layout as well as styling.
+21. Audit exact staged/committed file scope and reject unrelated churn or scratch artefacts from a release baseline.
+22. Do not bypass a stronger transaction/Rules invariant merely to solve concurrency on a narrower path.
+23. Use presentation-order metadata rather than fabricating domain/history data.
+24. Keep `docs/` fixed to the approved `01`–`10` control set; merge increment updates into those files and publish new change-level material only under `evidence/` unless the Test Lead explicitly approves another control document.
 
 ---
 

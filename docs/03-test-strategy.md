@@ -6,7 +6,7 @@ This document defines the overall testing strategy for AtlasBadge and how qualit
 
 It covers risk prioritisation, test design, regression, evidence, AI-assisted execution, automation, release approval and residual risk.
 
-> **Document status:** Completed and maintained through AB-EV-033. The current strategy includes a versioned Playwright/Firebase Emulator regression model, checkpointed incremental regression and controlled Production validation.
+> **Document status:** Completed and maintained through AB-EV-041. The current strategy includes versioned Playwright/Firebase Emulator regression, checkpointed incremental validation, controlled Production validation and fixed living-document governance.
 
 ---
 
@@ -320,6 +320,12 @@ A material defect record should preserve:
 
 The Evidence Register provides the public traceability index.
 
+### 13.1 Documentation structure governance
+
+The `docs/` directory contains the fixed living control set `01`–`10`. A feature/change increment does not receive a new standalone traceability document under `docs/`. Its durable product/risk/scope/plan/lesson changes are merged into the existing control documents, while selected execution/defect/release traceability is published under `evidence/`.
+
+A new file under `docs/` requires explicit Test Lead approval.
+
 ---
 
 ## 14. High-level approval conditions
@@ -390,5 +396,6 @@ Review this strategy when authentication, travel-status/Wishlist rules, persiste
 - `docs/07-defect-management.md`
 - `docs/08-metrics-and-reporting.md`
 - `docs/09-system-test-plan.md`
+- `docs/10-lessons-learned.md`
 - `evidence/v1.0/evidence-register.md`
 - `evidence/v1.0/regression/ab-ev-033-wishlist-public-profile-release-hardening.md`

@@ -19,7 +19,7 @@ Read together with:
 - [Test Strategy](03-test-strategy.md)
 - [Test Environments](06-test-environments.md)
 - [System Test Plan](09-system-test-plan.md)
-- [Lessons Learned](12-lessons-learned.md)
+- [Lessons Learned](10-lessons-learned.md)
 - [V1.0 Evidence Register](../evidence/v1.0/evidence-register.md)
 
 The actual execution scope is selected according to affected functionality, dependencies, quality risks and consequences of failure. Not every green checkpoint is automatically rerun after every unrelated change.
@@ -161,6 +161,8 @@ AB-EV-033 extends lifecycle expectations to Wishlist membership/ranks/public pre
 
 Coverage includes all 251 directly selectable records, status colouring, search/filter, normal/micro-marker interaction, desktop/mobile behaviour and the canonical `252 Places / 195 Countries / 57 Territories and Entities` model.
 
+C31/AB-EV-029 covers the audited catalogue classification, UK-derived Place/Country rule, Antarctica classification, counter invariant and affected achievements. C32/AB-EV-030 covers Profile map click → exact earned-flag scroll/highlight, including no-flag fallback, sorting, micro-markers, mobile and read-only proof. C33/AB-EV-031 covers the Map's local Visit Order/Alphabetical selected-place presentation without data mutation.
+
 The technical UK aggregate remains non-selectable/derived.
 
 Clear Map regression includes the supported maximum of 251 private place deletes plus two root writes, for a maximum atomic logical boundary of 253 writes.
@@ -168,6 +170,8 @@ Clear Map regression includes the supported maximum of 251 private place deletes
 ### 6.2 Visits, memories and ordering — Executed for current V1.0 behaviour
 
 Coverage includes repeated/detailed visits, explicit-Save memories, visit-count derivation, rapid add/remove/save, Manual Visit Order, Born there integrity and independent Wishlist ordering.
+
+C34/AB-EV-032 covers owner-only Manual Visit Order editing, `visitOrderRank` validation, Born there fixed-first behaviour, exclusion of Wishlist-only/Nationality-only records, Cancel/no-write, Save/rank persistence, rapid replayable visit intents and transactional birthplace integrity. The final C34 gate recorded 308 Vitest PASS, 224 Rules PASS, 9 focused Emulator E2E PASS and Production Manual Visit Order/Rapid Visits/Birthplace smokes PASS.
 
 C35 adds explicit coverage that adding another compatible place status does not manufacture a travel occurrence and does not duplicate existing memories.
 
@@ -192,8 +196,8 @@ Coverage includes:
 - valid/invalid/private profile resolution;
 - authenticated and anonymous viewers;
 - public-source-only data access;
-- read-only map and map-to-flag navigation;
-- flag ordering/presentation controls;
+- read-only map and C32 map-to-flag navigation with exact-target highlight/no-mutation behaviour;
+- flag ordering/presentation controls, including C33 local ordering semantics;
 - public achievements from sanitised metadata;
 - public Wishlist tile/modal only when public and non-empty;
 - canonical public Wishlist order from sanitised root `wishlistOrder`;
@@ -362,4 +366,4 @@ Release approval is blocked by evidence of:
 - `evidence/v1.0/regression/ab-ev-035-c35-visited-passed-coexistence.md`
 - `evidence/v1.0/defects/ab-ev-036-wishlist-atomic-settings-save-and-order-integrity.md`
 - `evidence/v1.0/defects/ab-ev-037-clear-map-atomic-generation-reset.md`
-- `docs/12-lessons-learned.md`
+- `docs/10-lessons-learned.md`

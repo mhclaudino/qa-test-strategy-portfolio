@@ -199,4 +199,4 @@ C35 requirement correction
 → requirement correction approved
 ```
 
-A reusable process lesson from C35 is retained in `docs/12-lessons-learned.md`: temporal user journeys should be validated before historical statuses are declared mutually exclusive, and an adequate existing domain model should be reused before introducing schema complexity.
+A reusable process lesson from C35 is retained in `docs/10-lessons-learned.md`: temporal user journeys should be validated before historical statuses are declared mutually exclusive, and an adequate existing domain model should be reused before introducing schema complexity.

@@ -64,15 +64,13 @@ The strategy documented in this repository is based on the following principles:
 | [Defect Management](docs/07-defect-management.md) | Define defect reporting, severity, priority and triage | Completed |
 | [Metrics and Reporting](docs/08-metrics-and-reporting.md) | Define useful quality indicators and reporting methods | Completed |
 | [System Test Plan](docs/09-system-test-plan.md) | Define the V1.0 system-level execution and release-validation plan | Completed / maintained |
-| [C31–C32 Production Traceability](docs/10-c31-c32-production-traceability.md) | Connect counter integrity and Profile map navigation to risks/tests/evidence/release | Completed |
-| [C33–C34 Production Traceability](docs/11-c33-c34-production-traceability.md) | Connect dashboard/manual ordering, concurrency and birthplace integrity | Completed |
-| [Lessons Learned](docs/12-lessons-learned.md) | Convert recurring product/QA experience into reusable efficiency and quality rules | Active / maintained |
+| [Lessons Learned](docs/10-lessons-learned.md) | Convert recurring product/QA experience into reusable efficiency and quality rules | Active / maintained |
 | Exploratory Test Charters | Provide focused exploratory testing missions | Planned |
 | Sample Test Cases | Demonstrate selected functional and risk-based tests | Planned |
 | Test Summary Report | Demonstrate release-level quality reporting | Planned |
 | [V1.0 Test Evidence](evidence/v1.0/README.md) | Organise environment, smoke, regression, defect and reset evidence | In Progress |
 
-The numbered documents are intentionally maintained as living control artefacts rather than creating a new top-level strategy document for every increment. Material increments are captured through evidence and traceability records.
+The `docs/` directory is intentionally limited to the ten living control artefacts `01`–`10`. Increment-specific traceability must be distributed into those existing documents; a new change-level file must not be created under `docs/` without explicit Test Lead approval. New incremental records belong under `evidence/` when evidence is required.
 
 ## Recent quality traceability
 
@@ -104,7 +102,7 @@ The portfolio records true Product Defects separately from stale automation, env
 
 ## Lessons learned and efficiency
 
-[AtlasBadge Lessons Learned](docs/12-lessons-learned.md) consolidates reusable rules developed through the V1.0 work. Key themes include:
+[AtlasBadge Lessons Learned](docs/10-lessons-learned.md) consolidates reusable rules developed through the V1.0 work. Key themes include:
 
 - do not rerun a green checkpoint without a concrete invalidation reason;
 - use the smallest test layer capable of proving the changed behaviour;
@@ -149,9 +147,7 @@ qa-test-strategy-portfolio/
 │   ├── 07-defect-management.md
 │   ├── 08-metrics-and-reporting.md
 │   ├── 09-system-test-plan.md
-│   ├── 10-c31-c32-production-traceability.md
-│   ├── 11-c33-c34-production-traceability.md
-│   └── 12-lessons-learned.md
+│   └── 10-lessons-learned.md
 ├── evidence/
 │   └── v1.0/
 │       ├── README.md
