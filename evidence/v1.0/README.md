@@ -69,10 +69,12 @@ Selected quick/affected-area/integrated regression evidence includes:
 - [AB-EV-039 — C39 Individual memory privacy](regression/ab-ev-039-c39-individual-memory-privacy.md)
 - [AB-EV-040 — C40 Manual memory ordering](regression/ab-ev-040-c40-manual-memory-ordering.md)
 - [AB-EV-041 — C41 Public memories from earned flags](regression/ab-ev-041-c41-public-memory-flag-modal.md)
+- [AB-EV-042 — C42 Editable visit names](regression/ab-ev-042-editable-visit-names.md)
+- [AB-EV-043 — C43 Visual identity alignment](regression/ab-ev-043-visual-identity-alignment.md)
 
 AB-EV-034 is the closure record for the previous QR-01 `Current gap`; QR-01 now remains as a `Regression risk`. AB-EV-035 records a requirement correction rather than a Product Defect.
 
-AB-EV-039 records per-memory privacy and sanitised public projection. AB-EV-040 records manual memory presentation order plus the correctly classified Rules-parity blocker. AB-EV-041 records public-memory access from earned flags, owner/anonymous public-source parity, exact visit labels and the final Profile sort-layout correction; automatic deployment and final Test Lead Production smoke both passed.
+AB-EV-039 records per-memory privacy and sanitised public projection. AB-EV-040 records manual memory presentation order plus the correctly classified Rules-parity blocker. AB-EV-041 records public-memory access from earned flags, owner/anonymous public-source parity, exact visit labels and the final Profile sort-layout correction. AB-EV-042 records editable visit names with stable identity, explicit Save and sanitised public labels. AB-EV-043 records the repository-wide visual identity alignment and semantic-colour preservation. C41–C43 reached automatic Production deployment and final Test Lead approval.
 
 ### `defects`
 

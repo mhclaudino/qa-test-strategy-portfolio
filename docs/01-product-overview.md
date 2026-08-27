@@ -6,7 +6,7 @@ This document provides a high-level overview of AtlasBadge, including its purpos
 
 It establishes the product context required for the risk analysis and test strategy documented in this repository.
 
-> **Document status:** Completed and maintained through AB-EV-041. C39/AB-EV-039 implements individual memory privacy; C40/AB-EV-040 adds manual memory presentation ordering; C41/AB-EV-041 adds public-memory access from earned flags. C41 automatic deployment and Test Lead Production smoke passed; the increment is closed and retained as regression coverage.
+> **Document status:** Completed and maintained through AB-EV-043. C39–C41 establish per-memory privacy, manual memory presentation order and public-memory access from earned flags; C42 adds editable per-visit presentation names; C43 establishes the current AtlasBadge visual-identity baseline. C41–C43 reached Production and final Test Lead approval.
 
 ## 2. Product summary
 
@@ -126,6 +126,8 @@ Relevant behaviours include:
 - repeated visit creation/removal/editing;
 - `visitsCount` derived from registered visits where applicable;
 - explicit Save for memory text/privacy rather than persistence on every keystroke;
+- optional `visitName?: string` presentation metadata, with trimmed explicit-Save editing, stable visit ID and `VISITA n` fallback when absent;
+- duplicate custom visit names rejected case-insensitively within the same country/territory while Unicode content remains supported;
 - `RegisteredVisit.isMemoryPublic?: boolean` for visit-memory visibility;
 - `UserCountry.isGeneralNotePublic?: boolean` for general-memory visibility;
 - legacy/missing privacy flags defaulting to private;
@@ -143,7 +145,7 @@ Relevant behaviours include:
 - independent Wishlist order;
 - transactional integrity for the Born there user pointer/status relationship.
 
-C34/AB-EV-032 is the current Manual Visit Order and rapid-visit concurrency baseline. It preserves the atomic `birthplacePlaceId` + `statuses.born` invariant and records AB-DEF-013 as closed. C39/AB-EV-039 is the current privacy contract for memories. C40/AB-EV-040 is the current manual memory-order contract.
+C34/AB-EV-032 is the current Manual Visit Order and rapid-visit concurrency baseline. It preserves the atomic `birthplacePlaceId` + `statuses.born` invariant and records AB-DEF-013 as closed. C39/AB-EV-039 is the current privacy contract for memories. C40/AB-EV-040 is the current manual memory-order contract. C42/AB-EV-042 adds editable visit names as presentation metadata without changing visit identity, visit-history order, memory order or privacy.
 
 ### 5.5 Persistent user data
 
@@ -179,7 +181,7 @@ The public root may expose only approved presentation fields. When the Wishlist 
 
 Public place projections must not expose raw `generalNote`, `registeredVisits`, privacy flags, `memoryOrder`, private visit content, `firstPhysicalPresenceAt`, `statusActivatedAt` or `visitsCount`. They may expose the sanitised `publicMemories` list created by C39.
 
-For visit memories, the projection contains only approved shareable values and, from C41, a sanitised exact presentation label such as `VISITA 1`. C40 ordering is resolved before privacy filtering, so relative public order is preserved without exposing `memoryOrder` itself.
+For visit memories, the projection contains only approved shareable values. C41 introduced the sanitised exact presentation label; C42 allows that public `visitLabel` to use the approved custom visit name when present while retaining `VISITA n` fallback and never exposing raw `visitName`. C40 ordering is resolved before privacy filtering, so relative public order is preserved without exposing `memoryOrder` itself.
 
 Public achievement metadata contains only `unlockedAt` and `sequence`.
 
@@ -190,6 +192,8 @@ A normal earned country/territory flag opens a read-only public-memory modal. Th
 ### 5.7 Responsive experience
 
 AtlasBadge supports desktop and mobile web use. Testing considers navigation, map interaction, dialogs/forms, text readability, touch, scrolling, layout stability, modal background scroll locking, horizontal overflow and accessible interaction patterns.
+
+C43/AB-EV-043 establishes the current visual-identity baseline: Atlas Gold/Black/Warm White and Atlas neutral surfaces are used for structural UI identity, while status, feedback, data-visualisation and external-brand colours remain semantic exceptions.
 
 ## 6. High-level user journeys
 
@@ -274,10 +278,10 @@ Maintainability includes keeping business rules central, maintaining automated e
 
 ## 11. Known areas requiring clarification or future work
 
+- one representative photo per `RegisteredVisit`, now planned as the next V1.0 product increment before final localisation; detailed implementation/storage/privacy/public-projection rules remain to be defined before implementation;
 - Final localisation completeness across all V1.0 locales;
 - broader browser/device compatibility beyond the current validated sample;
 - quantitative performance targets;
-- future photos per RegisteredVisit;
 - future Story/share scope;
 - administrative/moderation capabilities if introduced.
 
@@ -295,3 +299,5 @@ These items are not automatically defects. They are open product/quality questio
 - `evidence/v1.0/regression/ab-ev-039-c39-individual-memory-privacy.md`
 - `evidence/v1.0/regression/ab-ev-040-c40-manual-memory-ordering.md`
 - `evidence/v1.0/regression/ab-ev-041-c41-public-memory-flag-modal.md`
+- `evidence/v1.0/regression/ab-ev-042-editable-visit-names.md`
+- `evidence/v1.0/regression/ab-ev-043-visual-identity-alignment.md`

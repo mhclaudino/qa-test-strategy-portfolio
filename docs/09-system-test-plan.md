@@ -574,7 +574,7 @@ Requirement / rule
 
 The central public index is `evidence/v1.0/evidence-register.md`.
 
-Current recent evidence is AB-EV-033 through AB-EV-038.
+Current recent evidence is AB-EV-033 through AB-EV-043.
 
 ---
 
@@ -590,7 +590,7 @@ An increment may be approved when:
 - required Production validation is complete or its limitation explicitly accepted;
 - residual risks are retained in the risk register.
 
-The official V1.0 final release assessment additionally depends on completion/acceptance of the remaining mandatory scope, including localisation/compatibility/performance or final reset/clean-start activities as applicable.
+The official V1.0 final release assessment additionally depends on completion/acceptance of the remaining mandatory scope, including the planned one-photo-per-`RegisteredVisit` increment, localisation/compatibility/performance and final reset/clean-start activities as applicable.
 
 The final release decision belongs to the Test Lead/Product Owner.
 
@@ -606,6 +606,7 @@ The final release decision belongs to the Test Lead/Product Owner.
 - Quantitative performance targets are not established.
 - Formal accessibility certification/native assistive-technology coverage is not claimed.
 - No independent penetration/security audit or formal load test has been completed.
+- One representative photo per `RegisteredVisit` is now planned as the next V1.0 product increment and requires its own requirement/risk/test assessment before implementation.
 - Remaining V1.0 localisation/final release activities must be assessed separately.
 
 ---

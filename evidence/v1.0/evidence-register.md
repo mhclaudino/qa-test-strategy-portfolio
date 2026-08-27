@@ -71,10 +71,10 @@ It is not an Application Lifecycle Management system, a complete defect backlog 
 | Quality Risk | Applied state | Evidence position |
 |---|---|---|
 | QR-01 | `Regression risk` | AB-EV-008/009/019/026/032/033 progressively protected persistence paths. AB-EV-034 completed the write-path audit and closed the previous Current gap. AB-EV-036 adds atomic multi-setting Wishlist persistence; AB-EV-037 extends destructive Clear Map persistence to one logical atomic batch with rejected-write containment and Production closure. |
-| QR-02 | `Regression risk` | Visit-history preservation is protected by AB-EV-002 and later visit-history/concurrency evidence. |
+| QR-02 | `Regression risk` | Visit-history preservation is protected by AB-EV-002 and later visit-history/concurrency evidence; AB-EV-042 confirms renaming a visit does not change its stable ID or source/history order. |
 | QR-03 | `Regression risk` | Explicit logout/cache correction recorded in AB-EV-003. |
 | QR-04 | `Regression risk` | AB-EV-013/018/019/022/026/032/033 protect reconciliation, OCC, rapid mutation and public/private persistence behaviour. AB-EV-036 adds one-commit Wishlist settings persistence; AB-EV-037 removes the split Clear Map commit boundary and protects atomic logical reset. |
-| QR-05 | `Regression risk` | Explicit-Save memory contract recorded in AB-EV-004; AB-EV-039 keeps privacy in the same explicit-Save workflow and AB-EV-040 preserves it during reorder. |
+| QR-05 | `Regression risk` | Explicit-Save memory contract recorded in AB-EV-004; AB-EV-039 keeps privacy in the same explicit-Save workflow, AB-EV-040 preserves it during reorder and AB-EV-042 keeps visit-name editing inside the same explicit-Save boundary. |
 | QR-06 | `Regression risk` | Boundary/character-limit closure recorded in AB-EV-011. |
 | QR-07 | `Regression risk` | Retry-safe account deletion is protected by AB-EV-010; public/Wishlist lifecycle cleanup by AB-EV-033; AB-EV-037 adds destructive Clear Map root/place lifecycle integrity and stale-public-generation invalidation. |
 | QR-08 | `Regression risk` | Password policy closure AB-EV-012. |
@@ -95,13 +95,13 @@ It is not an Application Lifecycle Management system, a complete defect backlog 
 | QR-26 | `Regression risk` | AB-EV-028/030 protect map/Profile interaction. |
 | QR-29 | `Regression risk` | AB-EV-023/027/029 protect UK and World Completion semantics. |
 | QR-30 | `Regression risk` | AB-EV-023/024/026/029/033 protect achievement chronology/reconciliation/public metadata. |
-| QR-31 | `Regression risk` | AB-EV-033 protects private/public Profile and Wishlist privacy boundaries; AB-EV-036 protects public root Wishlist order; AB-EV-037 denies stale generations; AB-EV-039/041 add per-memory public projection and public Profile modal boundaries. |
-| QR-32 | `Regression risk` | AB-EV-033 protects public-place sanitisation; AB-EV-039 defines explicit per-memory publication and private-memory omission; AB-EV-040 preserves privacy under manual order; AB-EV-041 renders only the public projection. |
+| QR-31 | `Regression risk` | AB-EV-033 protects private/public Profile and Wishlist privacy boundaries; AB-EV-036 protects public root Wishlist order; AB-EV-037 denies stale generations; AB-EV-039/041 add per-memory public projection and public Profile modal boundaries; AB-EV-042 keeps custom visit names behind the existing per-memory publication control. |
+| QR-32 | `Regression risk` | AB-EV-033 protects public-place sanitisation; AB-EV-039 defines explicit per-memory publication and private-memory omission; AB-EV-040 preserves privacy under manual order; AB-EV-041 renders only the public projection; AB-EV-042 exposes a custom name only through sanitised `visitLabel` for an otherwise public memory. |
 | QR-33 | `Regression risk` | AB-EV-028/030/032/033 protect public read-only and owner-only interactions; AB-EV-036 protects canonical Wishlist order rendering; AB-EV-037 restricts versioned reads; AB-EV-041 keeps the flag-memory modal on the same sanitised public source for owner and anonymous viewers. |
 | QR-34 | `Regression risk` | AB-EV-033 protects public→private cleanup; AB-EV-036 removes public root Wishlist order exposure on private transition; AB-EV-037 invalidates obsolete public generations; AB-EV-039 ensures unpublishing/deleting a memory removes stale public-memory projection. |
 | QR-36 | `Regression risk` | AB-EV-039 implements explicit per-memory visibility/default-private semantics; AB-EV-040 preserves privacy under manual order; AB-EV-041 validates public-memory rendering from the sanitised projection. |
-| QR-39 | `Regression risk` | AB-EV-018/020/025/028/030/031/032/033 establish responsive baselines; AB-EV-041 adds the public-memory modal and restores the compact Profile sort-header layout. |
-| QR-40 | `Regression risk` | AB-EV-017 establishes the scoped accessibility technical baseline; later increments add targeted interaction regression, including C40 reorder controls and C41 flag/modal interaction. |
+| QR-39 | `Regression risk` | AB-EV-018/020/025/028/030/031/032/033 establish responsive baselines; AB-EV-041 adds the public-memory modal and restores the compact Profile sort-header layout; AB-EV-043 adds cross-product desktop/mobile visual regression approval without layout redesign. |
+| QR-40 | `Regression risk` | AB-EV-017 establishes the scoped accessibility technical baseline; later increments add targeted interaction regression, including C40 reorder controls, C41 flag/modal interaction, C42 visit-name editing and C43 visible-focus/contrast-preserving visual alignment. |
 
 Evidence IDs reflect public publication order, not necessarily chronological order of underlying technical work.
 

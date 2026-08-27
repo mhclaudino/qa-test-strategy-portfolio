@@ -179,7 +179,7 @@ C36 separates ordering domains explicitly: Manual Visit Order remains per-place 
 
 C37 ensures the destructive Clear Map path removes ordering/lifecycle state without depending on a second public cleanup batch.
 
-Future photos per RegisteredVisit are deferred beyond current V1.0 scope.
+One representative photo per `RegisteredVisit` is now planned as the next V1.0 product increment, before final localisation. Its detailed storage, upload/delete, privacy/public-projection and validation rules must be defined and risk-assessed before implementation.
 
 ### 6.3 Personal Profile — Executed
 
@@ -337,8 +337,6 @@ Current gaps/deferred areas include:
 - independent penetration testing;
 - formal accessibility certification/native AT matrix;
 - quantitative performance SLAs;
-- future per-memory privacy;
-- future RegisteredVisit photos;
 - future Story/social features beyond current scope.
 
 Physical garbage collection of stale public-generation place documents is not an open functional defect. It is optional housekeeping because correctness and public-read safety no longer depend on immediate physical deletion.

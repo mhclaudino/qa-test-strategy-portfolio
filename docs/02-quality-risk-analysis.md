@@ -6,7 +6,7 @@ This document identifies, evaluates and prioritises the main quality risks assoc
 
 This is a living analysis. Risk scores and priorities must be reviewed whenever the product, architecture, geographic catalogue, privacy model or release scope changes.
 
-> **Document status:** Reviewed through AB-EV-041. C39 implements per-memory privacy and moves QR-36 from Future risk to Regression risk; C40 adds manual memory ordering with Rules-parity validation; C41 integrates sanitised public memories into the public Profile. C41 automatic deployment and final Test Lead Production smoke passed.
+> **Document status:** Reviewed through AB-EV-043. C39–C41 establish the current per-memory privacy/order/public-rendering baseline; C42 adds editable visit names without changing visit identity or privacy boundaries; C43 aligns the product-wide visual identity while preserving semantic status/data/feedback colours and visible focus. C41–C43 reached Production and final Test Lead approval.
 
 ---
 
@@ -59,7 +59,7 @@ Memory text uses local draft state and persists only after explicit **Save**. No
 
 Current V1.0 behaviour preserves user-created visit history/memories across supported status transitions. AB-EV-032 protects replayable/idempotent rapid visit mutations; AB-EV-035 adds explicit protection that combining Visited + Passed through does not duplicate visits or memories.
 
-C39/AB-EV-039 adds explicit per-memory visibility while retaining the explicit-Save contract. Legacy privacy flags default to private; a visit may be public with valid duration/date even when note is empty; an empty general memory cannot be public. C40/AB-EV-040 adds `memoryOrder` as presentation metadata without reordering `registeredVisits` or exposing the order field publicly.
+C39/AB-EV-039 adds explicit per-memory visibility while retaining the explicit-Save contract. Legacy privacy flags default to private; a visit may be public with valid duration/date even when note is empty; an empty general memory cannot be public. C40/AB-EV-040 adds `memoryOrder` as presentation metadata without reordering `registeredVisits` or exposing the order field publicly. C42/AB-EV-042 adds optional `visitName` presentation metadata with explicit Save, 40-character validation, same-country duplicate rejection and stable visit identity/order.
 
 ### 3.4 Persistence and data model
 
@@ -122,7 +122,7 @@ Wishlist privacy defaults to private. A public Wishlist tile is rendered only wh
 
 AB-EV-033 validates private→public and public→private Wishlist transitions, public-only cleanup, mixed-document sanitisation and zero private viewer reads in Production. AB-EV-036 extends that baseline by atomically coupling privacy/order changes, exposing root order only in the approved public state and validating the aligned Rules release in Production. AB-EV-037 extends the lifecycle boundary further: Clear Map invalidates all obsolete public travel-place generations atomically without requiring 251 public child deletes inside the logical reset.
 
-AB-EV-039 protects individual-memory privacy and sanitised public-memory projection. AB-EV-040 proves public-memory ordering can follow owner presentation order without exposing `memoryOrder`. AB-EV-041 makes owner and anonymous public-memory rendering consume the same public projection and keeps the public Profile read-only.
+AB-EV-039 protects individual-memory privacy and sanitised public-memory projection. AB-EV-040 proves public-memory ordering can follow owner presentation order without exposing `memoryOrder`. AB-EV-041 makes owner and anonymous public-memory rendering consume the same public projection and keeps the public Profile read-only. AB-EV-042 confirms custom visit names reach public rendering only through the existing sanitised `visitLabel` while private visits remain absent.
 
 ### 3.6 Geographic catalogue and progress model
 
@@ -162,6 +162,8 @@ AB-EV-033 closes the missing public achievement-metadata projection while exposi
 ### 3.8 Compatibility, responsive and accessibility baseline
 
 Manual and automated evidence includes Edge/Windows, Chrome/Android, desktop/mobile responsive matrices, touch contexts, constrained-device checks and a scoped WCAG 2.2 AA technical baseline.
+
+C43/AB-EV-043 adds repository-wide visual harmonisation plus Test Lead desktop/mobile and Production visual approval. The change preserved visible keyboard focus and retained semantic status, feedback, geographic/data-visualisation and external-brand colours instead of mechanically replacing them with Gold.
 
 Universal browser/device support and formal accessibility certification are not claimed. Untested browser/device combinations remain QR-38.
 
@@ -295,7 +297,7 @@ Universal browser/device support and formal accessibility certification are not 
 
 ## 6. Highest-priority test focus
 
-Priority focus includes failed-write/recovery regression; atomic multi-resource Save/destructive-reset behaviour; visit-history preservation; account-deletion integrity; status/Wishlist compatibility; `252/195/57` counter integrity; geographic catalogue integrity; private/public projection and privacy transitions; explicit logout/local-data exposure; explicit-Save integrity; real-time concurrency/cache authority; rapid visit convergence; Manual Visit Order; independent Wishlist root ordering; per-memory privacy; manual memory ordering; public-memory flag-modal rendering; Clear Map generation invalidation; birthplace pointer/status atomicity; achievement chronology/public metadata; responsive/constrained-device behaviour; Profile read-only interaction; and accessibility.
+Priority focus includes failed-write/recovery regression; atomic multi-resource Save/destructive-reset behaviour; visit-history preservation; account-deletion integrity; status/Wishlist compatibility; `252/195/57` counter integrity; geographic catalogue integrity; private/public projection and privacy transitions; explicit logout/local-data exposure; explicit-Save integrity; real-time concurrency/cache authority; rapid visit convergence; Manual Visit Order; independent Wishlist root ordering; per-memory privacy; manual memory ordering; editable visit-name identity/privacy preservation; public-memory flag-modal rendering; Clear Map generation invalidation; birthplace pointer/status atomicity; achievement chronology/public metadata; responsive/constrained-device behaviour; Profile read-only interaction; visual-identity/focus consistency; and accessibility.
 
 QR-01 and QR-25 are no longer open investigations. Their residual concern is regression. AB-DEF-017 and AB-DEF-018 are closed; atomic Wishlist settings/order and atomic logical Clear Map integrity are permanent regression scope.
 
@@ -348,7 +350,7 @@ QR-01 and QR-25 are no longer open investigations. Their residual concern is reg
 
 Resolved V1.0 decisions must not be reopened without new evidence or an explicit requirement correction: explicit Save for memories, character-limit policy, retry-safe account deletion, real-time/OCC controls, password minimum/passphrases, canonical usernames, immediate username reuse, Passed-through detailed-visit workflow, QR-01 failed-write recovery baseline, C35 Visited + Passed-through coexistence, C36 Wishlist atomic settings/root-order model, C37 Clear Map atomic generation-reset model, accessibility technical baseline, responsive baseline, achievement chronology, map/profile parity, geographic counters, dashboard/manual ordering and Wishlist/public-profile projection.
 
-Open questions remain around username allowed characters, future memory visibility, broader browser/device support, native assistive-technology coverage, localisation completion, quantitative performance targets and future Story/photo scope.
+Open questions remain around username allowed characters, broader browser/device support, native assistive-technology coverage, localisation completion, quantitative performance targets, the detailed implementation/storage/privacy/public-projection rules for the now-planned one-photo-per-`RegisteredVisit` V1.0 increment, and future Story/share scope.
 
 ---
 
@@ -377,9 +379,11 @@ A change to the public projection whitelist, Wishlist source of truth, Wishlist 
 - `docs/07-defect-management.md`
 - `docs/08-metrics-and-reporting.md`
 - `docs/09-system-test-plan.md`
-- - - `docs/10-lessons-learned.md`
+- `docs/10-lessons-learned.md`
 - `evidence/v1.0/evidence-register.md`
 - `evidence/v1.0/regression/ab-ev-034-qr-01-failed-write-recovery-closure.md`
 - `evidence/v1.0/regression/ab-ev-035-c35-visited-passed-coexistence.md`
 - `evidence/v1.0/defects/ab-ev-036-wishlist-atomic-settings-save-and-order-integrity.md`
 - `evidence/v1.0/defects/ab-ev-037-clear-map-atomic-generation-reset.md`
+- `evidence/v1.0/regression/ab-ev-042-editable-visit-names.md`
+- `evidence/v1.0/regression/ab-ev-043-visual-identity-alignment.md`
