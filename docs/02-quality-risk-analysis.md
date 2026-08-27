@@ -6,7 +6,7 @@ This document identifies, evaluates and prioritises the main quality risks assoc
 
 This is a living analysis. Risk scores and priorities must be reviewed whenever the product, architecture, geographic catalogue, privacy model or release scope changes.
 
-> **Document status:** Reviewed through AB-EV-041. C39 implements per-memory privacy and moves QR-36 from Future risk to Regression risk; C40 adds manual memory ordering with Rules-parity validation; C41 integrates sanitised public memories into the public Profile. C41 automatic deployment is successful; final Production smoke remains pending.
+> **Document status:** Reviewed through AB-EV-041. C39 implements per-memory privacy and moves QR-36 from Future risk to Regression risk; C40 adds manual memory ordering with Rules-parity validation; C41 integrates sanitised public memories into the public Profile. C41 automatic deployment and final Test Lead Production smoke passed.
 
 ---
 

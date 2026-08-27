@@ -9,9 +9,7 @@
 **Supporting risks:** QR-39, QR-40  
 **AtlasBadge commit:** `bb57a004d7b0c64420d093fc4000a67e226eba1e` — `feat(profile): show public memories from flags`  
 **Vercel commit status:** success  
-**Test Lead decision:** **Local functional/visual PASS; final Production smoke pending**
-
-> This record remains open until the final C41 Production smoke is recorded.
+**Test Lead decision:** **C41 CLOSED / PRODUCTION PASS — 27 August 2026**
 
 ## 1. Requirement
 
@@ -59,12 +57,12 @@ Test Lead local functional/visual QA: PASS
 
 C41 changed no Firestore Rules or Storage Rules.
 
-## 7. Commit/deployment and open checkpoint
+## 7. Commit, deployment and Production closure
 
 Commit `bb57a004d7b0c64420d093fc4000a67e226eba1e`; post-push HEAD matched origin/main and the working tree was clean. GitHub/Vercel commit status is `success`.
 
-Final Production smoke still needs to confirm public Profile load, final sort-header layout/behaviour, Brazil C41 modal, exact refreshed `VISITA n` label, no-note memory visibility, Wishlist independence and modal close.
+On 27 August 2026 the Test Lead completed the final focused Production smoke and confirmed PASS for the deployed C41 behaviour, including public Profile load, final sort-header layout/behaviour, alphabetical/visit ordering, Brazil C41 modal, exact refreshed `VISITA n` label, public memory with valid date/duration and no note, absence of the permanent inline panel, Wishlist independence and modal close.
 
-**Current status: DEPLOYED / PRODUCTION SMOKE PENDING.**
+**Current status: C41 CLOSED / PRODUCTION PASS.**
 
 No raw private visit payloads, credentials, tokens or diagnostic scripts are published.

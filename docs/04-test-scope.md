@@ -6,7 +6,7 @@ This document defines the testing scope for AtlasBadge during incremental V1.0 d
 
 It identifies covered product areas, expected depth, current coverage, mandatory remaining work and intentionally deferred items.
 
-> **Document status:** Completed and maintained through AB-EV-041. C39 adds executed per-memory privacy scope; C40 adds executed manual memory-order scope; C41 adds public-memory flag-modal coverage. C41 automatic deployment is successful; final Production smoke remains pending.
+> **Document status:** Completed and maintained through AB-EV-041. C39 adds executed per-memory privacy scope; C40 adds executed manual memory-order scope; C41 adds public-memory flag-modal coverage. C41 automatic deployment and final Test Lead Production smoke passed.
 
 ---
 

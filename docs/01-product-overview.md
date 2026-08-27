@@ -6,7 +6,7 @@ This document provides a high-level overview of AtlasBadge, including its purpos
 
 It establishes the product context required for the risk analysis and test strategy documented in this repository.
 
-> **Document status:** Completed and maintained through AB-EV-041. C39/AB-EV-039 implements individual memory privacy; C40/AB-EV-040 adds manual memory presentation ordering; C41/AB-EV-041 adds public-memory access from earned flags. C41 is committed and automatically deployed successfully; final Production smoke remains pending.
+> **Document status:** Completed and maintained through AB-EV-041. C39/AB-EV-039 implements individual memory privacy; C40/AB-EV-040 adds manual memory presentation ordering; C41/AB-EV-041 adds public-memory access from earned flags. C41 automatic deployment and Test Lead Production smoke passed; the increment is closed and retained as regression coverage.
 
 ## 2. Product summary
 

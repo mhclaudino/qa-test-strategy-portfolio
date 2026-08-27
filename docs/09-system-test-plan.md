@@ -1,7 +1,7 @@
 # AtlasBadge V1.0 System Test Plan
 
 **Document status:** Active / change-controlled  
-**Execution status:** Incremental system testing in progress; latest baseline reviewed through AB-EV-041; C41 Production smoke pending
+**Execution status:** Incremental system testing in progress; latest baseline reviewed through AB-EV-041; C41 Production PASS
 **Product:** AtlasBadge  
 **Target release:** V1.0  
 **Document owner:** Test Lead/Product Owner  
@@ -178,7 +178,7 @@ bb57a004d7b0c64420d093fc4000a67e226eba1e
 feat(profile): show public memories from flags
 GitHub/Vercel commit status: success
 Local Test Lead functional/visual QA: PASS
-Final Production smoke: PENDING
+Final Test Lead Production smoke: PASS — 27 August 2026
 ```
 
 C35 did not alter Firestore Rules. C36 and C37 did, so their Production functional validation was blocked until the separate Rules-only deployment restored application/Rules parity.
@@ -386,7 +386,7 @@ focused destructive Clear Map Production retest PASS
 
 AB-EV-036 and AB-EV-037 record the completed Production approvals.
 
-C39 and C40 both reached successful automatic Vercel deployment after their approved local/manual gates; C40 additionally required a separately authorised Firestore Rules-only deployment before manual real-backend QA could proceed. C41 commit `bb57a004d7b0c64420d093fc4000a67e226eba1e` has a successful Vercel commit status, but its final focused Production smoke remains pending and must not be reported as Production PASS until the Test Lead records that result.
+C39 and C40 both reached successful automatic Vercel deployment after their approved local/manual gates; C40 additionally required a separately authorised Firestore Rules-only deployment before manual real-backend QA could proceed. C41 commit `bb57a004d7b0c64420d093fc4000a67e226eba1e` has a successful Vercel commit status and the Test Lead completed the final focused Production smoke successfully on 27 August 2026. C41 is closed and retained as regression coverage.
 
 ---
 

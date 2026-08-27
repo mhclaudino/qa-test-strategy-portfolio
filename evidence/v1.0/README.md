@@ -72,7 +72,7 @@ Selected quick/affected-area/integrated regression evidence includes:
 
 AB-EV-034 is the closure record for the previous QR-01 `Current gap`; QR-01 now remains as a `Regression risk`. AB-EV-035 records a requirement correction rather than a Product Defect.
 
-AB-EV-039 records per-memory privacy and sanitised public projection. AB-EV-040 records manual memory presentation order plus the correctly classified Rules-parity blocker. AB-EV-041 records public-memory access from earned flags, owner/anonymous public-source parity, exact visit labels and the final Profile sort-layout correction; its automatic deployment is successful and its final Production smoke remains pending.
+AB-EV-039 records per-memory privacy and sanitised public projection. AB-EV-040 records manual memory presentation order plus the correctly classified Rules-parity blocker. AB-EV-041 records public-memory access from earned flags, owner/anonymous public-source parity, exact visit labels and the final Profile sort-layout correction; automatic deployment and final Test Lead Production smoke both passed.
 
 ### `defects`
 
