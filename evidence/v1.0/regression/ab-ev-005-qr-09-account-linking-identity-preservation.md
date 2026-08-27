@@ -101,10 +101,10 @@ A vinculação é realizada corretamente em `src/components/auth/AuthMethods.tsx
 
 | Evidence | Description | Verification |
 |---|---|---|
-| [QR-09-01](qr-09-01-existing-profile-before-linking.png) | Existing profile and travel data before linking | Baseline preserved |
-| [QR-09-02](qr-09-02-access-methods-before-linking.png) | Google disconnected; password configured | Initial provider state |
-| [QR-09-03](qr-09-03-google-linked-successfully.png) | Google connected successfully; password retained | Both providers linked |
-| [QR-09-04](qr-09-04-same-profile-after-google-login.png) | Same profile and map after Google login | Identity and data preserved |
+| [QR-09-01](ab-ev-005-qr-09-01-existing-profile-before-linking.png) | Existing profile and travel data before linking | Baseline preserved |
+| [QR-09-02](ab-ev-005-qr-09-02-access-methods-before-linking.png) | Google disconnected; password configured | Initial provider state |
+| [QR-09-03](ab-ev-005-qr-09-03-google-linked-successfully.png) | Google connected successfully; password retained | Both providers linked |
+| [QR-09-04](ab-ev-005-qr-09-04-same-profile-after-google-login.png) | Same profile and map after Google login | Identity and data preserved |
 
 ## 14. Data preservation verification
 Conforme inspecionado no Technical Review, os caminhos Firestore permanecem ancorados à propriedade `uid` invariável do token de sessão. A vinculação de provedor não desencadeia a geração de um novo UID, protegendo nativamente a integridade relacional dos dados.

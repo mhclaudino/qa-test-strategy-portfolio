@@ -45,6 +45,7 @@ Selected Production/release smoke evidence includes:
 
 Selected quick/affected-area/integrated regression evidence includes:
 
+- [AB-EV-005 — QR-09 account linking identity preservation](regression/ab-ev-005-qr-09-account-linking-identity-preservation.md)
 - [QR-02 — Visit-history preservation](regression/qr-02-visit-history-preservation.md)
 - [AB-EV-008 — QR-01 historical map persistence mitigation](regression/qr-01-map-persistence-and-dashboard-regression.md)
 - [AB-EV-011 — QR-06 character-limit closure](regression/qr-06-character-limits-closure.md)
