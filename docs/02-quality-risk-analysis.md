@@ -6,7 +6,7 @@ This document identifies, evaluates and prioritises the main quality risks assoc
 
 This is a living analysis. Risk scores and priorities must be reviewed whenever the product, architecture, geographic catalogue, privacy model or release scope changes.
 
-> **Document status:** Reviewed through AB-EV-043. C39–C41 establish the current per-memory privacy/order/public-rendering baseline; C42 adds editable visit names without changing visit identity or privacy boundaries; C43 aligns the product-wide visual identity while preserving semantic status/data/feedback colours and visible focus. C41–C43 reached Production and final Test Lead approval.
+> **Document status:** Reviewed through AB-EV-044. C39–C43 establish the current per-memory privacy/order/public-rendering, editable-name and visual-identity baselines. C44 adds bounded visit-photo persistence, privacy inheritance, a 10-photo free quota, server-mediated owner/public reads and lifecycle cleanup. C44 reached Production and final Test Lead approval on 29 August 2026.
 
 ---
 
@@ -59,7 +59,7 @@ Memory text uses local draft state and persists only after explicit **Save**. No
 
 Current V1.0 behaviour preserves user-created visit history/memories across supported status transitions. AB-EV-032 protects replayable/idempotent rapid visit mutations; AB-EV-035 adds explicit protection that combining Visited + Passed through does not duplicate visits or memories.
 
-C39/AB-EV-039 adds explicit per-memory visibility while retaining the explicit-Save contract. Legacy privacy flags default to private; a visit may be public with valid duration/date even when note is empty; an empty general memory cannot be public. C40/AB-EV-040 adds `memoryOrder` as presentation metadata without reordering `registeredVisits` or exposing the order field publicly. C42/AB-EV-042 adds optional `visitName` presentation metadata with explicit Save, 40-character validation, same-country duplicate rejection and stable visit identity/order.
+C39/AB-EV-039 adds explicit per-memory visibility while retaining the explicit-Save contract. Legacy privacy flags default to private; a visit may be public with valid duration/date even when note is empty; an empty general memory cannot be public. C40/AB-EV-040 adds `memoryOrder` as presentation metadata without reordering `registeredVisits` or exposing the order field publicly. C42/AB-EV-042 adds optional `visitName` presentation metadata with explicit Save, 40-character validation, same-country duplicate rejection and stable visit identity/order. C44/AB-EV-044 adds one photo per `RegisteredVisit`; selection remains draft until Save, replacement reuses the same bounded slot, removal is explicit, photo privacy follows the visit memory and the free V1.0 quota is hard-capped at 10 active slots per user.
 
 ### 3.4 Persistence and data model
 
@@ -122,7 +122,7 @@ Wishlist privacy defaults to private. A public Wishlist tile is rendered only wh
 
 AB-EV-033 validates private→public and public→private Wishlist transitions, public-only cleanup, mixed-document sanitisation and zero private viewer reads in Production. AB-EV-036 extends that baseline by atomically coupling privacy/order changes, exposing root order only in the approved public state and validating the aligned Rules release in Production. AB-EV-037 extends the lifecycle boundary further: Clear Map invalidates all obsolete public travel-place generations atomically without requiring 251 public child deletes inside the logical reset.
 
-AB-EV-039 protects individual-memory privacy and sanitised public-memory projection. AB-EV-040 proves public-memory ordering can follow owner presentation order without exposing `memoryOrder`. AB-EV-041 makes owner and anonymous public-memory rendering consume the same public projection and keeps the public Profile read-only. AB-EV-042 confirms custom visit names reach public rendering only through the existing sanitised `visitLabel` while private visits remain absent.
+AB-EV-039 protects individual-memory privacy and sanitised public-memory projection. AB-EV-040 proves public-memory ordering can follow owner presentation order without exposing `memoryOrder`. AB-EV-041 makes owner and anonymous public-memory rendering consume the same public projection and keeps the public Profile read-only. AB-EV-042 confirms custom visit names reach public rendering only through the existing sanitised `visitLabel` while private visits remain absent. AB-EV-044 extends that boundary with an opaque `photoRef` only for authorised public memories; private Storage paths/slots remain private and direct public Storage reads are denied.
 
 ### 3.6 Geographic catalogue and progress model
 
@@ -350,7 +350,7 @@ QR-01 and QR-25 are no longer open investigations. Their residual concern is reg
 
 Resolved V1.0 decisions must not be reopened without new evidence or an explicit requirement correction: explicit Save for memories, character-limit policy, retry-safe account deletion, real-time/OCC controls, password minimum/passphrases, canonical usernames, immediate username reuse, Passed-through detailed-visit workflow, QR-01 failed-write recovery baseline, C35 Visited + Passed-through coexistence, C36 Wishlist atomic settings/root-order model, C37 Clear Map atomic generation-reset model, accessibility technical baseline, responsive baseline, achievement chronology, map/profile parity, geographic counters, dashboard/manual ordering and Wishlist/public-profile projection.
 
-Open questions remain around username allowed characters, broader browser/device support, native assistive-technology coverage, localisation completion, quantitative performance targets, the detailed implementation/storage/privacy/public-projection rules for the now-planned one-photo-per-`RegisteredVisit` V1.0 increment, and future Story/share scope.
+Open questions remain around username allowed characters, broader browser/device support, native assistive-technology coverage, localisation completion, quantitative performance targets, future Story/share scope and `FUTURE-PAID-01`, a possible post-V1.0 monetisation model if infrastructure cost requires it. C44's free 10-photo quota is implemented and is not an open V1.0 question.
 
 ---
 
@@ -387,3 +387,4 @@ A change to the public projection whitelist, Wishlist source of truth, Wishlist 
 - `evidence/v1.0/defects/ab-ev-037-clear-map-atomic-generation-reset.md`
 - `evidence/v1.0/regression/ab-ev-042-editable-visit-names.md`
 - `evidence/v1.0/regression/ab-ev-043-visual-identity-alignment.md`
+- `evidence/v1.0/regression/ab-ev-044-c44-registered-visit-photo-production-closure.md`

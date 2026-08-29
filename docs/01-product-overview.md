@@ -6,7 +6,7 @@ This document provides a high-level overview of AtlasBadge, including its purpos
 
 It establishes the product context required for the risk analysis and test strategy documented in this repository.
 
-> **Document status:** Completed and maintained through AB-EV-043. C39–C41 establish per-memory privacy, manual memory presentation order and public-memory access from earned flags; C42 adds editable per-visit presentation names; C43 establishes the current AtlasBadge visual-identity baseline. C41–C43 reached Production and final Test Lead approval.
+> **Document status:** Completed and maintained through AB-EV-044. C39–C43 establish the memory/privacy/order/public-display, editable-visit-name and visual-identity baselines. C44 adds one representative photo per `RegisteredVisit`, a hard free quota of 10 active visit photos, bounded Storage slots and sanitised owner/public photo delivery. C44 reached Production and final Test Lead approval on 29 August 2026.
 
 ## 2. Product summary
 
@@ -40,6 +40,7 @@ A registered traveller can:
 - select countries or places on the map;
 - assign and change travel statuses;
 - save visits and memories with explicit per-memory privacy;
+- attach one representative photo to a `RegisteredVisit`, subject to the V1.0 free quota of 10 active visit photos per user;
 - maintain a Wishlist based on the Want to visit status;
 - choose whether the Wishlist is public or private;
 - reorder visited places, memory presentation and Wishlist items independently where supported;
@@ -129,6 +130,7 @@ Relevant behaviours include:
 - optional `visitName?: string` presentation metadata, with trimmed explicit-Save editing, stable visit ID and `VISITA n` fallback when absent;
 - duplicate custom visit names rejected case-insensitively within the same country/territory while Unicode content remains supported;
 - `RegisteredVisit.isMemoryPublic?: boolean` for visit-memory visibility;
+- C44 visit-photo metadata using a bounded private slot/variant plus an opaque `photoRef` for public projection; photos inherit visit-memory privacy and do not create visits or change `visitsCount`;
 - `UserCountry.isGeneralNotePublic?: boolean` for general-memory visibility;
 - legacy/missing privacy flags defaulting to private;
 - a public visit requiring at least one approved shareable value (duration, date/time or note), with note not mandatory;
@@ -181,7 +183,7 @@ The public root may expose only approved presentation fields. When the Wishlist 
 
 Public place projections must not expose raw `generalNote`, `registeredVisits`, privacy flags, `memoryOrder`, private visit content, `firstPhysicalPresenceAt`, `statusActivatedAt` or `visitsCount`. They may expose the sanitised `publicMemories` list created by C39.
 
-For visit memories, the projection contains only approved shareable values. C41 introduced the sanitised exact presentation label; C42 allows that public `visitLabel` to use the approved custom visit name when present while retaining `VISITA n` fallback and never exposing raw `visitName`. C40 ordering is resolved before privacy filtering, so relative public order is preserved without exposing `memoryOrder` itself.
+For visit memories, the projection contains only approved shareable values. C41 introduced the sanitised exact presentation label; C42 allows that public `visitLabel` to use the approved custom visit name when present while retaining `VISITA n` fallback and never exposing raw `visitName`. C44 may add only the opaque `photoRef` for a public visit photo; private `photoPath`, slot, variant and stable visit ID are not exposed. Owner and public image reads are served through authenticated/sanitised server routes rather than public Firebase Storage download URLs. C40 ordering is resolved before privacy filtering, so relative public order is preserved without exposing `memoryOrder` itself.
 
 Public achievement metadata contains only `unlockedAt` and `sequence`.
 
@@ -278,8 +280,8 @@ Maintainability includes keeping business rules central, maintaining automated e
 
 ## 11. Known areas requiring clarification or future work
 
-- one representative photo per `RegisteredVisit`, now planned as the next V1.0 product increment before final localisation; detailed implementation/storage/privacy/public-projection rules remain to be defined before implementation;
 - Final localisation completeness across all V1.0 locales;
+- `FUTURE-PAID-01` — possible post-V1.0 paid-plan model if infrastructure cost requires monetisation; candidates include an expanded visit-photo quota above the free 10-photo limit and other premium conveniences. No paid CTA, entitlement or billing behaviour is part of V1.0;
 - broader browser/device compatibility beyond the current validated sample;
 - quantitative performance targets;
 - future Story/share scope;
@@ -301,3 +303,4 @@ These items are not automatically defects. They are open product/quality questio
 - `evidence/v1.0/regression/ab-ev-041-c41-public-memory-flag-modal.md`
 - `evidence/v1.0/regression/ab-ev-042-editable-visit-names.md`
 - `evidence/v1.0/regression/ab-ev-043-visual-identity-alignment.md`
+- `evidence/v1.0/regression/ab-ev-044-c44-registered-visit-photo-production-closure.md`

@@ -1,7 +1,7 @@
 # AtlasBadge V1.0 System Test Plan
 
 **Document status:** Active / change-controlled  
-**Execution status:** Incremental system testing in progress; latest baseline reviewed through AB-EV-043; C43 Production Visual PASS
+**Execution status:** Incremental system testing in progress; latest baseline reviewed through AB-EV-044; C44 Production PASS / Test Lead approved — 29 August 2026
 **Product:** AtlasBadge  
 **Target release:** V1.0  
 **Document owner:** Test Lead/Product Owner  
@@ -34,7 +34,7 @@ A material update is required when:
 
 Each update should identify what changed, affected risks/tests, which previous results remain valid, which require re-execution and the Test Lead decision.
 
-AB-EV-033 established the broad checkpointed regression baseline; AB-EV-034 and AB-EV-035 demonstrate proportional follow-up validation; AB-EV-036 applies the same principle to Wishlist atomic persistence; AB-EV-037 extends it to a destructive Clear Map redesign; AB-EV-038 hardens the manual-QA environment contract. AB-EV-039/040/041 extend the same checkpoint model to per-memory privacy, manual memory ordering and public-memory Profile presentation. AB-EV-042 applies the same proportional model to editable visit names. AB-EV-043 applies it to a broad but presentation-only brand alignment: full static/component/build gates plus real-browser visual QA were required, while backend/Rules execution remained out of impact.
+AB-EV-033 established the broad checkpointed regression baseline; AB-EV-034 and AB-EV-035 demonstrate proportional follow-up validation; AB-EV-036 applies the same principle to Wishlist atomic persistence; AB-EV-037 extends it to a destructive Clear Map redesign; AB-EV-038 hardens the manual-QA environment contract. AB-EV-039/040/041 extend the same checkpoint model to per-memory privacy, manual memory ordering and public-memory Profile presentation. AB-EV-042 applies the same proportional model to editable visit names. AB-EV-043 applies it to a broad but presentation-only brand alignment. AB-EV-044 applies the model to a high-risk Storage/server integration: bounded quota/Rules and Emulator gates were combined with real Firebase Admin/runtime proof, then later exact defects were closed through focused tests and small release gates rather than repeated full-suite execution.
 
 ---
 
@@ -197,6 +197,21 @@ Final full Vitest: 457 passed / 22 skipped / 0 failed
 Lint / TypeScript / production build / diff-check: PASS
 Test Lead desktop/mobile visual QA: PASS
 Final Test Lead Production visual smoke: PASS — 27 August 2026
+
+C44 / AB-EV-044 one photo per RegisteredVisit:
+fc2cea28c7697c18a9e7a79d5d1451b895066e20 — initial feature
+93e31634a9cf747976a01ca6d6e5e3b256fc6f56 — bounded free-quota/storage hardening
+1dc6edc04952e03906241cda81beb6649d06c8fa — Node 22 Firebase Admin Storage runtime pin
+6b8721140a9e46c6c6260b87b3e6e587e7876ec2 — public photoRef projection correction
+f6349977492deea98452df5d6581f6edc07a3a6d — protected-field profile edit correction
+c5c39c1407aa25b604ff82e9c4d96522575c143e — private Wishlist public-projection correction
+Storage Rules bounded-slot suite: 24 / 24 PASS
+Firestore Rules final focused checkpoint: 235 / 235 PASS
+C44 focused Emulator E2E: PASS
+Vercel final: dpl_CcUWVh7v97oUTQ3W9WAuqkJMxfQh — READY / production
+Owner visit-photo API: 200 in Production
+Public visit-photo API: 200 in Production
+Test Lead Production photo/quota/Profile validation: PASS — 29 August 2026
 ```
 
 C35 did not alter Firestore Rules. C36 and C37 did, so their Production functional validation was blocked until the separate Rules-only deployment restored application/Rules parity.
@@ -574,7 +589,7 @@ Requirement / rule
 
 The central public index is `evidence/v1.0/evidence-register.md`.
 
-Current recent evidence is AB-EV-033 through AB-EV-043.
+Current recent evidence is AB-EV-033 through AB-EV-044.
 
 ---
 
@@ -590,7 +605,7 @@ An increment may be approved when:
 - required Production validation is complete or its limitation explicitly accepted;
 - residual risks are retained in the risk register.
 
-The official V1.0 final release assessment additionally depends on completion/acceptance of the remaining mandatory scope, including the planned one-photo-per-`RegisteredVisit` increment, localisation/compatibility/performance and final reset/clean-start activities as applicable.
+The official V1.0 final release assessment additionally depends on completion/acceptance of the remaining mandatory scope, including localisation/compatibility/performance and final reset/clean-start activities as applicable. C44 one-photo-per-`RegisteredVisit` scope is closed and retained as regression coverage.
 
 The final release decision belongs to the Test Lead/Product Owner.
 
@@ -606,7 +621,7 @@ The final release decision belongs to the Test Lead/Product Owner.
 - Quantitative performance targets are not established.
 - Formal accessibility certification/native assistive-technology coverage is not claimed.
 - No independent penetration/security audit or formal load test has been completed.
-- One representative photo per `RegisteredVisit` is now planned as the next V1.0 product increment and requires its own requirement/risk/test assessment before implementation.
+- C44 one-photo-per-`RegisteredVisit` is implemented, Production-approved and retained as permanent regression scope, including the free 10-photo quota and server-mediated read/privacy boundary.
 - Remaining V1.0 localisation/final release activities must be assessed separately.
 
 ---
@@ -625,4 +640,5 @@ The final release decision belongs to the Test Lead/Product Owner.
 - `evidence/v1.0/regression/ab-ev-041-c41-public-memory-flag-modal.md`
 - `evidence/v1.0/regression/ab-ev-042-editable-visit-names.md`
 - `evidence/v1.0/regression/ab-ev-043-visual-identity-alignment.md`
+- `evidence/v1.0/regression/ab-ev-044-c44-registered-visit-photo-production-closure.md`
 - `docs/10-lessons-learned.md`

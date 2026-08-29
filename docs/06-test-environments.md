@@ -39,7 +39,9 @@ AtlasBadge does not claim an artificial enterprise test estate. It does not curr
 9. One canonical manual-QA application origin must be used for a session; `localhost` and `127.0.0.1` are not treated as interchangeable browser origins.
 10. Environmental unavailability or parity mismatch is reported as blocked/inconclusive rather than converted into a false product result.
 11. No universal compatibility/accessibility claim is made from the available sample.
-12. The Test Lead has final authority over Production testing, destructive validation and environmental exceptions.
+12. Local secret/configuration state and Vercel Production secret/configuration state are separate facts; one must never be inferred from the other.
+13. When a server-side integration depends on a specific runtime/dependency transport, the effective Node/runtime version is part of environment evidence and must be validated on the real integration boundary.
+14. The Test Lead has final authority over Production testing, destructive validation and environmental exceptions.
 
 ---
 
@@ -70,6 +72,8 @@ Local manual validation may include:
 - targeted real-Firebase scenarios when explicitly part of the approved pre-launch validation model.
 
 Because the pre-V1.0 Firebase data is controlled/disposable test data, local real-Firebase access can be intentional. Evidence must identify whether the real backend or Emulator was actually used.
+
+C44 added server-side visit-photo routes that require Firebase Admin configuration in the local Next.js process when validating against real Firebase. The required `FIREBASE_ADMIN_*` values are kept only in ignored local environment configuration and are reported as SET/MISSING rather than printed. Their local absence does not imply that Vercel Production variables are absent, and a Production variable set is not recreated merely because the local machine needs its own credential.
 
 No automated or manual conclusion may infer that a local application is isolated merely because the browser address contains `localhost`.
 
@@ -248,7 +252,7 @@ Production is used for:
 
 ### 8.2 Release-parity gate
 
-AB-DEF-002 established that frontend and Firestore Rules can be out of sync even when the Vercel deployment is healthy. C36 reproduced the same risk locally when new application behaviour was accidentally tested against older deployed Production Rules.
+AB-DEF-002 established that frontend and Firestore Rules can be out of sync even when the Vercel deployment is healthy. C36 reproduced the same risk locally when new application behaviour was accidentally tested against older deployed Production Rules. C44 extended the parity model to Firebase Storage Rules and server runtime: bounded-slot application code was not considered valid against the real backend until the Storage Rules namespace was deployed, and Production server photo delivery was not accepted until the Node 22 runtime reached Vercel READY at the expected SHA.
 
 Therefore, when a release changes Rules:
 
@@ -353,11 +357,13 @@ A run is not classified as a product failure when execution cannot start or is i
 - frontend/Rules parity mismatch;
 - missing Emulator identity/state required for the intended manual scenario;
 - browser-origin/session mismatch;
-- missing authorised credential required for a specific destructive/Admin scenario.
+- missing authorised credential required for a specific destructive/Admin scenario;
+- missing local Firebase Admin configuration for a real-backend server route;
+- a confirmed runtime/dependency incompatibility such as the C44 Node 24 `ERR_STREAM_PREMATURE_CLOSE` failure in the Google Cloud Storage OAuth path.
 
 The condition is reported as environment/infrastructure blocked or parity mismatch, corrected where safe, and the valid execution result is recorded separately.
 
-This classification does not hide true product defects. In C36, the Rules-parity permission failure was environmental, while the later lost-order behaviour reproduced under the correct environment was correctly treated as a product implementation failure and fixed before release.
+This classification does not hide true product defects. In C36, the Rules-parity permission failure was environmental, while the later lost-order behaviour reproduced under the correct environment was correctly treated as a product implementation failure and fixed before release. C44 applied the same separation: missing local Admin configuration and the Node 24 Storage OAuth transport failure were environment/runtime blockers, while missing public `photoRef` projection and protected-field profile-write regressions were product implementation defects and were corrected separately.
 
 ---
 

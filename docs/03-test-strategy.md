@@ -6,7 +6,7 @@ This document defines the overall testing strategy for AtlasBadge and how qualit
 
 It covers risk prioritisation, test design, regression, evidence, AI-assisted execution, automation, release approval and residual risk.
 
-> **Document status:** Completed and maintained through AB-EV-043. The current strategy includes versioned Playwright/Firebase Emulator regression, checkpointed incremental validation, controlled Production validation, real-browser visual acceptance for material UI changes and fixed living-document governance.
+> **Document status:** Completed and maintained through AB-EV-044. The current strategy includes versioned Playwright/Firebase Emulator regression, checkpointed incremental validation, controlled real-backend/Production validation, explicit environment/runtime parity checks, real-browser acceptance and fixed living-document governance.
 
 ---
 
@@ -125,6 +125,8 @@ Examples:
 - a broad presentation-only change does not require backend/Rules re-execution when those layers are untouched, but it still requires the relevant static/component/build gates and rendered-browser visual acceptance when perceptibility, focus or cross-surface consistency is the changed contract.
 
 AB-EV-043 demonstrates the latter model: the product-wide visual identity pass used full Vitest/lint/type/build/diff gates plus Test Lead desktop/mobile and Production visual validation, without inventing backend impact.
+
+AB-EV-044 demonstrates a different high-risk path: bounded Storage Rules/quota and Emulator coverage were followed by real-Firebase Admin/runtime validation because Emulator green status could not prove the Google Cloud Storage OAuth/runtime boundary. Once an exact defect was isolated, later corrections used focused tests and small release gates rather than repeatedly rerunning the entire campaign.
 
 This reduces wasted execution time while retaining traceable risk-based coverage.
 

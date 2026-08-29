@@ -6,7 +6,7 @@ This document defines the testing scope for AtlasBadge during incremental V1.0 d
 
 It identifies covered product areas, expected depth, current coverage, mandatory remaining work and intentionally deferred items.
 
-> **Document status:** Completed and maintained through AB-EV-043. C39–C42 cover the current memory/visit privacy, ordering, public-display and editable-name baseline. C43 adds the repository-wide AtlasBadge visual-identity alignment, with automatic Production deployment and final Test Lead Production Visual PASS.
+> **Document status:** Completed and maintained through AB-EV-044. C39–C43 cover the current memory/visit privacy, ordering, public-display, editable-name and visual-identity baseline. C44 adds one representative photo per `RegisteredVisit`, bounded free quota/storage, owner/public photo delivery and lifecycle cleanup; Production PASS was approved by the Test Lead on 29 August 2026.
 
 ---
 
@@ -179,7 +179,7 @@ C36 separates ordering domains explicitly: Manual Visit Order remains per-place 
 
 C37 ensures the destructive Clear Map path removes ordering/lifecycle state without depending on a second public cleanup batch.
 
-One representative photo per `RegisteredVisit` is now planned as the next V1.0 product increment, before final localisation. Its detailed storage, upload/delete, privacy/public-projection and validation rules must be defined and risk-assessed before implementation.
+C44/AB-EV-044 is executed. Coverage includes one processed WebP photo per `RegisteredVisit`, draft preview until explicit Save, replace/remove, privacy inheritance, bounded slots `0..9` with A/B replacement variants, a hard free quota of 10 active visit photos per user, owner/public server-mediated reads, opaque public `photoRef`, Clear Map/remove-visit/account-deletion cleanup and Production validation. Direct client read/list/delete of bounded visit-photo objects remains denied by Storage Rules.
 
 ### 6.3 Personal Profile — Executed
 
@@ -208,7 +208,7 @@ Coverage includes:
 - desktop/mobile layout and modal scroll lock;
 - sanitisation of public root/place fields.
 
-Broader localisation/performance/compatibility refinements remain separate V1.0 scope and do not invalidate the executed privacy/projection baseline.
+Broader localisation/performance/compatibility refinements remain separate V1.0 scope and do not invalidate the executed privacy/projection/photo baseline. Localisation is the next planned V1.0 product-quality increment after C44 closure.
 
 ### 6.5 Counters and statistics — Executed / regression risk
 
@@ -370,4 +370,5 @@ Release approval is blocked by evidence of:
 - `evidence/v1.0/defects/ab-ev-037-clear-map-atomic-generation-reset.md`
 - `evidence/v1.0/regression/ab-ev-042-editable-visit-names.md`
 - `evidence/v1.0/regression/ab-ev-043-visual-identity-alignment.md`
+- `evidence/v1.0/regression/ab-ev-044-c44-registered-visit-photo-production-closure.md`
 - `docs/10-lessons-learned.md`

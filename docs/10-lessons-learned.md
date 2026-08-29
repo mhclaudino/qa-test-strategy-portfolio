@@ -8,7 +8,7 @@ It is deliberately not a diary of every defect, test run or implementation decis
 
 The emphasis is on reducing avoidable work while preserving risk-based confidence and traceability.
 
-> **Document status:** Active / maintained. Consolidated through AB-EV-043 / C43.
+> **Document status:** Active / maintained. Consolidated through AB-EV-044 / C44.
 
 ---
 
@@ -346,6 +346,70 @@ All three must be true before the environment is called “ready”.
 
 **Benefit:** Prevents false confidence from headless assertions and avoids oscillating from invisible affordance to visually excessive correction.
 
+### LL-38 — Size AI-agent work to a finishable checkpoint, not to the entire remaining release
+
+**Observation:** C44 repeatedly bundled investigation, architecture review, regression, release, Vercel verification and Production smoke into one prompt. Strong models exhausted their available usage before reaching a stable stopping point, while weaker/free models were asked to continue work that exceeded their practical capacity.
+
+**Working rule:** One agent task should have one bounded objective and an explicit stop condition. Before assigning work, consider the available model capability/usage window and select a task that can realistically finish within it. Split release work into independent gates such as diagnose → focused fix → commit → deploy → Production smoke → documentation. Do not give a low-capacity model a multi-stage task merely because the stages are logically related.
+
+**Benefit:** Preserves scarce model capacity, produces complete checkpoints instead of half-finished sessions and reduces repeated context reconstruction.
+
+### LL-39 — Local configuration and Production configuration are separate evidence
+
+**Observation:** During C44, missing local `FIREBASE_ADMIN_*` configuration was incorrectly treated as evidence that the same Vercel Production variables also needed configuration, even though Production had already been configured earlier.
+
+**Working rule:** Report each environment independently. A local SET/MISSING result says nothing about Vercel unless Vercel is actually inspected. Never recreate or rotate a remote secret because the equivalent local variable is missing.
+
+**Benefit:** Avoids unnecessary secret changes, configuration drift and wasted release work.
+
+### LL-40 — Emulator PASS does not prove real Admin/Storage/runtime integration
+
+**Observation:** C44 passed Emulator/Rules coverage while the real owner/public photo path still failed because the local Node 24 Google Cloud Storage OAuth transport returned `ERR_STREAM_PREMATURE_CLOSE`. Firebase Admin Auth/Firestore and client uploads could succeed while Admin Storage failed.
+
+**Working rule:** When a release depends on a real external/server boundary not faithfully reproduced by the Emulator, add a small real-backend qualification for that boundary before release. Record runtime/dependency version when it is causally relevant.
+
+**Benefit:** Prevents false confidence from a green isolated environment when the released integration path is different.
+
+### LL-41 — Prove runtime compatibility with an A/B test before pinning or upgrading
+
+**Observation:** Node 24 was a strong suspect for the C44 Admin Storage failure, but the safe decision required proof. A temporary Node 22 run showed Node 24 FAIL and Node 22 PASS on the same Storage/OAuth path.
+
+**Working rule:** Do not change runtime or dependencies on speculation. Reproduce the same request under controlled runtime A/B conditions, then apply the smallest pin/upgrade supported by evidence.
+
+**Benefit:** Keeps runtime changes evidence-based and avoids introducing unrelated dependency churn.
+
+### LL-42 — Materialised public projections need an end-to-end rewrite/read check after source-model changes
+
+**Observation:** C44's bounded-slot model stored the opaque public identifier in `visit.photoRef`, but the public projection still derived it from the old UUID filename. Helper and owner flows passed while the Profile rendered no image and made no `/api/visit-photo` request.
+
+**Working rule:** When a materialised projection schema/source changes, test private source → projection write → stored public document → public render/network request. Do not stop at a projection helper assertion, and use absence of the expected downstream request as a diagnostic signal.
+
+**Benefit:** Catches projection fields that are technically implemented but never reach the consumer.
+
+### LL-43 — Client edit helpers must patch editable fields, not replay stale full documents
+
+**Observation:** After C44 introduced server-managed `visitPhotoSlots`, Edit Profile reused a client-held full profile object. Saving/removing the avatar re-submitted the protected field and Firestore correctly denied the write.
+
+**Working rule:** For mixed client/server-owned documents, construct an explicit editable-field patch. Server-managed fields are preserved by omission, not copied from client snapshots. Deletion of optional fields should use the approved deletion semantic rather than relying on empty placeholders when the schema expects absence.
+
+**Benefit:** Prevents unrelated profile edits from conflicting with new protected backend metadata.
+
+### LL-44 — Conditional public fields must match the Rules contract, not just the whitelist
+
+**Observation:** `wishlistOrder` was on the approved public-profile whitelist but Firestore Rules allowed it only when `isWishlistPublic == true`. A private Wishlist therefore caused an unrelated profile save to fail until the projection omitted the conditional field.
+
+**Working rule:** A public projection whitelist is necessary but not sufficient. For every conditional public field, the projection predicate must match the Rules predicate and be covered by both public/private cases.
+
+**Benefit:** Prevents permission failures and accidental disclosure from a field that is globally approved but conditionally private.
+
+### LL-45 — Cost limits should be structurally enforceable at the storage boundary
+
+**Observation:** A simple counter could limit UI behaviour but would not bound physical Storage exposure under concurrency or bypass. C44 instead uses ten stable slot IDs with two A/B replacement variants and Rules that reject arbitrary visit-photo paths.
+
+**Working rule:** When a quota exists to control infrastructure cost, enforce the upper bound in authoritative backend/storage structure as well as UI. Test the maximum, concurrent edge and release-on-remove behaviour.
+
+**Benefit:** Converts a commercial/cost assumption into a technically enforceable limit.
+
 ### LL-37 — Brand cleanup must classify colour semantics before replacement
 
 **Observation:** C43 found the same neon tokens serving very different roles: some were generic UI focus/CTA styling that conflicted with the AtlasBadge brand, while others represented valid travel-status or geographic/data-visualisation semantics. A mechanical goal such as “zero purple” would have damaged product meaning.
@@ -385,6 +449,14 @@ The following compact rules apply to future AtlasBadge work:
 24. Keep `docs/` fixed to the approved `01`–`10` control set; merge increment updates into those files and publish new change-level material only under `evidence/` unless the Test Lead explicitly approves another control document.
 25. For visual affordance, do not treat class presence or JSDOM focus as visual acceptance; verify the rendered browser result and prefer subtle, brand-consistent correction.
 26. For brand/token cleanup, classify colour semantics before replacement; preserve valid status, feedback, data-visualisation and external-brand colours instead of optimising for zero search matches.
+27. Size AI-agent work to one finishable checkpoint and to the capability/usage window actually available; do not bundle diagnosis, release and documentation into one oversized task.
+28. Treat local and Production/Vercel configuration as separate evidence; never infer or recreate remote secrets from a local missing-variable result.
+29. When Emulator coverage cannot reproduce a real Admin/Storage/runtime boundary, qualify that boundary against the real backend before release.
+30. Use runtime A/B proof before pinning Node or upgrading dependencies.
+31. After a materialised public-projection model change, validate private source → projection write → stored public document → public render/network request.
+32. Patch only client-editable fields on mixed-ownership documents; never replay server-managed fields from a stale client snapshot.
+33. Match conditional public-projection predicates to Firestore Rules predicates and cover both public/private states.
+34. Enforce cost-control quotas structurally at the authoritative backend/Storage boundary, not only in UI state.
 
 ---
 
@@ -425,3 +497,4 @@ Do not add a lesson merely because an isolated defect occurred.
 - `evidence/v1.0/regression/ab-ev-041-c41-public-memory-flag-modal.md`
 - `evidence/v1.0/regression/ab-ev-042-editable-visit-names.md`
 - `evidence/v1.0/regression/ab-ev-043-visual-identity-alignment.md`
+- `evidence/v1.0/regression/ab-ev-044-c44-registered-visit-photo-production-closure.md`

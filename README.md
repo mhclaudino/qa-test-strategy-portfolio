@@ -91,6 +91,7 @@ Recent evidence includes:
 - [AB-EV-041 — C41 Public memories from earned flags](evidence/v1.0/regression/ab-ev-041-c41-public-memory-flag-modal.md)
 - [AB-EV-042 — C42 Editable visit names](evidence/v1.0/regression/ab-ev-042-editable-visit-names.md)
 - [AB-EV-043 — C43 Visual identity alignment](evidence/v1.0/regression/ab-ev-043-visual-identity-alignment.md)
+- [AB-EV-044 — C44 One photo per RegisteredVisit production closure](evidence/v1.0/regression/ab-ev-044-c44-registered-visit-photo-production-closure.md)
 
 AB-EV-034 closes the last documented QR-01 coverage gap and changes its current state from `Current gap` to `Regression risk`. AB-EV-035 records a Product Owner/Test Lead requirement correction: Visited and Passed through are compatible cumulative historical statuses, while `RegisteredVisit` remains the individual-occurrence model.
 
@@ -98,7 +99,7 @@ AB-EV-036 records a true Product Defect found through atomicity analysis: one Wi
 
 AB-EV-037 extends that data-integrity work to the destructive Clear Map lifecycle. The old implementation could be blocked by the new root Wishlist metadata and also used separate public/private commit boundaries. C37 rejects naive 504-write chunking, introduces generation-based public projection invalidation, performs the logical Clear Map reset in one <=253-write batch, protects stale public data at the Rules/query boundary and closes AB-DEF-018 after aligned application/Rules deployment and Test Lead Production PASS.
 
-AB-EV-039 establishes explicit per-memory privacy with sanitised `publicMemories`; AB-EV-040 adds independent `memoryOrder` presentation metadata while preserving `registeredVisits` identity/history; AB-EV-041 connects those contracts to the public Profile through an earned-flag modal and a single public data source for owner/viewer rendering. AB-EV-042 adds optional editable visit names while preserving stable visit identity, explicit Save, memory order and sanitised public labels. AB-EV-043 aligns the cross-product visual language to Atlas Gold/Black/Warm White while retaining semantic status, feedback, data-visualisation and third-party colours. C41–C43 reached automatic Production deployment and final Test Lead approval.
+AB-EV-039 establishes explicit per-memory privacy with sanitised `publicMemories`; AB-EV-040 adds independent `memoryOrder` presentation metadata while preserving `registeredVisits` identity/history; AB-EV-041 connects those contracts to the public Profile through an earned-flag modal and a single public data source for owner/viewer rendering. AB-EV-042 adds optional editable visit names while preserving stable visit identity, explicit Save, memory order and sanitised public labels. AB-EV-043 aligns the cross-product visual language to Atlas Gold/Black/Warm White while retaining semantic status, feedback, data-visualisation and third-party colours. AB-EV-044 closes C44: one representative photo per `RegisteredVisit`, a hard free quota of 10 active visit photos per user, bounded Storage slots, owner/public server-mediated reads, replacement/removal lifecycle cleanup and Production approval after real-backend/runtime hardening. C41–C44 reached Production and final Test Lead approval.
 
 The portfolio records true Product Defects separately from stale automation, environment/Rules parity failures and requirement corrections so defect metrics are not artificially inflated.
 
@@ -123,6 +124,9 @@ The portfolio records true Product Defects separately from stale automation, env
 - expose destructive-operation failure feedback instead of leaving confirmation UI apparently frozen;
 - keep public Profile rendering on the sanitised public projection even when the owner views their own Profile;
 - diagnose stale legacy projection data before adding compensating code or migrations;
+- keep AI-agent work bounded to one finishable objective per checkpoint and fit task size to available model/runtime quota;
+- distinguish local environment readiness from Production/Vercel configuration instead of inferring one from the other;
+- prove real Firebase Admin/Storage/runtime integration separately from Emulator success when a feature depends on those boundaries;
 - reuse an explicitly referenced existing UI pattern before inventing a new layout.
 
 This is part of the QA strategy rather than a retrospective appendix: lessons are converted into standing working rules for later AtlasBadge changes.
