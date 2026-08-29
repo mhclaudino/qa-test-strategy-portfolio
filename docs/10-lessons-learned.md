@@ -346,6 +346,15 @@ All three must be true before the environment is called “ready”.
 
 **Benefit:** Prevents false confidence from headless assertions and avoids oscillating from invisible affordance to visually excessive correction.
 
+### LL-37 — Brand cleanup must classify colour semantics before replacement
+
+**Observation:** C43 found the same neon tokens serving very different roles: some were generic UI focus/CTA styling that conflicted with the AtlasBadge brand, while others represented valid travel-status or geographic/data-visualisation semantics. A mechanical goal such as “zero purple” would have damaged product meaning.
+
+**Working rule:** Before a broad visual-token cleanup, classify each occurrence as brand, status, feedback, data visualisation, external brand, neutral or legacy/inconsistent. Replace only the inconsistent structural usage. Zero grep-count is not an acceptance criterion when a remaining colour has a valid semantic role.
+
+**Benefit:** Improves visual consistency without erasing functional meaning, accessibility cues or legitimate third-party/data-visualisation identity.
+---
+
 ### LL-38 — Size AI-agent work to a finishable checkpoint, not to the entire remaining release
 
 **Observation:** C44 repeatedly bundled investigation, architecture review, regression, release, Vercel verification and Production smoke into one prompt. Strong models exhausted their available usage before reaching a stable stopping point, while weaker/free models were asked to continue work that exceeded their practical capacity.
@@ -409,15 +418,6 @@ All three must be true before the environment is called “ready”.
 **Working rule:** When a quota exists to control infrastructure cost, enforce the upper bound in authoritative backend/storage structure as well as UI. Test the maximum, concurrent edge and release-on-remove behaviour.
 
 **Benefit:** Converts a commercial/cost assumption into a technically enforceable limit.
-
-### LL-37 — Brand cleanup must classify colour semantics before replacement
-
-**Observation:** C43 found the same neon tokens serving very different roles: some were generic UI focus/CTA styling that conflicted with the AtlasBadge brand, while others represented valid travel-status or geographic/data-visualisation semantics. A mechanical goal such as “zero purple” would have damaged product meaning.
-
-**Working rule:** Before a broad visual-token cleanup, classify each occurrence as brand, status, feedback, data visualisation, external brand, neutral or legacy/inconsistent. Replace only the inconsistent structural usage. Zero grep-count is not an acceptance criterion when a remaining colour has a valid semantic role.
-
-**Benefit:** Improves visual consistency without erasing functional meaning, accessibility cues or legitimate third-party/data-visualisation identity.
----
 
 ## 7. Standing efficiency rules
 
