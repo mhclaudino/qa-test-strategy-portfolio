@@ -6,7 +6,7 @@ This document identifies, evaluates and prioritises the main quality risks assoc
 
 This is a living analysis. Risk scores and priorities must be reviewed whenever the product, architecture, geographic catalogue, privacy model or release scope changes.
 
-> **Document status:** Reviewed through AB-EV-044. C39–C43 establish the current per-memory privacy/order/public-rendering, editable-name and visual-identity baselines. C44 adds bounded visit-photo persistence, privacy inheritance, a 10-photo free quota, server-mediated owner/public reads and lifecycle cleanup. C44 reached Production and final Test Lead approval on 29 August 2026.
+> **Document status:** Reviewed through AB-EV-045. C39–C43 establish the current per-memory privacy/order/public-rendering, editable-name and visual-identity baselines. C44 adds bounded visit-photo persistence, privacy inheritance, a 10-photo free quota, server-mediated owner/public reads and lifecycle cleanup. C45A closes the localisation-routing foundation while translated UI remains open. C45A reached Production and final Test Lead approval on 30 August 2026.
 
 ---
 
@@ -348,9 +348,9 @@ QR-01 and QR-25 are no longer open investigations. Their residual concern is reg
 
 ## 9. Open product and quality questions
 
-Resolved V1.0 decisions must not be reopened without new evidence or an explicit requirement correction: explicit Save for memories, character-limit policy, retry-safe account deletion, real-time/OCC controls, password minimum/passphrases, canonical usernames, immediate username reuse, Passed-through detailed-visit workflow, QR-01 failed-write recovery baseline, C35 Visited + Passed-through coexistence, C36 Wishlist atomic settings/root-order model, C37 Clear Map atomic generation-reset model, accessibility technical baseline, responsive baseline, achievement chronology, map/profile parity, geographic counters, dashboard/manual ordering and Wishlist/public-profile projection.
+Resolved V1.0 decisions must not be reopened without new evidence or an explicit requirement correction: explicit Save for memories, character-limit policy, retry-safe account deletion, real-time/OCC controls, password minimum/passphrases, canonical usernames, immediate username reuse, Passed-through detailed-visit workflow, QR-01 failed-write recovery baseline, C35 Visited + Passed-through coexistence, C36 Wishlist atomic settings/root-order model, C37 Clear Map atomic generation-reset model, accessibility technical baseline, responsive baseline, achievement chronology, map/profile parity, geographic counters, dashboard/manual ordering, Wishlist/public-profile projection and the C45A public-locale routing foundation.
 
-Open questions remain around username allowed characters, broader browser/device support, native assistive-technology coverage, localisation completion, quantitative performance targets, future Story/share scope and `FUTURE-PAID-01`, a possible post-V1.0 monetisation model if infrastructure cost requires it. C44's free 10-photo quota is implemented and is not an open V1.0 question.
+Open questions remain around username allowed characters, broader browser/device support, native assistive-technology coverage, remaining localisation completion beyond the executed C45A routing foundation, quantitative performance targets, future Story/share scope and `FUTURE-PAID-01`, a possible post-V1.0 monetisation model if infrastructure cost requires it. C44's free 10-photo quota and C45A's public-locale routing contract are implemented and are not open V1.0 questions.
 
 ---
 
@@ -364,7 +364,7 @@ Any unresolved High risk must be reviewed before release and recorded as mitigat
 
 ## 11. Review triggers
 
-Review this analysis when travel statuses/combinations, Wishlist membership/privacy/root order, Clear Map generation/reset semantics, geographic catalogue/classification, map implementation, private/public profile projection, save/limit behaviour, auth/linking/password rules, account deletion, real-time/OCC behaviour, visit ordering, birthplace transactions, public achievement metadata, sharing, supported browsers/devices/accessibility targets or release-parity controls change.
+Review this analysis when travel statuses/combinations, Wishlist membership/privacy/root order, Clear Map generation/reset semantics, geographic catalogue/classification, map implementation, private/public profile projection, public locale routing/resolution, save/limit behaviour, auth/linking/password rules, account deletion, real-time/OCC behaviour, visit ordering, birthplace transactions, public achievement metadata, sharing, supported browsers/devices/accessibility targets or release-parity controls change.
 
 A change to the public projection whitelist, Wishlist source of truth, Wishlist atomic Save boundary, Clear Map logical atomic boundary/generation model, status compatibility matrix, `252/195/57` denominators, achievement criteria, Profile interaction, manual order persistence or mutation orchestration requires explicit affected-area regression and documentation review.
 
@@ -388,3 +388,4 @@ A change to the public projection whitelist, Wishlist source of truth, Wishlist 
 - `evidence/v1.0/regression/ab-ev-042-editable-visit-names.md`
 - `evidence/v1.0/regression/ab-ev-043-visual-identity-alignment.md`
 - `evidence/v1.0/regression/ab-ev-044-c44-registered-visit-photo-production-closure.md`
+- `evidence/v1.0/regression/ab-ev-045-c45a-localization-routing-foundation.md`

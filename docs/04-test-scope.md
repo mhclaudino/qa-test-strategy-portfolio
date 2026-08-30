@@ -6,7 +6,7 @@ This document defines the testing scope for AtlasBadge during incremental V1.0 d
 
 It identifies covered product areas, expected depth, current coverage, mandatory remaining work and intentionally deferred items.
 
-> **Document status:** Completed and maintained through AB-EV-044. C39–C43 cover the current memory/visit privacy, ordering, public-display, editable-name and visual-identity baseline. C44 adds one representative photo per `RegisteredVisit`, bounded free quota/storage, owner/public photo delivery and lifecycle cleanup; Production PASS was approved by the Test Lead on 29 August 2026.
+> **Document status:** Completed and maintained through AB-EV-045. C39–C43 cover the current memory/visit privacy, ordering, public-display, editable-name and visual-identity baseline. C44 adds one representative photo per `RegisteredVisit`, bounded free quota/storage, owner/public photo delivery and lifecycle cleanup. C45A establishes the public localisation-routing foundation; Production PASS was approved by the Test Lead on 30 August 2026.
 
 ---
 
@@ -208,7 +208,7 @@ Coverage includes:
 - desktop/mobile layout and modal scroll lock;
 - sanitisation of public root/place fields.
 
-Broader localisation/performance/compatibility refinements remain separate V1.0 scope and do not invalidate the executed privacy/projection/photo baseline. Localisation is the next planned V1.0 product-quality increment after C44 closure.
+Broader localisation/performance/compatibility refinements remain separate V1.0 scope and do not invalidate the executed privacy/projection/photo baseline. C45A has now executed the localisation-routing foundation; translated UI and remaining localisation continue as the next V1.0 product-quality work.
 
 ### 6.5 Counters and statistics — Executed / regression risk
 
@@ -224,18 +224,20 @@ Coverage includes unlock/relock chronology, World Completion, UK semantics, pers
 
 Final localisation/visual expansion remains subject to product scope.
 
-### 6.7 Localisation — Planned/ongoing before V1.0
+### 6.7 Localisation — Foundation executed / ongoing before V1.0
 
-Supported locales remain:
+Supported locales, in the official V1.0 order, are:
 
 - `pt-BR`
 - `pt-PT`
-- `en-GB`
-- `es-ES`
 - `es-419`
+- `es-ES`
 - `fr`
+- `en-GB`
 
-System-controlled UI requires localisation coverage; user-authored content is not automatically translated.
+C45A/AB-EV-045 establishes six explicit public Home routes (`/pt-br`, `/pt-pt`, `/es-419`, `/es-es`, `/fr`, `/en-gb`) and a root `/` resolver. Locale precedence is explicit URL → valid saved `atlasbadge_locale` cookie → browser/device language → `pt-BR` fallback. Authenticated routes remain unprefixed, and the existing root `[username]` public-profile routing contract is unchanged.
+
+C45A does not claim translated UI. Home/Hero/public Header/Footer translations, desktop language flags, compact mobile selector, locale-choice persistence/writer and correct document-language semantics remain subsequent localisation scope. System-controlled UI requires localisation coverage; user-authored content is not automatically translated. The Argentina flag is the deliberate visual representation for `es-419`; locale logic remains keyed by locale ID, not flag/country name.
 
 ### 6.8 Performance and responsiveness — Partially executed / ongoing
 
@@ -371,4 +373,5 @@ Release approval is blocked by evidence of:
 - `evidence/v1.0/regression/ab-ev-042-editable-visit-names.md`
 - `evidence/v1.0/regression/ab-ev-043-visual-identity-alignment.md`
 - `evidence/v1.0/regression/ab-ev-044-c44-registered-visit-photo-production-closure.md`
+- `evidence/v1.0/regression/ab-ev-045-c45a-localization-routing-foundation.md`
 - `docs/10-lessons-learned.md`

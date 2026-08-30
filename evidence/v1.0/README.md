@@ -72,10 +72,11 @@ Selected quick/affected-area/integrated regression evidence includes:
 - [AB-EV-042 — C42 Editable visit names](regression/ab-ev-042-editable-visit-names.md)
 - [AB-EV-043 — C43 Visual identity alignment](regression/ab-ev-043-visual-identity-alignment.md)
 - [AB-EV-044 — C44 One photo per RegisteredVisit production closure](regression/ab-ev-044-c44-registered-visit-photo-production-closure.md)
+- [AB-EV-045 — C45A Localization routing foundation](regression/ab-ev-045-c45a-localization-routing-foundation.md)
 
 AB-EV-034 is the closure record for the previous QR-01 `Current gap`; QR-01 now remains as a `Regression risk`. AB-EV-035 records a requirement correction rather than a Product Defect.
 
-AB-EV-039 records per-memory privacy and sanitised public projection. AB-EV-040 records manual memory presentation order plus the correctly classified Rules-parity blocker. AB-EV-041 records public-memory access from earned flags, owner/anonymous public-source parity, exact visit labels and the final Profile sort-layout correction. AB-EV-042 records editable visit names with stable identity, explicit Save and sanitised public labels. AB-EV-043 records the repository-wide visual identity alignment and semantic-colour preservation. AB-EV-044 records bounded visit-photo storage/quota, real Firebase Admin/runtime qualification, public photo projection, adjacent profile-write regressions and final Production approval. C41–C44 reached Production and final Test Lead approval.
+AB-EV-039 records per-memory privacy and sanitised public projection. AB-EV-040 records manual memory presentation order plus the correctly classified Rules-parity blocker. AB-EV-041 records public-memory access from earned flags, owner/anonymous public-source parity, exact visit labels and the final Profile sort-layout correction. AB-EV-042 records editable visit names with stable identity, explicit Save and sanitised public labels. AB-EV-043 records the repository-wide visual identity alignment and semantic-colour preservation. AB-EV-044 records bounded visit-photo storage/quota, real Firebase Admin/runtime qualification, public photo projection, adjacent profile-write regressions and final Production approval. AB-EV-045 records the six-route public localisation foundation, root locale resolution, `[username]` route protection, Next.js security hardening and Production smoke. C41–C45A reached Production and final Test Lead approval.
 
 ### `defects`
 

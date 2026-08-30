@@ -8,7 +8,7 @@ It is deliberately not a diary of every defect, test run or implementation decis
 
 The emphasis is on reducing avoidable work while preserving risk-based confidence and traceability.
 
-> **Document status:** Active / maintained. Consolidated through AB-EV-044 / C44.
+> **Document status:** Active / maintained. Consolidated through AB-EV-045 / C45A.
 
 ---
 
@@ -419,6 +419,14 @@ All three must be true before the environment is called “ready”.
 
 **Benefit:** Converts a commercial/cost assumption into a technically enforceable limit.
 
+### LL-46 — Audit dynamic route namespaces before adding localisation segments
+
+**Observation:** C45A found that AtlasBadge already used the root-level `[username]` route. Introducing a sibling root `[locale]` segment would have created competing route ownership and risked breaking established public-profile links.
+
+**Working rule:** Before introducing locale, tenant, slug or other dynamic route namespaces, inventory existing sibling dynamic routes and prove deterministic route ownership. Prefer explicit static discriminators with shared implementations when they preserve current public contracts with less migration risk.
+
+**Benefit:** Prevents localisation infrastructure from breaking existing public URLs and reduces unnecessary routing migrations.
+
 ## 7. Standing efficiency rules
 
 The following compact rules apply to future AtlasBadge work:
@@ -457,6 +465,7 @@ The following compact rules apply to future AtlasBadge work:
 32. Patch only client-editable fields on mixed-ownership documents; never replay server-managed fields from a stale client snapshot.
 33. Match conditional public-projection predicates to Firestore Rules predicates and cover both public/private states.
 34. Enforce cost-control quotas structurally at the authoritative backend/Storage boundary, not only in UI state.
+35. Audit sibling dynamic-route namespaces before adding locale/tenant/slug segments; preserve deterministic route ownership and existing public URLs.
 
 ---
 
@@ -498,3 +507,4 @@ Do not add a lesson merely because an isolated defect occurred.
 - `evidence/v1.0/regression/ab-ev-042-editable-visit-names.md`
 - `evidence/v1.0/regression/ab-ev-043-visual-identity-alignment.md`
 - `evidence/v1.0/regression/ab-ev-044-c44-registered-visit-photo-production-closure.md`
+- `evidence/v1.0/regression/ab-ev-045-c45a-localization-routing-foundation.md`

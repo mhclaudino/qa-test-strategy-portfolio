@@ -1,11 +1,11 @@
 # AtlasBadge V1.0 System Test Plan
 
 **Document status:** Active / change-controlled  
-**Execution status:** Incremental system testing in progress; latest baseline reviewed through AB-EV-044; C44 Production PASS / Test Lead approved — 29 August 2026
+**Execution status:** Incremental system testing in progress; latest baseline reviewed through AB-EV-045; C45A Production PASS / Test Lead approved — 30 August 2026
 **Product:** AtlasBadge  
 **Target release:** V1.0  
 **Document owner:** Test Lead/Product Owner  
-**Last updated:** 27 August 2026
+**Last updated:** 30 August 2026
 
 ---
 
@@ -34,7 +34,7 @@ A material update is required when:
 
 Each update should identify what changed, affected risks/tests, which previous results remain valid, which require re-execution and the Test Lead decision.
 
-AB-EV-033 established the broad checkpointed regression baseline; AB-EV-034 and AB-EV-035 demonstrate proportional follow-up validation; AB-EV-036 applies the same principle to Wishlist atomic persistence; AB-EV-037 extends it to a destructive Clear Map redesign; AB-EV-038 hardens the manual-QA environment contract. AB-EV-039/040/041 extend the same checkpoint model to per-memory privacy, manual memory ordering and public-memory Profile presentation. AB-EV-042 applies the same proportional model to editable visit names. AB-EV-043 applies it to a broad but presentation-only brand alignment. AB-EV-044 applies the model to a high-risk Storage/server integration: bounded quota/Rules and Emulator gates were combined with real Firebase Admin/runtime proof, then later exact defects were closed through focused tests and small release gates rather than repeated full-suite execution.
+AB-EV-033 established the broad checkpointed regression baseline; AB-EV-034 and AB-EV-035 demonstrate proportional follow-up validation; AB-EV-036 applies the same principle to Wishlist atomic persistence; AB-EV-037 extends it to a destructive Clear Map redesign; AB-EV-038 hardens the manual-QA environment contract. AB-EV-039/040/041 extend the same checkpoint model to per-memory privacy, manual memory ordering and public-memory Profile presentation. AB-EV-042 applies the same proportional model to editable visit names. AB-EV-043 applies it to a broad but presentation-only brand alignment. AB-EV-044 applies the model to a high-risk Storage/server integration: bounded quota/Rules and Emulator gates were combined with real Firebase Admin/runtime proof, then later exact defects were closed through focused tests and small release gates rather than repeated full-suite execution. AB-EV-045 applies the model to localisation infrastructure by separating routing foundation from translated UI, validating the official Node 22 runtime, patching a framework advisory before publication and proving Production route ownership/resolution with focused smoke.
 
 ---
 
@@ -212,6 +212,17 @@ Vercel final: dpl_CcUWVh7v97oUTQ3W9WAuqkJMxfQh — READY / production
 Owner visit-photo API: 200 in Production
 Public visit-photo API: 200 in Production
 Test Lead Production photo/quota/Profile validation: PASS — 29 August 2026
+
+C45A / AB-EV-045 localisation routing foundation:
+92be6f41ee5a71eaf20396383cd11624b84ef842 — localisation routing/i18n foundation
+d25ac8510ebd2e5c1fdea34143a7b862d97ae5b7 — Next.js 16.2.11 security hardening
+next-intl 4.14.1; final runtime Node v22.23.2
+TypeScript / lint / build: PASS; Next.js 16.2.11 generated 19 pages
+Focused Vitest: 33 / 33 PASS
+Focused Playwright: 20 / 20 PASS on Edge with Firebase Emulators and zero Firebase-real requests
+Vercel final: dpl_2mzDcqfXz7hb2fC5ZcTNMZfscjNP — READY / production
+Production smoke: all six public Home locale URLs 200; root locale resolution 307 with cookie/Accept-Language precedence; `[username]` preserved; `/app` remains unprefixed; `/pt-br/app` 404 as designed
+Test Lead Production smoke: PASS — 30 August 2026
 ```
 
 C35 did not alter Firestore Rules. C36 and C37 did, so their Production functional validation was blocked until the separate Rules-only deployment restored application/Rules parity.
@@ -589,7 +600,7 @@ Requirement / rule
 
 The central public index is `evidence/v1.0/evidence-register.md`.
 
-Current recent evidence is AB-EV-033 through AB-EV-044.
+Current recent evidence is AB-EV-033 through AB-EV-045.
 
 ---
 
@@ -605,7 +616,7 @@ An increment may be approved when:
 - required Production validation is complete or its limitation explicitly accepted;
 - residual risks are retained in the risk register.
 
-The official V1.0 final release assessment additionally depends on completion/acceptance of the remaining mandatory scope, including localisation/compatibility/performance and final reset/clean-start activities as applicable. C44 one-photo-per-`RegisteredVisit` scope is closed and retained as regression coverage.
+The official V1.0 final release assessment additionally depends on completion/acceptance of the remaining mandatory scope, including translated UI/remaining localisation, compatibility/performance and final reset/clean-start activities as applicable. C44 one-photo-per-`RegisteredVisit` scope and C45A localisation-routing foundation are closed and retained as regression coverage.
 
 The final release decision belongs to the Test Lead/Product Owner.
 
@@ -622,7 +633,7 @@ The final release decision belongs to the Test Lead/Product Owner.
 - Formal accessibility certification/native assistive-technology coverage is not claimed.
 - No independent penetration/security audit or formal load test has been completed.
 - C44 one-photo-per-`RegisteredVisit` is implemented, Production-approved and retained as permanent regression scope, including the free 10-photo quota and server-mediated read/privacy boundary.
-- Remaining V1.0 localisation/final release activities must be assessed separately.
+- C45A public-locale routing is Production-approved, but translated public UI, selector/persistence and correct document-language semantics remain V1.0 localisation scope and must be assessed separately.
 
 ---
 
@@ -641,4 +652,5 @@ The final release decision belongs to the Test Lead/Product Owner.
 - `evidence/v1.0/regression/ab-ev-042-editable-visit-names.md`
 - `evidence/v1.0/regression/ab-ev-043-visual-identity-alignment.md`
 - `evidence/v1.0/regression/ab-ev-044-c44-registered-visit-photo-production-closure.md`
+- `evidence/v1.0/regression/ab-ev-045-c45a-localization-routing-foundation.md`
 - `docs/10-lessons-learned.md`
