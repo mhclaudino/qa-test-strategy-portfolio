@@ -6,7 +6,7 @@ This document provides a high-level overview of AtlasBadge, including its purpos
 
 It establishes the product context required for the risk analysis and test strategy documented in this repository.
 
-> **Document status:** Completed and maintained through AB-EV-046. C39–C44 establish the current memory/privacy/order/public-display, editable-name, visual-identity and visit-photo baselines. C45A establishes the public localisation-routing foundation; C45B adds translated public Home/Hero/Header/Footer, desktop/mobile language selection, locale cookie persistence and correct public-Home document language/metadata for all six V1.0 locales. C45B reached Production and final Test Lead approval on 31 August 2026.
+> **Document status:** Completed and maintained through AB-EV-047. C39–C44 establish the current memory/privacy/order/public-display, editable-name, visual-identity and visit-photo baselines. C45A establishes the public localisation-routing foundation; C45B adds translated public Home/Hero/Header/Footer, desktop/mobile language selection, locale cookie persistence and correct public-Home document language/metadata for all six V1.0 locales. C45B reached Production and final Test Lead approval on 31 August 2026. C45C localizes the unprefixed Login/auth-entry surface while preserving existing authentication and routing contracts; C45C reached Production and final Test Lead approval on 31 August 2026.
 
 ## 2. Product summary
 
@@ -282,7 +282,7 @@ Maintainability includes keeping business rules central, maintaining automated e
 
 ## 11. Known areas requiring clarification or future work
 
-- Remaining localisation beyond the completed C45A/C45B public-Home baseline, including Login, Onboarding, authenticated application, Badges, public Profile, domain/presentation labels and other system-controlled UI;
+- Remaining localisation beyond the completed C45A/C45B/C45C public-Home + Login baseline, including Onboarding, Verify Email, authenticated application, Badges, public Profile, domain/presentation labels and other system-controlled UI;
 - `FUTURE-PAID-01` — possible post-V1.0 paid-plan model if infrastructure cost requires monetisation; candidates include an expanded visit-photo quota above the free 10-photo limit and other premium conveniences. No paid CTA, entitlement or billing behaviour is part of V1.0;
 - broader browser/device compatibility beyond the current validated sample;
 - quantitative performance targets;
@@ -308,3 +308,4 @@ These items are not automatically defects. They are open product/quality questio
 - `evidence/v1.0/regression/ab-ev-044-c44-registered-visit-photo-production-closure.md`
 - `evidence/v1.0/regression/ab-ev-045-c45a-localization-routing-foundation.md`
 - `evidence/v1.0/regression/ab-ev-046-c45b-public-home-localization-and-language-selector.md`
+- `evidence/v1.0/regression/ab-ev-047-c45c-login-localization-and-locale-continuity.md`

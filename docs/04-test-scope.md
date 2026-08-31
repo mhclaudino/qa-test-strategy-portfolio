@@ -6,7 +6,7 @@ This document defines the testing scope for AtlasBadge during incremental V1.0 d
 
 It identifies covered product areas, expected depth, current coverage, mandatory remaining work and intentionally deferred items.
 
-> **Document status:** Completed and maintained through AB-EV-046. C39–C44 cover the current privacy/order/public-display, editable-name, visual-identity and visit-photo baseline. C45A establishes public locale routing; C45B completes the localized public Home/Hero/Header/Footer surface and language selector for the six approved V1.0 locales. Production/mobile visual PASS was approved by the Test Lead on 31 August 2026.
+> **Document status:** Completed and maintained through AB-EV-047. C39–C44 cover the current privacy/order/public-display, editable-name, visual-identity and visit-photo baseline. C45A establishes public locale routing; C45B completes the localized public Home/Hero/Header/Footer surface and language selector; C45C completes the unprefixed localized Login/auth-entry surface with locale continuity for the six approved V1.0 locales. Production/visual PASS for C45C was approved by the Test Lead on 31 August 2026.
 
 ---
 
@@ -239,7 +239,7 @@ C45A/AB-EV-045 establishes six explicit public Home routes (`/pt-br`, `/pt-pt`, 
 
 C45B/AB-EV-046 completes the translated public Home/Hero/Header/Footer layer across all six locales. Desktop exposes the six flags in official order; narrow mobile uses one compact locale trigger with an accessible six-option menu. Explicit language selection persists `atlasbadge_locale=<locale ID>`, localized Home metadata and `<html lang>` match the active route, and the selector remains available on localized Home for authenticated users while staying absent from `/app`, `/badges`, Login and public Profile. The Argentina flag remains the deliberate visual representation for `es-419`; locale logic remains keyed by locale ID, not flag/country name.
 
-Remaining localisation scope includes Login, Onboarding, authenticated application, Badges, public Profile and other system-controlled/domain presentation text. User-authored content is not automatically translated. C45B's root `headers()` solution makes the page tree request-time dynamic; the architecture review accepted this as bounded V1.0 technical debt because eliminating it would require a disproportionate multi-root route migration.
+Remaining localisation scope includes Onboarding, Verify Email, authenticated application, Badges, public Profile and other system-controlled/domain presentation text. User-authored content is not automatically translated. C45B's root `headers()` solution makes the page tree request-time dynamic; the architecture review accepted this as bounded V1.0 technical debt because eliminating it would require a disproportionate multi-root route migration.
 
 ### 6.8 Performance and responsiveness — Partially executed / ongoing
 
@@ -377,4 +377,5 @@ Release approval is blocked by evidence of:
 - `evidence/v1.0/regression/ab-ev-044-c44-registered-visit-photo-production-closure.md`
 - `evidence/v1.0/regression/ab-ev-045-c45a-localization-routing-foundation.md`
 - `evidence/v1.0/regression/ab-ev-046-c45b-public-home-localization-and-language-selector.md`
+- `evidence/v1.0/regression/ab-ev-047-c45c-login-localization-and-locale-continuity.md`
 - `docs/10-lessons-learned.md`

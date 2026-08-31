@@ -1,7 +1,7 @@
 # AtlasBadge V1.0 System Test Plan
 
 **Document status:** Active / change-controlled  
-**Execution status:** Incremental system testing in progress; latest baseline reviewed through AB-EV-046; C45B Production + mobile visual PASS / Test Lead approved — 31 August 2026
+**Execution status:** Incremental system testing in progress; latest baseline reviewed through AB-EV-047; C45C Production + visual PASS / Test Lead approved — 31 August 2026
 **Product:** AtlasBadge  
 **Target release:** V1.0  
 **Document owner:** Test Lead/Product Owner  
@@ -235,6 +235,18 @@ Vercel final: dpl_5WtEJGeCBtm6QSJpwZhgQzk1CJ66 — READY / production; Node 22; 
 Production smoke: six locale Homes 200 with translated content and correct `html lang`; `/fr` remains Home; `/@mhclaudino` isolated; `/app` unprefixed; `/pt-br/app` 404
 Authenticated Production Home: selector + avatar PASS; `/app` selector absent
 Mobile 390×844 technical smoke PASS; Test Lead real-mobile visual QA PASS — 31 August 2026
+
+C45C / AB-EV-047 Login localisation and locale continuity:
+898cb5bcd088e379afaeed388b7eab0c35b27bb2 — localized unprefixed Login with Home→Login locale continuity
+Final local gates under Node v22.23.2: TypeScript PASS; lint PASS; build PASS
+Vitest release gate: 76 / 76 PASS across 12 files
+Playwright release gate: 21 / 21 focused PASS + Google-linking 1 / 1 PASS; Firebase Emulators; zero real-Firebase requests
+Release scope: 27 files; 1,224 insertions; 78 deletions
+Vercel final: dpl_tixX939LhgvSCziRg2HnAesn7B6n — READY / Production; build 40 s under Node 22.x
+Production smoke: all six Login locales HTTP 200; localized metadata and server-correct `html lang`; query→cookie→browser→pt-BR precedence PASS
+Home→Login locale continuity PASS; authenticated Hero/final CTAs preserved `/app`; `/app`, public Profile, Onboarding and Verify Email remain Portuguese/pt-BR
+390×844 responsive smoke PASS for fr, pt-PT and en-GB; no runtime/hydration/missing-message/4xx/5xx issues
+Test Lead Production visual QA PASS — 31 August 2026
 ```
 
 C35 did not alter Firestore Rules. C36 and C37 did, so their Production functional validation was blocked until the separate Rules-only deployment restored application/Rules parity.
@@ -612,7 +624,7 @@ Requirement / rule
 
 The central public index is `evidence/v1.0/evidence-register.md`.
 
-Current recent evidence is AB-EV-033 through AB-EV-046.
+Current recent evidence is AB-EV-033 through AB-EV-047.
 
 ---
 
@@ -628,7 +640,7 @@ An increment may be approved when:
 - required Production validation is complete or its limitation explicitly accepted;
 - residual risks are retained in the risk register.
 
-The official V1.0 final release assessment additionally depends on completion/acceptance of the remaining mandatory scope, including localisation beyond the completed public Home baseline, compatibility/performance and final reset/clean-start activities as applicable. C44 one-photo-per-`RegisteredVisit` scope and C45A/C45B public-localisation baseline are closed and retained as regression coverage.
+The official V1.0 final release assessment additionally depends on completion/acceptance of the remaining mandatory scope, including localisation beyond the completed public Home baseline, compatibility/performance and final reset/clean-start activities as applicable. C44 one-photo-per-`RegisteredVisit` scope and C45A/C45B/C45C public-Home + Login localisation baseline are closed and retained as regression coverage.
 
 The final release decision belongs to the Test Lead/Product Owner.
 
@@ -645,7 +657,7 @@ The final release decision belongs to the Test Lead/Product Owner.
 - Formal accessibility certification/native assistive-technology coverage is not claimed.
 - No independent penetration/security audit or formal load test has been completed.
 - C44 one-photo-per-`RegisteredVisit` is implemented, Production-approved and retained as permanent regression scope, including the free 10-photo quota and server-mediated read/privacy boundary.
-- C45A/C45B public-Home localisation is Production-approved. Login, Onboarding, authenticated application, Badges, public Profile and other remaining system-controlled localisation still require separate V1.0 assessment. The current root-layout `headers()` approach makes page rendering request-time dynamic and is retained as explicit V1.0 technical debt pending any future multi-root routing redesign.
+- C45A/C45B public-Home localisation and C45C Login localisation are Production-approved. Onboarding, Verify Email, authenticated application, Badges, public Profile and other remaining system-controlled localisation still require separate V1.0 assessment. The current root-layout `headers()` approach makes page rendering request-time dynamic and is retained as explicit V1.0 technical debt pending any future multi-root routing redesign.
 
 ---
 
@@ -666,4 +678,5 @@ The final release decision belongs to the Test Lead/Product Owner.
 - `evidence/v1.0/regression/ab-ev-044-c44-registered-visit-photo-production-closure.md`
 - `evidence/v1.0/regression/ab-ev-045-c45a-localization-routing-foundation.md`
 - `evidence/v1.0/regression/ab-ev-046-c45b-public-home-localization-and-language-selector.md`
+- `evidence/v1.0/regression/ab-ev-047-c45c-login-localization-and-locale-continuity.md`
 - `docs/10-lessons-learned.md`

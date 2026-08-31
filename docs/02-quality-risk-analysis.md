@@ -6,7 +6,7 @@ This document identifies, evaluates and prioritises the main quality risks assoc
 
 This is a living analysis. Risk scores and priorities must be reviewed whenever the product, architecture, geographic catalogue, privacy model or release scope changes.
 
-> **Document status:** Reviewed through AB-EV-046. C39–C44 establish the current privacy/order/public-rendering, editable-name, visual-identity and visit-photo baselines. C45A closes the localisation-routing foundation and C45B closes the public-Home translation/selector layer for all six V1.0 locales. Broader application localisation remains open. C45B reached Production and final Test Lead approval on 31 August 2026.
+> **Document status:** Reviewed through AB-EV-047. C39–C44 establish the current privacy/order/public-rendering, editable-name, visual-identity and visit-photo baselines. C45A closes the localisation-routing foundation, C45B closes the public-Home translation/selector layer and C45C closes the localized Login/auth-entry surface for all six V1.0 locales. Broader application localisation remains open. C45C reached Production and final Test Lead approval on 31 August 2026.
 
 ---
 
@@ -350,7 +350,7 @@ QR-01 and QR-25 are no longer open investigations. Their residual concern is reg
 
 Resolved V1.0 decisions must not be reopened without new evidence or an explicit requirement correction: explicit Save for memories, character-limit policy, retry-safe account deletion, real-time/OCC controls, password minimum/passphrases, canonical usernames, immediate username reuse, Passed-through detailed-visit workflow, QR-01 failed-write recovery baseline, C35 Visited + Passed-through coexistence, C36 Wishlist atomic settings/root-order model, C37 Clear Map atomic generation-reset model, accessibility technical baseline, responsive baseline, achievement chronology, map/profile parity, geographic counters, dashboard/manual ordering, Wishlist/public-profile projection and the C45A public-locale routing foundation.
 
-Open questions remain around username allowed characters, broader browser/device support, native assistive-technology coverage, localisation completion beyond the executed C45A/C45B public-Home baseline, quantitative performance targets, future Story/share scope and `FUTURE-PAID-01`, a possible post-V1.0 monetisation model if infrastructure cost requires it. C44's free 10-photo quota and the C45A/C45B public-locale Home contract are implemented and are not open V1.0 questions.
+Open questions remain around username allowed characters, broader browser/device support, native assistive-technology coverage, localisation completion beyond the executed C45A/C45B/C45C public-Home + Login baseline, quantitative performance targets, future Story/share scope and `FUTURE-PAID-01`, a possible post-V1.0 monetisation model if infrastructure cost requires it. C44's free 10-photo quota and the C45A/C45B public-locale Home contract are implemented and are not open V1.0 questions.
 
 ---
 
@@ -390,3 +390,4 @@ A change to the public projection whitelist, Wishlist source of truth, Wishlist 
 - `evidence/v1.0/regression/ab-ev-044-c44-registered-visit-photo-production-closure.md`
 - `evidence/v1.0/regression/ab-ev-045-c45a-localization-routing-foundation.md`
 - `evidence/v1.0/regression/ab-ev-046-c45b-public-home-localization-and-language-selector.md`
+- `evidence/v1.0/regression/ab-ev-047-c45c-login-localization-and-locale-continuity.md`

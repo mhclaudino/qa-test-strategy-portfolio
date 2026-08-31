@@ -8,7 +8,7 @@ It is deliberately not a diary of every defect, test run or implementation decis
 
 The emphasis is on reducing avoidable work while preserving risk-based confidence and traceability.
 
-> **Document status:** Active / maintained. Consolidated through AB-EV-046 / C45B.
+> **Document status:** Active / maintained. Consolidated through AB-EV-047 / C45C.
 
 ---
 
@@ -435,6 +435,14 @@ All three must be true before the environment is called “ready”.
 
 **Benefit:** Prevents a small semantic requirement from silently changing caching/rendering behaviour across the application and avoids equally risky over-refactoring merely to preserve a static build label.
 
+### LL-48 — Localisation must preserve auth-aware navigation semantics
+
+**Observation:** During C45C, adding locale continuity to Home CTAs initially replaced two authenticated-aware `/app` destinations with fixed `/login?locale=...` links. Translation and locale propagation were correct, but the navigation contract for already-authenticated users regressed. The issue was caught before commit and fixed by reusing the existing `ContextualHomeLink` abstraction.
+
+**Working rule:** When localising links into authentication flows, preserve the pre-existing destination semantics for each auth state before adding locale parameters. Reuse established auth-aware navigation helpers rather than replacing contextual links with static URLs. Test anonymous and authenticated destinations separately.
+
+**Benefit:** Prevents localisation work from introducing behavioural regressions in authentication/navigation while keeping locale continuity explicit and testable.
+
 ## 7. Standing efficiency rules
 
 The following compact rules apply to future AtlasBadge work:
@@ -475,6 +483,7 @@ The following compact rules apply to future AtlasBadge work:
 34. Enforce cost-control quotas structurally at the authoritative backend/Storage boundary, not only in UI state.
 35. Audit sibling dynamic-route namespaces before adding locale/tenant/slug segments; preserve deterministic route ownership and existing public URLs.
 36. Treat request-time APIs in shared/root layouts as architecture-wide rendering/cache decisions; inspect build classification and record any accepted dynamic-rendering trade-off.
+37. Preserve auth-aware link destinations when adding locale continuity; test anonymous and authenticated navigation contracts independently.
 
 ---
 
@@ -518,3 +527,4 @@ Do not add a lesson merely because an isolated defect occurred.
 - `evidence/v1.0/regression/ab-ev-044-c44-registered-visit-photo-production-closure.md`
 - `evidence/v1.0/regression/ab-ev-045-c45a-localization-routing-foundation.md`
 - `evidence/v1.0/regression/ab-ev-046-c45b-public-home-localization-and-language-selector.md`
+- `evidence/v1.0/regression/ab-ev-047-c45c-login-localization-and-locale-continuity.md`
