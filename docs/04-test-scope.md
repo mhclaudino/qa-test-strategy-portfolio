@@ -6,7 +6,7 @@ This document defines the testing scope for AtlasBadge during incremental V1.0 d
 
 It identifies covered product areas, expected depth, current coverage, mandatory remaining work and intentionally deferred items.
 
-> **Document status:** Completed and maintained through AB-EV-045. C39–C43 cover the current memory/visit privacy, ordering, public-display, editable-name and visual-identity baseline. C44 adds one representative photo per `RegisteredVisit`, bounded free quota/storage, owner/public photo delivery and lifecycle cleanup. C45A establishes the public localisation-routing foundation; Production PASS was approved by the Test Lead on 30 August 2026.
+> **Document status:** Completed and maintained through AB-EV-046. C39–C44 cover the current privacy/order/public-display, editable-name, visual-identity and visit-photo baseline. C45A establishes public locale routing; C45B completes the localized public Home/Hero/Header/Footer surface and language selector for the six approved V1.0 locales. Production/mobile visual PASS was approved by the Test Lead on 31 August 2026.
 
 ---
 
@@ -224,7 +224,7 @@ Coverage includes unlock/relock chronology, World Completion, UK semantics, pers
 
 Final localisation/visual expansion remains subject to product scope.
 
-### 6.7 Localisation — Foundation executed / ongoing before V1.0
+### 6.7 Localisation — Public Home executed / broader localisation ongoing before V1.0
 
 Supported locales, in the official V1.0 order, are:
 
@@ -237,7 +237,9 @@ Supported locales, in the official V1.0 order, are:
 
 C45A/AB-EV-045 establishes six explicit public Home routes (`/pt-br`, `/pt-pt`, `/es-419`, `/es-es`, `/fr`, `/en-gb`) and a root `/` resolver. Locale precedence is explicit URL → valid saved `atlasbadge_locale` cookie → browser/device language → `pt-BR` fallback. Authenticated routes remain unprefixed, and the existing root `[username]` public-profile routing contract is unchanged.
 
-C45A does not claim translated UI. Home/Hero/public Header/Footer translations, desktop language flags, compact mobile selector, locale-choice persistence/writer and correct document-language semantics remain subsequent localisation scope. System-controlled UI requires localisation coverage; user-authored content is not automatically translated. The Argentina flag is the deliberate visual representation for `es-419`; locale logic remains keyed by locale ID, not flag/country name.
+C45B/AB-EV-046 completes the translated public Home/Hero/Header/Footer layer across all six locales. Desktop exposes the six flags in official order; narrow mobile uses one compact locale trigger with an accessible six-option menu. Explicit language selection persists `atlasbadge_locale=<locale ID>`, localized Home metadata and `<html lang>` match the active route, and the selector remains available on localized Home for authenticated users while staying absent from `/app`, `/badges`, Login and public Profile. The Argentina flag remains the deliberate visual representation for `es-419`; locale logic remains keyed by locale ID, not flag/country name.
+
+Remaining localisation scope includes Login, Onboarding, authenticated application, Badges, public Profile and other system-controlled/domain presentation text. User-authored content is not automatically translated. C45B's root `headers()` solution makes the page tree request-time dynamic; the architecture review accepted this as bounded V1.0 technical debt because eliminating it would require a disproportionate multi-root route migration.
 
 ### 6.8 Performance and responsiveness — Partially executed / ongoing
 
@@ -374,4 +376,5 @@ Release approval is blocked by evidence of:
 - `evidence/v1.0/regression/ab-ev-043-visual-identity-alignment.md`
 - `evidence/v1.0/regression/ab-ev-044-c44-registered-visit-photo-production-closure.md`
 - `evidence/v1.0/regression/ab-ev-045-c45a-localization-routing-foundation.md`
+- `evidence/v1.0/regression/ab-ev-046-c45b-public-home-localization-and-language-selector.md`
 - `docs/10-lessons-learned.md`

@@ -8,7 +8,7 @@ It is deliberately not a diary of every defect, test run or implementation decis
 
 The emphasis is on reducing avoidable work while preserving risk-based confidence and traceability.
 
-> **Document status:** Active / maintained. Consolidated through AB-EV-045 / C45A.
+> **Document status:** Active / maintained. Consolidated through AB-EV-046 / C45B.
 
 ---
 
@@ -427,6 +427,14 @@ All three must be true before the environment is called “ready”.
 
 **Benefit:** Prevents localisation infrastructure from breaking existing public URLs and reduces unnecessary routing migrations.
 
+### LL-47 — Request-time APIs in a root layout are architecture-wide rendering decisions
+
+**Observation:** C45B needed server-correct `<html lang>` for six explicit localized Home routes. Reading `headers()` in the shared root layout solved that semantic requirement but changed the whole page tree from prerendered/static eligibility to request-time dynamic rendering. A technically cleaner multiple-root alternative existed, but required a disproportionate route-group migration and cross-root navigation cost for the current checkpoint.
+
+**Working rule:** Before adding a request-time API such as `headers()` or `cookies()` to a shared/root layout, inspect the build classification and treat the change as an architecture/performance decision, not a local implementation detail. Prefer scoped/static solutions when proportional; if the correct alternative requires a broad migration, record the dynamic-rendering trade-off explicitly as technical debt and validate the affected performance risk separately.
+
+**Benefit:** Prevents a small semantic requirement from silently changing caching/rendering behaviour across the application and avoids equally risky over-refactoring merely to preserve a static build label.
+
 ## 7. Standing efficiency rules
 
 The following compact rules apply to future AtlasBadge work:
@@ -466,6 +474,7 @@ The following compact rules apply to future AtlasBadge work:
 33. Match conditional public-projection predicates to Firestore Rules predicates and cover both public/private states.
 34. Enforce cost-control quotas structurally at the authoritative backend/Storage boundary, not only in UI state.
 35. Audit sibling dynamic-route namespaces before adding locale/tenant/slug segments; preserve deterministic route ownership and existing public URLs.
+36. Treat request-time APIs in shared/root layouts as architecture-wide rendering/cache decisions; inspect build classification and record any accepted dynamic-rendering trade-off.
 
 ---
 
@@ -508,3 +517,4 @@ Do not add a lesson merely because an isolated defect occurred.
 - `evidence/v1.0/regression/ab-ev-043-visual-identity-alignment.md`
 - `evidence/v1.0/regression/ab-ev-044-c44-registered-visit-photo-production-closure.md`
 - `evidence/v1.0/regression/ab-ev-045-c45a-localization-routing-foundation.md`
+- `evidence/v1.0/regression/ab-ev-046-c45b-public-home-localization-and-language-selector.md`

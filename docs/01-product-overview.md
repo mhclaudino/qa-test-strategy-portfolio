@@ -6,7 +6,7 @@ This document provides a high-level overview of AtlasBadge, including its purpos
 
 It establishes the product context required for the risk analysis and test strategy documented in this repository.
 
-> **Document status:** Completed and maintained through AB-EV-045. C39–C43 establish the memory/privacy/order/public-display, editable-visit-name and visual-identity baselines. C44 adds one representative photo per `RegisteredVisit`, a hard free quota of 10 active visit photos, bounded Storage slots and sanitised owner/public photo delivery. C45A establishes the public localisation-routing foundation while translated UI remains subsequent V1.0 scope. C45A reached Production and final Test Lead approval on 30 August 2026.
+> **Document status:** Completed and maintained through AB-EV-046. C39–C44 establish the current memory/privacy/order/public-display, editable-name, visual-identity and visit-photo baselines. C45A establishes the public localisation-routing foundation; C45B adds translated public Home/Hero/Header/Footer, desktop/mobile language selection, locale cookie persistence and correct public-Home document language/metadata for all six V1.0 locales. C45B reached Production and final Test Lead approval on 31 August 2026.
 
 ## 2. Product summary
 
@@ -260,7 +260,7 @@ AtlasBadge depends on Vercel hosting/Git deployment, Firebase Authentication, Cl
 
 A release that changes both frontend behaviour and Firestore Rules must preserve deployment parity; a Vercel READY state alone is not sufficient evidence that the Firebase security layer is aligned.
 
-C45A establishes six explicit public Home locale routes (`/pt-br`, `/pt-pt`, `/es-419`, `/es-es`, `/fr`, `/en-gb`) plus root locale resolution using saved locale, browser language and `pt-BR` fallback. Authenticated routes remain unprefixed and the existing root `[username]` public-profile contract is preserved. This is a routing/i18n foundation only; translated UI remains open V1.0 work.
+C45A establishes six explicit public Home locale routes (`/pt-br`, `/pt-pt`, `/es-419`, `/es-es`, `/fr`, `/en-gb`) plus root locale resolution using saved locale, browser language and `pt-BR` fallback. Authenticated routes remain unprefixed and the existing root `[username]` public-profile contract is preserved. C45B layers translated Home/Hero/public Header/Footer content, locale-specific metadata and server-correct `<html lang>`, plus desktop six-flag and compact mobile language selection. The selector is also available on the localized Home for authenticated users while remaining absent from unlocalized application/Profile surfaces.
 
 ## 9. Product constraints and assumptions
 
@@ -282,7 +282,7 @@ Maintainability includes keeping business rules central, maintaining automated e
 
 ## 11. Known areas requiring clarification or future work
 
-- Remaining localisation completion after the C45A routing foundation, including translated public UI, language selector/persistence and correct document-language semantics;
+- Remaining localisation beyond the completed C45A/C45B public-Home baseline, including Login, Onboarding, authenticated application, Badges, public Profile, domain/presentation labels and other system-controlled UI;
 - `FUTURE-PAID-01` — possible post-V1.0 paid-plan model if infrastructure cost requires monetisation; candidates include an expanded visit-photo quota above the free 10-photo limit and other premium conveniences. No paid CTA, entitlement or billing behaviour is part of V1.0;
 - broader browser/device compatibility beyond the current validated sample;
 - quantitative performance targets;
@@ -307,3 +307,4 @@ These items are not automatically defects. They are open product/quality questio
 - `evidence/v1.0/regression/ab-ev-043-visual-identity-alignment.md`
 - `evidence/v1.0/regression/ab-ev-044-c44-registered-visit-photo-production-closure.md`
 - `evidence/v1.0/regression/ab-ev-045-c45a-localization-routing-foundation.md`
+- `evidence/v1.0/regression/ab-ev-046-c45b-public-home-localization-and-language-selector.md`

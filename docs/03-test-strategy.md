@@ -6,7 +6,7 @@ This document defines the overall testing strategy for AtlasBadge and how qualit
 
 It covers risk prioritisation, test design, regression, evidence, AI-assisted execution, automation, release approval and residual risk.
 
-> **Document status:** Completed and maintained through AB-EV-045. The current strategy includes versioned Playwright/Firebase Emulator regression, checkpointed incremental validation, controlled real-backend/Production validation, explicit environment/runtime parity checks, real-browser acceptance and fixed living-document governance.
+> **Document status:** Completed and maintained through AB-EV-046. The current strategy includes versioned Playwright/Firebase Emulator regression, checkpointed incremental validation, controlled real-backend/Production validation, explicit environment/runtime parity checks, real-browser acceptance and fixed living-document governance.
 
 ---
 
@@ -129,6 +129,8 @@ AB-EV-043 demonstrates the latter model: the product-wide visual identity pass u
 AB-EV-044 demonstrates a different high-risk path: bounded Storage Rules/quota and Emulator coverage were followed by real-Firebase Admin/runtime validation because Emulator green status could not prove the Google Cloud Storage OAuth/runtime boundary. Once an exact defect was isolated, later corrections used focused tests and small release gates rather than repeatedly rerunning the entire campaign.
 
 AB-EV-045 applies the same checkpoint discipline to localisation infrastructure: routing architecture was isolated from visual translation, root dynamic-route ownership was audited before implementation, local gates were repeated under the official Node 22 runtime, a framework advisory was patched before publication, and Production smoke then proved locale routing without reopening unrelated Firebase regression.
+
+AB-EV-046 extends that baseline with focused translation/selector coverage: message-catalog completeness, locale-variant assertions, desktop/mobile selector behaviour, cookie persistence, server-rendered document language, authenticated-Home visibility and Production mobile visual acceptance were validated without expanding localisation to unrelated application surfaces. The root-layout request API trade-off was explicitly reviewed and accepted as V1.0 technical debt rather than triggering a disproportionate route migration.
 
 This reduces wasted execution time while retaining traceable risk-based coverage.
 
