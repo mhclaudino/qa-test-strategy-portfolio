@@ -8,7 +8,7 @@ It is deliberately not a diary of every defect, test run or implementation decis
 
 The emphasis is on reducing avoidable work while preserving risk-based confidence and traceability.
 
-> **Document status:** Active / maintained. Consolidated through AB-EV-049.
+> **Document status:** Active / maintained. Consolidated through AB-EV-050.
 
 ---
 
@@ -459,6 +459,14 @@ All three must be true before the environment is called “ready”.
 
 **Benefit:** Prevents localization from creating subtle visual drift and turns subjective alignment review into a measurable regression contract.
 
+### LL-51 — Shared routes need mode-scoped document language when only some modes are localized
+
+**Observation:** `/auth/action` serves both email verification and password reset. C45E localized only `mode=verifyEmail`. Applying the contextual locale to the entire route would have allowed `mode=resetPassword` to render Portuguese UI inside a document labelled `lang="fr"` (or another locale), creating a semantic accessibility/SEO mismatch even though the UI itself still worked.
+
+**Working rule:** When one physical route hosts multiple functional modes with different localization coverage, resolve document language at the same functional-mode boundary. An untranslated mode must keep the document locale that actually matches its presentation until that mode is localized.
+
+**Benefit:** Keeps HTML language truthful, prevents partial-localization leakage across shared routes and lets localization advance incrementally without forcing unrelated business-flow refactors.
+
 ## 7. Standing efficiency rules
 
 The following compact rules apply to future AtlasBadge work:
@@ -502,6 +510,7 @@ The following compact rules apply to future AtlasBadge work:
 37. Preserve auth-aware link destinations when adding locale continuity; test anonymous and authenticated navigation contracts independently.
 38. Localize shared validation errors through stable machine-readable codes at the presentation boundary; never use translated message text as a business-logic identifier.
 39. Center critical shared controls independently of translated sibling widths and verify geometry across locale/auth variants instead of relying only on screenshots.
+40. On shared multi-mode routes, scope document locale to the localized functional mode; untranslated modes must retain a matching document language.
 
 ---
 
@@ -548,3 +557,4 @@ Do not add a lesson merely because an isolated defect occurred.
 - `evidence/v1.0/regression/ab-ev-047-c45c-login-localization-and-locale-continuity.md`
 - `evidence/v1.0/regression/ab-ev-048-c45d-onboarding-localization.md`
 - `evidence/v1.0/regression/ab-ev-049-public-home-language-selector-centering.md`
+- `evidence/v1.0/regression/ab-ev-050-c45e-email-verification-localization.md`

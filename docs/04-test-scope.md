@@ -6,7 +6,7 @@ This document defines the testing scope for AtlasBadge during incremental V1.0 d
 
 It identifies covered product areas, expected depth, current coverage, mandatory remaining work and intentionally deferred items.
 
-> **Document status:** Completed and maintained through AB-EV-049. C39–C44 cover the current privacy/order/public-display, editable-name, visual-identity and visit-photo baseline. C45A establishes public locale routing; C45B completes the localized public Home/Hero/Header/Footer surface and language selector; C45C completes the unprefixed localized Login/auth-entry surface; C45D completes the unprefixed localized Onboarding/profile-creation surface for the six approved V1.0 locales. C45D Production technical PASS and Test Lead local/Emulator visual PASS were approved on 1 September 2026. AB-EV-049 subsequently closes the public-Home desktop selector-centering defect without changing translations, locale routing, mobile behaviour or non-Home headers.
+> **Document status:** Completed and maintained through AB-EV-050. C39–C44 cover the current privacy/order/public-display, editable-name, visual-identity and visit-photo baseline. C45A establishes public locale routing; C45B completes the localized public Home/Hero/Header/Footer surface and language selector; C45C completes the unprefixed localized Login/auth-entry surface; C45D completes the unprefixed localized Onboarding/profile-creation surface for the six approved V1.0 locales. C45D Production technical PASS and Test Lead local/Emulator visual PASS were approved on 1 September 2026. AB-EV-049 subsequently closes the public-Home desktop selector-centering defect without changing translations, locale routing, mobile behaviour or non-Home headers. C45E completes the six-locale Verify Email journey across `/verify-email` and `mode=verifyEmail` of `/auth/action`, including localized metadata/document language and error presentation, while `resetPassword` remains explicitly out of scope and Portuguese/`pt-BR`.
 
 ---
 
@@ -239,7 +239,7 @@ C45A/AB-EV-045 establishes six explicit public Home routes (`/pt-br`, `/pt-pt`, 
 
 C45B/AB-EV-046 completes the translated public Home/Hero/Header/Footer layer across all six locales. Desktop exposes the six flags in official order; narrow mobile uses one compact locale trigger with an accessible six-option menu. Explicit language selection persists `atlasbadge_locale=<locale ID>`, localized Home metadata and `<html lang>` match the active route, and the selector remains available on localized Home for authenticated users while staying absent from `/app`, `/badges`, Login and public Profile. The Argentina flag remains the deliberate visual representation for `es-419`; locale logic remains keyed by locale ID, not flag/country name.
 
-Remaining localisation scope includes Verify Email, authenticated application, Badges, public Profile and other system-controlled/domain presentation text. User-authored content is not automatically translated. C45B's root `headers()` solution makes the page tree request-time dynamic; the architecture review accepted this as bounded V1.0 technical debt because eliminating it would require a disproportionate multi-root route migration.
+Remaining localisation scope includes authenticated application, Badges, public Profile, resetPassword action presentation and other system-controlled/domain presentation text. User-authored content is not automatically translated. C45B's root `headers()` solution makes the page tree request-time dynamic; the architecture review accepted this as bounded V1.0 technical debt because eliminating it would require a disproportionate multi-root route migration.
 
 ### 6.8 Performance and responsiveness — Partially executed / ongoing
 
@@ -380,4 +380,5 @@ Release approval is blocked by evidence of:
 - `evidence/v1.0/regression/ab-ev-047-c45c-login-localization-and-locale-continuity.md`
 - `evidence/v1.0/regression/ab-ev-048-c45d-onboarding-localization.md`
 - `evidence/v1.0/regression/ab-ev-049-public-home-language-selector-centering.md`
+- `evidence/v1.0/regression/ab-ev-050-c45e-email-verification-localization.md`
 - `docs/10-lessons-learned.md`

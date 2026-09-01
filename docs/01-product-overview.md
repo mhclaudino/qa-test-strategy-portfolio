@@ -6,7 +6,7 @@ This document provides a high-level overview of AtlasBadge, including its purpos
 
 It establishes the product context required for the risk analysis and test strategy documented in this repository.
 
-> **Document status:** Completed and maintained through AB-EV-049. C39–C44 establish the current memory/privacy/order/public-display, editable-name, visual-identity and visit-photo baselines. C45A establishes the public localisation-routing foundation; C45B adds translated public Home/Hero/Header/Footer, desktop/mobile language selection, locale cookie persistence and correct public-Home document language/metadata for all six V1.0 locales. C45B reached Production and final Test Lead approval on 31 August 2026. C45C localizes the unprefixed Login/auth-entry surface while preserving existing authentication and routing contracts; C45C reached Production and final Test Lead approval on 31 August 2026. C45D localizes the unprefixed Onboarding/profile-creation surface while preserving username/social-link validation and profile persistence semantics; C45D reached Production technical PASS and Test Lead visual approval through the Emulator/local flow on 1 September 2026. AB-EV-049 then closes a multilingual public-Home header visual-consistency defect: the six-language selector is now geometrically centered independently of translated CTA widths, with Production verification across all six locales.
+> **Document status:** Completed and maintained through AB-EV-050. C39–C44 establish the current memory/privacy/order/public-display, editable-name, visual-identity and visit-photo baselines. C45A establishes the public localisation-routing foundation; C45B adds translated public Home/Hero/Header/Footer, desktop/mobile language selection, locale cookie persistence and correct public-Home document language/metadata for all six V1.0 locales. C45B reached Production and final Test Lead approval on 31 August 2026. C45C localizes the unprefixed Login/auth-entry surface while preserving existing authentication and routing contracts; C45C reached Production and final Test Lead approval on 31 August 2026. C45D localizes the unprefixed Onboarding/profile-creation surface while preserving username/social-link validation and profile persistence semantics; C45D reached Production technical PASS and Test Lead visual approval through the Emulator/local flow on 1 September 2026. AB-EV-049 then closes a multilingual public-Home header visual-consistency defect: the six-language selector is now geometrically centered independently of translated CTA widths, with Production verification across all six locales. C45E localizes the unprefixed email-verification journey across `/verify-email` and the `verifyEmail` branch of `/auth/action`, while intentionally keeping the shared `resetPassword` branch Portuguese/`pt-BR`; C45E reached Production technical PASS and Test Lead local/Emulator visual approval on 1 September 2026.
 
 ## 2. Product summary
 
@@ -282,7 +282,7 @@ Maintainability includes keeping business rules central, maintaining automated e
 
 ## 11. Known areas requiring clarification or future work
 
-- Remaining localisation beyond the completed C45A/C45B/C45C/C45D public-Home + Login + Onboarding baseline, including Verify Email, authenticated application, Badges, public Profile, domain/presentation labels and other system-controlled UI;
+- Remaining localisation beyond the completed C45A/C45B/C45C/C45D/C45E public-Home + Login + Onboarding + email-verification baseline, including authenticated application, Badges, public Profile, password-reset action presentation, domain/presentation labels and other system-controlled UI;
 - `FUTURE-PAID-01` — possible post-V1.0 paid-plan model if infrastructure cost requires monetisation; candidates include an expanded visit-photo quota above the free 10-photo limit and other premium conveniences. No paid CTA, entitlement or billing behaviour is part of V1.0;
 - broader browser/device compatibility beyond the current validated sample;
 - quantitative performance targets;
@@ -311,3 +311,4 @@ These items are not automatically defects. They are open product/quality questio
 - `evidence/v1.0/regression/ab-ev-047-c45c-login-localization-and-locale-continuity.md`
 - `evidence/v1.0/regression/ab-ev-048-c45d-onboarding-localization.md`
 - `evidence/v1.0/regression/ab-ev-049-public-home-language-selector-centering.md`
+- `evidence/v1.0/regression/ab-ev-050-c45e-email-verification-localization.md`

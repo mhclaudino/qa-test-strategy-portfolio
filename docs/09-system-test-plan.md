@@ -1,7 +1,7 @@
 # AtlasBadge V1.0 System Test Plan
 
 **Document status:** Active / change-controlled  
-**Execution status:** Incremental system testing in progress; latest baseline reviewed through AB-EV-049; C45D closed and public-Home header centering patch Production PASS / Test Lead approved — 1 September 2026
+**Execution status:** Incremental system testing in progress; latest baseline reviewed through AB-EV-050; C45E Production technical PASS + local/Emulator visual PASS / Test Lead approved — 1 September 2026
 **Product:** AtlasBadge  
 **Target release:** V1.0  
 **Document owner:** Test Lead/Product Owner  
@@ -271,6 +271,20 @@ Production deployment: dpl_F8pCXRG6vfY6tyU43i2zboj4C2LG — READY / Production
 Production 1280 px geometry: pt-BR, pt-PT, es-419, es-ES, fr and en-GB all selector-center = header-center, 0 px deviation; CTA widths varied without moving selector
 390×844 mobile PASS; `/app` and public Profile isolation PASS; no console/network/runtime errors
 Test Lead visual PASS before release; Production PASS — 1 September 2026
+
+C45E / AB-EV-050 email-verification localisation:
+aa6c2972d4755985de63a2d5c3ba2365c52cebef — localized `/verify-email` and `mode=verifyEmail` action flow
+Final local gates under Node v22.23.2: TypeScript PASS; lint PASS; build PASS
+Vitest: 63 / 63 PASS
+Playwright Edge: 21 / 21 PASS across C45E plus C45C/C45D regressions; Firebase Auth/Firestore/Storage Emulators; zero real-Firebase requests
+Release scope: 22 files; 1,515 insertions; 82 deletions
+AuthContext strategy: additive machine-readable verification error codes while preserving existing Portuguese `error` strings/statuses for current callers
+State-machine regression: resend/cooldown 60 s, concurrent-send protection, auth reload/token refresh, profile refresh and `/app`/`/onboarding` redirects preserved
+Shared `/auth/action`: `verifyEmail` resolves contextual locale; `resetPassword`, unsupported and missing modes remain Portuguese with `lang=pt-BR`
+Vercel final: dpl_FVD2sb5S8jeTFrt82pzqFm2zgvUT — READY / Production; Node 22.x; Next.js 16.2.11
+Production technical smoke: six `/verify-email` document locales/metadata PASS; anonymous redirects preserve locale; localized non-mutating invalid verifyEmail action states PASS; French-cookie resetPassword isolation PASS; `/app`, `/badges` and public Profile remain pt-BR
+No Production user or verification email was created for sign-off; Test Lead visual QA and stateful verification/OOB testing were completed locally against Firebase Emulators
+Test Lead approved C45E release closure — 1 September 2026
 ```
 
 C35 did not alter Firestore Rules. C36 and C37 did, so their Production functional validation was blocked until the separate Rules-only deployment restored application/Rules parity.
@@ -648,7 +662,7 @@ Requirement / rule
 
 The central public index is `evidence/v1.0/evidence-register.md`.
 
-Current recent evidence is AB-EV-033 through AB-EV-049.
+Current recent evidence is AB-EV-033 through AB-EV-050.
 
 ---
 
@@ -664,7 +678,7 @@ An increment may be approved when:
 - required Production validation is complete or its limitation explicitly accepted;
 - residual risks are retained in the risk register.
 
-The official V1.0 final release assessment additionally depends on completion/acceptance of the remaining mandatory scope, including localisation beyond the completed public Home baseline, compatibility/performance and final reset/clean-start activities as applicable. C44 one-photo-per-`RegisteredVisit` scope and C45A/C45B/C45C/C45D public-Home + Login + Onboarding localisation baseline are closed and retained as regression coverage.
+The official V1.0 final release assessment additionally depends on completion/acceptance of the remaining mandatory scope, including localisation beyond the completed public Home baseline, compatibility/performance and final reset/clean-start activities as applicable. C44 one-photo-per-`RegisteredVisit` scope and C45A/C45B/C45C/C45D/C45E public-Home + Login + Onboarding + email-verification localisation baseline are closed and retained as regression coverage.
 
 The final release decision belongs to the Test Lead/Product Owner.
 
@@ -681,7 +695,7 @@ The final release decision belongs to the Test Lead/Product Owner.
 - Formal accessibility certification/native assistive-technology coverage is not claimed.
 - No independent penetration/security audit or formal load test has been completed.
 - C44 one-photo-per-`RegisteredVisit` is implemented, Production-approved and retained as permanent regression scope, including the free 10-photo quota and server-mediated read/privacy boundary.
-- C45A/C45B public-Home localisation, C45C Login localisation and C45D Onboarding localisation are approved. Verify Email, authenticated application, Badges, public Profile and other remaining system-controlled localisation still require separate V1.0 assessment. The current root-layout `headers()` approach makes page rendering request-time dynamic and is retained as explicit V1.0 technical debt pending any future multi-root routing redesign.
+- C45A/C45B public-Home localisation, C45C Login localisation, C45D Onboarding localisation and C45E email-verification localisation are approved. Authenticated application, Badges, public Profile, resetPassword action presentation and other remaining system-controlled localisation still require separate V1.0 assessment. The current root-layout `headers()` approach makes page rendering request-time dynamic and is retained as explicit V1.0 technical debt pending any future multi-root routing redesign.
 
 ---
 
@@ -705,4 +719,5 @@ The final release decision belongs to the Test Lead/Product Owner.
 - `evidence/v1.0/regression/ab-ev-047-c45c-login-localization-and-locale-continuity.md`
 - `evidence/v1.0/regression/ab-ev-048-c45d-onboarding-localization.md`
 - `evidence/v1.0/regression/ab-ev-049-public-home-language-selector-centering.md`
+- `evidence/v1.0/regression/ab-ev-050-c45e-email-verification-localization.md`
 - `docs/10-lessons-learned.md`
