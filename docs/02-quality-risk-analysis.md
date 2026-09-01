@@ -6,7 +6,7 @@ This document identifies, evaluates and prioritises the main quality risks assoc
 
 This is a living analysis. Risk scores and priorities must be reviewed whenever the product, architecture, geographic catalogue, privacy model or release scope changes.
 
-> **Document status:** Reviewed through AB-EV-048. C39–C44 establish the current privacy/order/public-rendering, editable-name, visual-identity and visit-photo baselines. C45A closes the localisation-routing foundation, C45B closes the public-Home translation/selector layer, C45C closes the localized Login/auth-entry surface and C45D closes localized Onboarding/profile creation for all six V1.0 locales. Broader application localisation remains open. C45D reached Production technical PASS and Test Lead local/Emulator visual approval on 1 September 2026.
+> **Document status:** Reviewed through AB-EV-049. C39–C44 establish the current privacy/order/public-rendering, editable-name, visual-identity and visit-photo baselines. C45A closes the localisation-routing foundation, C45B closes the public-Home translation/selector layer, C45C closes the localized Login/auth-entry surface and C45D closes localized Onboarding/profile creation for all six V1.0 locales. Broader application localisation remains open. C45D reached Production technical PASS and Test Lead local/Emulator visual approval on 1 September 2026. AB-EV-049 additionally closes the locale-dependent public-Home header centering risk introduced by unequal translated CTA widths; Production geometry is now invariant across all six locales.
 
 ---
 
@@ -392,3 +392,4 @@ A change to the public projection whitelist, Wishlist source of truth, Wishlist 
 - `evidence/v1.0/regression/ab-ev-046-c45b-public-home-localization-and-language-selector.md`
 - `evidence/v1.0/regression/ab-ev-047-c45c-login-localization-and-locale-continuity.md`
 - `evidence/v1.0/regression/ab-ev-048-c45d-onboarding-localization.md`
+- `evidence/v1.0/regression/ab-ev-049-public-home-language-selector-centering.md`

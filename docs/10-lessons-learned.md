@@ -8,7 +8,7 @@ It is deliberately not a diary of every defect, test run or implementation decis
 
 The emphasis is on reducing avoidable work while preserving risk-based confidence and traceability.
 
-> **Document status:** Active / maintained. Consolidated through AB-EV-048 / C45D.
+> **Document status:** Active / maintained. Consolidated through AB-EV-049.
 
 ---
 
@@ -451,6 +451,14 @@ All three must be true before the environment is called “ready”.
 
 **Benefit:** Keeps validation rules testable and language-independent, avoids regressions in existing callers, and lets localization expand without coupling persisted/domain semantics to copy.
 
+### LL-50 — A visually centered control must not depend on translated sibling widths
+
+**Observation:** The localized public Home header used flex distribution, so the flag selector was centered only in the remaining space between the brand and right-side actions. Because translated CTA labels had different widths, the selector moved by roughly 30–67 px between locales even though each individual layout was internally valid.
+
+**Working rule:** When a design requires a control to be visually centered relative to the container/viewport, do not derive that center from leftover flex space if sibling widths can vary by locale, auth state or dynamic content. Use layout tracks/positioning that make the center independent, and validate actual geometry with a pixel-tolerance assertion across representative variants.
+
+**Benefit:** Prevents localization from creating subtle visual drift and turns subjective alignment review into a measurable regression contract.
+
 ## 7. Standing efficiency rules
 
 The following compact rules apply to future AtlasBadge work:
@@ -493,6 +501,7 @@ The following compact rules apply to future AtlasBadge work:
 36. Treat request-time APIs in shared/root layouts as architecture-wide rendering/cache decisions; inspect build classification and record any accepted dynamic-rendering trade-off.
 37. Preserve auth-aware link destinations when adding locale continuity; test anonymous and authenticated navigation contracts independently.
 38. Localize shared validation errors through stable machine-readable codes at the presentation boundary; never use translated message text as a business-logic identifier.
+39. Center critical shared controls independently of translated sibling widths and verify geometry across locale/auth variants instead of relying only on screenshots.
 
 ---
 
@@ -538,3 +547,4 @@ Do not add a lesson merely because an isolated defect occurred.
 - `evidence/v1.0/regression/ab-ev-046-c45b-public-home-localization-and-language-selector.md`
 - `evidence/v1.0/regression/ab-ev-047-c45c-login-localization-and-locale-continuity.md`
 - `evidence/v1.0/regression/ab-ev-048-c45d-onboarding-localization.md`
+- `evidence/v1.0/regression/ab-ev-049-public-home-language-selector-centering.md`

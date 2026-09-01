@@ -6,7 +6,7 @@ This document defines the testing scope for AtlasBadge during incremental V1.0 d
 
 It identifies covered product areas, expected depth, current coverage, mandatory remaining work and intentionally deferred items.
 
-> **Document status:** Completed and maintained through AB-EV-048. C39–C44 cover the current privacy/order/public-display, editable-name, visual-identity and visit-photo baseline. C45A establishes public locale routing; C45B completes the localized public Home/Hero/Header/Footer surface and language selector; C45C completes the unprefixed localized Login/auth-entry surface; C45D completes the unprefixed localized Onboarding/profile-creation surface for the six approved V1.0 locales. C45D Production technical PASS and Test Lead local/Emulator visual PASS were approved on 1 September 2026.
+> **Document status:** Completed and maintained through AB-EV-049. C39–C44 cover the current privacy/order/public-display, editable-name, visual-identity and visit-photo baseline. C45A establishes public locale routing; C45B completes the localized public Home/Hero/Header/Footer surface and language selector; C45C completes the unprefixed localized Login/auth-entry surface; C45D completes the unprefixed localized Onboarding/profile-creation surface for the six approved V1.0 locales. C45D Production technical PASS and Test Lead local/Emulator visual PASS were approved on 1 September 2026. AB-EV-049 subsequently closes the public-Home desktop selector-centering defect without changing translations, locale routing, mobile behaviour or non-Home headers.
 
 ---
 
@@ -379,4 +379,5 @@ Release approval is blocked by evidence of:
 - `evidence/v1.0/regression/ab-ev-046-c45b-public-home-localization-and-language-selector.md`
 - `evidence/v1.0/regression/ab-ev-047-c45c-login-localization-and-locale-continuity.md`
 - `evidence/v1.0/regression/ab-ev-048-c45d-onboarding-localization.md`
+- `evidence/v1.0/regression/ab-ev-049-public-home-language-selector-centering.md`
 - `docs/10-lessons-learned.md`

@@ -1,7 +1,7 @@
 # AtlasBadge V1.0 System Test Plan
 
 **Document status:** Active / change-controlled  
-**Execution status:** Incremental system testing in progress; latest baseline reviewed through AB-EV-048; C45D Production technical PASS + local/Emulator visual PASS / Test Lead approved — 1 September 2026
+**Execution status:** Incremental system testing in progress; latest baseline reviewed through AB-EV-049; C45D closed and public-Home header centering patch Production PASS / Test Lead approved — 1 September 2026
 **Product:** AtlasBadge  
 **Target release:** V1.0  
 **Document owner:** Test Lead/Product Owner  
@@ -259,6 +259,18 @@ Vercel final: dpl_DPkW9nB2uDNRysKXCMdvTLDZtxyU — READY / Production; Node 22.x
 Production technical smoke: six Onboarding locale resolutions HTTP 200 with correct server `html lang` and localized metadata; locale precedence PASS; anonymous guard redirects to Login; `/app`, `/verify-email` and public Profile remain pt-BR
 Production user-state visual replay was intentionally not created because no qualifying safe Production test user existed; Test Lead visual QA had already passed locally against the Auth/Firestore/Storage Emulators
 Test Lead approved release closure — 1 September 2026
+
+AB-EV-049 public Home language-selector centering patch:
+33556ecc5c1eda19522ec0c1975d7e755f6dbad4 — true-center localized Home language selector
+Final local gates under Node v22.23.2: TypeScript PASS; lint PASS; build PASS
+Vitest: 20 / 20 PASS
+Playwright Edge: 8 / 8 PASS; Firebase Emulators; zero real-Firebase requests
+Root cause: selector was centered only inside remaining flex space, so translated right-side CTA width shifted the visual center by 29.85–66.73 px
+Fix: localized Home desktop uses equal flexible side tracks around an auto-width center selector; mobile remains flex/compact
+Production deployment: dpl_F8pCXRG6vfY6tyU43i2zboj4C2LG — READY / Production
+Production 1280 px geometry: pt-BR, pt-PT, es-419, es-ES, fr and en-GB all selector-center = header-center, 0 px deviation; CTA widths varied without moving selector
+390×844 mobile PASS; `/app` and public Profile isolation PASS; no console/network/runtime errors
+Test Lead visual PASS before release; Production PASS — 1 September 2026
 ```
 
 C35 did not alter Firestore Rules. C36 and C37 did, so their Production functional validation was blocked until the separate Rules-only deployment restored application/Rules parity.
@@ -636,7 +648,7 @@ Requirement / rule
 
 The central public index is `evidence/v1.0/evidence-register.md`.
 
-Current recent evidence is AB-EV-033 through AB-EV-048.
+Current recent evidence is AB-EV-033 through AB-EV-049.
 
 ---
 
@@ -692,4 +704,5 @@ The final release decision belongs to the Test Lead/Product Owner.
 - `evidence/v1.0/regression/ab-ev-046-c45b-public-home-localization-and-language-selector.md`
 - `evidence/v1.0/regression/ab-ev-047-c45c-login-localization-and-locale-continuity.md`
 - `evidence/v1.0/regression/ab-ev-048-c45d-onboarding-localization.md`
+- `evidence/v1.0/regression/ab-ev-049-public-home-language-selector-centering.md`
 - `docs/10-lessons-learned.md`
