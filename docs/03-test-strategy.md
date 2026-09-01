@@ -6,7 +6,7 @@ This document defines the overall testing strategy for AtlasBadge and how qualit
 
 It covers risk prioritisation, test design, regression, evidence, AI-assisted execution, automation, release approval and residual risk.
 
-> **Document status:** Completed and maintained through AB-EV-047. The current strategy includes versioned Playwright/Firebase Emulator regression, checkpointed incremental validation, controlled real-backend/Production validation, explicit environment/runtime parity checks, real-browser acceptance and fixed living-document governance.
+> **Document status:** Completed and maintained through AB-EV-048. The current strategy includes versioned Playwright/Firebase Emulator regression, checkpointed incremental validation, controlled real-backend/Production validation, explicit environment/runtime parity checks, real-browser acceptance and fixed living-document governance.
 
 ---
 
@@ -133,6 +133,8 @@ AB-EV-045 applies the same checkpoint discipline to localisation infrastructure:
 AB-EV-046 extends that baseline with focused translation/selector coverage: message-catalog completeness, locale-variant assertions, desktop/mobile selector behaviour, cookie persistence, server-rendered document language, authenticated-Home visibility and Production mobile visual acceptance were validated without expanding localisation to unrelated application surfaces. The root-layout request API trade-off was explicitly reviewed and accepted as V1.0 technical debt rather than triggering a disproportionate route migration.
 
 AB-EV-047 applies the same bounded-localisation discipline to authentication entry: `/login` remains unprefixed, locale continuity is carried explicitly from localized Home routes, Login resolves locale by query → cookie → browser → fallback, and auth behaviour is regression-tested separately from presentation. A pre-release review caught and corrected an unintended CTA-routing regression, reinforcing that localisation changes must preserve authentication-aware navigation semantics.
+
+AB-EV-048 localizes the guarded Onboarding/profile-creation flow while keeping business validation and persistence locale-neutral. Shared username/social-link helpers retain existing Portuguese messages for legacy callers and gain additive stable codes only where needed; Onboarding maps those codes to locale-specific presentation. Automated profile creation remains Emulator-only, and Production sign-off separates server/routing evidence from local visual acceptance when no safe Production user state exists.
 
 This reduces wasted execution time while retaining traceable risk-based coverage.
 

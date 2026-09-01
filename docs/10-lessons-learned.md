@@ -8,7 +8,7 @@ It is deliberately not a diary of every defect, test run or implementation decis
 
 The emphasis is on reducing avoidable work while preserving risk-based confidence and traceability.
 
-> **Document status:** Active / maintained. Consolidated through AB-EV-047 / C45C.
+> **Document status:** Active / maintained. Consolidated through AB-EV-048 / C45D.
 
 ---
 
@@ -443,6 +443,14 @@ All three must be true before the environment is called “ready”.
 
 **Benefit:** Prevents localisation work from introducing behavioural regressions in authentication/navigation while keeping locale continuity explicit and testable.
 
+### LL-49 — Localize validation presentation by stable codes, not shared message text
+
+**Observation:** C45D needed localized username and social-link validation while the shared domain helpers were already used by Portuguese application surfaces. Replacing their Portuguese messages directly would have changed unrelated callers and encouraged translated strings to become logic identifiers. The implementation instead preserved existing messages/rules and added stable codes only where Onboarding needed deterministic localization mapping.
+
+**Working rule:** Shared validation/domain helpers must keep business rules and caller contracts locale-neutral. When multiple locales need different presentation, expose stable machine-readable codes additively and map them to translated UI at the presentation boundary. Never branch business logic on translated text.
+
+**Benefit:** Keeps validation rules testable and language-independent, avoids regressions in existing callers, and lets localization expand without coupling persisted/domain semantics to copy.
+
 ## 7. Standing efficiency rules
 
 The following compact rules apply to future AtlasBadge work:
@@ -484,6 +492,7 @@ The following compact rules apply to future AtlasBadge work:
 35. Audit sibling dynamic-route namespaces before adding locale/tenant/slug segments; preserve deterministic route ownership and existing public URLs.
 36. Treat request-time APIs in shared/root layouts as architecture-wide rendering/cache decisions; inspect build classification and record any accepted dynamic-rendering trade-off.
 37. Preserve auth-aware link destinations when adding locale continuity; test anonymous and authenticated navigation contracts independently.
+38. Localize shared validation errors through stable machine-readable codes at the presentation boundary; never use translated message text as a business-logic identifier.
 
 ---
 
@@ -528,3 +537,4 @@ Do not add a lesson merely because an isolated defect occurred.
 - `evidence/v1.0/regression/ab-ev-045-c45a-localization-routing-foundation.md`
 - `evidence/v1.0/regression/ab-ev-046-c45b-public-home-localization-and-language-selector.md`
 - `evidence/v1.0/regression/ab-ev-047-c45c-login-localization-and-locale-continuity.md`
+- `evidence/v1.0/regression/ab-ev-048-c45d-onboarding-localization.md`
