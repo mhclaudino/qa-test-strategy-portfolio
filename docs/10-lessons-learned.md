@@ -8,7 +8,7 @@ It is deliberately not a diary of every defect, test run or implementation decis
 
 The emphasis is on reducing avoidable work while preserving risk-based confidence and traceability.
 
-> **Document status:** Active / maintained. Consolidated through AB-EV-050.
+> **Document status:** Active / maintained. Consolidated through AB-EV-051.
 
 ---
 
@@ -467,6 +467,14 @@ All three must be true before the environment is called “ready”.
 
 **Benefit:** Keeps HTML language truthful, prevents partial-localization leakage across shared routes and lets localization advance incrementally without forcing unrelated business-flow refactors.
 
+### LL-52 — Prove a surface is reachable before changing the product to validate it
+
+**Observation:** C45F visual preparation attempted to include the legacy UK-selector modal. Investigation showed that the supported map flow never emits aggregate `gb`: the aggregate is non-selectable and constituent clicks go directly to England, Scotland, Wales or Northern Ireland. The modal was therefore unreachable before C45F and could not be a valid localization failure.
+
+**Working rule:** Before treating an unverified UI surface as an acceptance blocker, prove it is reachable through a supported product path on the baseline. If it is unreachable and no requirement promises that path, classify the check as N/A and register a separate technical cleanup/reachability follow-up rather than changing domain/routing behaviour merely to make the test possible.
+
+**Benefit:** Prevents scope creep, avoids creating regressions to satisfy an invalid test path and keeps defect metrics aligned with actual supported behaviour.
+
 ## 7. Standing efficiency rules
 
 The following compact rules apply to future AtlasBadge work:
@@ -511,6 +519,7 @@ The following compact rules apply to future AtlasBadge work:
 38. Localize shared validation errors through stable machine-readable codes at the presentation boundary; never use translated message text as a business-logic identifier.
 39. Center critical shared controls independently of translated sibling widths and verify geometry across locale/auth variants instead of relying only on screenshots.
 40. On shared multi-mode routes, scope document locale to the localized functional mode; untranslated modes must retain a matching document language.
+41. Prove a UI surface is reachable from a supported baseline path before making it an acceptance blocker; unreachable legacy UI is N/A plus a separate cleanup follow-up, not a reason to change product behaviour.
 
 ---
 
@@ -558,3 +567,4 @@ Do not add a lesson merely because an isolated defect occurred.
 - `evidence/v1.0/regression/ab-ev-048-c45d-onboarding-localization.md`
 - `evidence/v1.0/regression/ab-ev-049-public-home-language-selector-centering.md`
 - `evidence/v1.0/regression/ab-ev-050-c45e-email-verification-localization.md`
+- `evidence/v1.0/regression/ab-ev-051-c45f-authenticated-dashboard-localization.md`

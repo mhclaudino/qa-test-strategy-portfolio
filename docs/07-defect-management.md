@@ -25,7 +25,7 @@ The process applies to incremental development, local quality validation, regres
 
 The approach is intentionally proportional to the product and delivery model. It provides professional traceability and release governance without introducing unnecessary administrative stages or roles that do not exist in the AtlasBadge workflow.
 
-> **Document status:** Initial completed version based on the current AtlasBadge implementation, the existing portfolio documents, and the defect-management decisions confirmed by the Test Lead.
+> **Document status:** Completed and maintained; latest classification example reviewed through C45F / AB-EV-051.
 
 ---
 
@@ -1408,6 +1408,12 @@ Planned process improvements include:
 
 These improvements are not represented as already implemented and do not require artificial deadlines.
 
+### 27.3 Current non-defect technical follow-up — UK selector reachability
+
+C45F visual-QA preparation established that the legacy `/app` UK-selector modal cannot be reached through the supported map interaction: the handler opens it only for aggregate `countryId === 'gb'`, while `gb` is non-selectable and map clicks emit the four constituent IDs directly. This observation did not represent a C45F regression and did not block localization acceptance.
+
+Current classification: **Technical task / unreachable-code cleanup candidate — Not a Product Defect**. No `AB-DEF-###` identifier is assigned. The follow-up is to audit whether any supported entry path still requires this modal; if none exists, remove the unreachable state/UI in a separately bounded cleanup checkpoint without changing the approved UK geographic model or the constituent IDs. Evidence is retained in AB-EV-051.
+
 ---
 
 ## 28. Review triggers
@@ -1450,6 +1456,7 @@ A suitability review is also performed:
 * [Metrics and Reporting](08-metrics-and-reporting.md)
 * `docs/09-system-test-plan.md` — planned
 * [V1.0 Test Evidence](../evidence/v1.0/README.md)
+* [AB-EV-051 C45F authenticated dashboard localization](../evidence/v1.0/regression/ab-ev-051-c45f-authenticated-dashboard-localization.md)
 * `test-assets/exploratory-test-charters.md` — planned
 * `test-assets/sample-test-cases.md` — planned
 * `reports/test-summary-report.md` — planned

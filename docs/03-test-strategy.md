@@ -6,7 +6,7 @@ This document defines the overall testing strategy for AtlasBadge and how qualit
 
 It covers risk prioritisation, test design, regression, evidence, AI-assisted execution, automation, release approval and residual risk.
 
-> **Document status:** Completed and maintained through AB-EV-050. The current strategy includes versioned Playwright/Firebase Emulator regression, checkpointed incremental validation, controlled real-backend/Production validation, explicit environment/runtime parity checks, real-browser acceptance and fixed living-document governance.
+> **Document status:** Completed and maintained through AB-EV-051. The current strategy includes versioned Playwright/Firebase Emulator regression, checkpointed incremental validation, controlled real-backend/Production validation, explicit environment/runtime parity checks, real-browser acceptance and fixed living-document governance.
 
 ---
 
@@ -139,6 +139,8 @@ AB-EV-048 localizes the guarded Onboarding/profile-creation flow while keeping b
 AB-EV-049 adds a geometry-based multilingual visual-regression pattern: when translated side controls have variable width, visually central controls are verified against the actual container center rather than inferred from flex distribution. The patch was scoped only to localized Home and validated both anonymously and authenticated in Emulator, then across all six Production locale routes.
 
 AB-EV-050 extends bounded localisation testing to a stateful authentication journey: `/verify-email` and `mode=verifyEmail` are localized while the shared `resetPassword` branch remains Portuguese. Stable additive AuthContext error codes support localized presentation without replacing legacy Portuguese messages, and Production validation deliberately uses non-mutating invalid action codes while full verification/resend state transitions remain proven against Firebase Emulators.
+
+AB-EV-051 applies the same bounded model to the authenticated dashboard. Locale changes affect only presentation; canonical country names/IDs, filter machine values, statistics, Wishlist settings/order, manual visit ranks, clear-map semantics and deep visit editors remain behaviourally stable. Stateful write/destructive proof stays in Firebase Emulators while Production sign-off uses non-destructive server/document-locale smoke and route-isolation checks.
 
 This reduces wasted execution time while retaining traceable risk-based coverage.
 

@@ -1,7 +1,7 @@
 # AtlasBadge V1.0 System Test Plan
 
 **Document status:** Active / change-controlled  
-**Execution status:** Incremental system testing in progress; latest baseline reviewed through AB-EV-050; C45E Production technical PASS + local/Emulator visual PASS / Test Lead approved — 1 September 2026
+**Execution status:** Incremental system testing in progress; latest baseline reviewed through AB-EV-051; C45F Production technical PASS + local/Emulator visual PASS / Test Lead approved — 2 September 2026
 **Product:** AtlasBadge  
 **Target release:** V1.0  
 **Document owner:** Test Lead/Product Owner  
@@ -285,6 +285,21 @@ Vercel final: dpl_FVD2sb5S8jeTFrt82pzqFm2zgvUT — READY / Production; Node 22.x
 Production technical smoke: six `/verify-email` document locales/metadata PASS; anonymous redirects preserve locale; localized non-mutating invalid verifyEmail action states PASS; French-cookie resetPassword isolation PASS; `/app`, `/badges` and public Profile remain pt-BR
 No Production user or verification email was created for sign-off; Test Lead visual QA and stateful verification/OOB testing were completed locally against Firebase Emulators
 Test Lead approved C45E release closure — 1 September 2026
+
+C45F / AB-EV-051 authenticated dashboard localisation:
+fd1a1ebcfc8a902e6d7ae558c917d5909020ab69 — localized authenticated dashboard shell
+Final local gates under Node v22.23.2: TypeScript PASS; lint PASS; build PASS
+Vitest: 76 / 76 PASS
+Playwright Edge: 38 / 38 PASS; Firebase Auth/Firestore/Storage Emulators; zero real-Firebase requests
+Release scope: 38 audited files; 1,393 insertions; 181 deletions
+Localized `/app` layer: document locale/metadata, authenticated Header/Footer, greeting/stats, map-level actions, search/sort, filters, picker, Wishlist, manual visit order, clear-map presentation and app ProfileLoadError
+Behavioural invariants: 251 directly selectable catalogue, statistics, map geography/IDs, filter machine values, Wishlist settings/order, rank persistence, dirty-state protection, clearMap semantics and C44 photo contracts unchanged
+Deep CountryActionCard/VisitEditor, ProfileEditModal, Badges, public Profile and authenticated language selector intentionally deferred
+Vercel final: dpl_EUKfqGR1YksaVzhtkQTCLR5xCETo — READY / Production; Node 22.x; Next.js 16.2.11
+Production technical smoke: six `/app` server document locales/metadata PASS; anonymous guard redirects to localized Login; French-preference `/badges`, public Profile and resetPassword remain pt-BR; no runtime/hydration/missing-message/Vercel errors
+Responsive/stateful visual proof: Test Lead local/Emulator PASS at desktop and 390×844; no Production authenticated state manufactured
+UK selector: N/A for C45F acceptance — legacy modal is unreachable in the supported baseline map flow; classified separately as a non-defect technical cleanup/reachability follow-up
+Test Lead approved C45F release closure — 2 September 2026
 ```
 
 C35 did not alter Firestore Rules. C36 and C37 did, so their Production functional validation was blocked until the separate Rules-only deployment restored application/Rules parity.
@@ -662,7 +677,7 @@ Requirement / rule
 
 The central public index is `evidence/v1.0/evidence-register.md`.
 
-Current recent evidence is AB-EV-033 through AB-EV-050.
+Current recent evidence is AB-EV-033 through AB-EV-051.
 
 ---
 
@@ -678,7 +693,7 @@ An increment may be approved when:
 - required Production validation is complete or its limitation explicitly accepted;
 - residual risks are retained in the risk register.
 
-The official V1.0 final release assessment additionally depends on completion/acceptance of the remaining mandatory scope, including localisation beyond the completed public Home baseline, compatibility/performance and final reset/clean-start activities as applicable. C44 one-photo-per-`RegisteredVisit` scope and C45A/C45B/C45C/C45D/C45E public-Home + Login + Onboarding + email-verification localisation baseline are closed and retained as regression coverage.
+The official V1.0 final release assessment additionally depends on completion/acceptance of the remaining mandatory scope, including localisation beyond the completed public Home baseline, compatibility/performance and final reset/clean-start activities as applicable. C44 one-photo-per-`RegisteredVisit` scope and C45A–C45F public-Home + auth-entry + Onboarding + email-verification + authenticated-dashboard localisation baseline are closed and retained as regression coverage.
 
 The final release decision belongs to the Test Lead/Product Owner.
 
@@ -695,7 +710,7 @@ The final release decision belongs to the Test Lead/Product Owner.
 - Formal accessibility certification/native assistive-technology coverage is not claimed.
 - No independent penetration/security audit or formal load test has been completed.
 - C44 one-photo-per-`RegisteredVisit` is implemented, Production-approved and retained as permanent regression scope, including the free 10-photo quota and server-mediated read/privacy boundary.
-- C45A/C45B public-Home localisation, C45C Login localisation, C45D Onboarding localisation and C45E email-verification localisation are approved. Authenticated application, Badges, public Profile, resetPassword action presentation and other remaining system-controlled localisation still require separate V1.0 assessment. The current root-layout `headers()` approach makes page rendering request-time dynamic and is retained as explicit V1.0 technical debt pending any future multi-root routing redesign.
+- C45A/C45B public-Home localisation, C45C Login localisation, C45D Onboarding localisation, C45E email-verification localisation and C45F authenticated-dashboard localisation are approved. Deep authenticated country/visit editing, Profile Edit, Badges, public Profile, resetPassword action presentation, authenticated language switching and other remaining system-controlled localisation still require separate V1.0 assessment. The current root-layout `headers()` approach makes page rendering request-time dynamic and is retained as explicit V1.0 technical debt pending any future multi-root routing redesign.
 
 ---
 
@@ -720,4 +735,5 @@ The final release decision belongs to the Test Lead/Product Owner.
 - `evidence/v1.0/regression/ab-ev-048-c45d-onboarding-localization.md`
 - `evidence/v1.0/regression/ab-ev-049-public-home-language-selector-centering.md`
 - `evidence/v1.0/regression/ab-ev-050-c45e-email-verification-localization.md`
+- `evidence/v1.0/regression/ab-ev-051-c45f-authenticated-dashboard-localization.md`
 - `docs/10-lessons-learned.md`
