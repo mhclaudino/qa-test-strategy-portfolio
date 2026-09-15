@@ -8,7 +8,7 @@ It is deliberately not a diary of every defect, test run or implementation decis
 
 The emphasis is on reducing avoidable work while preserving risk-based confidence and traceability.
 
-> **Document status:** Active / maintained. Consolidated through AB-EV-051.
+> **Document status:** Active / maintained. Consolidated through AB-EV-052.
 
 ---
 
@@ -353,6 +353,7 @@ All three must be true before the environment is called “ready”.
 **Working rule:** Before a broad visual-token cleanup, classify each occurrence as brand, status, feedback, data visualisation, external brand, neutral or legacy/inconsistent. Replace only the inconsistent structural usage. Zero grep-count is not an acceptance criterion when a remaining colour has a valid semantic role.
 
 **Benefit:** Improves visual consistency without erasing functional meaning, accessibility cues or legitimate third-party/data-visualisation identity.
+
 ---
 
 ### LL-38 — Size AI-agent work to a finishable checkpoint, not to the entire remaining release
@@ -475,6 +476,14 @@ All three must be true before the environment is called “ready”.
 
 **Benefit:** Prevents scope creep, avoids creating regressions to satisfy an invalid test path and keeps defect metrics aligned with actual supported behaviour.
 
+### LL-53 — Rich QA fixtures must satisfy the same derived-metadata invariants as Product flows
+
+**Observation:** C45G manual visual QA used a rich direct Emulator seed containing statuses, visits, memories and a photo. That state caused six achievements to be earned, but the seed bypassed the normal achievement-metadata reconciliation lifecycle. The Product development assertion correctly rejected the incomplete state on `/badges` and the public Profile even though the C45G deep editor itself was working. Reconciliation of the fixture data alone restored every dependent surface without a Product code change.
+
+**Working rule:** When a QA fixture creates source data that drives derived Product state, prepare it through the normal Product/domain helper where practical or explicitly execute the same reconciliation lifecycle before handoff. Validate dependent surfaces and invariants before declaring a rich fixture ready. Never weaken a Product assertion to accommodate a shortcut in test-data creation.
+
+**Benefit:** Keeps manual/Emulator fixtures production-representative, prevents false Product-regression reports and makes defect classification faster and more defensible.
+
 ## 7. Standing efficiency rules
 
 The following compact rules apply to future AtlasBadge work:
@@ -520,6 +529,7 @@ The following compact rules apply to future AtlasBadge work:
 39. Center critical shared controls independently of translated sibling widths and verify geometry across locale/auth variants instead of relying only on screenshots.
 40. On shared multi-mode routes, scope document locale to the localized functional mode; untranslated modes must retain a matching document language.
 41. Prove a UI surface is reachable from a supported baseline path before making it an acceptance blocker; unreachable legacy UI is N/A plus a separate cleanup follow-up, not a reason to change product behaviour.
+42. Rich QA fixtures that create derived Product state must pass the same reconciliation invariants as normal Product flows before Test Lead handoff; fix incomplete fixture data, not Product assertions.
 
 ---
 
@@ -568,3 +578,4 @@ Do not add a lesson merely because an isolated defect occurred.
 - `evidence/v1.0/regression/ab-ev-049-public-home-language-selector-centering.md`
 - `evidence/v1.0/regression/ab-ev-050-c45e-email-verification-localization.md`
 - `evidence/v1.0/regression/ab-ev-051-c45f-authenticated-dashboard-localization.md`
+- `evidence/v1.0/regression/ab-ev-052-c45g-deep-country-visit-editor-localization.md`

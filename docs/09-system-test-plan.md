@@ -1,11 +1,11 @@
 # AtlasBadge V1.0 System Test Plan
 
 **Document status:** Active / change-controlled  
-**Execution status:** Incremental system testing in progress; latest baseline reviewed through AB-EV-051; C45F Production technical PASS + local/Emulator visual PASS / Test Lead approved — 2 September 2026
+**Execution status:** Incremental system testing in progress; latest baseline reviewed through AB-EV-052; C45G Production technical PASS + local/Emulator visual PASS / Test Lead approved — 15 September 2026  
 **Product:** AtlasBadge  
 **Target release:** V1.0  
 **Document owner:** Test Lead/Product Owner  
-**Last updated:** 1 September 2026
+**Last updated:** 15 September 2026
 
 ---
 
@@ -34,7 +34,7 @@ A material update is required when:
 
 Each update should identify what changed, affected risks/tests, which previous results remain valid, which require re-execution and the Test Lead decision.
 
-AB-EV-033 established the broad checkpointed regression baseline; AB-EV-034 and AB-EV-035 demonstrate proportional follow-up validation; AB-EV-036 applies the same principle to Wishlist atomic persistence; AB-EV-037 extends it to a destructive Clear Map redesign; AB-EV-038 hardens the manual-QA environment contract. AB-EV-039/040/041 extend the same checkpoint model to per-memory privacy, manual memory ordering and public-memory Profile presentation. AB-EV-042 applies the same proportional model to editable visit names. AB-EV-043 applies it to a broad but presentation-only brand alignment. AB-EV-044 applies the model to a high-risk Storage/server integration: bounded quota/Rules and Emulator gates were combined with real Firebase Admin/runtime proof, then later exact defects were closed through focused tests and small release gates rather than repeated full-suite execution. AB-EV-045 applies the model to localisation infrastructure by separating routing foundation from translated UI, validating the official Node 22 runtime, patching a framework advisory before publication and proving Production route ownership/resolution with focused smoke.
+AB-EV-033 established the broad checkpointed regression baseline; AB-EV-034 and AB-EV-035 demonstrate proportional follow-up validation; AB-EV-036 applies the same principle to Wishlist atomic persistence; AB-EV-037 extends it to a destructive Clear Map redesign; AB-EV-038 hardens the manual-QA environment contract. AB-EV-039/040/041 extend the same checkpoint model to per-memory privacy, manual memory ordering and public-memory Profile presentation. AB-EV-042 applies the same proportional model to editable visit names. AB-EV-043 applies it to a broad but presentation-only brand alignment. AB-EV-044 applies the model to a high-risk Storage/server integration: bounded quota/Rules and Emulator gates were combined with real Firebase Admin/runtime proof, then later exact defects were closed through focused tests and small release gates rather than repeated full-suite execution. AB-EV-045 applies the model to localisation infrastructure by separating routing foundation from translated UI, validating the official Node 22 runtime, patching a framework advisory before publication and proving Production route ownership/resolution with focused smoke. AB-EV-046 through AB-EV-051 continue bounded localization through Home, Login, Onboarding, Verify Email and the authenticated dashboard. AB-EV-052 extends that model into the stateful deep country/visit editor while carrying forward locale-neutral status, privacy, visit-name, ordering and visit-photo contracts through directly affected C35/C39/C40/C42/C44 regression.
 
 ---
 
@@ -71,7 +71,7 @@ C36 establishes that Wishlist membership remains `statuses.wishlist`, while cano
 
 C37 establishes that Clear Map is one logical destructive operation. The private place reset, private root lifecycle reset and public root invalidation are committed through one atomic batch of at most 253 writes. Public child projections use `placesGeneration`; stale generations are no longer current/readable public travel state and their later physical deletion is housekeeping rather than part of the Clear Map success criterion.
 
-C39 establishes explicit per-memory privacy and sanitised `publicMemories`; C40 stores memory presentation order separately in `memoryOrder` while preserving `registeredVisits` history; C41 displays those authorised public memories from earned flags using the same public projection for owner and anonymous viewers. C42 adds optional `visitName` presentation metadata to `RegisteredVisit` while preserving stable identity, explicit Save, C40 ordering and C41 sanitised public labels. C43 establishes the current AtlasBadge presentation baseline: Atlas Gold/Black/Warm White drive generic interface identity while status, feedback, data-visualisation and external-brand colours remain semantic exceptions.
+C39 establishes explicit per-memory privacy and sanitised `publicMemories`; C40 stores memory presentation order separately in `memoryOrder` while preserving `registeredVisits` history; C41 displays those authorised public memories from earned flags using the same public projection for owner and anonymous viewers. C42 adds optional `visitName` presentation metadata to `RegisteredVisit` while preserving stable identity, explicit Save, C40 ordering and C41 sanitised public labels. C43 establishes the current AtlasBadge presentation baseline: Atlas Gold/Black/Warm White drive generic interface identity while status, feedback, data-visualisation and external-brand colours remain semantic exceptions. C44 adds one bounded visit photo per RegisteredVisit with a hard free quota of ten active slots. C45A–C45G progressively localize routing, public/auth-entry surfaces, authenticated dashboard and deep country/visit editing while keeping persisted business identifiers and privacy/storage contracts locale-neutral.
 
 Previous incremental testing is valid evidence when impact analysis confirms that a later change has not invalidated it.
 
@@ -300,9 +300,27 @@ Production technical smoke: six `/app` server document locales/metadata PASS; an
 Responsive/stateful visual proof: Test Lead local/Emulator PASS at desktop and 390×844; no Production authenticated state manufactured
 UK selector: N/A for C45F acceptance — legacy modal is unreachable in the supported baseline map flow; classified separately as a non-defect technical cleanup/reachability follow-up
 Test Lead approved C45F release closure — 2 September 2026
+
+C45G / AB-EV-052 deep country/visit editor localisation:
+0c2c248b0b2fee302b00edbf567a6f67248b4a6f — localized country, status, visit, memory/order and visit-photo editing
+Final local gates under Node v22.23.2: TypeScript PASS; lint PASS with 21 existing non-blocking warnings; build PASS
+Vitest release gate: 216 / 216 PASS
+Required Emulator integration gate: 20 / 20 PASS in clean serial execution
+Playwright Edge: 26 / 26 PASS; Auth/Firestore/Storage Emulators; realFirebaseRequests=0
+Release scope: 33 audited Product/test files; 1,360 insertions; 209 deletions
+Localization architecture: StatusPill optional display label with Portuguese fallback; stable additive error codes for deterministic status/visit/photo errors; translated copy remains presentation-only
+Regression: status/OCC, C35 Visited+Passed coexistence, C39 privacy, C40 memoryOrder, C42 visit names and directly affected C44 photo/quota/cleanup all PASS
+C44 focused release coverage included API 8/8; slot/quota/replacement 6/6; cleanup 1/1; UI 1/1
+Test Lead visual QA: deep editor, birthplace conflict, general/visit memories, visit order, photos and responsive 390×844 in fr/pt-PT/es-ES PASS locally against Emulators
+Visual fixture incident: direct rich QA seed bypassed normal achievementMetadata reconciliation; Product assertion correctly rejected invalid test data; data-only reconciliation restored /app, /badges and public Profile with zero Product changes — QA fixture defect, not Product Defect/regression
+Non-gate diagnostic: travelMap.clearMap.emulator.test.ts reproduced 3 pre-existing anonymous LIST/Rules failures; C45G did not modify Clear Map/Rules and this remained separate non-blocking test/environment debt
+Vercel final: dpl_3ybFA5nDJvpKcePtBHFA5vTKXWEy — READY / Production; Node 22.x; Next.js 16.2.11
+Production technical smoke: six `/app` locale contexts valid with expected anonymous localized-Login redirect; `/badges`, public Profile and resetPassword remain pt-BR; shared StatusPill fallback intact; no runtime/hydration/missing-message/asset/Vercel errors
+No Production travel/photo dataset was manufactured for sign-off; stateful deep-editor proof remained in Emulators
+Test Lead approved C45G release closure — 15 September 2026
 ```
 
-C35 did not alter Firestore Rules. C36 and C37 did, so their Production functional validation was blocked until the separate Rules-only deployment restored application/Rules parity.
+C35 did not alter Firestore Rules. C36 and C37 did, so their Production functional validation was blocked until the separate Rules-only deployment restored application/Rules parity. C45G did not change Firebase Rules/configuration.
 
 ---
 
@@ -372,7 +390,7 @@ Depending on affected code:
 
 Vitest protects stable business/component behaviour.
 
-Important recent checkpoints:
+Important checkpoints include:
 
 ```text
 AB-EV-033 integrated checkpoint:
@@ -410,6 +428,9 @@ C37 Wishlist/public projection regression:
 
 C37 Clear Map confirmation modal:
 2 / 2 PASS
+
+C45G final focused release gate:
+216 / 216 PASS
 ```
 
 ### 8.3 Firestore Rules and backend Emulator
@@ -433,20 +454,19 @@ C37 Clear Map lifecycle/atomicity/generation:
 
 C37 upsert/concurrency generation regression:
 4 / 4 PASS
+
+C45G required stateful integration gate:
+20 / 20 PASS in clean serial execution
+realFirebaseRequests=0
 ```
 
-C37 Clear Map coverage includes root Wishlist cleanup, one atomic logical-reset rejection, the supported 251-place/253-write maximum, legacy generation-0 compatibility, stale public direct-read denial, current-generation query/new-place behaviour and the missing-public-root case.
+The first C45G parallel execution of a subset of Emulator tests hit a Storage fixture collision. The same required suites passed serially; no Product code or acceptance criteria were changed. This is test-harness contention rather than Product failure.
+
+A separate non-gate C45G diagnostic reproduced three pre-existing anonymous LIST/Rules failures in `travelMap.clearMap.emulator.test.ts`. C45G changed neither Clear Map nor Rules. The diagnostic remains separate test/environment debt and is not represented as a C45G Product Defect.
 
 ### 8.4 Browser E2E — Emulator
 
-Normal persistence/privacy E2E uses:
-
-```text
-App: 127.0.0.1:3100
-Auth: 9099
-Firestore: 8080
-Project: demo-atlasbadge-web
-```
+Normal persistence/privacy E2E uses an isolated Firebase Emulator environment. Auth and Firestore are mandatory for the established suite; Storage is added for visit-photo coverage.
 
 The suite fails fast against unexpected real Firebase traffic.
 
@@ -457,9 +477,13 @@ C35 Visited + Passed-through coexistence: 1 / 1 PASS
 
 C36 Wishlist persistence/public order baseline: 3 / 3 PASS
 realFirebaseRequests=0
+
+C45G deep editor + affected regression:
+26 / 26 PASS
+realFirebaseRequests=0
 ```
 
-C37 did not require a new broad Playwright campaign because the affected destructive persistence, Rules/public-generation and confirmation-modal boundaries were covered deterministically at backend/Rules/component layers and later validated manually in Production.
+C45G Playwright coverage includes the deep localized editor, status persistence/OCC, C35 coexistence, activated-at, C39/visit privacy and C44 UI boundary.
 
 ### 8.5 Manual/exploratory QA
 
@@ -474,6 +498,10 @@ C36 demonstrates why manual QA remains material even with strong automation. The
 C37 similarly retained a focused manual boundary. Before release, a local working-tree C37 application was briefly exercised against the still-deployed C36 Production Rules; the resulting permission rejection was classified as an application/Rules parity mismatch, not a second product failure. The actual C36 Production baseline independently reproduced the real AB-DEF-018 Clear Map failure. After C37 application and Rules parity was restored, the Test Lead performed the destructive Production retest and approved the correction.
 
 C39 manual QA validated per-memory privacy, explicit Save and no-note visit eligibility. C40 manual QA first exposed a real-backend Rules-parity blocker for the new `memoryOrder` field; after the approved Rules-only deploy, the same scenario persisted correctly and manual reorder/reload/delete behaviour passed. C41 manual/visual QA rejected an inline memory panel in favour of the established Wishlist modal pattern, corrected owner public-memory source selection, verified exact `VISITA n` identity and restored the Profile sort-toggle layout before release. C42 manual QA then refined edit affordance, duplicate-error recovery, single-editor coordination and subtle premium hover behaviour before approving persistence, reorder identity and public/private label projection. C43 used real-browser desktop/mobile review as a release gate because the change intentionally affected visual hierarchy across many surfaces; the Test Lead approved the subtle brand alignment before commit and later confirmed Production Visual PASS.
+
+C45F visual QA used a representative authenticated Emulator profile to review dashboard shell/localization while avoiding artificial Production state. C45G expanded this model with a rich deep-editor fixture covering statuses, multiple visits, general/visit memories, memory order, birthplace conflict and an Emulator visit photo. The Test Lead reviewed French plus representative Portuguese/Spanish mobile layouts, deletion/dirty confirmations, photo controls, localized validation and keyboard behavior before release.
+
+During C45G visual QA, the rich seed initially caused `/badges` and the public Profile to trigger a development achievement-order invariant because the direct fixture bypassed normal `achievementMetadata` reconciliation. The invariant was kept intact; the fixture was repaired through existing reconciliation logic only. `/app`, `/badges` and public Profile then rendered normally with no Product/test/doc changes. The incident is classified as a QA test-data/fixture defect, not a Product Defect or C45G regression.
 
 ### 8.6 Production validation
 
@@ -509,6 +537,8 @@ AB-EV-036 and AB-EV-037 record the completed Production approvals.
 
 C39 and C40 both reached successful automatic Vercel deployment after their approved local/manual gates; C40 additionally required a separately authorised Firestore Rules-only deployment before manual real-backend QA could proceed. C41 commit `bb57a004d7b0c64420d093fc4000a67e226eba1e` reached Production successfully and the Test Lead completed the focused Production smoke on 27 August 2026. C42 commit `601e34921a7026857bef70c453f7de09c39579ae` reached Vercel deployment `dpl_5Jpxq9DsvoCKrbE5gjd7pF67ueyV` in READY/production state and passed focused Production smoke. C43 commit `bcc10d63e0f3363d39f3029c0498deb49c30180f` then reached Git-sourced Vercel deployment `dpl_FHmZdquA35oa6FVQjtpHVLZAcfyt` in READY/production state with no backend/Rules deployment; the Test Lead reported Production Visual PASS on 27 August 2026. C41–C43 are closed and retained as regression baselines.
 
+C45D–C45G use an explicit evidence distinction when a full feature surface requires state that should not be manufactured in Production. Server/document/routing/isolation evidence is collected safely in Production while the authenticated/stateful interaction and visual evidence remains in the Firebase Emulators and Test Lead local browser. Such checkpoints are closed as **Production technical PASS + local/Emulator visual PASS**, not as full Production visual execution.
+
 ---
 
 ## 9. Checkpointed incremental regression
@@ -537,6 +567,8 @@ This is not reduced coverage by omission: the carried-forward result and reason 
 
 **C37/AB-EV-037:** `travelMap.ts`, public source handling, profile projection and Firestore Rules changed materially, so the full Rules checkpoint and Production build were rerun. Focused Clear Map, Wishlist/upsert, public-source/profile and modal tests restored the invalidated functional boundaries. The previous full Vitest and broad Playwright checkpoints were carried forward because no failing focused evidence or shared-domain change justified another complete campaign.
 
+**C45G/AB-EV-052:** deep CountryActionCard/VisitEditor/MemoryOrder/photo presentation and shared error mapping changed, so the directly touched C35/C39/C40/C42/C44/status-OCC contracts were requalified through component/domain and Auth/Firestore/Storage Emulator tests plus rendered-browser visual review. Unchanged Firestore Rules and unrelated application surfaces did not trigger irrelevant broad reruns. A failed parallel Emulator attempt caused by Storage fixture contention was re-run serially rather than misclassified as Product failure.
+
 The efficiency rules are retained in `docs/10-lessons-learned.md`.
 
 ---
@@ -547,6 +579,7 @@ A failed scenario is classified before correction as:
 
 - product defect;
 - stale/test-automation defect;
+- test-data/fixture defect;
 - infrastructure/environment issue;
 - inconclusive.
 
@@ -557,6 +590,8 @@ C35 is the reference requirement-correction example: tests valid for the old rul
 AB-DEF-017 is a true Product Defect example: fault injection proved partial persisted state from two independent Wishlist commits. During retest, a Rules-parity permission failure was correctly separated as an environment/release mismatch, while lost order under the correctly aligned environment was correctly treated as a product read-path failure until fixed.
 
 AB-DEF-018 is the destructive-operation counterpart: C36 root `wishlistOrder` made the old Clear Map lifecycle invalid under the aligned Rules, and the existing public/private split commits independently permitted partial persisted state. Both failure modes were proven and closed under one defect because they violated the same single Clear Map intent. A later local C37-vs-C36-Rules failure was classified separately as parity mismatch rather than inflating the defect count.
+
+C45G is the test-data counterpart: a visual-QA seed omitted derived achievement metadata, causing a legitimate Product invariant to reject the fixture. Repairing Emulator data through existing reconciliation removed the failure without changing Product code. No AB-DEF ID was created.
 
 ---
 
@@ -654,6 +689,15 @@ AB-EV-038 / C38:
 Environment documentation hardening.
 No runtime deployment, Rules changes, or system regression required.
 Decision: PASS — Test Lead approved — 26 August 2026
+
+AB-EV-052 / C45G:
+Commit: 0c2c248b0b2fee302b00edbf567a6f67248b4a6f
+Vercel Production: dpl_3ybFA5nDJvpKcePtBHFA5vTKXWEy
+State: READY
+Node: 22.x / Next.js 16.2.11
+Production technical smoke: PASS
+Stateful/visual deep-editor evidence: local/Firebase Emulator PASS
+Decision: C45G CLOSED / PRODUCTION TECHNICAL PASS + LOCAL/EMULATOR VISUAL PASS — Test Lead approved — 15 September 2026
 ```
 
 ---
@@ -667,7 +711,7 @@ Requirement / rule
 → Quality risk
 → Implementation
 → Automated/manual tests
-→ Defect(s) or requirement correction, if applicable
+→ Defect(s), fixture issue or requirement correction, if applicable
 → Retest / regression
 → Commit
 → Deployment
@@ -677,7 +721,7 @@ Requirement / rule
 
 The central public index is `evidence/v1.0/evidence-register.md`.
 
-Current recent evidence is AB-EV-033 through AB-EV-051.
+Current recent evidence is AB-EV-033 through AB-EV-052.
 
 ---
 
@@ -693,7 +737,7 @@ An increment may be approved when:
 - required Production validation is complete or its limitation explicitly accepted;
 - residual risks are retained in the risk register.
 
-The official V1.0 final release assessment additionally depends on completion/acceptance of the remaining mandatory scope, including localisation beyond the completed public Home baseline, compatibility/performance and final reset/clean-start activities as applicable. C44 one-photo-per-`RegisteredVisit` scope and C45A–C45F public-Home + auth-entry + Onboarding + email-verification + authenticated-dashboard localisation baseline are closed and retained as regression coverage.
+The official V1.0 final release assessment additionally depends on completion/acceptance of the remaining mandatory scope, including remaining localisation, compatibility/performance and final reset/clean-start activities as applicable. C44 one-photo-per-`RegisteredVisit` scope and C45A–C45G public-Home + auth-entry + Onboarding + email-verification + authenticated-dashboard + deep-editor localisation baseline are closed and retained as regression coverage.
 
 The final release decision belongs to the Test Lead/Product Owner.
 
@@ -710,7 +754,11 @@ The final release decision belongs to the Test Lead/Product Owner.
 - Formal accessibility certification/native assistive-technology coverage is not claimed.
 - No independent penetration/security audit or formal load test has been completed.
 - C44 one-photo-per-`RegisteredVisit` is implemented, Production-approved and retained as permanent regression scope, including the free 10-photo quota and server-mediated read/privacy boundary.
-- C45A/C45B public-Home localisation, C45C Login localisation, C45D Onboarding localisation, C45E email-verification localisation and C45F authenticated-dashboard localisation are approved. Deep authenticated country/visit editing, Profile Edit, Badges, public Profile, resetPassword action presentation, authenticated language switching and other remaining system-controlled localisation still require separate V1.0 assessment. The current root-layout `headers()` approach makes page rendering request-time dynamic and is retained as explicit V1.0 technical debt pending any future multi-root routing redesign.
+- C45A/C45B public-Home localisation, C45C Login localisation, C45D Onboarding localisation, C45E email-verification localisation, C45F authenticated-dashboard localisation and C45G deep country/visit-editor localisation are approved.
+- Remaining localization includes ProfileEditModal, Badges/achievement text and BadgeUnlockToast, public Profile, resetPassword action presentation, authenticated language switching and canonical country/continent display mapping.
+- The current root-layout `headers()` approach makes page rendering request-time dynamic and is retained as explicit V1.0 technical debt pending any future multi-root routing redesign.
+- The legacy UK-selector modal remains an unreachable-code cleanup candidate rather than a Product Defect.
+- The extra `travelMap.clearMap.emulator.test.ts` anonymous LIST/Rules diagnostic remains separate pre-existing test/environment debt; C45G did not modify its source boundary.
 
 ---
 
@@ -736,4 +784,5 @@ The final release decision belongs to the Test Lead/Product Owner.
 - `evidence/v1.0/regression/ab-ev-049-public-home-language-selector-centering.md`
 - `evidence/v1.0/regression/ab-ev-050-c45e-email-verification-localization.md`
 - `evidence/v1.0/regression/ab-ev-051-c45f-authenticated-dashboard-localization.md`
+- `evidence/v1.0/regression/ab-ev-052-c45g-deep-country-visit-editor-localization.md`
 - `docs/10-lessons-learned.md`

@@ -6,7 +6,7 @@ This document defines the testing scope for AtlasBadge during incremental V1.0 d
 
 It identifies covered product areas, expected depth, current coverage, mandatory remaining work and intentionally deferred items.
 
-> **Document status:** Completed and maintained through AB-EV-051. C39–C44 cover the current privacy/order/public-display, editable-name, visual-identity and visit-photo baseline. C45A establishes public locale routing; C45B completes the localized public Home/Hero/Header/Footer surface and language selector; C45C completes the unprefixed localized Login/auth-entry surface; C45D completes the unprefixed localized Onboarding/profile-creation surface for the six approved V1.0 locales. C45D Production technical PASS and Test Lead local/Emulator visual PASS were approved on 1 September 2026. AB-EV-049 subsequently closes the public-Home desktop selector-centering defect without changing translations, locale routing, mobile behaviour or non-Home headers. C45E completes the six-locale Verify Email journey across `/verify-email` and `mode=verifyEmail` of `/auth/action`, including localized metadata/document language and error presentation, while `resetPassword` remains explicitly out of scope and Portuguese/`pt-BR`. C45F completes the six-locale authenticated `/app` shell/dashboard layer, including Header/Footer, dashboard controls, filters, picker, Wishlist, manual visit order and clear-map presentation, while intentionally excluding the deep CountryActionCard/VisitEditor, ProfileEditModal, Badges and public Profile.
+> **Document status:** Completed and maintained through AB-EV-052. C39–C44 cover the current privacy/order/public-display, editable-name, visual-identity and visit-photo baseline. C45A establishes public locale routing; C45B completes the localized public Home/Hero/Header/Footer surface and language selector; C45C completes the unprefixed localized Login/auth-entry surface; C45D completes the unprefixed localized Onboarding/profile-creation surface for the six approved V1.0 locales. C45D Production technical PASS and Test Lead local/Emulator visual PASS were approved on 1 September 2026. AB-EV-049 subsequently closes the public-Home desktop selector-centering defect without changing translations, locale routing, mobile behaviour or non-Home headers. C45E completes the six-locale Verify Email journey across `/verify-email` and `mode=verifyEmail` of `/auth/action`, including localized metadata/document language and error presentation, while `resetPassword` remains explicitly out of scope and Portuguese/`pt-BR`. C45F completes the six-locale authenticated `/app` shell/dashboard layer, including Header/Footer, dashboard controls, filters, picker, Wishlist, manual visit order and clear-map presentation. C45G completes the deep authenticated CountryActionCard/VisitEditor/MemoryOrderEditor layer, including status, visit, memory/privacy, validation and visit-photo presentation while preserving established domain contracts.
 
 ---
 
@@ -91,6 +91,8 @@ AB-EV-036 adds a real Firestore Emulator rejected-batch regression for the combi
 
 AB-EV-037 extends atomic persistence coverage to the destructive Clear Map path. The previous split public/private commit model and stale root `wishlistOrder` lifecycle were replaced by one logical reset batch of at most 253 writes. Rejected core writes leave the old confirmed state intact; obsolete public child documents are invalidated through `placesGeneration` and Rules/query generation checks rather than being required inside the atomic batch.
 
+C45G/AB-EV-052 requalifies the deep status/visit/memory/photo editing layer while localizing presentation. Persistence identifiers, explicit-Save boundaries, OCC/status semantics, `RegisteredVisit` identity, memory order, visit names and photo-slot/quota state remain locale-neutral and are protected by directly affected regression.
+
 ### 5.3 Privacy and user isolation — Executed for current model
 
 Coverage includes:
@@ -116,7 +118,7 @@ Coverage includes:
 
 AB-EV-033 established the public/private projection baseline. AB-EV-036 extends it with the atomic root-order/privacy model, aligned Firestore Rules and final Production validation. AB-EV-037 adds backward-compatible generation-0 public reads plus strict stale-generation denial after a versioned Clear Map reset.
 
-C39/AB-EV-039 moves per-memory visibility into executed V1.0 scope. C40/AB-EV-040 protects memory presentation order independently from visit-history source order. C41/AB-EV-041 adds public-memory display from earned flags and confirms the public modal uses the sanitised projection for both owner and anonymous viewing. C42/AB-EV-042 adds optional editable visit names while preserving stable visit IDs, explicit Save, manual memory order, legacy `VISITA n` fallback and private/public projection boundaries.
+C39/AB-EV-039 moves per-memory visibility into executed V1.0 scope. C40/AB-EV-040 protects memory presentation order independently from visit-history source order. C41/AB-EV-041 adds public-memory display from earned flags and confirms the public modal uses the sanitised projection for both owner and anonymous viewing. C42/AB-EV-042 adds optional editable visit names while preserving stable visit IDs, explicit Save, manual memory order, legacy `VISITA n` fallback and private/public projection boundaries. C45G/AB-EV-052 localizes those owner editing controls and preserves the same public sanitisation/photoRef boundary.
 
 ### 5.4 Travel status and Wishlist rules — Executed
 
@@ -147,6 +149,8 @@ C36/AB-EV-036 protects the separate Wishlist settings contract:
 
 C37/AB-EV-037 adds the destructive lifecycle requirement that Clear Map removes root Wishlist order/public visibility inside the same atomic logical reset and that obsolete public Wishlist/place projections cannot reappear as current data after a later place write.
 
+C45G localizes the six status labels and status-related error/ARIA presentation without changing the machine IDs or compatibility matrix. C35 coexistence, birthplace uniqueness, last-intent/OCC and physical-presence transitions remain permanent affected-area regression.
+
 ### 5.5 Account and data deletion — Executed / regression risk
 
 Coverage includes identity deletion, private/public Firestore cleanup, username release, repeat/retry behaviour and absence of orphaned public records.
@@ -163,7 +167,7 @@ Coverage includes all 251 directly selectable records, status colouring, search/
 
 C31/AB-EV-029 covers the audited catalogue classification, UK-derived Place/Country rule, Antarctica classification, counter invariant and affected achievements. C32/AB-EV-030 covers Profile map click → exact earned-flag scroll/highlight, including no-flag fallback, sorting, micro-markers, mobile and read-only proof. C33/AB-EV-031 covers the Map's local Visit Order/Alphabetical selected-place presentation without data mutation.
 
-The technical UK aggregate remains non-selectable/derived.
+The technical UK aggregate remains non-selectable/derived. C45F found the legacy UK-selector modal unreachable through supported clicks; that remains a separate non-defect cleanup candidate and C45G does not alter it.
 
 Clear Map regression includes the supported maximum of 251 private place deletes plus two root writes, for a maximum atomic logical boundary of 253 writes.
 
@@ -181,6 +185,8 @@ C37 ensures the destructive Clear Map path removes ordering/lifecycle state with
 
 C44/AB-EV-044 is executed. Coverage includes one processed WebP photo per `RegisteredVisit`, draft preview until explicit Save, replace/remove, privacy inheritance, bounded slots `0..9` with A/B replacement variants, a hard free quota of 10 active visit photos per user, owner/public server-mediated reads, opaque public `photoRef`, Clear Map/remove-visit/account-deletion cleanup and Production validation. Direct client read/list/delete of bounded visit-photo objects remains denied by Storage Rules.
 
+C45G/AB-EV-052 is executed. It localizes CountryActionCard, general-memory editing, VisitEditor, MemoryOrderEditor and visit-photo presentation for all six locales. Release regression re-proved status/OCC, C35 coexistence, C39 privacy, C40 memory order, C42 visit names and the directly affected C44 photo/quota/cleanup boundary with Auth/Firestore/Storage Emulators and `realFirebaseRequests=0`.
+
 ### 6.3 Personal Profile — Executed
 
 Coverage includes profile fields, username/display/bio/social data, profile visibility, Wishlist visibility preference, canonical Wishlist root order, `placesGeneration`, flag-sort persistence/recovery, responsive behaviour and relationship with the public projection.
@@ -188,6 +194,8 @@ Coverage includes profile fields, username/display/bio/social data, profile visi
 The C36 owner modal is covered for root-order precedence and confirmed Profile refresh after order-only, privacy-only or combined settings changes.
 
 C37 adds regression that unrelated public-profile updates preserve both `wishlistOrder` and `placesGeneration` rather than dropping root lifecycle metadata.
+
+ProfileEditModal localization remains a separate V1.0 checkpoint; C45G did not modify it.
 
 ### 6.4 Public Profile — Executed for implemented V1.0 baseline
 
@@ -208,7 +216,7 @@ Coverage includes:
 - desktop/mobile layout and modal scroll lock;
 - sanitisation of public root/place fields.
 
-Broader localisation/performance/compatibility refinements remain separate V1.0 scope and do not invalidate the executed privacy/projection/photo baseline. C45A has now executed the localisation-routing foundation; translated UI and remaining localisation continue as the next V1.0 product-quality work.
+Broader public-Profile localisation/performance/compatibility refinements remain separate V1.0 scope and do not invalidate the executed privacy/projection/photo baseline. C45G explicitly regression-tested shared StatusPill/public-profile isolation so the deep `/app` localization does not make public Profile depend on the app Intl context.
 
 ### 6.5 Counters and statistics — Executed / regression risk
 
@@ -222,9 +230,11 @@ Clear Map remains responsible for resetting the established private statistics i
 
 Coverage includes unlock/relock chronology, World Completion, UK semantics, persisted metadata, notification behaviour and public sanitised `achievementMetadata`.
 
-Final localisation/visual expansion remains subject to product scope.
+Final localisation/visual expansion remains separate product scope. C45G intentionally leaves `/badges`, achievement names/descriptions and BadgeUnlockToast Portuguese.
 
-### 6.7 Localisation — Public Home executed / broader localisation ongoing before V1.0
+A C45G visual-QA fixture initially bypassed the normal achievement metadata reconciliation lifecycle and was correctly rejected by the development invariant. Reconciliation of the Emulator fixture alone restored Badges/public Profile, confirming test-data defect rather than Product regression.
+
+### 6.7 Localisation — C45A–C45G executed / remaining surfaces ongoing before V1.0
 
 Supported locales, in the official V1.0 order, are:
 
@@ -239,7 +249,9 @@ C45A/AB-EV-045 establishes six explicit public Home routes (`/pt-br`, `/pt-pt`, 
 
 C45B/AB-EV-046 completes the translated public Home/Hero/Header/Footer layer across all six locales. Desktop exposes the six flags in official order; narrow mobile uses one compact locale trigger with an accessible six-option menu. Explicit language selection persists `atlasbadge_locale=<locale ID>`, localized Home metadata and `<html lang>` match the active route, and the selector remains available on localized Home for authenticated users while staying absent from `/app`, `/badges`, Login and public Profile. The Argentina flag remains the deliberate visual representation for `es-419`; locale logic remains keyed by locale ID, not flag/country name.
 
-Remaining localisation scope includes deep authenticated country/visit editing (C45G), Profile Edit, Badges, public Profile, resetPassword action presentation, the future authenticated language selector and other system-controlled/domain presentation text. User-authored content is not automatically translated. C45B's root `headers()` solution makes the page tree request-time dynamic; the architecture review accepted this as bounded V1.0 technical debt because eliminating it would require a disproportionate multi-root route migration.
+C45C–C45E extend localization through Login, Onboarding and email verification. C45F/AB-EV-051 localizes the authenticated `/app` shell/dashboard. C45G/AB-EV-052 localizes the deep country/visit editor, including status labels, visits, general/visit memories, manual memory order, validation and visit-photo presentation while preserving locale-neutral domain identifiers.
+
+Remaining localisation scope includes Profile Edit, `/badges`/achievement text and BadgeUnlockToast, public Profile, resetPassword action presentation, the future authenticated language selector and canonical country/continent display localization through presentation mapping. User-authored content is not automatically translated. C45B's root `headers()` solution makes the page tree request-time dynamic; the architecture review accepted this as bounded V1.0 technical debt because eliminating it would require a disproportionate multi-root route migration.
 
 ### 6.8 Performance and responsiveness — Partially executed / ongoing
 
@@ -247,11 +259,15 @@ Executed coverage includes map interaction, responsive layouts, repeated interac
 
 AB-EV-043 adds a cross-product desktop/mobile visual pass over Home/auth, dashboard/map, picker/filter, editors, Wishlist, Profile, badges and shared modals. The pass harmonised brand tokens and surfaces without changing layout or functional behaviour.
 
+C45G adds focused `390×844` deep-editor validation for `fr`, `pt-PT` and `es-ES`, including status pills, visit count/actions, memory reorder, date/time/duration, privacy, photo controls and confirmation modals.
+
 Quantitative performance targets and broader device/browser evidence remain incomplete.
 
 ### 6.9 Accessibility — Technical baseline executed
 
 AB-EV-017 establishes a scoped WCAG 2.2 AA technical baseline; later features include targeted keyboard/semantic/dialog regression. AB-EV-043 preserves visible keyboard focus while moving generic interaction emphasis to Atlas Gold and retaining semantic feedback/status colours.
+
+C45G adds localized ARIA labels for status/visit/duration/memory/photo editing, confirms modal focus behavior and revalidates keyboard memory ordering in the localized deep editor.
 
 Formal accessibility certification and comprehensive native assistive-technology coverage remain out of claim.
 
@@ -267,15 +283,17 @@ Permanent automated coverage includes:
 - Playwright browser E2E against Firebase Emulators;
 - controlled Production-only Playwright validation when authorised.
 
-The normal E2E persistence environment is isolated at `127.0.0.1:3100` with Auth/Firestore Emulators and project `demo-atlasbadge-web`.
+The normal E2E persistence environment is isolated at `127.0.0.1:3100` with Auth/Firestore Emulators and project `demo-atlasbadge-web`; Storage Emulator is added when visit-photo behavior is in scope.
 
-Real Firebase requests are fail-fast blockers in Emulator regression. The C36 focused Wishlist E2E recorded `realFirebaseRequests=0`.
+Real Firebase requests are fail-fast blockers in Emulator regression. C45G release validation again recorded `realFirebaseRequests=0`.
 
 C36 permanent coverage includes real Emulator batch rejection rather than relying only on a mocked `commit()` failure. Ordering coverage also includes the owner read-path/root-order precedence that manual QA initially exposed as missing.
 
 C37 permanent coverage includes real Emulator logical-reset atomicity, maximum-size coverage, legacy/current/stale generation read rules, later-new-place protection, Profile-root metadata preservation and focused Clear Map confirmation-modal success/failure behaviour.
 
-Stale test assumptions are test-maintenance defects, not product defects. They are corrected without weakening functional acceptance criteria.
+C45G permanent coverage connects localized presentation to the existing status/OCC, C35, C39, C40, C42 and C44 stateful boundaries rather than duplicating all domain permutations at browser level.
+
+Stale test assumptions and invalid prepared fixtures are test-maintenance/test-data defects, not product defects. They are corrected without weakening functional acceptance criteria or Product assertions.
 
 ---
 
@@ -292,6 +310,8 @@ A green checkpoint is retained unless a later change directly invalidates it. Be
 AB-EV-034/035 demonstrate proportional gap/requirement validation. AB-EV-036 extends the principle: the central Wishlist persistence redesign justified one full Vitest/Rules/build baseline, while later read-path corrections were requalified through focused Wishlist tests and Test Lead retest rather than repeatedly rerunning unrelated suites.
 
 AB-EV-037 follows the same model: Rules/build/static checkpoints were rerun because their artefacts changed; focused Clear Map, public-source, Wishlist/upsert and modal tests restored the affected boundaries without an unnecessary full browser campaign.
+
+AB-EV-052 follows the same model for a high-risk localization change: shared deep-editor code justified focused domain/component and Emulator regression across the touched C35/C39/C40/C42/C44 contracts, but unchanged Firebase Rules and unrelated surfaces did not trigger unrelated release campaigns.
 
 ---
 
@@ -328,6 +348,8 @@ Production Clear Map retest: PASS / Test Lead approved
 
 C43 was presentation-only and required no Rules/backend change. Product SHA `bcc10d63e0f3363d39f3029c0498deb49c30180f` reached Vercel deployment `dpl_FHmZdquA35oa6FVQjtpHVLZAcfyt` in READY/production state, followed by Test Lead **Production Visual PASS**.
 
+C45G changed Product/test presentation/error mapping but did not change Firebase Rules/configuration. Its stateful deep-editor writes and Storage lifecycle were proven in Emulators; Production release validation was intentionally non-destructive and route/isolation focused rather than manufacturing a new Production travel/photo dataset.
+
 Production uses controlled QA accounts/data only. Destructive operations require separate explicit authorisation and are not implied by a normal release smoke.
 
 ---
@@ -341,7 +363,10 @@ Current gaps/deferred areas include:
 - independent penetration testing;
 - formal accessibility certification/native AT matrix;
 - quantitative performance SLAs;
-- future Story/social features beyond current scope.
+- future Story/social features beyond current scope;
+- ProfileEditModal, Badges/achievement text, public Profile, resetPassword and authenticated-selector localization;
+- canonical country/continent presentation localization;
+- separate legacy UK-selector unreachable-code cleanup.
 
 Physical garbage collection of stale public-generation place documents is not an open functional defect. It is optional housekeeping because correctness and public-read safety no longer depend on immediate physical deletion.
 
@@ -382,4 +407,5 @@ Release approval is blocked by evidence of:
 - `evidence/v1.0/regression/ab-ev-049-public-home-language-selector-centering.md`
 - `evidence/v1.0/regression/ab-ev-050-c45e-email-verification-localization.md`
 - `evidence/v1.0/regression/ab-ev-051-c45f-authenticated-dashboard-localization.md`
+- `evidence/v1.0/regression/ab-ev-052-c45g-deep-country-visit-editor-localization.md`
 - `docs/10-lessons-learned.md`

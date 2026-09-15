@@ -6,7 +6,7 @@ This document identifies, evaluates and prioritises the main quality risks assoc
 
 This is a living analysis. Risk scores and priorities must be reviewed whenever the product, architecture, geographic catalogue, privacy model or release scope changes.
 
-> **Document status:** Reviewed through AB-EV-051. C39–C44 establish the current privacy/order/public-rendering, editable-name, visual-identity and visit-photo baselines. C45A closes the localisation-routing foundation, C45B closes the public-Home translation/selector layer, C45C closes the localized Login/auth-entry surface and C45D closes localized Onboarding/profile creation for all six V1.0 locales. Broader application localisation remains open. C45D reached Production technical PASS and Test Lead local/Emulator visual approval on 1 September 2026. AB-EV-049 additionally closes the locale-dependent public-Home header centering risk introduced by unequal translated CTA widths; Production geometry is now invariant across all six locales. C45E closes the email-verification localisation risk while preserving auth state-machine, resend/cooldown and profile-refresh semantics; its shared `/auth/action` route uses mode-scoped document locale so untranslated `resetPassword` UI cannot be falsely labelled as French or another locale. C45F closes the authenticated dashboard-shell localization risk for `/app` while keeping machine/domain values stable and proving that filters, Wishlist persistence, visit-order ranks, clear-map protection and geographic/statistical semantics remain unchanged.
+> **Document status:** Reviewed through AB-EV-052. C39–C44 establish the current privacy/order/public-rendering, editable-name, visual-identity and visit-photo baselines. C45A closes the localisation-routing foundation, C45B closes the public-Home translation/selector layer, C45C closes the localized Login/auth-entry surface and C45D closes localized Onboarding/profile creation for all six V1.0 locales. AB-EV-049 additionally closes the locale-dependent public-Home header centering risk introduced by unequal translated CTA widths. C45E closes the email-verification localisation risk while preserving auth state-machine, resend/cooldown and profile-refresh semantics. C45F closes the authenticated dashboard-shell localization risk for `/app` while keeping machine/domain values stable. C45G closes the deep country/visit editor localization risk while preserving status/OCC, C35 coexistence, C39 privacy, C40 memory-order, C42 visit-name and C44 visit-photo/quota contracts.
 
 ---
 
@@ -61,6 +61,8 @@ Current V1.0 behaviour preserves user-created visit history/memories across supp
 
 C39/AB-EV-039 adds explicit per-memory visibility while retaining the explicit-Save contract. Legacy privacy flags default to private; a visit may be public with valid duration/date even when note is empty; an empty general memory cannot be public. C40/AB-EV-040 adds `memoryOrder` as presentation metadata without reordering `registeredVisits` or exposing the order field publicly. C42/AB-EV-042 adds optional `visitName` presentation metadata with explicit Save, 40-character validation, same-country duplicate rejection and stable visit identity/order. C44/AB-EV-044 adds one photo per `RegisteredVisit`; selection remains draft until Save, replacement reuses the same bounded slot, removal is explicit, photo privacy follows the visit memory and the free V1.0 quota is hard-capped at 10 active slots per user.
 
+C45G/AB-EV-052 localizes the deep owner editing presentation around these contracts. Machine IDs, validation semantics, privacy flags, memory ordering, visit identity, canonical date/time/duration values and the 10-slot photo quota remain unchanged; stable additive error codes are mapped to localized presentation rather than using translated strings as logic identifiers.
+
 ### 3.4 Persistence and data model
 
 Cloud Firestore is the primary source of truth for authenticated users.
@@ -76,7 +78,7 @@ The private root may contain Profile/lifecycle settings including `isWishlistPub
 
 Authenticated place data uses a real-time Firestore subscription and confirmed-state reconciliation. Explicit status/visit intents preserve latest-valid-local-intent semantics.
 
-The main persistence/concurrency evidence includes AB-EV-013, AB-EV-018, AB-EV-019, AB-EV-022, AB-EV-026, AB-EV-032, AB-EV-033, AB-EV-034, AB-EV-036 and AB-EV-037.
+The main persistence/concurrency evidence includes AB-EV-013, AB-EV-018, AB-EV-019, AB-EV-022, AB-EV-026, AB-EV-032, AB-EV-033, AB-EV-034, AB-EV-036, AB-EV-037 and AB-EV-052.
 
 AB-EV-034 completes the QR-01 write-path audit using architectural/risk equivalence and adds deterministic failed-write/recovery coverage for the remaining Profile `flagSortOrder` path.
 
@@ -122,7 +124,7 @@ Wishlist privacy defaults to private. A public Wishlist tile is rendered only wh
 
 AB-EV-033 validates private→public and public→private Wishlist transitions, public-only cleanup, mixed-document sanitisation and zero private viewer reads in Production. AB-EV-036 extends that baseline by atomically coupling privacy/order changes, exposing root order only in the approved public state and validating the aligned Rules release in Production. AB-EV-037 extends the lifecycle boundary further: Clear Map invalidates all obsolete public travel-place generations atomically without requiring 251 public child deletes inside the logical reset.
 
-AB-EV-039 protects individual-memory privacy and sanitised public-memory projection. AB-EV-040 proves public-memory ordering can follow owner presentation order without exposing `memoryOrder`. AB-EV-041 makes owner and anonymous public-memory rendering consume the same public projection and keeps the public Profile read-only. AB-EV-042 confirms custom visit names reach public rendering only through the existing sanitised `visitLabel` while private visits remain absent. AB-EV-044 extends that boundary with an opaque `photoRef` only for authorised public memories; private Storage paths/slots remain private and direct public Storage reads are denied.
+AB-EV-039 protects individual-memory privacy and sanitised public-memory projection. AB-EV-040 proves public-memory ordering can follow owner presentation order without exposing `memoryOrder`. AB-EV-041 makes owner and anonymous public-memory rendering consume the same public projection and keeps the public Profile read-only. AB-EV-042 confirms custom visit names reach public rendering only through the existing sanitised `visitLabel` while private visits remain absent. AB-EV-044 extends that boundary with an opaque `photoRef` only for authorised public memories; private Storage paths/slots remain private and direct public Storage reads are denied. AB-EV-052 revalidates this boundary after localizing the owner editor and confirms shared StatusPill/public Profile remain independent from `/app` localization context.
 
 ### 3.6 Geographic catalogue and progress model
 
@@ -159,11 +161,15 @@ C31 aligned the affected geographic achievements:
 
 AB-EV-033 closes the missing public achievement-metadata projection while exposing only `{unlockedAt, sequence}` per achievement entry.
 
+During C45G visual preparation, a direct Emulator fixture created earned achievements without running the normal acquisition-metadata reconciliation. The development assertion correctly rejected this invalid test state on Badges/public Profile. Reconciliation of the disposable test data alone restored both surfaces without any Product change. This remains a QA fixture defect, not QR-30 Product failure, and reinforces that rich test data must satisfy the same derived-metadata invariants as normal Product flows.
+
 ### 3.8 Compatibility, responsive and accessibility baseline
 
 Manual and automated evidence includes Edge/Windows, Chrome/Android, desktop/mobile responsive matrices, touch contexts, constrained-device checks and a scoped WCAG 2.2 AA technical baseline.
 
 C43/AB-EV-043 adds repository-wide visual harmonisation plus Test Lead desktop/mobile and Production visual approval. The change preserved visible keyboard focus and retained semantic status, feedback, geographic/data-visualisation and external-brand colours instead of mechanically replacing them with Gold.
+
+C45G adds localized deep-editor responsive validation at `390×844` for `fr`, `pt-PT` and `es-ES`, including status pills, visit editor controls, memory reorder, photo controls and modal focus/keyboard behavior.
 
 Universal browser/device support and formal accessibility certification are not claimed. Untested browser/device combinations remain QR-38.
 
@@ -227,7 +233,7 @@ Universal browser/device support and formal accessibility certification are not 
 | QR-06 | Approved character-limit enforcement may regress. | Regression risk | 3 | 4 | 12 | High |
 | QR-07 | Account deletion or destructive data reset may partially fail and leave private/public/authentication or lifecycle records inconsistent. | Regression risk | 5 | 3 | 15 | High |
 
-**Applied decisions:** AB-EV-034 closes the remaining QR-01 assessment/coverage gap through a full write-path audit plus focused failed-write/recovery evidence for `flagSortOrder`; QR-01 remains a High `Regression risk`, not a Current gap. C34/AB-EV-032 closes AB-DEF-013 by making rapid visit mutations replayable/idempotent while retaining the birthplace transaction instead of weakening concurrency or Rules safeguards. AB-EV-036 adds atomic combined Wishlist settings persistence, a real rejected-batch rollback proof and confirmed Profile-root refresh/read behaviour. AB-EV-037 adds an atomic logical Clear Map reset, rejected-batch containment, root Wishlist cleanup and versioned stale-public invalidation. QR-02 AB-EV-002; QR-03 AB-EV-003; QR-04 AB-EV-013/018/019/022/026/032/033/036/037; QR-05 AB-EV-004; QR-06 AB-EV-011; QR-07 AB-EV-010/033/037.
+**Applied decisions:** AB-EV-034 closes the remaining QR-01 assessment/coverage gap through a full write-path audit plus focused failed-write/recovery evidence for `flagSortOrder`; QR-01 remains a High `Regression risk`, not a Current gap. C34/AB-EV-032 closes AB-DEF-013 by making rapid visit mutations replayable/idempotent while retaining the birthplace transaction instead of weakening concurrency or Rules safeguards. AB-EV-036 adds atomic combined Wishlist settings persistence, a real rejected-batch rollback proof and confirmed Profile-root refresh/read behaviour. AB-EV-037 adds an atomic logical Clear Map reset, rejected-batch containment, root Wishlist cleanup and versioned stale-public invalidation. AB-EV-052 revalidates the localized deep-editor paths for QR-04/QR-05 with OCC/status and explicit-Save memory/visit regression while leaving persistence semantics unchanged. QR-02 AB-EV-002; QR-03 AB-EV-003; QR-04 AB-EV-013/018/019/022/026/032/033/036/037/052; QR-05 AB-EV-004/039/052; QR-06 AB-EV-011; QR-07 AB-EV-010/033/037/044.
 
 ### 5.2 Authentication and account identity
 
@@ -256,7 +262,7 @@ Universal browser/device support and formal accessibility certification are not 
 | QR-23 | **Born there** or **Lived** may fail to select **Visited** and initialise visit behaviour correctly. | Regression risk | 3 | 3 | 9 | Medium |
 | QR-24 | The approved **Passed through** workflow may regress. | Regression risk | 2 | 4 | 8 | Medium |
 
-**Applied decisions:** AB-EV-035 rebaselines QR-16/QR-24 after the C35 requirement correction. Visited + Passed through is now a valid cumulative combination; adding a second compatible status does not itself create an additional `RegisteredVisit` or increment Total Visits. AB-EV-033 protects Wishlist compatibility/non-physical semantics. AB-EV-036 preserves `statuses.wishlist` as membership source, replaces legacy per-place order persistence with root `wishlistOrder`, makes combined privacy/order Save atomic and validates order after read/reload/public rendering. AB-EV-037 verifies that destructive Clear Map removes root order/public Wishlist state inside the same atomic lifecycle reset.
+**Applied decisions:** AB-EV-035 rebaselines QR-16/QR-24 after the C35 requirement correction. Visited + Passed through is now a valid cumulative combination; adding a second compatible status does not itself create an additional `RegisteredVisit` or increment Total Visits. AB-EV-033 protects Wishlist compatibility/non-physical semantics. AB-EV-036 preserves `statuses.wishlist` as membership source, replaces legacy per-place order persistence with root `wishlistOrder`, makes combined privacy/order Save atomic and validates order after read/reload/public rendering. AB-EV-037 verifies that destructive Clear Map removes root order/public Wishlist state inside the same atomic lifecycle reset. AB-EV-052 localizes status controls but explicitly retains status IDs/compatibility, visit counters and physical-presence semantics, with C35/status-OCC regression included in the final gate.
 
 ### 5.4 Geographic catalogue, map and achievements
 
@@ -269,7 +275,7 @@ Universal browser/device support and formal accessibility certification are not 
 | QR-29 | United Kingdom achievement/progress may use incorrect constituent/derived semantics. | Regression risk | 3 | 3 | 9 | Medium |
 | QR-30 | Achievement lock/relock, metadata, chronology, reconquest or notification delivery may become inconsistent across private/public sources. | Regression risk | 3 | 3 | 9 | Medium |
 
-**Applied decisions:** C31/AB-EV-029 closes the previous QR-25 catalogue/counter gap with the canonical `251 selectable / 252 Places / 195 Countries / 57 Territories and Entities` model and aligned A15/A18/A31/A32 achievement criteria. C32/AB-EV-030 protects read-only Profile map-to-earned-flag navigation across normal places, micro-markers, sorting and mobile presentation. C33/AB-EV-031 protects deterministic local dashboard sorting without persistence. C34/AB-EV-032 protects owner-only Manual Visit Order, rapid visit convergence and the birthplace pointer/status invariant.
+**Applied decisions:** C31/AB-EV-029 closes the previous QR-25 catalogue/counter gap with the canonical `251 selectable / 252 Places / 195 Countries / 57 Territories and Entities` model and aligned A15/A18/A31/A32 achievement criteria. C32/AB-EV-030 protects read-only Profile map-to-earned-flag navigation across normal places, micro-markers, sorting and mobile presentation. C33/AB-EV-031 protects deterministic local dashboard sorting without persistence. C34/AB-EV-032 protects owner-only Manual Visit Order, rapid visit convergence and the birthplace pointer/status invariant. The C45G visual-fixture achievement assertion was traced to missing fixture reconciliation rather than a QR-30 Product regression; valid reconciled data rendered normally without Product change.
 
 ### 5.5 Public profile and sharing
 
@@ -283,7 +289,7 @@ Universal browser/device support and formal accessibility certification are not 
 | QR-36 | Per-memory visibility/default or public-memory rendering may publish content contrary to the owner's explicit preference. | Regression risk | 5 | 3 | 15 | High |
 | QR-37 | A future generated Story may expose unexpected information or fail across sharing flows. | Future risk | 4 | 3 | 12 | High |
 
-**Applied decisions:** AB-EV-036 adds `wishlistOrder` to the intentional public-root contract only when Wishlist visibility permits it, preserves private order while public visibility is off, validates public→private atomic cleanup and restores frontend/Rules parity before the Production smoke. AB-EV-037 adds `placesGeneration` to the root/place projection lifecycle, keeps legacy generation-0 compatibility and denies stale-generation public reads after Clear Map. AB-EV-039 implements the previously future QR-36 control through explicit per-memory privacy and sanitised `publicMemories`; AB-EV-040 preserves that privacy while applying independent presentation order; AB-EV-041 renders the public projection through earned-flag modals without private-source fallback. QR-31/QR-32/QR-34/QR-36 remain regression risks because privacy and public-projection failures remain consequential.
+**Applied decisions:** AB-EV-036 adds `wishlistOrder` to the intentional public-root contract only when Wishlist visibility permits it, preserves private order while public visibility is off, validates public→private atomic cleanup and restores frontend/Rules parity before the Production smoke. AB-EV-037 adds `placesGeneration` to the root/place projection lifecycle, keeps legacy generation-0 compatibility and denies stale-generation public reads after Clear Map. AB-EV-039 implements the previously future QR-36 control through explicit per-memory privacy and sanitised `publicMemories`; AB-EV-040 preserves that privacy while applying independent presentation order; AB-EV-041 renders the public projection through earned-flag modals without private-source fallback. AB-EV-052 localizes the owner privacy/photo controls while re-running C39/C40/C44 public-projection regression and preserving public Profile isolation. QR-31/QR-32/QR-34/QR-36 remain regression risks because privacy and public-projection failures remain consequential.
 
 ### 5.6 Compatibility, usability, performance and accessibility
 
@@ -293,11 +299,13 @@ Universal browser/device support and formal accessibility certification are not 
 | QR-39 | Responsive/touch/constrained-device/CSS/navigation/card-paint/map-layout baselines may regress. | Regression risk | 3 | 3 | 9 | Medium |
 | QR-40 | Keyboard access, focus, accessible names, dialogs, contrast or other accessibility behaviour may regress. | Regression risk | 4 | 3 | 12 | High |
 
+AB-EV-052 adds localized deep-editor responsive coverage for `fr`, `pt-PT` and `es-ES` at 390×844, plus localized accessible labels, modal focus and keyboard memory-ordering checks. This extends but does not broaden the browser/device claim beyond the established sample.
+
 ---
 
 ## 6. Highest-priority test focus
 
-Priority focus includes failed-write/recovery regression; atomic multi-resource Save/destructive-reset behaviour; visit-history preservation; account-deletion integrity; status/Wishlist compatibility; `252/195/57` counter integrity; geographic catalogue integrity; private/public projection and privacy transitions; explicit logout/local-data exposure; explicit-Save integrity; real-time concurrency/cache authority; rapid visit convergence; Manual Visit Order; independent Wishlist root ordering; per-memory privacy; manual memory ordering; editable visit-name identity/privacy preservation; public-memory flag-modal rendering; Clear Map generation invalidation; birthplace pointer/status atomicity; achievement chronology/public metadata; responsive/constrained-device behaviour; Profile read-only interaction; visual-identity/focus consistency; and accessibility.
+Priority focus includes failed-write/recovery regression; atomic multi-resource Save/destructive-reset behaviour; visit-history preservation; account-deletion integrity; status/Wishlist compatibility; `252/195/57` counter integrity; geographic catalogue integrity; private/public projection and privacy transitions; explicit logout/local-data exposure; explicit-Save integrity; real-time concurrency/cache authority; rapid visit convergence; Manual Visit Order; independent Wishlist root ordering; per-memory privacy; manual memory ordering; editable visit-name identity/privacy preservation; visit-photo quota/privacy/lifecycle; public-memory flag-modal rendering; Clear Map generation invalidation; birthplace pointer/status atomicity; achievement chronology/public metadata; localized deep-editor error/state presentation without changing machine contracts; responsive/constrained-device behaviour; Profile read-only interaction; visual-identity/focus consistency; and accessibility.
 
 QR-01 and QR-25 are no longer open investigations. Their residual concern is regression. AB-DEF-017 and AB-DEF-018 are closed; atomic Wishlist settings/order and atomic logical Clear Map integrity are permanent regression scope.
 
@@ -329,7 +337,8 @@ QR-01 and QR-25 are no longer open investigations. Their residual concern is reg
 - Manual Visit Order exists only on the owner Map tab;
 - Wishlist-only and Nationality-only records do not participate in Manual Visit Order;
 - Born there remains fixed at the top of Manual Visit Order and the user pointer/status remains transactionally consistent;
-- memory visibility is controlled per memory; missing/legacy visibility flags default to private, and only sanitised eligible memories may enter the public projection.
+- memory visibility is controlled per memory; missing/legacy visibility flags default to private, and only sanitised eligible memories may enter the public projection;
+- localization changes display text only: status IDs, RegisteredVisit IDs/schema, duration-unit IDs, privacy flags and C44 photo quota/storage identifiers remain locale-neutral.
 
 ---
 
@@ -343,6 +352,7 @@ QR-01 and QR-25 are no longer open investigations. Their residual concern is reg
 6. Future changes to public-profile fields extend the whitelist intentionally rather than reintroducing direct private reads.
 7. Future changes to Wishlist order/settings preserve the root-order atomic Save contract and supported maximum write ceiling.
 8. Future Clear Map/public-projection cleanup changes preserve generation invalidation and keep physical garbage collection correctness-independent.
+9. Future rich QA fixtures that create derived achievement/projection state use or reproduce the same reconciliation lifecycle as normal Product flows before manual handoff.
 
 ---
 
@@ -350,7 +360,7 @@ QR-01 and QR-25 are no longer open investigations. Their residual concern is reg
 
 Resolved V1.0 decisions must not be reopened without new evidence or an explicit requirement correction: explicit Save for memories, character-limit policy, retry-safe account deletion, real-time/OCC controls, password minimum/passphrases, canonical usernames, immediate username reuse, Passed-through detailed-visit workflow, QR-01 failed-write recovery baseline, C35 Visited + Passed-through coexistence, C36 Wishlist atomic settings/root-order model, C37 Clear Map atomic generation-reset model, accessibility technical baseline, responsive baseline, achievement chronology, map/profile parity, geographic counters, dashboard/manual ordering, Wishlist/public-profile projection and the C45A public-locale routing foundation.
 
-Open questions remain around username allowed characters, broader browser/device support, native assistive-technology coverage, localisation completion beyond the executed C45A–C45F public-Home + auth-entry + onboarding + verification + authenticated-dashboard baseline, quantitative performance targets, future Story/share scope and `FUTURE-PAID-01`, a possible post-V1.0 monetisation model if infrastructure cost requires it. C44's free 10-photo quota and the C45A/C45B public-locale Home contract are implemented and are not open V1.0 questions. The C45F visual-preparation audit also found that the legacy UK-selector modal is unreachable through the supported map flow because the non-selectable aggregate `gb` is never emitted by map clicks; this is tracked as a non-defect technical cleanup/reachability follow-up, not as a C45F release failure.
+Open questions remain around username allowed characters, broader browser/device support, native assistive-technology coverage, localisation completion beyond the executed C45A–C45G public-Home + auth-entry + onboarding + verification + authenticated-dashboard + deep-editor baseline, quantitative performance targets, future Story/share scope and `FUTURE-PAID-01`, a possible post-V1.0 monetisation model if infrastructure cost requires it. Remaining localization includes ProfileEditModal, Badges/achievement text and BadgeUnlockToast, public Profile, resetPassword, authenticated language selection and canonical country/continent display mapping. C44's free 10-photo quota is implemented and is not an open V1.0 question. The C45F visual-preparation audit also found that the legacy UK-selector modal is unreachable through the supported map flow; this remains a non-defect technical cleanup/reachability follow-up.
 
 ---
 
@@ -395,3 +405,4 @@ A change to the public projection whitelist, Wishlist source of truth, Wishlist 
 - `evidence/v1.0/regression/ab-ev-049-public-home-language-selector-centering.md`
 - `evidence/v1.0/regression/ab-ev-050-c45e-email-verification-localization.md`
 - `evidence/v1.0/regression/ab-ev-051-c45f-authenticated-dashboard-localization.md`
+- `evidence/v1.0/regression/ab-ev-052-c45g-deep-country-visit-editor-localization.md`

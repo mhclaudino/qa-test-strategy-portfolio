@@ -6,7 +6,7 @@ This document defines the overall testing strategy for AtlasBadge and how qualit
 
 It covers risk prioritisation, test design, regression, evidence, AI-assisted execution, automation, release approval and residual risk.
 
-> **Document status:** Completed and maintained through AB-EV-051. The current strategy includes versioned Playwright/Firebase Emulator regression, checkpointed incremental validation, controlled real-backend/Production validation, explicit environment/runtime parity checks, real-browser acceptance and fixed living-document governance.
+> **Document status:** Completed and maintained through AB-EV-052. The current strategy includes versioned Playwright/Firebase Emulator regression, checkpointed incremental validation, controlled real-backend/Production validation, explicit environment/runtime parity checks, real-browser acceptance and fixed living-document governance.
 
 ---
 
@@ -142,6 +142,8 @@ AB-EV-050 extends bounded localisation testing to a stateful authentication jour
 
 AB-EV-051 applies the same bounded model to the authenticated dashboard. Locale changes affect only presentation; canonical country names/IDs, filter machine values, statistics, Wishlist settings/order, manual visit ranks, clear-map semantics and deep visit editors remain behaviourally stable. Stateful write/destructive proof stays in Firebase Emulators while Production sign-off uses non-destructive server/document-locale smoke and route-isolation checks.
 
+AB-EV-052 extends localization into the high-risk deep country/visit editor while keeping status IDs, `RegisteredVisit` identity, memory/privacy rules, C42 visit names and C44 photo/quota semantics locale-neutral. The checkpoint combines additive stable error codes, focused component/domain tests, stateful Auth/Firestore/Storage Emulator regression for C35/C39/C40/C42/C44 and Test Lead rendered-browser acceptance, then limits Production validation to non-destructive route/isolation smoke because recreating deep travel/photo state in Production would add risk without increasing confidence proportionally.
+
 This reduces wasted execution time while retaining traceable risk-based coverage.
 
 ### 6.2 Fail-fast classification
@@ -150,12 +152,15 @@ When a test fails, the first step is classification:
 
 - **product defect** — implementation/behaviour violates the accepted rule;
 - **test defect/stale expectation** — automation no longer represents the accepted rule or produces false evidence;
+- **test-data/fixture defect** — prepared state violates Product invariants even though valid Product state behaves correctly;
 - **environment/infrastructure issue** — execution cannot prove product behaviour;
 - **inconclusive** — evidence is insufficient.
 
-Test defects must not be presented as product defects, and product defects must not be hidden by weakening automation.
+Test defects and fixture defects must not be presented as product defects, and product defects must not be hidden by weakening automation or Product assertions.
 
 AB-EV-033 demonstrates this model: three real product defects were assigned AB-DEF IDs, while stale selectors, unauthenticated test reads and obsolete protocol/offline assumptions were treated as test-maintenance debt.
+
+AB-EV-052 adds a fixture-specific example. A direct C45G visual-QA seed created travel state that earned achievements but bypassed the normal achievement-metadata reconciliation lifecycle. The development invariant correctly rejected the incomplete state on Badges/public Profile. Reconciliation of Emulator data alone restored all dependent surfaces with no Product change, confirming a QA test-data defect rather than a Product regression.
 
 ---
 
@@ -256,6 +261,8 @@ Firestore Emulator: 8080
 Project: demo-atlasbadge-web
 ```
 
+Later photo/stateful checkpoints also start the Storage Emulator when required.
+
 The configuration forces Emulator targets, uses a dedicated E2E Next.js runtime/build, excludes Firebase-real Production specs and fails fast if real Firebase traffic is detected.
 
 Validated runs recorded `realFirebaseRequests=0`.
@@ -314,6 +321,8 @@ This does **not** constitute formal accessibility certification or complete assi
 Testing uses controlled QA accounts and disposable data.
 
 Emulator tests use isolated demonstration-project data. Production tests use only approved QA accounts and must not modify non-QA accounts.
+
+Rich manual/visual fixtures that induce derived Product state must be prepared through the normal Product/domain lifecycle where practical or explicitly run the same reconciliation helpers before handoff. Fixture readiness includes checking dependent surfaces whose invariants consume that derived state; a fixture shortcut must not be used as justification to weaken a Product assertion.
 
 Credentials, tokens, private account details and sensitive payloads are not committed to the public QA portfolio.
 
@@ -418,3 +427,4 @@ Review this strategy when authentication, travel-status/Wishlist rules, persiste
 - `docs/10-lessons-learned.md`
 - `evidence/v1.0/evidence-register.md`
 - `evidence/v1.0/regression/ab-ev-033-wishlist-public-profile-release-hardening.md`
+- `evidence/v1.0/regression/ab-ev-052-c45g-deep-country-visit-editor-localization.md`

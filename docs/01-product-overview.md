@@ -6,7 +6,7 @@ This document provides a high-level overview of AtlasBadge, including its purpos
 
 It establishes the product context required for the risk analysis and test strategy documented in this repository.
 
-> **Document status:** Completed and maintained through AB-EV-051. C39–C44 establish the current memory/privacy/order/public-display, editable-name, visual-identity and visit-photo baselines. C45A establishes the public localisation-routing foundation; C45B adds translated public Home/Hero/Header/Footer, desktop/mobile language selection, locale cookie persistence and correct public-Home document language/metadata for all six V1.0 locales. C45B reached Production and final Test Lead approval on 31 August 2026. C45C localizes the unprefixed Login/auth-entry surface while preserving existing authentication and routing contracts; C45C reached Production and final Test Lead approval on 31 August 2026. C45D localizes the unprefixed Onboarding/profile-creation surface while preserving username/social-link validation and profile persistence semantics; C45D reached Production technical PASS and Test Lead visual approval through the Emulator/local flow on 1 September 2026. AB-EV-049 then closes a multilingual public-Home header visual-consistency defect: the six-language selector is now geometrically centered independently of translated CTA widths, with Production verification across all six locales. C45E localizes the unprefixed email-verification journey across `/verify-email` and the `verifyEmail` branch of `/auth/action`, while intentionally keeping the shared `resetPassword` branch Portuguese/`pt-BR`; C45E reached Production technical PASS and Test Lead local/Emulator visual approval on 1 September 2026. C45F localizes the authenticated `/app` shell and dashboard-level presentation for all six locales while preserving map, filter, Wishlist, visit-order and destructive-write semantics; C45F reached Production technical PASS and Test Lead local/Emulator visual approval on 2 September 2026.
+> **Document status:** Completed and maintained through AB-EV-052. C39–C44 establish the current memory/privacy/order/public-display, editable-name, visual-identity and visit-photo baselines. C45A establishes the public localisation-routing foundation; C45B adds translated public Home/Hero/Header/Footer, desktop/mobile language selection, locale cookie persistence and correct public-Home document language/metadata for all six V1.0 locales. C45B reached Production and final Test Lead approval on 31 August 2026. C45C localizes the unprefixed Login/auth-entry surface while preserving existing authentication and routing contracts; C45C reached Production and final Test Lead approval on 31 August 2026. C45D localizes the unprefixed Onboarding/profile-creation surface while preserving username/social-link validation and profile persistence semantics; C45D reached Production technical PASS and Test Lead visual approval through the Emulator/local flow on 1 September 2026. AB-EV-049 then closes a multilingual public-Home header visual-consistency defect: the six-language selector is now geometrically centered independently of translated CTA widths, with Production verification across all six locales. C45E localizes the unprefixed email-verification journey across `/verify-email` and the `verifyEmail` branch of `/auth/action`, while intentionally keeping the shared `resetPassword` branch Portuguese/`pt-BR`; C45E reached Production technical PASS and Test Lead local/Emulator visual approval on 1 September 2026. C45F localizes the authenticated `/app` shell and dashboard-level presentation for all six locales while preserving map, filter, Wishlist, visit-order and destructive-write semantics; C45F reached Production technical PASS and Test Lead local/Emulator visual approval on 2 September 2026. C45G localizes the deep authenticated country/visit editing layer — statuses, visits, memories, memory ordering, validation and visit-photo presentation — while preserving C35/C39/C40/C42/C44 domain, privacy, ordering and photo contracts; C45G reached Production technical PASS and Test Lead local/Emulator visual approval on 15 September 2026.
 
 ## 2. Product summary
 
@@ -70,7 +70,7 @@ Administrative capabilities are not currently part of the documented portfolio s
 
 The application supports account-based access so that travel information can be associated with an individual user.
 
-Relevant behaviours include account creation, login/logout, e-mail verification/recovery, authentication-method linking, session handling, protected-route access and account deletion.
+Relevant behaviours include account creation, login/logout, e-mail verification/recovery, authentication-method linking while preserving identity/data, session handling, protected-route access and account deletion.
 
 ### 5.2 Interactive travel map
 
@@ -147,7 +147,7 @@ Relevant behaviours include:
 - independent Wishlist order;
 - transactional integrity for the Born there user pointer/status relationship.
 
-C34/AB-EV-032 is the current Manual Visit Order and rapid-visit concurrency baseline. It preserves the atomic `birthplacePlaceId` + `statuses.born` invariant and records AB-DEF-013 as closed. C39/AB-EV-039 is the current privacy contract for memories. C40/AB-EV-040 is the current manual memory-order contract. C42/AB-EV-042 adds editable visit names as presentation metadata without changing visit identity, visit-history order, memory order or privacy.
+C34/AB-EV-032 is the current Manual Visit Order and rapid-visit concurrency baseline. It preserves the atomic `birthplacePlaceId` + `statuses.born` invariant and records AB-DEF-013 as closed. C39/AB-EV-039 is the current privacy contract for memories. C40/AB-EV-040 is the current manual memory-order contract. C42/AB-EV-042 adds editable visit names as presentation metadata without changing visit identity, visit-history order, memory order or privacy. C45G/AB-EV-052 localizes the deep editor presentation around those existing contracts without changing their stored identifiers, rules or persistence semantics.
 
 ### 5.5 Persistent user data
 
@@ -196,6 +196,8 @@ A normal earned country/territory flag opens a read-only public-memory modal. Th
 AtlasBadge supports desktop and mobile web use. Testing considers navigation, map interaction, dialogs/forms, text readability, touch, scrolling, layout stability, modal background scroll locking, horizontal overflow and accessible interaction patterns.
 
 C43/AB-EV-043 establishes the current visual-identity baseline: Atlas Gold/Black/Warm White and Atlas neutral surfaces are used for structural UI identity, while status, feedback, data-visualisation and external-brand colours remain semantic exceptions.
+
+C45G/AB-EV-052 adds representative deep-editor responsive coverage at `390×844` for French, Portuguese (Portugal) and Spanish (Spain), including status pills, visit controls, memories, duration, photo actions and confirmation modals.
 
 ## 6. High-level user journeys
 
@@ -260,7 +262,7 @@ AtlasBadge depends on Vercel hosting/Git deployment, Firebase Authentication, Cl
 
 A release that changes both frontend behaviour and Firestore Rules must preserve deployment parity; a Vercel READY state alone is not sufficient evidence that the Firebase security layer is aligned.
 
-C45A establishes six explicit public Home locale routes (`/pt-br`, `/pt-pt`, `/es-419`, `/es-es`, `/fr`, `/en-gb`) plus root locale resolution using saved locale, browser language and `pt-BR` fallback. Authenticated routes remain unprefixed and the existing root `[username]` public-profile contract is preserved. C45B layers translated Home/Hero/public Header/Footer content, locale-specific metadata and server-correct `<html lang>`, plus desktop six-flag and compact mobile language selection. The selector is also available on the localized Home for authenticated users while remaining absent from unlocalized application/Profile surfaces.
+C45A establishes six explicit public Home locale routes (`/pt-br`, `/pt-pt`, `/es-419`, `/es-es`, `/fr`, `/en-gb`) plus root locale resolution using saved locale, browser language and `pt-BR` fallback. Authenticated routes remain unprefixed and the existing root `[username]` public-profile contract is preserved. C45B layers translated Home/Hero/public Header/Footer content, locale-specific metadata and server-correct `<html lang>`, plus desktop six-flag and compact mobile language selection. The selector is also available on the localized Home for authenticated users while remaining absent from unlocalized application/Profile surfaces. C45F/C45G extend the existing locale context into the authenticated dashboard and deep country/visit editor without adding locale persistence to user documents.
 
 ## 9. Product constraints and assumptions
 
@@ -282,14 +284,15 @@ Maintainability includes keeping business rules central, maintaining automated e
 
 ## 11. Known areas requiring clarification or future work
 
-- Remaining localisation beyond the completed C45A–C45F baseline, including deep authenticated country/visit editing, visit memories/photos/status presentation, Profile Edit, Badges, public Profile, password-reset action presentation, the future authenticated language selector and remaining domain/presentation labels;
+- Remaining localisation beyond the completed C45A–C45G baseline, including Profile Edit, Badges/achievement text and BadgeUnlockToast, public Profile, password-reset action presentation, the future authenticated language selector and remaining canonical country/continent presentation labels;
 - `FUTURE-PAID-01` — possible post-V1.0 paid-plan model if infrastructure cost requires monetisation; candidates include an expanded visit-photo quota above the free 10-photo limit and other premium conveniences. No paid CTA, entitlement or billing behaviour is part of V1.0;
 - broader browser/device compatibility beyond the current validated sample;
 - quantitative performance targets;
 - future Story/share scope;
-- administrative/moderation capabilities if introduced.
+- administrative/moderation capabilities if introduced;
+- separate technical cleanup of the legacy unreachable UK-selector modal, without changing the approved UK aggregate/constituent model.
 
-These items are not automatically defects. They are open product/quality questions or future features requiring explicit assessment when they enter scope.
+These items are not automatically defects. They are open product/quality questions, technical cleanup candidates or future features requiring explicit assessment when they enter scope.
 
 ## 12. Related portfolio documents
 
@@ -313,3 +316,4 @@ These items are not automatically defects. They are open product/quality questio
 - `evidence/v1.0/regression/ab-ev-049-public-home-language-selector-centering.md`
 - `evidence/v1.0/regression/ab-ev-050-c45e-email-verification-localization.md`
 - `evidence/v1.0/regression/ab-ev-051-c45f-authenticated-dashboard-localization.md`
+- `evidence/v1.0/regression/ab-ev-052-c45g-deep-country-visit-editor-localization.md`
