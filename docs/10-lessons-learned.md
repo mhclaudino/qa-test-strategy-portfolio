@@ -8,7 +8,7 @@ It is deliberately not a diary of every defect, test run or implementation decis
 
 The emphasis is on reducing avoidable work while preserving risk-based confidence and traceability.
 
-> **Document status:** Active / maintained. Consolidated through AB-EV-052.
+> **Document status:** Active / maintained. Consolidated through AB-EV-053.
 
 ---
 
@@ -484,6 +484,14 @@ All three must be true before the environment is called “ready”.
 
 **Benefit:** Keeps manual/Emulator fixtures production-representative, prevents false Product-regression reports and makes defect classification faster and more defensible.
 
+### LL-54 — Localize shared domain-backed UI through additive presentation data, not by mutating canonical objects
+
+**Observation:** C45H needed translated achievement names/descriptions on `/badges` and in `BadgeUnlockToast`, but the same `AchievementCard`/`AchievementGrid` components are also used by the still-Portuguese public Profile. Translating the canonical achievement objects or making the shared components require the authenticated Intl provider would have leaked C45H scope into an unlocalized public surface and risked coupling chronology/business behaviour to text.
+
+**Working rule:** When a shared component renders domain-backed data across differently localized surfaces, keep the canonical domain object and stable ID locale-neutral. Resolve localized copy at the presentation boundary and pass it additively, retaining a safe canonical fallback for consumers not yet localized. Add an isolation test proving an unlocalized consumer does not inherit the active locale accidentally.
+
+**Benefit:** Allows incremental localization without cross-surface leakage, preserves stable domain/sorting/persistence contracts and keeps future localization checkpoints independently releasable.
+
 ## 7. Standing efficiency rules
 
 The following compact rules apply to future AtlasBadge work:
@@ -530,6 +538,7 @@ The following compact rules apply to future AtlasBadge work:
 40. On shared multi-mode routes, scope document locale to the localized functional mode; untranslated modes must retain a matching document language.
 41. Prove a UI surface is reachable from a supported baseline path before making it an acceptance blocker; unreachable legacy UI is N/A plus a separate cleanup follow-up, not a reason to change product behaviour.
 42. Rich QA fixtures that create derived Product state must pass the same reconciliation invariants as normal Product flows before Test Lead handoff; fix incomplete fixture data, not Product assertions.
+43. Localize shared domain-backed UI through stable IDs and additive presentation data; preserve canonical fallback and test that not-yet-localized consumers remain isolated.
 
 ---
 
@@ -579,3 +588,4 @@ Do not add a lesson merely because an isolated defect occurred.
 - `evidence/v1.0/regression/ab-ev-050-c45e-email-verification-localization.md`
 - `evidence/v1.0/regression/ab-ev-051-c45f-authenticated-dashboard-localization.md`
 - `evidence/v1.0/regression/ab-ev-052-c45g-deep-country-visit-editor-localization.md`
+- `evidence/v1.0/regression/ab-ev-053-c45h-badges-achievements-localization.md`

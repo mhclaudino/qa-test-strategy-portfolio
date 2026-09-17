@@ -6,7 +6,7 @@ This document defines the overall testing strategy for AtlasBadge and how qualit
 
 It covers risk prioritisation, test design, regression, evidence, AI-assisted execution, automation, release approval and residual risk.
 
-> **Document status:** Completed and maintained through AB-EV-052. The current strategy includes versioned Playwright/Firebase Emulator regression, checkpointed incremental validation, controlled real-backend/Production validation, explicit environment/runtime parity checks, real-browser acceptance and fixed living-document governance.
+> **Document status:** Completed and maintained through AB-EV-053. The current strategy includes versioned Playwright/Firebase Emulator regression, checkpointed incremental validation, controlled real-backend/Production validation, explicit environment/runtime parity checks, real-browser acceptance and fixed living-document governance.
 
 ---
 
@@ -144,6 +144,8 @@ AB-EV-051 applies the same bounded model to the authenticated dashboard. Locale 
 
 AB-EV-052 extends localization into the high-risk deep country/visit editor while keeping status IDs, `RegisteredVisit` identity, memory/privacy rules, C42 visit names and C44 photo/quota semantics locale-neutral. The checkpoint combines additive stable error codes, focused component/domain tests, stateful Auth/Firestore/Storage Emulator regression for C35/C39/C40/C42/C44 and Test Lead rendered-browser acceptance, then limits Production validation to non-destructive route/isolation smoke because recreating deep travel/photo state in Production would add risk without increasing confidence proportionally.
 
+AB-EV-053 applies the same bounded model to a shared achievement domain. Stable achievement IDs and canonical evaluator/metadata objects remain locale-neutral; `/badges` and `BadgeUnlockToast` resolve localized presentation by ID while the shared public Profile remains Portuguese. Focused tests prove catalog completeness, date localization, strict achievement-order assertions, reconquest/notification semantics and public-projection isolation. Stateful achievement unlock proof stays in the Firebase Emulators, while Production validation remains non-destructive and verifies route/document/isolation behaviour only.
+
 This reduces wasted execution time while retaining traceable risk-based coverage.
 
 ### 6.2 Fail-fast classification
@@ -154,13 +156,16 @@ When a test fails, the first step is classification:
 - **test defect/stale expectation** — automation no longer represents the accepted rule or produces false evidence;
 - **test-data/fixture defect** — prepared state violates Product invariants even though valid Product state behaves correctly;
 - **environment/infrastructure issue** — execution cannot prove product behaviour;
+- **release-control block** — tooling/security/process prevents publication before execution but source/product behaviour is not shown to be wrong;
 - **inconclusive** — evidence is insufficient.
 
-Test defects and fixture defects must not be presented as product defects, and product defects must not be hidden by weakening automation or Product assertions.
+Test defects, fixture defects and release-control blocks must not be presented as product defects, and product defects must not be hidden by weakening automation or Product assertions.
 
 AB-EV-033 demonstrates this model: three real product defects were assigned AB-DEF IDs, while stale selectors, unauthenticated test reads and obsolete protocol/offline assumptions were treated as test-maintenance debt.
 
 AB-EV-052 adds a fixture-specific example. A direct C45G visual-QA seed created travel state that earned achievements but bypassed the normal achievement-metadata reconciliation lifecycle. The development invariant correctly rejected the incomplete state on Badges/public Profile. Reconciliation of Emulator data alone restored all dependent surfaces with no Product change, confirming a QA test-data defect rather than a Product regression.
+
+AB-EV-053 adds a release-control example. The first C45H push attempt was blocked by an automated security/release review because explicit authorization to publish `main` and trigger Production was not recognised. No push/deployment occurred until the Test Lead authorized it explicitly. The same approved commit was then pushed normally and deployed successfully; no Product defect was created.
 
 ---
 
@@ -229,6 +234,8 @@ A READY frontend deployment is not enough when the security-rule layer changed.
 
 AB-EV-033 followed this exact gate before validating Wishlist/private-public projection in Production.
 
+Presentation-only/authenticated-state checkpoints may close as **Production technical PASS + local/Emulator visual PASS** when manufacturing Production state would add avoidable risk and server/routing/isolation behaviour can be verified safely without mutation. C45D–C45H use this evidence distinction where applicable.
+
 ---
 
 ## 10. Automation strategy
@@ -246,6 +253,7 @@ The browser E2E suite includes high-value flows such as:
 - geographic counters/map interaction;
 - manual visit order;
 - responsive behaviour;
+- achievement unlock/notification/localization where affected;
 - Clear Map/account lifecycle affected areas.
 
 ### 10.2 Firebase Emulator isolation
@@ -265,7 +273,7 @@ Later photo/stateful checkpoints also start the Storage Emulator when required.
 
 The configuration forces Emulator targets, uses a dedicated E2E Next.js runtime/build, excludes Firebase-real Production specs and fails fast if real Firebase traffic is detected.
 
-Validated runs recorded `realFirebaseRequests=0`.
+Validated runs recorded `realFirebaseRequests=0`. C45H again recorded `realFirebaseRequests=0` while exercising reconciled achievement state and localized `/badges`/toast behavior.
 
 ### 10.3 Controlled Production automation
 
@@ -284,7 +292,8 @@ Tests must avoid false confidence from:
 - unauthenticated private reads used as if they were valid owner snapshots;
 - offline toggling used as a substitute for semantics already covered deterministically elsewhere;
 - hardcoded app ports that bypass the isolated test runtime;
-- stale product counts/labels after an approved rule change.
+- stale product counts/labels after an approved rule change;
+- directly seeded derived achievement state that bypasses required reconciliation.
 
 ---
 
@@ -294,7 +303,7 @@ Tests must avoid false confidence from:
 
 Current coverage includes authenticated-route protection, Firestore Rules, account isolation, private/public profile transitions, sanitised `publicProfiles` projection, public Wishlist privacy, direct identifier/URL attempts and account deletion.
 
-AB-EV-033 validated zero private viewer reads in the focused Production Profile flow and absence of forbidden private place fields in the public projection.
+AB-EV-033 validated zero private viewer reads in the focused Production Profile flow and absence of forbidden private place fields in the public projection. AB-EV-053 confirms that localized achievement presentation does not expand the `{ unlockedAt, sequence }` public achievement metadata contract or make the public Profile depend on the authenticated locale provider.
 
 This is not an independent penetration test or security certification.
 
@@ -312,6 +321,8 @@ Current evidence includes Microsoft Edge on Windows, Chrome/Android and automate
 
 A scoped WCAG 2.2 AA technical baseline has been executed (AB-EV-017), with later interaction regression extending keyboard/control/dialog/responsive coverage.
 
+C45H adds localized loading/ARIA presentation, toast keyboard activation, close-control accessible naming and stable achievement anchors to the affected regression baseline.
+
 This does **not** constitute formal accessibility certification or complete assistive-technology coverage.
 
 ---
@@ -323,6 +334,8 @@ Testing uses controlled QA accounts and disposable data.
 Emulator tests use isolated demonstration-project data. Production tests use only approved QA accounts and must not modify non-QA accounts.
 
 Rich manual/visual fixtures that induce derived Product state must be prepared through the normal Product/domain lifecycle where practical or explicitly run the same reconciliation helpers before handoff. Fixture readiness includes checking dependent surfaces whose invariants consume that derived state; a fixture shortcut must not be used as justification to weaken a Product assertion.
+
+C45H operationalizes this rule for achievement fixtures: every earned achievement in the visual QA user had valid `unlockedAt`/`sequence` metadata and a valid next unlock sequence before Test Lead handoff.
 
 Credentials, tokens, private account details and sensitive payloads are not committed to the public QA portfolio.
 
@@ -412,7 +425,7 @@ The final release decision belongs to the Test Lead.
 
 ## 17. Strategy review triggers
 
-Review this strategy when authentication, travel-status/Wishlist rules, persistence/concurrency, Firestore Rules/data model, public projection/privacy, account deletion, geographic catalogue, achievements, Emulator architecture, CI, supported browsers/devices, accessibility targets or release process change materially.
+Review this strategy when authentication, travel-status/Wishlist rules, persistence/concurrency, Firestore Rules/data model, public projection/privacy, account deletion, geographic catalogue, achievements/localized presentation, Emulator architecture, CI, supported browsers/devices, accessibility targets or release process change materially.
 
 ---
 
@@ -428,3 +441,4 @@ Review this strategy when authentication, travel-status/Wishlist rules, persiste
 - `evidence/v1.0/evidence-register.md`
 - `evidence/v1.0/regression/ab-ev-033-wishlist-public-profile-release-hardening.md`
 - `evidence/v1.0/regression/ab-ev-052-c45g-deep-country-visit-editor-localization.md`
+- `evidence/v1.0/regression/ab-ev-053-c45h-badges-achievements-localization.md`

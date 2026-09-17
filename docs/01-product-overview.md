@@ -6,7 +6,7 @@ This document provides a high-level overview of AtlasBadge, including its purpos
 
 It establishes the product context required for the risk analysis and test strategy documented in this repository.
 
-> **Document status:** Completed and maintained through AB-EV-052. C39–C44 establish the current memory/privacy/order/public-display, editable-name, visual-identity and visit-photo baselines. C45A establishes the public localisation-routing foundation; C45B adds translated public Home/Hero/Header/Footer, desktop/mobile language selection, locale cookie persistence and correct public-Home document language/metadata for all six V1.0 locales. C45B reached Production and final Test Lead approval on 31 August 2026. C45C localizes the unprefixed Login/auth-entry surface while preserving existing authentication and routing contracts; C45C reached Production and final Test Lead approval on 31 August 2026. C45D localizes the unprefixed Onboarding/profile-creation surface while preserving username/social-link validation and profile persistence semantics; C45D reached Production technical PASS and Test Lead visual approval through the Emulator/local flow on 1 September 2026. AB-EV-049 then closes a multilingual public-Home header visual-consistency defect: the six-language selector is now geometrically centered independently of translated CTA widths, with Production verification across all six locales. C45E localizes the unprefixed email-verification journey across `/verify-email` and the `verifyEmail` branch of `/auth/action`, while intentionally keeping the shared `resetPassword` branch Portuguese/`pt-BR`; C45E reached Production technical PASS and Test Lead local/Emulator visual approval on 1 September 2026. C45F localizes the authenticated `/app` shell and dashboard-level presentation for all six locales while preserving map, filter, Wishlist, visit-order and destructive-write semantics; C45F reached Production technical PASS and Test Lead local/Emulator visual approval on 2 September 2026. C45G localizes the deep authenticated country/visit editing layer — statuses, visits, memories, memory ordering, validation and visit-photo presentation — while preserving C35/C39/C40/C42/C44 domain, privacy, ordering and photo contracts; C45G reached Production technical PASS and Test Lead local/Emulator visual approval on 15 September 2026.
+> **Document status:** Completed and maintained through AB-EV-053. C39–C44 establish the current memory/privacy/order/public-display, editable-name, visual-identity and visit-photo baselines. C45A establishes the public localisation-routing foundation; C45B adds translated public Home/Hero/Header/Footer, desktop/mobile language selection, locale cookie persistence and correct public-Home document language/metadata for all six V1.0 locales. C45C localizes Login/auth entry, C45D Onboarding/profile creation, C45E email verification, C45F the authenticated dashboard and C45G the deep country/visit editor while preserving their established domain contracts. C45H localizes the authenticated `/badges` experience, all current achievement titles/descriptions, locale-aware earned-date presentation and `BadgeUnlockToast` while keeping achievement IDs, evaluator criteria, acquisition metadata/ordering, reconquest semantics and the public Profile projection locale-neutral. C45H reached Production technical PASS and Test Lead local/Emulator visual approval, with final Test Lead sign-off on 17 September 2026.
 
 ## 2. Product summary
 
@@ -185,7 +185,7 @@ Public place projections must not expose raw `generalNote`, `registeredVisits`, 
 
 For visit memories, the projection contains only approved shareable values. C41 introduced the sanitised exact presentation label; C42 allows that public `visitLabel` to use the approved custom visit name when present while retaining `VISITA n` fallback and never exposing raw `visitName`. C44 may add only the opaque `photoRef` for a public visit photo; private `photoPath`, slot, variant and stable visit ID are not exposed. Owner and public image reads are served through authenticated/sanitised server routes rather than public Firebase Storage download URLs. C40 ordering is resolved before privacy filtering, so relative public order is preserved without exposing `memoryOrder` itself.
 
-Public achievement metadata contains only `unlockedAt` and `sequence`.
+Public achievement metadata contains only `unlockedAt` and `sequence`. C45H/AB-EV-053 localizes achievement presentation by stable achievement ID without changing or expanding that public metadata projection. The public Profile intentionally remains Portuguese until its own localization checkpoint, preventing `/badges` locale state from leaking into the shared public achievement cards.
 
 A public Wishlist tile appears only when Wishlist visibility is public and the Wishlist is non-empty. Its modal is read-only and renders owner order from the sanitised public root.
 
@@ -197,7 +197,7 @@ AtlasBadge supports desktop and mobile web use. Testing considers navigation, ma
 
 C43/AB-EV-043 establishes the current visual-identity baseline: Atlas Gold/Black/Warm White and Atlas neutral surfaces are used for structural UI identity, while status, feedback, data-visualisation and external-brand colours remain semantic exceptions.
 
-C45G/AB-EV-052 adds representative deep-editor responsive coverage at `390×844` for French, Portuguese (Portugal) and Spanish (Spain), including status pills, visit controls, memories, duration, photo actions and confirmation modals.
+C45G/AB-EV-052 adds representative deep-editor responsive coverage at `390×844` for French, Portuguese (Portugal) and Spanish (Spain), including status pills, visit controls, memories, duration, photo actions and confirmation modals. C45H/AB-EV-053 extends the same representative `390×844` coverage to `/badges` and `BadgeUnlockToast`, including long localized achievement titles/descriptions, earned dates, progress bars and accessible toast controls.
 
 ## 6. High-level user journeys
 
@@ -262,7 +262,7 @@ AtlasBadge depends on Vercel hosting/Git deployment, Firebase Authentication, Cl
 
 A release that changes both frontend behaviour and Firestore Rules must preserve deployment parity; a Vercel READY state alone is not sufficient evidence that the Firebase security layer is aligned.
 
-C45A establishes six explicit public Home locale routes (`/pt-br`, `/pt-pt`, `/es-419`, `/es-es`, `/fr`, `/en-gb`) plus root locale resolution using saved locale, browser language and `pt-BR` fallback. Authenticated routes remain unprefixed and the existing root `[username]` public-profile contract is preserved. C45B layers translated Home/Hero/public Header/Footer content, locale-specific metadata and server-correct `<html lang>`, plus desktop six-flag and compact mobile language selection. The selector is also available on the localized Home for authenticated users while remaining absent from unlocalized application/Profile surfaces. C45F/C45G extend the existing locale context into the authenticated dashboard and deep country/visit editor without adding locale persistence to user documents.
+C45A establishes six explicit public Home locale routes (`/pt-br`, `/pt-pt`, `/es-419`, `/es-es`, `/fr`, `/en-gb`) plus root locale resolution using saved locale, browser language and `pt-BR` fallback. Authenticated routes remain unprefixed and the existing root `[username]` public-profile contract is preserved. C45B layers translated Home/Hero/public Header/Footer content, locale-specific metadata and server-correct `<html lang>`, plus desktop six-flag and compact mobile language selection. C45F/C45G extend the existing locale context into the authenticated dashboard and deep country/visit editor without adding locale persistence to user documents. C45H extends that same unprefixed authenticated locale resolution to `/badges` and resolves achievement copy at the presentation boundary by stable ID; no achievement-domain or public-profile persistence model changes were required.
 
 ## 9. Product constraints and assumptions
 
@@ -284,7 +284,7 @@ Maintainability includes keeping business rules central, maintaining automated e
 
 ## 11. Known areas requiring clarification or future work
 
-- Remaining localisation beyond the completed C45A–C45G baseline, including Profile Edit, Badges/achievement text and BadgeUnlockToast, public Profile, password-reset action presentation, the future authenticated language selector and remaining canonical country/continent presentation labels;
+- Remaining localisation beyond the completed C45A–C45H baseline, including Profile Edit, public Profile, password-reset action presentation, the future authenticated language selector and remaining canonical country/continent presentation labels;
 - `FUTURE-PAID-01` — possible post-V1.0 paid-plan model if infrastructure cost requires monetisation; candidates include an expanded visit-photo quota above the free 10-photo limit and other premium conveniences. No paid CTA, entitlement or billing behaviour is part of V1.0;
 - broader browser/device compatibility beyond the current validated sample;
 - quantitative performance targets;
@@ -317,3 +317,4 @@ These items are not automatically defects. They are open product/quality questio
 - `evidence/v1.0/regression/ab-ev-050-c45e-email-verification-localization.md`
 - `evidence/v1.0/regression/ab-ev-051-c45f-authenticated-dashboard-localization.md`
 - `evidence/v1.0/regression/ab-ev-052-c45g-deep-country-visit-editor-localization.md`
+- `evidence/v1.0/regression/ab-ev-053-c45h-badges-achievements-localization.md`
