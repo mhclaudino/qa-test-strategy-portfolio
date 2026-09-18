@@ -492,6 +492,14 @@ All three must be true before the environment is called “ready”.
 
 **Benefit:** Allows incremental localization without cross-surface leakage, preserves stable domain/sorting/persistence contracts and keeps future localization checkpoints independently releasable.
 
+### LL-55 — Scope localization providers at shared modal boundaries
+
+**Observation:** C45I needed `ProfileEditModal` to be localized when opened from the authenticated Header and also when opened by the owner from the still-Portuguese public Profile. Making the public route globally depend on the authenticated Intl provider would have pulled C45J scope forward and changed document/route semantics. Leaving the modal dependent on its parent context would instead make one of the two callers incomplete. C45I solved this with a scoped editor provider and explicit → saved-cookie → browser locale resolution, then proved that a French editor can coexist with the surrounding pt-BR public Profile.
+
+**Working rule:** When a shared modal/component is reachable from parents at different localization stages, localize at the smallest stable presentation boundary. Accept an explicit locale when available, use the approved preference resolver as fallback, and do not globalize a parent route merely to translate a child. Add an isolation test for both caller contexts.
+
+**Benefit:** Supports incremental localization without route-wide leakage, preserves existing document/public-surface contracts and avoids coupling shared component reuse to rollout order.
+
 ## 7. Standing efficiency rules
 
 The following compact rules apply to future AtlasBadge work:
@@ -539,6 +547,7 @@ The following compact rules apply to future AtlasBadge work:
 41. Prove a UI surface is reachable from a supported baseline path before making it an acceptance blocker; unreachable legacy UI is N/A plus a separate cleanup follow-up, not a reason to change product behaviour.
 42. Rich QA fixtures that create derived Product state must pass the same reconciliation invariants as normal Product flows before Test Lead handoff; fix incomplete fixture data, not Product assertions.
 43. Localize shared domain-backed UI through stable IDs and additive presentation data; preserve canonical fallback and test that not-yet-localized consumers remain isolated.
+44. When a shared modal crosses localized and not-yet-localized parents, scope the Intl provider to the modal boundary and prove both caller contexts rather than globalizing the parent route.
 
 ---
 
@@ -589,3 +598,4 @@ Do not add a lesson merely because an isolated defect occurred.
 - `evidence/v1.0/regression/ab-ev-051-c45f-authenticated-dashboard-localization.md`
 - `evidence/v1.0/regression/ab-ev-052-c45g-deep-country-visit-editor-localization.md`
 - `evidence/v1.0/regression/ab-ev-053-c45h-badges-achievements-localization.md`
+- `evidence/v1.0/regression/ab-ev-054-c45i-profile-edit-localization.md`
