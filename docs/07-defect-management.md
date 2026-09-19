@@ -1073,6 +1073,8 @@ The Test Lead assesses:
 
 A production defect is not automatically `Critical / P0`. Severity and priority are based on its actual impact and urgency.
 
+**C45J/AB-EV-055 closure examples:** AB-DEF-019 was a genuine authenticated Public Profile presentation regression (Portuguese navigation despite en-GB page); AB-DEF-020 was a genuine loading-state horizontal Header shift reported in the Test Lead's native browser. Neither implied a privacy/data-integrity breach or required changing Firebase Rules. They were separated from Playwright selector/timeout and Auth Emulator `ECONNREFUSED` harness/environment blockers, corrected in two minimal commits, mapped to exact READY Production deployments and closed only after Test Lead visual retest. FIX2's native scrollbar pixel acceptance was not falsely inferred from headless overlay-scrollbar automation.
+
 ### 20.2 Response sequence for serious production defects
 
 The expected sequence is:
@@ -1457,6 +1459,7 @@ A suitability review is also performed:
 * `docs/09-system-test-plan.md` — planned
 * [V1.0 Test Evidence](../evidence/v1.0/README.md)
 * [AB-EV-051 C45F authenticated dashboard localization](../evidence/v1.0/regression/ab-ev-051-c45f-authenticated-dashboard-localization.md)
+* [AB-EV-055 C45J public Profile localization and AB-DEF-019/020 closure](../evidence/v1.0/regression/ab-ev-055-c45j-public-profile-localization-and-fixes.md)
 * `test-assets/exploratory-test-charters.md` — planned
 * `test-assets/sample-test-cases.md` — planned
 * `reports/test-summary-report.md` — planned

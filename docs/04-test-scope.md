@@ -6,7 +6,7 @@ This document defines the testing scope for AtlasBadge during incremental V1.0 d
 
 It identifies covered product areas, expected depth, current coverage, mandatory remaining work and intentionally deferred items.
 
-> **Document status:** Completed and maintained through AB-EV-054. C39–C44 cover the current privacy/order/public-display, editable-name, visual-identity and visit-photo baseline. C45A establishes public locale routing; C45B completes the localized public Home/Hero/Header/Footer surface and language selector; C45C completes Login/auth entry; C45D Onboarding/profile creation; C45E email verification; C45F the authenticated `/app` shell/dashboard; C45G the deep authenticated country/visit editor. C45H completes authenticated `/badges`, all current achievement title/description presentation, locale-aware earned dates and `BadgeUnlockToast` for the six approved V1.0 locales while preserving achievement-domain and public-Profile contracts. C45I completes Profile Edit plus embedded access-method/account-deletion presentation localization while preserving profile persistence, auth/security behaviour and the separate public-Profile localization boundary.
+> **Document status:** Completed and maintained through AB-EV-055. C39–C44 cover the current privacy/order/public-display, editable-name, visual-identity and visit-photo baseline. C45A establishes public locale routing; C45B completes the localized public Home/Hero/Header/Footer surface and language selector; C45C completes Login/auth entry; C45D Onboarding/profile creation; C45E email verification; C45F the authenticated `/app` shell/dashboard; C45G the deep authenticated country/visit editor. C45H completes authenticated `/badges`, all current achievement title/description presentation, locale-aware earned dates and `BadgeUnlockToast` for the six approved V1.0 locales while preserving achievement-domain and public-Profile contracts. C45I completes Profile Edit plus embedded access-method/account-deletion presentation localization while preserving profile persistence, auth/security behaviour and the separate public-Profile localization boundary. C45J subsequently localizes that canonical public-Profile boundary; two narrowly scoped follow-ups fix authenticated Header labels (AB-DEF-019) and short-loading/long-content Header shift (AB-DEF-020), with Production visual approval on 20 September 2026.
 
 ---
 
@@ -216,7 +216,7 @@ Coverage includes:
 - desktop/mobile layout and modal scroll lock;
 - sanitisation of public root/place fields.
 
-Broader public-Profile localisation/performance/compatibility refinements remain separate V1.0 scope and do not invalidate the executed privacy/projection/photo baseline. C45G regression-tested shared StatusPill/public-profile isolation; C45H adds shared AchievementCard/AchievementGrid isolation so authenticated `/badges` localization does not make the public Profile depend on the app Intl context or translated achievement presentation. C45I adds the inverse boundary proof: the owner can open a localized Profile Edit modal under a non-pt locale while the surrounding `/@username` page and document contract remain unchanged.
+C45J/AB-EV-055 executes public-Profile presentation localization for all six V1.0 locales while preserving public projection, read-only viewer state, owner Edit Profile, memory/photo/Wishlist visibility, stable achievement IDs/chronology and unprefixed `/@username` routing. Its localized Header/Footer and anonymous selector preserve the contextual authenticated/anonymous distinction. C45J-FIX1/AB-DEF-019 closes Portuguese fallback in the authenticated public-Profile Header; C45J-FIX2/AB-DEF-020 closes the loading-to-content Header displacement by reserving scrollbar gutter at root. C45G/C45H/C45I remain the preceding isolation/projection baselines; geographic country/continent display names, resetPassword and authenticated language selection are separate future work.
 
 ### 6.5 Counters and statistics — Executed / regression risk
 
@@ -249,11 +249,11 @@ Supported locales, in the official V1.0 order, are:
 
 C45A/AB-EV-045 establishes six explicit public Home routes (`/pt-br`, `/pt-pt`, `/es-419`, `/es-es`, `/fr`, `/en-gb`) and a root `/` resolver. Locale precedence is explicit URL → valid saved `atlasbadge_locale` cookie → browser/device language → `pt-BR` fallback. Authenticated routes remain unprefixed, and the existing root `[username]` public-profile routing contract is unchanged.
 
-C45B/AB-EV-046 completes the translated public Home/Hero/Header/Footer layer across all six locales. Desktop exposes the six flags in official order; narrow mobile uses one compact locale trigger with an accessible six-option menu. Explicit language selection persists `atlasbadge_locale=<locale ID>`, localized Home metadata and `<html lang>` match the active route, and the selector remains available on localized Home for authenticated users while staying absent from `/app`, `/badges`, Login and public Profile. The Argentina flag remains the deliberate visual representation for `es-419`; locale logic remains keyed by locale ID, not flag/country name.
+C45B/AB-EV-046 completes the translated public Home/Hero/Header/Footer layer across all six locales. Desktop exposes the six flags in official order; narrow mobile uses one compact locale trigger with an accessible six-option menu. Explicit language selection persists `atlasbadge_locale=<locale ID>`, localized Home metadata and `<html lang>` match the active route, and the selector remains available on localized Home for authenticated users while staying absent from `/app`, `/badges` and Login. C45J adds the selector for **anonymous** public Profile viewers only; authenticated public Profile keeps it hidden. The Argentina flag remains the deliberate visual representation for `es-419`; locale logic remains keyed by locale ID, not flag/country name.
 
 C45C–C45E extend localization through Login, Onboarding and email verification. C45F/AB-EV-051 localizes the authenticated `/app` shell/dashboard. C45G/AB-EV-052 localizes the deep country/visit editor. C45H/AB-EV-053 localizes the authenticated `/badges` route, metadata/document language, achievement title/description presentation, earned-date formatting and Badge Unlock notification while preserving locale-neutral achievement IDs/rules/metadata.
 
-Remaining localisation scope includes public Profile, resetPassword action presentation, the future authenticated language selector and canonical country/continent display localization through presentation mapping. Profile Edit is complete under C45I/AB-EV-054. User-authored content is not automatically translated. C45B's root `headers()` solution makes the page tree request-time dynamic; the architecture review accepted this as bounded V1.0 technical debt because eliminating it would require a disproportionate multi-root route migration.
+C45J/AB-EV-055 completes the canonical unprefixed public Profile presentation for six locales (with FIX1/FIX2 closed). Remaining localisation scope includes resetPassword action presentation, the future authenticated language selector and canonical country/continent **display-name** localization through a separate presentation-only mapping checkpoint. Profile Edit remains complete under C45I/AB-EV-054. User-authored content is not automatically translated. C45B's root `headers()` solution makes the page tree request-time dynamic; the architecture review accepted this as bounded V1.0 technical debt because eliminating it would require a disproportionate multi-root route migration.
 
 ### 6.8 Performance and responsiveness — Partially executed / ongoing
 
@@ -261,7 +261,7 @@ Executed coverage includes map interaction, responsive layouts, repeated interac
 
 AB-EV-043 adds a cross-product desktop/mobile visual pass over Home/auth, dashboard/map, picker/filter, editors, Wishlist, Profile, badges and shared modals. The pass harmonised brand tokens and surfaces without changing layout or functional behaviour.
 
-C45G adds focused `390×844` deep-editor validation for `fr`, `pt-PT` and `es-ES`. C45H adds focused `390×844` Badges/toast validation for the same representative locales, including long localized copy, earned dates, locks/progress bars and toast viewport/close-control behaviour. C45I adds Profile Edit `390×844` validation for `fr`, `pt-PT`, `es-ES` and `en-GB`, including long labels, feedback, switches and nested dialogs without horizontal overflow.
+C45G adds focused `390×844` deep-editor validation for `fr`, `pt-PT` and `es-ES`. C45H adds focused `390×844` Badges/toast validation for the same representative locales, including long localized copy, earned dates, locks/progress bars and toast viewport/close-control behaviour. C45I adds Profile Edit `390×844` validation for `fr`, `pt-PT`, `es-ES` and `en-GB`, including long labels, feedback, switches and nested dialogs without horizontal overflow. C45J adds public Profile `390×844` browser regression for those four locales and real-browser Test Lead approval; FIX2's native scrollbar-shift acceptance is manual because headless overlay scrollbars did not replicate Windows layout-width behaviour.
 
 Quantitative performance targets and broader device/browser evidence remain incomplete.
 
@@ -269,7 +269,7 @@ Quantitative performance targets and broader device/browser evidence remain inco
 
 AB-EV-017 establishes a scoped WCAG 2.2 AA technical baseline; later features include targeted keyboard/semantic/dialog regression. AB-EV-043 preserves visible keyboard focus while moving generic interaction emphasis to Atlas Gold and retaining semantic feedback/status colours.
 
-C45G adds localized ARIA labels for status/visit/duration/memory/photo editing. C45H adds localized Badges loading/ARIA text, toast close accessible name, Enter/Space activation and stable anchor/focus behaviour. C45I adds localized form labels, disabled-state coverage, focus handling and nested-dialog presentation for Profile Edit/security/account controls.
+C45G adds localized ARIA labels for status/visit/duration/memory/photo editing. C45H adds localized Badges loading/ARIA text, toast close accessible name, Enter/Space activation and stable anchor/focus behaviour. C45I adds localized form labels, disabled-state coverage, focus handling and nested-dialog presentation for Profile Edit/security/account controls. C45J adds localized public-profile/selector navigation and ARIA presentation; FIX1 checks authenticated nav/avatar accessible names without introducing an authenticated selector.
 
 Formal accessibility certification and comprehensive native assistive-technology coverage remain out of claim.
 
@@ -372,7 +372,7 @@ Current gaps/deferred areas include:
 - formal accessibility certification/native AT matrix;
 - quantitative performance SLAs;
 - future Story/social features beyond current scope;
-- public Profile, resetPassword and authenticated-selector localization;
+- resetPassword and authenticated-selector localization; country/continent display-name mapping under a new presentation-only checkpoint;
 - canonical country/continent presentation localization;
 - separate legacy UK-selector unreachable-code cleanup.
 
@@ -419,4 +419,5 @@ Release approval is blocked by evidence of:
 - `evidence/v1.0/regression/ab-ev-052-c45g-deep-country-visit-editor-localization.md`
 - `evidence/v1.0/regression/ab-ev-053-c45h-badges-achievements-localization.md`
 - `evidence/v1.0/regression/ab-ev-054-c45i-profile-edit-localization.md`
+- `evidence/v1.0/regression/ab-ev-055-c45j-public-profile-localization-and-fixes.md`
 - `docs/10-lessons-learned.md`

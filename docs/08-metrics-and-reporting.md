@@ -47,7 +47,8 @@ This document should be read together with:
 * [Entry and Exit Criteria](05-entry-exit-criteria.md);
 * [Test Environments](06-test-environments.md);
 * [Defect Management](07-defect-management.md);
-* [V1.0 Test Evidence](../evidence/v1.0/README.md).
+* [V1.0 Test Evidence](../evidence/v1.0/README.md)
+* [AB-EV-055 C45J release and two visual-defect closures](../evidence/v1.0/regression/ab-ev-055-c45j-public-profile-localization-and-fixes.md).
 
 These documents have different responsibilities:
 
@@ -1710,6 +1711,8 @@ A controlled and well-explained failure may demonstrate stronger QA leadership t
 ---
 
 ## 27. Practical interpretation examples
+
+**C45J/AB-EV-055 release-count interpretation:** One localization feature was released in a 26-file implementation commit and subsequently required two narrow Product Defect corrections, AB-DEF-019 (authenticated public Profile Header language) and AB-DEF-020 (native-scrollbar layout shift). Record the original C45J 3/3 Emulator E2E result, subsequent FIX1/FIX2 4/4 results, and the 20/20 affected ShareCard regression separately from the earlier 264/264 broad focused Vitest run; do not add overlapping execution counts into an artificial single unique-test total. Earlier Playwright timeouts and an unavailable Auth Emulator were blocked/failed attempts, **not** green executions or extra Product Defects. `realFirebaseRequests=0` applies to successfully completed Emulator runs. The final Test Lead real-browser FIX2 acceptance is separate from headless functional PASS. These distinctions are recorded in [AB-EV-055](../evidence/v1.0/regression/ab-ev-055-c45j-public-profile-localization-and-fixes.md).
 
 ### 27.1 Silent country-status persistence failure
 

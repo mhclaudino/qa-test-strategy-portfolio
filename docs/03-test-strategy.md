@@ -6,7 +6,7 @@ This document defines the overall testing strategy for AtlasBadge and how qualit
 
 It covers risk prioritisation, test design, regression, evidence, AI-assisted execution, automation, release approval and residual risk.
 
-> **Document status:** Completed and maintained through AB-EV-054. The current strategy includes versioned Playwright/Firebase Emulator regression, checkpointed incremental validation, controlled real-backend/Production validation, explicit environment/runtime parity checks, real-browser acceptance and fixed living-document governance.
+> **Document status:** Completed and maintained through AB-EV-055. The current strategy includes versioned Playwright/Firebase Emulator regression, checkpointed incremental validation, controlled real-backend/Production validation, explicit environment/runtime parity checks, real-browser acceptance and fixed living-document governance.
 
 ---
 
@@ -146,6 +146,8 @@ AB-EV-052 extends localization into the high-risk deep country/visit editor whil
 
 AB-EV-053 applies the same bounded model to a shared achievement domain. Stable achievement IDs and canonical evaluator/metadata objects remain locale-neutral; `/badges` and `BadgeUnlockToast` resolve localized presentation by ID while the shared public Profile remains Portuguese. Focused tests prove catalog completeness, date localization, strict achievement-order assertions, reconquest/notification semantics and public-projection isolation. Stateful achievement unlock proof stays in the Firebase Emulators, while Production validation remains non-destructive and verifies route/document/isolation behaviour only.
 
+AB-EV-055 extends the same bounded model to the canonical public Profile: a route-scoped provider/document locale, anonymous same-path language switching, locale-neutral public projection, reuse of C45H stable-ID achievement presentation and explicit owner/viewer isolation. The Test Lead then found two distinct Production Product Defects: the authenticated public Profile Header omitted the translated authenticated labels (AB-DEF-019), and classic-scrollbar width altered centred Header geometry between short loading and long content (AB-DEF-020). Each fix received a minimal commit, focused Emulator regression, exact READY deployment and real-browser Test Lead acceptance. Headless overlay-scrollbar runs are functional regression evidence, not proof of native pixel stability.
+
 This reduces wasted execution time while retaining traceable risk-based coverage.
 
 ### 6.2 Fail-fast classification
@@ -234,7 +236,7 @@ A READY frontend deployment is not enough when the security-rule layer changed.
 
 AB-EV-033 followed this exact gate before validating Wishlist/private-public projection in Production.
 
-Presentation-only/authenticated-state checkpoints may close as **Production technical PASS + local/Emulator visual PASS** when manufacturing Production state would add avoidable risk and server/routing/isolation behaviour can be verified safely without mutation. C45D–C45I use this evidence distinction where applicable; C45I additionally received final Test Lead Production visual approval without exercising destructive account operations.
+Presentation-only/authenticated-state checkpoints may close as **Production technical PASS + local/Emulator visual PASS** when manufacturing Production state would add avoidable risk and server/routing/isolation behaviour can be verified safely without mutation. C45D–C45J use this evidence distinction where applicable; C45I and C45J/FIX1/FIX2 additionally received final Test Lead Production visual approval without exercising destructive account or private-data operations.
 
 ---
 
@@ -443,3 +445,4 @@ Review this strategy when authentication, travel-status/Wishlist rules, persiste
 - `evidence/v1.0/regression/ab-ev-052-c45g-deep-country-visit-editor-localization.md`
 - `evidence/v1.0/regression/ab-ev-053-c45h-badges-achievements-localization.md`
 - `evidence/v1.0/regression/ab-ev-054-c45i-profile-edit-localization.md`
+- `evidence/v1.0/regression/ab-ev-055-c45j-public-profile-localization-and-fixes.md`

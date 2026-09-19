@@ -8,7 +8,7 @@ It is deliberately not a diary of every defect, test run or implementation decis
 
 The emphasis is on reducing avoidable work while preserving risk-based confidence and traceability.
 
-> **Document status:** Active / maintained. Consolidated through AB-EV-053.
+> **Document status:** Active / maintained. Consolidated through AB-EV-055.
 
 ---
 
@@ -500,6 +500,30 @@ All three must be true before the environment is called “ready”.
 
 **Benefit:** Supports incremental localization without route-wide leakage, preserves existing document/public-surface contracts and avoids coupling shared component reuse to rollout order.
 
+### LL-56 — Localized route variants must pass authenticated labels explicitly
+
+**Observation:** C45J localized the public Profile body and anonymous Header, but its authenticated `publicProfileLocale` Header branch passed directly to the shared renderer without `header.authenticated` labels. The page and cookie were already correct; authenticated navigation/avatar/mobile labels still fell back to Portuguese until AB-DEF-019 / FIX1.
+
+**Working rule:** For a shared Header used by anonymous and authenticated route variants, trace every locale prop to the final displayed labels for **both** auth states, including loading state, mobile drawer, avatar actions and accessible names. Reuse the existing authenticated translation boundary rather than creating a second catalog or relying on fallback labels. Assert the same target locale across /app, /badges and /@username.
+
+**Benefit:** Prevents route-specific translation gaps despite globally correct locale resolution; keeps existing auth-specific UX and avoids broad locale refactors for a narrow visual defect.
+
+### LL-57 — Headless overlay scrollbars cannot prove classic-scrollbar layout stability
+
+**Observation:** AB-DEF-020 / FIX2 arose when a short public Profile loading state switched to long content. Native Windows/classic scrollbars can consume layout width and shift centred Header elements. Headless browsers using overlay scrollbars reported unchanged client width and could not reproduce the native horizontal displacement.
+
+**Working rule:** Treat headless regression as proof of preserved functionality, not proof of desktop pixel stability under a different scrollbar model. For short-to-long content transitions, investigate `window.innerWidth` vs `document.documentElement.clientWidth`; prefer root `html { scrollbar-gutter: stable; }` where supported and verify the rendered before/after result in the affected real browser. Avoid hiding overflow or patching fixed widths to mask the problem.
+
+**Benefit:** Distinguishes environment limitations from Product failures and closes visual defects with proportional, honest browser evidence.
+
+### LL-58 — A blocked or partially failed gate is not PASS
+
+**Observation:** During C45J/FIX1, reports initially called release gates complete while a Playwright logout timed out, while the Auth Emulator was unavailable (`ECONNREFUSED 127.0.0.1:9099`), and while ShareCard/mobile assertions were still absent. Follow-up runs correctly classified the blocker, fixed harness/environment readiness and added scoped coverage without weakening Product assertions.
+
+**Working rule:** Before a release claim, match it to the **final** tested file state and exact executed test count; distinguish Product defects from harness issues and unavailable Emulators. Require explicit `realFirebaseRequests=0` on successfully completed Emulator tests, and never infer it from a run that never reached the relevant assertions. Preserve earlier valid checkpoints unless a later change invalidates them.
+
+**Benefit:** Prevents false-green releases and repetitive, unfocused retesting while making Test Lead approval auditable.
+
 ## 7. Standing efficiency rules
 
 The following compact rules apply to future AtlasBadge work:
@@ -548,6 +572,9 @@ The following compact rules apply to future AtlasBadge work:
 42. Rich QA fixtures that create derived Product state must pass the same reconciliation invariants as normal Product flows before Test Lead handoff; fix incomplete fixture data, not Product assertions.
 43. Localize shared domain-backed UI through stable IDs and additive presentation data; preserve canonical fallback and test that not-yet-localized consumers remain isolated.
 44. When a shared modal crosses localized and not-yet-localized parents, scope the Intl provider to the modal boundary and prove both caller contexts rather than globalizing the parent route.
+45. Every authenticated/anonymous route variant must receive its own explicit localized Header labels, even if the page body and document locale are already correct.
+46. Prove scrollbar-related geometry in the affected native browser; overlay-scrollbar headless regression alone does not demonstrate pixel-stable layout.
+47. Never declare a gate PASS when an Emulator did not start, a test timed out or a required assertion is missing; record the precise gap and rerun only what the fix invalidates.
 
 ---
 
@@ -599,3 +626,4 @@ Do not add a lesson merely because an isolated defect occurred.
 - `evidence/v1.0/regression/ab-ev-052-c45g-deep-country-visit-editor-localization.md`
 - `evidence/v1.0/regression/ab-ev-053-c45h-badges-achievements-localization.md`
 - `evidence/v1.0/regression/ab-ev-054-c45i-profile-edit-localization.md`
+- `evidence/v1.0/regression/ab-ev-055-c45j-public-profile-localization-and-fixes.md`

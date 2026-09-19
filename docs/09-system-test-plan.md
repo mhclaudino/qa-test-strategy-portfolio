@@ -1,11 +1,11 @@
 # AtlasBadge V1.0 System Test Plan
 
 **Document status:** Active / change-controlled  
-**Execution status:** Incremental system testing in progress; latest baseline reviewed through AB-EV-054; C45I Production technical + visual PASS / Test Lead approved — 18 September 2026  
+**Execution status:** Incremental system testing in progress; latest baseline reviewed through AB-EV-055; C45J/FIX1/FIX2 Production technical + visual PASS / Test Lead approved — 20 September 2026  
 **Product:** AtlasBadge  
 **Target release:** V1.0  
 **Document owner:** Test Lead/Product Owner  
-**Last updated:** 18 September 2026
+**Last updated:** 20 September 2026
 
 ---
 
@@ -353,9 +353,24 @@ Vercel project setting still reports Node 24.x, but package engines intentionall
 Production technical smoke: base routes behaved as expected; /@mhclaudino remained direct/unprefixed and /pt-br/@mhclaudino remained 404; no runtime error cluster and no error/warning/fatal runtime logs were found for the deployment window
 No destructive Production account/auth/profile mutation was executed; stateful/destructive proof remained local/Emulator
 Test Lead granted final Production visual approval — 18 September 2026
+
+C45J / AB-EV-055 public Profile localization and two Production visual fixes:
+2f3a640e7a1ba44c065d8ad876d23f0213878175 — feat(i18n): localize public profiles (26 files)
+Scope: six-locale canonical unprefixed /@username; server document locale + metadata; anonymous same-path selector; authenticated no-selector; localize Profile states, Header/Footer, map/flags/achievements, public memories, Wishlist, ShareCard and Profile Edit context
+Retain public-source-only viewer reads, sanitized memories/photoRef, Wishlist order/visibility, stable achievement IDs/chronology, unmodified stored dates and authored text; no locale schema/Rules change; geographic country/continent display names deferred
+C45J reported focused Vitest 264/264 across 39 files; final affected 20/20 across 5 files including ShareCard; Emulator Playwright 3/3, 390×844 fr/pt-PT/es-ES/en-GB, realFirebaseRequests=0; TypeScript/lint (21 non-blocking warnings)/build/diff PASS
+Initial E2E/logout, Auth Emulator ECONNREFUSED and missing ShareCard/mobile assertions were NOT accepted as PASS until the harness/environment/evidence gaps were resolved
+Vercel dpl_59LUTwNK1AzikFk9yQyVNhqBZgKw — READY / Production / exact C45J SHA
+AB-DEF-019 / C45J-FIX1: authenticated /@username nav/avatar labels fell back to Portuguese although /app and /badges and Profile body were English; missing header.authenticated label injection in publicProfileLocale branch
+84b26512a9e3bc44b2bc68a718b54caf2bbd1eec — fix(i18n): localize authenticated public profile header (Header + E2E only)
+FIX1 Playwright 4/4 PASS / Auth+Firestore+Storage Emulators / realFirebaseRequests=0; Vercel dpl_56Fzo29QSxT51j3tTAjkDxxMjjHn READY; Test Lead real-browser Header retest PASS
+AB-DEF-020 / C45J-FIX2: horizontal Header movement between short Searching map... loading and long Profile; classic scrollbar changes desktop client width; headless overlay scrollbar could not reproduce native displacement
+309096bcf8bd85c7528592d03c00e5de41729889 — fix(ui): prevent public profile loading layout shift (html scrollbar-gutter: stable; globals.css only)
+FIX2 C45J Emulator Playwright 4/4 PASS / realFirebaseRequests=0; TypeScript/lint/build/diff PASS; native-scrollbar pixel proof is Test Lead real-browser QA, not headless automation
+Vercel dpl_Ht2fTLy3xmcvhfz4291RVKvY9j4X READY / Production / exact FIX2 SHA; Test Lead final Production visual approval — 20 September 2026
 ```
 
-C35 did not alter Firestore Rules. C36 and C37 did, so their Production functional validation was blocked until the separate Rules-only deployment restored application/Rules parity. C45G, C45H and C45I did not change Firebase Rules/configuration.
+C35 did not alter Firestore Rules. C36 and C37 did, so their Production functional validation was blocked until the separate Rules-only deployment restored application/Rules parity. C45G, C45H, C45I, C45J and FIX1/FIX2 did not change Firebase Rules/configuration.
 
 ---
 
@@ -474,6 +489,13 @@ C45H achievement/localization focused release gate:
 C45I Profile Edit focused release gates:
 29 / 29 Profile Edit + photo regression PASS
 113 / 113 expanded focused regression PASS across 11 files
+
+C45J public Profile focused regression:
+264 / 264 PASS across 39 files (earlier broad focused run)
+20 / 20 PASS across 5 files (final affected run incl. ShareCard)
+
+C45J-FIX1 targeted Header/E2E regression:
+4 / 4 Playwright PASS, separate from Vitest counts
 ```
 
 ### 8.3 Firestore Rules and backend Emulator
@@ -509,6 +531,11 @@ realFirebaseRequests=0
 C45I Profile Edit localization E2E:
 12 / 12 PASS on Edge with Auth/Firestore/Storage Emulators
 realFirebaseRequests=0
+
+C45J public Profile localization + FIX1/FIX2:
+3 / 3 initial C45J Edge Playwright PASS; 4 / 4 after FIX1; 4 / 4 after FIX2
+Auth/Firestore/Storage Emulators, demo-atlasbadge-web, workers=1
+realFirebaseRequests=0
 ```
 
 The first C45G parallel execution of a subset of Emulator tests hit a Storage fixture collision. The same required suites passed serially; no Product code or acceptance criteria were changed. This is test-harness contention rather than Product failure.
@@ -538,7 +565,7 @@ C45H /badges + achievement popup/localization regression:
 realFirebaseRequests=0
 ```
 
-C45H browser coverage includes `/badges` locale handling, localized achievement cards/dates, achievement popup/toast navigation and affected C45F authenticated navigation/localization isolation.
+C45H browser coverage includes `/badges` locale handling, localized achievement cards/dates, achievement popup/toast navigation and affected C45F authenticated navigation/localization isolation. C45J adds same-path public Profile locale, six-locale document/presentation coverage, authenticated/anonymous state isolation and representative 390×844 mobile tests. FIX1 retests the authenticated public Profile Header alongside /app and /badges. FIX2 reuses the C45J browser regression but reserves native-scrollbar visual acceptance for the Test Lead.
 
 ### 8.5 Manual/exploratory QA
 
@@ -789,8 +816,8 @@ The final release decision belongs to the Test Lead/Product Owner.
 - Formal accessibility certification/native assistive-technology coverage is not claimed.
 - No independent penetration/security audit or formal load test has been completed.
 - C44 one-photo-per-`RegisteredVisit` is implemented, Production-approved and retained as permanent regression scope, including the free 10-photo quota and server-mediated read/privacy boundary.
-- C45A/C45B public-Home localisation, C45C Login localisation, C45D Onboarding localisation, C45E email-verification localisation, C45F authenticated-dashboard localisation, C45G deep country/visit-editor localisation, C45H Badges/achievement/toast localisation and C45I Profile Edit/account-presentation localisation are approved.
-- Remaining localization includes public Profile, resetPassword action presentation, authenticated language switching and canonical country/continent display mapping.
+- C45A/C45B public-Home localisation, C45C Login localisation, C45D Onboarding localisation, C45E email-verification localisation, C45F authenticated-dashboard localisation, C45G deep country/visit-editor localisation, C45H Badges/achievement/toast localisation and C45I Profile Edit/account-presentation localisation and C45J public-Profile localisation including FIX1/FIX2 are approved.
+- Remaining localization includes resetPassword action presentation, authenticated language switching and canonical country/continent **display-name** mapping in a separate checkpoint.
 - The current root-layout `headers()` approach makes page rendering request-time dynamic and is retained as explicit V1.0 technical debt pending any future multi-root routing redesign.
 - The legacy UK-selector modal remains an unreachable-code cleanup candidate rather than a Product Defect.
 - The extra `travelMap.clearMap.emulator.test.ts` anonymous LIST/Rules diagnostic remains separate pre-existing test/environment debt; C45G did not modify its source boundary.
@@ -822,4 +849,5 @@ The final release decision belongs to the Test Lead/Product Owner.
 - `evidence/v1.0/regression/ab-ev-052-c45g-deep-country-visit-editor-localization.md`
 - `evidence/v1.0/regression/ab-ev-053-c45h-badges-achievements-localization.md`
 - `evidence/v1.0/regression/ab-ev-054-c45i-profile-edit-localization.md`
+- `evidence/v1.0/regression/ab-ev-055-c45j-public-profile-localization-and-fixes.md`
 - `docs/10-lessons-learned.md`

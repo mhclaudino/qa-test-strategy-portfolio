@@ -361,7 +361,7 @@ A run is not classified as a product failure when execution cannot start or is i
 - missing local Firebase Admin configuration for a real-backend server route;
 - a confirmed runtime/dependency incompatibility such as the C44 Node 24 `ERR_STREAM_PREMATURE_CLOSE` failure in the Google Cloud Storage OAuth path.
 
-The condition is reported as environment/infrastructure blocked or parity mismatch, corrected where safe, and the valid execution result is recorded separately.
+The condition is reported as environment/infrastructure blocked or parity mismatch, corrected where safe, and the valid execution result is recorded separately. C45J-FIX1/AB-EV-055 encountered `ECONNREFUSED 127.0.0.1:9099` when Playwright was started without a live Auth Emulator. That attempt did **not** establish an E2E PASS or `realFirebaseRequests=0`; final evidence came from the complete `firebase emulators:exec --project demo-atlasbadge-web --only auth,firestore,storage` run with Edge `--workers=1`, after the services were available.
 
 This classification does not hide true product defects. In C36, the Rules-parity permission failure was environmental, while the later lost-order behaviour reproduced under the correct environment was correctly treated as a product implementation failure and fixed before release. C44 applied the same separation: missing local Admin configuration and the Node 24 Storage OAuth transport failure were environment/runtime blockers, while missing public `photoRef` projection and protected-field profile-write regressions were product implementation defects and were corrected separately.
 
@@ -395,7 +395,7 @@ Known limitations include:
 - no comprehensive native assistive-technology/device laboratory;
 - some Production destructive/Admin validations may remain blocked if legitimate required credentials are unavailable.
 
-These limitations must remain visible in release/residual-risk decisions rather than being interpreted as passed coverage.
+These limitations must remain visible in release/residual-risk decisions rather than being interpreted as passed coverage. C45J-FIX2/AB-EV-055 further demonstrates that headless overlay scrollbars may not reproduce native Windows classic-scrollbar width/centering changes. Browser-based functional regression and Test Lead native-browser pixel/transition approval are distinct evidence types.
 
 ---
 
@@ -423,3 +423,4 @@ Review this document when:
 - `evidence/v1.0/defects/production-deployment-parity-failure.md`
 - `evidence/v1.0/regression/ab-ev-033-wishlist-public-profile-release-hardening.md`
 - `evidence/v1.0/defects/ab-ev-036-wishlist-atomic-settings-save-and-order-integrity.md`
+- `evidence/v1.0/regression/ab-ev-055-c45j-public-profile-localization-and-fixes.md`
