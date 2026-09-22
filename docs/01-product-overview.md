@@ -6,7 +6,7 @@ This document provides a high-level overview of AtlasBadge, including its purpos
 
 It establishes the product context required for the risk analysis and test strategy documented in this repository.
 
-> **Document status:** Completed and maintained through AB-EV-056. C39–C44 establish the current memory/privacy/order/public-display, editable-name, visual-identity and visit-photo baselines. C45A establishes the public localisation-routing foundation; C45B adds translated public Home/Hero/Header/Footer, desktop/mobile language selection, locale cookie persistence and correct public-Home document language/metadata for all six V1.0 locales. C45C localizes Login/auth entry, C45D Onboarding/profile creation, C45E email verification, C45F the authenticated dashboard and C45G the deep country/visit editor while preserving their established domain contracts. C45H localizes the authenticated `/badges` experience, all current achievement titles/descriptions, locale-aware earned-date presentation and `BadgeUnlockToast` while keeping achievement IDs, evaluator criteria, acquisition metadata/ordering, reconquest semantics and the public Profile projection locale-neutral. C45H reached Production technical PASS and Test Lead local/Emulator visual approval, with final Test Lead sign-off on 17 September 2026. C45I localizes Profile Edit plus the embedded access-method and account-deletion presentation for the same six locales through a scoped editor provider, while keeping profile/auth/security persistence semantics and the external public Profile contract unchanged; Production technical and visual approval was completed on 18 September 2026. C45J localizes canonical unprefixed public Profiles for all six locales; the authenticated Header locale and loading-layout regressions were closed as C45J-FIX1/AB-DEF-019 and C45J-FIX2/AB-DEF-020, with Production READY deployments and final Test Lead visual approval on 20 September 2026.
+> **Document status:** Completed and maintained through AB-EV-057. C39–C44 establish the current memory/privacy/order/public-display, editable-name, visual-identity and visit-photo baselines. C45A establishes the public localisation-routing foundation; C45B adds translated public Home/Hero/Header/Footer, desktop/mobile language selection, locale cookie persistence and correct public-Home document language/metadata for all six V1.0 locales. C45C localizes Login/auth entry, C45D Onboarding/profile creation, C45E email verification, C45F the authenticated dashboard and C45G the deep country/visit editor while preserving their established domain contracts. C45H localizes the authenticated `/badges` experience, all current achievement titles/descriptions, locale-aware earned-date presentation and `BadgeUnlockToast` while keeping achievement IDs, evaluator criteria, acquisition metadata/ordering, reconquest semantics and the public Profile projection locale-neutral. C45H reached Production technical PASS and Test Lead local/Emulator visual approval, with final Test Lead sign-off on 17 September 2026. C45I localizes Profile Edit plus the embedded access-method and account-deletion presentation for the same six locales through a scoped editor provider, while keeping profile/auth/security persistence semantics and the external public Profile contract unchanged; Production technical and visual approval was completed on 18 September 2026. C45J localizes canonical unprefixed public Profiles for all six locales; the authenticated Header locale and loading-layout regressions were closed as C45J-FIX1/AB-DEF-019 and C45J-FIX2/AB-DEF-020, with Production READY deployments and final Test Lead visual approval on 20 September 2026.
 
 ## 2. Product summary
 
@@ -284,7 +284,7 @@ Maintainability includes keeping business rules central, maintaining automated e
 
 ## 11. Known areas requiring clarification or future work
 
-- Remaining localisation beyond completed C45A–C45K: password-reset action presentation and the future authenticated language selector. C45K/AB-EV-056 completed country/continent display-name localization as presentation only; canonical stored IDs and user-authored values remain unchanged;
+- Remaining localisation beyond completed C45A–C45L: the future authenticated language selector (C45M). C45K/AB-EV-056 completed geographic names; C45L/AB-EV-057 completed resetPassword action presentation. Stable IDs, Auth security rules and user-authored values remain unchanged;
 - `FUTURE-PAID-01` — possible post-V1.0 paid-plan model if infrastructure cost requires monetisation; candidates include an expanded visit-photo quota above the free 10-photo limit and other premium conveniences. No paid CTA, entitlement or billing behaviour is part of V1.0;
 - broader browser/device compatibility beyond the current validated sample;
 - quantitative performance targets;
@@ -321,9 +321,16 @@ These items are not automatically defects. They are open product/quality questio
 - `evidence/v1.0/regression/ab-ev-054-c45i-profile-edit-localization.md`
 - `evidence/v1.0/regression/ab-ev-055-c45j-public-profile-localization-and-fixes.md`
 - `evidence/v1.0/regression/ab-ev-056-c45k-geographic-localization.md`
+- `evidence/v1.0/regression/ab-ev-057-c45l-password-reset-action-localization.md`
 
 ## C45K / AB-EV-056 — geographic localization closure
 
 C45K/AB-EV-056 completes six-locale geographic names across country/continent dictionaries, dashboard search/picker/card/Wishlist/manual visit ordering, public Profile and maps, and Home-map accessible names. Stable 251 selectable / 252 conceptual Places, 195 Countries, 57 Territories and Entities, eight continents and the UK map-only aggregate remain canonical. Persisted travel data and user-authored content are not translated.
 
 [Consolidated evidence](../evidence/v1.0/regression/ab-ev-056-c45k-geographic-localization.md).
+
+## C45L / AB-EV-057 — password-reset action localization
+
+C45L completes the unprefixed Firebase password-reset action's localized form, validation, errors, success, document metadata and return-to-Login presentation for all six supported locales. The already-localized ForgotPasswordModal, Firebase verification/confirmation operations, existing policy (minimum 15 characters), C45E verifyEmail behavior and account data remain unchanged. The independent Product commit `6f308276600be2b14b15076def0c33a16c118770` is Production READY. C45M authenticated language selection remains future scope.
+
+[Consolidated evidence](../evidence/v1.0/regression/ab-ev-057-c45l-password-reset-action-localization.md).

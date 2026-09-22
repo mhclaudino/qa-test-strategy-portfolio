@@ -1993,3 +1993,9 @@ This document and its reporting model must be reviewed when:
 ## C45K / AB-EV-056 — integrated QA reporting
 
 Report the diagnostic **59 PASS / 7 FAIL** C45 run separately from final **66 PASS / 0 FAIL / 0 SKIPPED** Edge/Emulator E2E and the **4 PASS** post-edit C45F differential rerun. Vitest **832 PASS / 37 SKIPPED** is a separate unit/component/integration layer. B8 changed eight existing E2E specifications and added one title E2E specification; no Product `src/` file changed. Do not inflate Product-defect metrics with stale locale/route assertions. The earlier Edge-tab title is **not reproduced on retest / original cause unknown**, not a code-fix closure. A 66-case collection does not imply exhaustive locale × screen/browser coverage. See [AB-EV-056](../evidence/v1.0/regression/ab-ev-056-c45k-geographic-localization.md).
+
+## C45L / AB-EV-057 — password-reset action localization
+
+C45L agent final run: 29/29 PASS affected Edge/Auth/Firestore/Storage Emulator E2E, separate 1 PASS 390×844 mobile viewport differential, Vitest 832 PASS / 37 SKIPPED, TypeScript/lint/build PASS, zero real Firebase requests reported. Five C45 tests updated for the superseded pt-BR-only resetPassword oracle; these changes must not inflate Product defect metrics. Test Lead local visual PASS is distinct from mobile physical NOT EXECUTED and from Production deployment READY with no reported live-Firebase functional reset smoke. Product SHA `6f308276600be2b14b15076def0c33a16c118770`; Vercel `dpl_AzasBv7Wo4bKtSfJBTVFAi6xGTE9` READY for exact SHA.
+
+[Consolidated evidence](../evidence/v1.0/regression/ab-ev-057-c45l-password-reset-action-localization.md).

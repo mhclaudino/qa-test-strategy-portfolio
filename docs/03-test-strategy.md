@@ -6,7 +6,7 @@ This document defines the overall testing strategy for AtlasBadge and how qualit
 
 It covers risk prioritisation, test design, regression, evidence, AI-assisted execution, automation, release approval and residual risk.
 
-> **Document status:** Completed and maintained through AB-EV-056. The current strategy includes versioned Playwright/Firebase Emulator regression, checkpointed incremental validation, controlled real-backend/Production validation, explicit environment/runtime parity checks, real-browser acceptance and fixed living-document governance.
+> **Document status:** Completed and maintained through AB-EV-057. The current strategy includes versioned Playwright/Firebase Emulator regression, checkpointed incremental validation, controlled real-backend/Production validation, explicit environment/runtime parity checks, real-browser acceptance and fixed living-document governance.
 
 ---
 
@@ -447,9 +447,16 @@ Review this strategy when authentication, travel-status/Wishlist rules, persiste
 - `evidence/v1.0/regression/ab-ev-054-c45i-profile-edit-localization.md`
 - `evidence/v1.0/regression/ab-ev-055-c45j-public-profile-localization-and-fixes.md`
 - `evidence/v1.0/regression/ab-ev-056-c45k-geographic-localization.md`
+- `evidence/v1.0/regression/ab-ev-057-c45l-password-reset-action-localization.md`
 
 ## C45K / AB-EV-056 — geographic localization closure
 
 C45K adds regression expectations for every active consumer of shared localized geography, including accessible SVG text on a decorative map. B8 illustrates the need to update E2E oracles after a locale/route contract changes: initially obsolete locators resembled an infrastructure hang and a diagnostic run reported 59 PASS / 7 FAIL; updated tests passed 66/66. Final evidence was frozen and the changed C45F file rerun after its last edit. Browser-title hypotheses were not converted into global code workarounds without reproduction.
 
 [Consolidated evidence](../evidence/v1.0/regression/ab-ev-056-c45k-geographic-localization.md).
+
+## C45L / AB-EV-057 — password-reset action localization
+
+C45L used a Server Page for mode-scoped metadata and a Client Component for Firebase action-code handling instead of illegally exporting generateMetadata from a client page. Test design covered real Auth Emulator oobCode recovery and login with the new password; unambiguous locators and actual 15-character policy; contextual locale resolution; and selective C45E/C45F/C45G/C45H/C45D E2E oracle updates after a legitimate requirement change. An initial Turbopack cache error was an environment blocker corrected before the final run. A follow-up E2E-only mobile change required an affected 390×844 rerun, not the entire suite.
+
+[Consolidated evidence](../evidence/v1.0/regression/ab-ev-057-c45l-password-reset-action-localization.md).

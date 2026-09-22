@@ -8,7 +8,7 @@ It is deliberately not a diary of every defect, test run or implementation decis
 
 The emphasis is on reducing avoidable work while preserving risk-based confidence and traceability.
 
-> **Document status:** Active / maintained. Consolidated through AB-EV-056.
+> **Document status:** Active / maintained. Consolidated through AB-EV-057.
 
 ---
 
@@ -556,6 +556,30 @@ All three must be true before the environment is called “ready”.
 
 **Benefit:** Prevents false Product/infrastructure defects, false-green gates and needless suite repetitions.
 
+### LL-63 — A formerly untranslated mode becomes a new requirement, not a historic defect
+
+**Observation:** C45E deliberately kept `resetPassword` Portuguese while `verifyEmail` was localized; five E2E assertions retained that old isolation until C45L intentionally localized resetPassword.
+
+**Working rule:** Version locale-mode acceptance explicitly and update the affected old E2E oracles only when the superseding requirement is implemented. Preserve the truth of past evidence; do not count superseded test expectations as new Product defects.
+
+**Benefit:** Honest, stable release history and targeted maintenance across shared routes.
+
+### LL-64 — Real action-code fixtures and current domain policies precede UI assertions
+
+**Observation:** A fabricated `oobCode` could not render a legitimate Firebase reset form, a generic password label was ambiguous, and a legacy eight-character test expectation conflicted with AtlasBadge's fifteen-character minimum.
+
+**Working rule:** Use disposable genuine Auth Emulator action codes for stateful auth flows, derive validation assertions from actual current policy and select fields unambiguously. Verify reset completion by logging in with the new password. Never change Product security rules to accommodate brittle tests.
+
+**Benefit:** Reduces false failures and proves the backend boundary rather than only mocked copy.
+
+### LL-65 — Separate secret-safe QA handoff from public release evidence
+
+**Observation:** A disposable reset link appeared in an internal report before it was rotated. A temporary local QA script/link was later excluded via `.git/info/exclude` and absent from the audited eighteen-file Product commit. Mobile viewport passed; physical-device QA remained unavailable.
+
+**Working rule:** Never publish Auth action codes, reset links, passwords or identifying test data in logs, portfolio or commits. Temporary local exclusion is not a versioned `.gitignore` rule: inspect the actual staged files. Report physical-device NOT EXECUTED separately from viewport PASS, and Production deployment READY separately from live-backend functional smoke.
+
+**Benefit:** Protects the recovery boundary and prevents overstatement of device and release coverage.
+
 ## 7. Standing efficiency rules
 
 The following compact rules apply to future AtlasBadge work:
@@ -610,6 +634,9 @@ The following compact rules apply to future AtlasBadge work:
 48. Localize geographic presentation and accessible output from canonical IDs in every active consumer.
 49. Verify DOM metadata and native tab in the same reproduction before adopting title workarounds.
 50. Maintain E2E oracles after locale/route-contract changes and rerun the final edited state.
+51. Version shared-route localization expectations; superseded isolation tests are oracle maintenance, not retroactive Product defects.
+52. Use genuine disposable Auth Emulator action codes and the current password policy for reset-form E2E.
+53. Keep action links and test identities out of public evidence and staged commits; distinguish viewport/mobile-device and READY/Production functional proof.
 
 ---
 
@@ -663,3 +690,4 @@ Do not add a lesson merely because an isolated defect occurred.
 - `evidence/v1.0/regression/ab-ev-054-c45i-profile-edit-localization.md`
 - `evidence/v1.0/regression/ab-ev-055-c45j-public-profile-localization-and-fixes.md`
 - `evidence/v1.0/regression/ab-ev-056-c45k-geographic-localization.md`
+- `evidence/v1.0/regression/ab-ev-057-c45l-password-reset-action-localization.md`

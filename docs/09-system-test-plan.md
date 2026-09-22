@@ -1,11 +1,11 @@
 # AtlasBadge V1.0 System Test Plan
 
 **Document status:** Active / change-controlled  
-**Execution status:** Incremental system testing in progress; latest baseline reviewed through AB-EV-056; C45K B7 Production Visual PASS and B8 integrated QA accepted — 22 September 2026  
+**Execution status:** Incremental system testing in progress; latest baseline reviewed through AB-EV-057; C45L local Test Lead Visual PASS and exact-SHA Production deployment READY — 22 September 2026  
 **Product:** AtlasBadge  
 **Target release:** V1.0  
 **Document owner:** Test Lead/Product Owner  
-**Last updated:** 20 September 2026
+**Last updated:** 22 September 2026
 
 ---
 
@@ -817,7 +817,7 @@ The final release decision belongs to the Test Lead/Product Owner.
 - No independent penetration/security audit or formal load test has been completed.
 - C44 one-photo-per-`RegisteredVisit` is implemented, Production-approved and retained as permanent regression scope, including the free 10-photo quota and server-mediated read/privacy boundary.
 - C45A/C45B public-Home localisation, C45C Login localisation, C45D Onboarding localisation, C45E email-verification localisation, C45F authenticated-dashboard localisation, C45G deep country/visit-editor localisation, C45H Badges/achievement/toast localisation and C45I Profile Edit/account-presentation localisation and C45J public-Profile localisation including FIX1/FIX2 are approved.
-- Remaining localization includes resetPassword action presentation, authenticated language switching and canonical country/continent **display-name** mapping in a separate checkpoint.
+- Remaining localization includes authenticated language switching (C45M); resetPassword action presentation is completed by C45L/AB-EV-057 and country/continent display names by C45K/AB-EV-056.
 - The current root-layout `headers()` approach makes page rendering request-time dynamic and is retained as explicit V1.0 technical debt pending any future multi-root routing redesign.
 - The legacy UK-selector modal remains an unreachable-code cleanup candidate rather than a Product Defect.
 - The extra `travelMap.clearMap.emulator.test.ts` anonymous LIST/Rules diagnostic remains separate pre-existing test/environment debt; C45G did not modify its source boundary.
@@ -859,3 +859,9 @@ The final release decision belongs to the Test Lead/Product Owner.
 **B8 completed E2E:** `npx.cmd firebase emulators:exec --project demo-atlasbadge-web --only auth,firestore,storage "npx playwright test c45 document-title --project=edge"` → 66 PASS / 0 FAIL / 0 SKIPPED (~2.9m). Post-last-edit C45F differential → 4 PASS. Agent-reported Vitest 832 PASS / 37 SKIPPED; TypeScript, lint (0 errors; 28 warnings reported) and build PASS; safety log `realFirebaseRequests=0`. Earlier diagnostic 59/7 reflects stale automation and was not a passing release gate. Six-locale-by-every-screen coverage is not claimed.
 
 **Release split:** B7 Product commit `a74358b8769abbd9533f2bf6ca7467419badc69d`, deployment `dpl_9efHWAcGxCrNjci46HsZ6K2PPPMx` READY, Production Visual PASS. B8 **test-only** commit `9374273e4dcc5745628267de61e96c0b12740e00`, deployment `dpl_69uaKtiqJcj2ZvucWhQDMFrwK5JH` READY, no `src/` or Rules changes. [Consolidated AB-EV-056](../evidence/v1.0/regression/ab-ev-056-c45k-geographic-localization.md).
+
+## C45L / AB-EV-057 — password-reset action localization
+
+C45L/AB-EV-057 localizes the mode=resetPassword action across six locales while preserving mode=verifyEmail, missing/unsupported-mode fallback, Firebase Auth action-code behavior, minimum 15-character policy and localized Login return. Production Product commit `6f308276600be2b14b15076def0c33a16c118770` / Vercel `dpl_AzasBv7Wo4bKtSfJBTVFAi6xGTE9` READY exact SHA. Agent-reported final Edge/Firebase Emulator affected suite 29 PASS (0 FAIL/0 SKIPPED), separate fr/en-GB/pt-PT 390×844 mobile 1 PASS, Vitest 832 PASS/37 SKIPPED, tsc/lint/build PASS, `realFirebaseRequests=0`. Test Lead approved executable local visual checks. Physical phone NOT EXECUTED; live Production reset NOT EXECUTED. After a first Turbopack cache failure, `.next` cleanup preceded the successful run. C45E historical pt-BR reset isolation remains a historical observation only; C45L updates prospective assertions.
+
+[Consolidated evidence](../evidence/v1.0/regression/ab-ev-057-c45l-password-reset-action-localization.md).
