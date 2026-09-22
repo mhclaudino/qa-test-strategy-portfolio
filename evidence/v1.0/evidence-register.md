@@ -72,6 +72,8 @@ It is not an Application Lifecycle Management system, a complete defect backlog 
 
 | AB-EV-056 | C45K six-locale geographic display-name localization and B8 E2E-oracle maintenance | QR-01; QR-02; QR-04; QR-17; QR-18; QR-25; QR-26; QR-31; QR-32; QR-34; QR-39; QR-40 | Edge/Next.js, Auth/Firestore/Storage Emulators, Vercel Production and Test Lead native Edge QA | B7 `a74358b8769abbd9533f2bf6ca7467419badc69d` / `dpl_9efHWAcGxCrNjci46HsZ6K2PPPMx`; B8 test-only `9374273e4dcc5745628267de61e96c0b12740e00` / `dpl_69uaKtiqJcj2ZvucWhQDMFrwK5JH` — READY | Consolidated public narrative; raw screenshots not published | B7 Production Visual PASS; B8 final Edge E2E 66/66 PASS and Vitest 832 PASS / 37 SKIPPED reported; Test Lead closure; tab-title observation not reproduced / cause unknown | [C45K geographic localization](regression/ab-ev-056-c45k-geographic-localization.md) |
 
+| AB-EV-057 | C45L six-locale resetPassword action and E2E-oracle revision | QR-08; QR-39; QR-40; auth/account recovery; C45E superseded isolation | Local Next.js/Edge; Firebase Auth/Firestore/Storage Emulators; Test Lead local manual QA; Vercel Production deployment | Product `6f308276600be2b14b15076def0c33a16c118770`; Vercel `dpl_AzasBv7Wo4bKtSfJBTVFAi6xGTE9` READY / Production / exact SHA | Public sanitized narrative complete | Local technical QA 29/29 Edge E2E; 832 Vitest PASS / 37 SKIPPED; mobile 390×844 1 PASS; Test Lead local visual PASS; physical phone and live Production reset NOT EXECUTED; release deployment READY | [C45L password-reset action localization](regression/ab-ev-057-c45l-password-reset-action-localization.md) |
+
 ## 3. Evidence-status interpretation
 
 - **Public narrative complete** means the verified quality story and decision can be published safely.
@@ -119,6 +121,8 @@ It is not an Application Lifecycle Management system, a complete defect backlog 
 | QR-40 | `Regression risk` | AB-EV-017 establishes the scoped accessibility technical baseline; later increments add targeted interaction regression, including C40 reorder controls, C41 flag/modal interaction, C42 visit-name editing, C43 visible-focus/contrast-preserving alignment, C44 photo controls/lightbox keyboard closure, C45G localized ARIA/modal/keyboard editor checks, C45H localized Badges loading/ARIA, toast close label, Enter/Space activation and stable achievement anchors, and C45I localized form labels, focus/disabled states and nested account/security dialog presentation. AB-EV-055 covers localized public Profile labels and the authenticated Header/nav/avatar accessible-name correction. |
 
 AB-EV-056 adds geographic-localization regression for QR-25/18 (canonical catalogue), QR-31/32/34 (privacy and public projection) and QR-39/40 (accessible labels), without changing their Regression risk state. B8 stale E2E assertions are test defects, not new Product defects; the Edge-tab title discrepancy was not reproduced on human retest and its cause remains unknown.
+
+AB-EV-057 extends QR-08 password-policy regression, QR-39 responsive scope and QR-40 localized form/accessibility presentation without changing their current risk states. C45E's historical pt-BR-only resetPassword isolation was intentionally superseded, not retrospectively rewritten. The physical-phone manual test and live Production reset remain unexecuted; the exact Product SHA's Production deployment is READY.
 
 Evidence IDs reflect public publication order, not necessarily chronological order of underlying technical work.
 
