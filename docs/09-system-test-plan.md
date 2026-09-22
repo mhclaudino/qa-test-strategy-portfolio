@@ -1,7 +1,7 @@
 # AtlasBadge V1.0 System Test Plan
 
 **Document status:** Active / change-controlled  
-**Execution status:** Incremental system testing in progress; latest baseline reviewed through AB-EV-055; C45J/FIX1/FIX2 Production technical + visual PASS / Test Lead approved — 20 September 2026  
+**Execution status:** Incremental system testing in progress; latest baseline reviewed through AB-EV-056; C45K B7 Production Visual PASS and B8 integrated QA accepted — 22 September 2026  
 **Product:** AtlasBadge  
 **Target release:** V1.0  
 **Document owner:** Test Lead/Product Owner  
@@ -851,3 +851,11 @@ The final release decision belongs to the Test Lead/Product Owner.
 - `evidence/v1.0/regression/ab-ev-054-c45i-profile-edit-localization.md`
 - `evidence/v1.0/regression/ab-ev-055-c45j-public-profile-localization-and-fixes.md`
 - `docs/10-lessons-learned.md`
+
+## C45K / AB-EV-056 — geographic localization and integrated closure
+
+**System-test contract:** Six supported locales; 251 selectable / 252 conceptual Places, 195 Countries / 57 Territories and Entities, eight continent groups, derived map-only UK. Localized Dashboard/search/picker/card/Wishlist/manual order, public Profile flags/memories/map/continents, map status and Home SVG accessible names; stable identity/persistence/privacy. **Focused Product corrections:** ManualVisitOrderEditor, dashboard map missing localized labels and Home `WorldSvgMap` accessible names, each with Test Lead retest/acceptance; B7 Production Visual PASS. Native Edge title discrepancy: passing later human retest, root cause unknown; no speculative workaround deployed.
+
+**B8 completed E2E:** `npx.cmd firebase emulators:exec --project demo-atlasbadge-web --only auth,firestore,storage "npx playwright test c45 document-title --project=edge"` → 66 PASS / 0 FAIL / 0 SKIPPED (~2.9m). Post-last-edit C45F differential → 4 PASS. Agent-reported Vitest 832 PASS / 37 SKIPPED; TypeScript, lint (0 errors; 28 warnings reported) and build PASS; safety log `realFirebaseRequests=0`. Earlier diagnostic 59/7 reflects stale automation and was not a passing release gate. Six-locale-by-every-screen coverage is not claimed.
+
+**Release split:** B7 Product commit `a74358b8769abbd9533f2bf6ca7467419badc69d`, deployment `dpl_9efHWAcGxCrNjci46HsZ6K2PPPMx` READY, Production Visual PASS. B8 **test-only** commit `9374273e4dcc5745628267de61e96c0b12740e00`, deployment `dpl_69uaKtiqJcj2ZvucWhQDMFrwK5JH` READY, no `src/` or Rules changes. [Consolidated AB-EV-056](../evidence/v1.0/regression/ab-ev-056-c45k-geographic-localization.md).

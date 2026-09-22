@@ -1989,3 +1989,7 @@ This document and its reporting model must be reviewed when:
 * `test-assets/exploratory-test-charters.md` — planned
 * `test-assets/sample-test-cases.md` — planned
 * `reports/test-summary-report.md` — planned
+
+## C45K / AB-EV-056 — integrated QA reporting
+
+Report the diagnostic **59 PASS / 7 FAIL** C45 run separately from final **66 PASS / 0 FAIL / 0 SKIPPED** Edge/Emulator E2E and the **4 PASS** post-edit C45F differential rerun. Vitest **832 PASS / 37 SKIPPED** is a separate unit/component/integration layer. B8 changed eight existing E2E specifications and added one title E2E specification; no Product `src/` file changed. Do not inflate Product-defect metrics with stale locale/route assertions. The earlier Edge-tab title is **not reproduced on retest / original cause unknown**, not a code-fix closure. A 66-case collection does not imply exhaustive locale × screen/browser coverage. See [AB-EV-056](../evidence/v1.0/regression/ab-ev-056-c45k-geographic-localization.md).

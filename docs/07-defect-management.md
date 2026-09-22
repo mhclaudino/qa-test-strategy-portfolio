@@ -25,7 +25,7 @@ The process applies to incremental development, local quality validation, regres
 
 The approach is intentionally proportional to the product and delivery model. It provides professional traceability and release governance without introducing unnecessary administrative stages or roles that do not exist in the AtlasBadge workflow.
 
-> **Document status:** Completed and maintained; latest classification example reviewed through C45F / AB-EV-051.
+> **Document status:** Completed and maintained; latest classification example reviewed through C45K / AB-EV-056.
 
 ---
 
@@ -1463,3 +1463,9 @@ A suitability review is also performed:
 * `test-assets/exploratory-test-charters.md` — planned
 * `test-assets/sample-test-cases.md` — planned
 * `reports/test-summary-report.md` — planned
+
+## C45K / AB-EV-056 — Product observations versus stale automation
+
+C45K confirmed three scoped Product presentation/accessibility gaps: ManualVisitOrderEditor displayed canonical Portuguese names under other locales; the dashboard map failed to supply the shared map's localized labels; and decorative Home SVG paths exposed canonical accessible country names. The Test Lead approved their focused corrections and Production visual retests. An earlier French Edge tab title alongside English/Spanish UI was not reproduced on later human retest; its root cause remains indeterminate and no `DocumentTitleSync`/RootLayout workaround was shipped.
+
+B8's former `Brasil`-in-English/French and pt-BR-only-public-Profile expectations were **test-oracle defects**, not newly discovered Product defects or Emulator infrastructure failures. A Playwright locator waiting for an obsolete accessible name can look like a hang. Classify the concrete failed assertion against the current requirement before modifying code or increasing Product-defect metrics. See [AB-EV-056](../evidence/v1.0/regression/ab-ev-056-c45k-geographic-localization.md).

@@ -8,7 +8,7 @@ It is deliberately not a diary of every defect, test run or implementation decis
 
 The emphasis is on reducing avoidable work while preserving risk-based confidence and traceability.
 
-> **Document status:** Active / maintained. Consolidated through AB-EV-055.
+> **Document status:** Active / maintained. Consolidated through AB-EV-056.
 
 ---
 
@@ -524,6 +524,38 @@ All three must be true before the environment is called “ready”.
 
 **Benefit:** Prevents false-green releases and repetitive, unfocused retesting while making Test Lead approval auditable.
 
+### LL-59 — A locale is presentation, not identity migration
+
+**Observation:** C45K translated geographic display names across six locales while the 251 selectable / 252 conceptual / 195-country / 57-territory-and-entity model and UK map-only parent remained unchanged.
+
+**Working rule:** Resolve labels from stable IDs at each consumer; protect counters, persistence, order, privacy and user-authored content independently.
+
+**Benefit:** Language selection does not mutate travel identity, history or the public/private boundary.
+
+### LL-60 — Audit all consumers and accessible output of a shared component
+
+**Observation:** The public map displayed localized status while its dashboard consumer lacked translation props. The Home map's `interactive=false` did not suppress SVG `aria-label` or conditional micro-marker `title` text.
+
+**Working rule:** Follow locale props through each active consumer and test visible text, accessible names, tooltips and fallback strings. A decorative UI is not necessarily absent from the accessibility tree.
+
+**Benefit:** Reduces mixed-language defects missed by component-only or one-route checks.
+
+### LL-61 — Reproduce metadata/browser issues at the observed boundary
+
+**Observation:** A French native Edge tab appeared with English/Spanish UI, but later DOM tests and human retest were consistent. The proposed RootLayout metadata rewrite was reverted; `DocumentTitleSync` was not implemented; root cause remains unknown.
+
+**Working rule:** Compare active UI locale, `html lang`, `document.title`, head `<title>`, cookie and native tab in the same failing reproduction before proposing a client-side workaround. Do not promote a plausible cache/browser hypothesis to a confirmed cause.
+
+**Benefit:** Preserves honest defect disposition and avoids speculative architecture changes.
+
+### LL-62 — Maintain E2E oracles after requirement changes and test the final file state
+
+**Observation:** C45 tests still expected `Brasil` in English/French and an old pt-BR-only public Profile after C45J. Obsolete locators looked like infrastructure hangs; an intermediate 59/7 run became 66/66 after correcting test contracts.
+
+**Working rule:** Distinguish canonical IDs from localized strings, classify failed locators against current requirements, do not skip or replace text globally, freeze edits before the full E2E run and rerun affected files after any later change.
+
+**Benefit:** Prevents false Product/infrastructure defects, false-green gates and needless suite repetitions.
+
 ## 7. Standing efficiency rules
 
 The following compact rules apply to future AtlasBadge work:
@@ -575,6 +607,9 @@ The following compact rules apply to future AtlasBadge work:
 45. Every authenticated/anonymous route variant must receive its own explicit localized Header labels, even if the page body and document locale are already correct.
 46. Prove scrollbar-related geometry in the affected native browser; overlay-scrollbar headless regression alone does not demonstrate pixel-stable layout.
 47. Never declare a gate PASS when an Emulator did not start, a test timed out or a required assertion is missing; record the precise gap and rerun only what the fix invalidates.
+48. Localize geographic presentation and accessible output from canonical IDs in every active consumer.
+49. Verify DOM metadata and native tab in the same reproduction before adopting title workarounds.
+50. Maintain E2E oracles after locale/route-contract changes and rerun the final edited state.
 
 ---
 
@@ -627,3 +662,4 @@ Do not add a lesson merely because an isolated defect occurred.
 - `evidence/v1.0/regression/ab-ev-053-c45h-badges-achievements-localization.md`
 - `evidence/v1.0/regression/ab-ev-054-c45i-profile-edit-localization.md`
 - `evidence/v1.0/regression/ab-ev-055-c45j-public-profile-localization-and-fixes.md`
+- `evidence/v1.0/regression/ab-ev-056-c45k-geographic-localization.md`
