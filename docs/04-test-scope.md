@@ -6,7 +6,7 @@ This document defines the testing scope for AtlasBadge during incremental V1.0 d
 
 It identifies covered product areas, expected depth, current coverage, mandatory remaining work and intentionally deferred items.
 
-> **Document status:** Completed and maintained through AB-EV-055. C39–C44 cover the current privacy/order/public-display, editable-name, visual-identity and visit-photo baseline. C45A establishes public locale routing; C45B completes the localized public Home/Hero/Header/Footer surface and language selector; C45C completes Login/auth entry; C45D Onboarding/profile creation; C45E email verification; C45F the authenticated `/app` shell/dashboard; C45G the deep authenticated country/visit editor. C45H completes authenticated `/badges`, all current achievement title/description presentation, locale-aware earned dates and `BadgeUnlockToast` for the six approved V1.0 locales while preserving achievement-domain and public-Profile contracts. C45I completes Profile Edit plus embedded access-method/account-deletion presentation localization while preserving profile persistence, auth/security behaviour and the separate public-Profile localization boundary. C45J subsequently localizes that canonical public-Profile boundary; two narrowly scoped follow-ups fix authenticated Header labels (AB-DEF-019) and short-loading/long-content Header shift (AB-DEF-020), with Production visual approval on 20 September 2026.
+> **Document status:** Completed and maintained through AB-EV-056. C39–C44 cover the current privacy/order/public-display, editable-name, visual-identity and visit-photo baseline. C45A establishes public locale routing; C45B completes the localized public Home/Hero/Header/Footer surface and language selector; C45C completes Login/auth entry; C45D Onboarding/profile creation; C45E email verification; C45F the authenticated `/app` shell/dashboard; C45G the deep authenticated country/visit editor. C45H completes authenticated `/badges`, all current achievement title/description presentation, locale-aware earned dates and `BadgeUnlockToast` for the six approved V1.0 locales while preserving achievement-domain and public-Profile contracts. C45I completes Profile Edit plus embedded access-method/account-deletion presentation localization while preserving profile persistence, auth/security behaviour and the separate public-Profile localization boundary. C45J subsequently localizes that canonical public-Profile boundary; two narrowly scoped follow-ups fix authenticated Header labels (AB-DEF-019) and short-loading/long-content Header shift (AB-DEF-020), with Production visual approval on 20 September 2026.
 
 ---
 
@@ -253,7 +253,7 @@ C45B/AB-EV-046 completes the translated public Home/Hero/Header/Footer layer acr
 
 C45C–C45E extend localization through Login, Onboarding and email verification. C45F/AB-EV-051 localizes the authenticated `/app` shell/dashboard. C45G/AB-EV-052 localizes the deep country/visit editor. C45H/AB-EV-053 localizes the authenticated `/badges` route, metadata/document language, achievement title/description presentation, earned-date formatting and Badge Unlock notification while preserving locale-neutral achievement IDs/rules/metadata.
 
-C45J/AB-EV-055 completes the canonical unprefixed public Profile presentation for six locales (with FIX1/FIX2 closed). Remaining localisation scope includes resetPassword action presentation, the future authenticated language selector and canonical country/continent **display-name** localization through a separate presentation-only mapping checkpoint. Profile Edit remains complete under C45I/AB-EV-054. User-authored content is not automatically translated. C45B's root `headers()` solution makes the page tree request-time dynamic; the architecture review accepted this as bounded V1.0 technical debt because eliminating it would require a disproportionate multi-root route migration.
+C45J/AB-EV-055 completes the canonical unprefixed public Profile presentation for six locales (with FIX1/FIX2 closed). C45K/AB-EV-056 completes geographic **display-name** localization for supported consumers without changing canonical IDs, user-authored data or the public projection. Remaining localization scope includes resetPassword action presentation and the future authenticated language selector. Profile Edit remains complete under C45I/AB-EV-054. User-authored content is not automatically translated. C45B's root `headers()` solution makes the page tree request-time dynamic; the architecture review accepted this as bounded V1.0 technical debt because eliminating it would require a disproportionate multi-root route migration.
 
 ### 6.8 Performance and responsiveness — Partially executed / ongoing
 
@@ -372,8 +372,8 @@ Current gaps/deferred areas include:
 - formal accessibility certification/native AT matrix;
 - quantitative performance SLAs;
 - future Story/social features beyond current scope;
-- resetPassword and authenticated-selector localization; country/continent display-name mapping under a new presentation-only checkpoint;
-- canonical country/continent presentation localization;
+- resetPassword and authenticated-selector localization; geographic display-name mapping is complete under C45K/AB-EV-056 and remains regression scope;
+- geographic presentation regression on future consumers (initial mapping completed by C45K/AB-EV-056);
 - separate legacy UK-selector unreachable-code cleanup.
 
 Physical garbage collection of stale public-generation place documents is not an open functional defect. It is optional housekeeping because correctness and public-read safety no longer depend on immediate physical deletion.
@@ -420,4 +420,11 @@ Release approval is blocked by evidence of:
 - `evidence/v1.0/regression/ab-ev-053-c45h-badges-achievements-localization.md`
 - `evidence/v1.0/regression/ab-ev-054-c45i-profile-edit-localization.md`
 - `evidence/v1.0/regression/ab-ev-055-c45j-public-profile-localization-and-fixes.md`
+- `evidence/v1.0/regression/ab-ev-056-c45k-geographic-localization.md`
 - `docs/10-lessons-learned.md`
+
+## C45K / AB-EV-056 — geographic localization closure
+
+C45K completes the six-locale geographic presentation across the picker, search, country cards, Wishlist, manual ordering, dashboard/public maps, public flags/memories/continents and the Home decorative map's accessible labels. Acceptance requires stable IDs, 251/252/195/57 counter semantics, eight canonical continents, UK derivation, status/visit/order/public projection and intact user-authored text. The 66-case final C45/title Edge E2E collection is representative, not exhaustive across every locale × UI surface.
+
+[Consolidated evidence](../evidence/v1.0/regression/ab-ev-056-c45k-geographic-localization.md).
