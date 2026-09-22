@@ -83,6 +83,7 @@ Selected quick/affected-area/integrated regression evidence includes:
 - [AB-EV-053 — C45H Badges and achievements localization](regression/ab-ev-053-c45h-badges-achievements-localization.md)
 - [AB-EV-054 — C45I Profile Edit localization](regression/ab-ev-054-c45i-profile-edit-localization.md)
 - [AB-EV-055 — C45J Public Profile localization, FIX1 and FIX2](regression/ab-ev-055-c45j-public-profile-localization-and-fixes.md)
+- [AB-EV-056 — C45K geographic localization and integrated QA closure](regression/ab-ev-056-c45k-geographic-localization.md)
 
 AB-EV-034 is the closure record for the previous QR-01 `Current gap`; QR-01 now remains as a `Regression risk`. AB-EV-035 records a requirement correction rather than a Product Defect.
 
