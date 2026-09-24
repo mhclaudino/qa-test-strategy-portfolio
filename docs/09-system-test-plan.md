@@ -623,6 +623,21 @@ Examples:
 
 This is not reduced coverage by omission: the carried-forward result and reason must remain explicit.
 
+### Mandatory AI-agent preflight and stop gate (LL-66; C45M process correction)
+
+Before drafting **each** task for Codex, Gemini/Antigravity or another implementation agent, the coordinator checks the current `docs/10-lessons-learned.md` and records the relevant LL IDs in the task. This is an execution-control rule, not a claim that an external agent cannot violate a prompt.
+
+| Gate | Required evidence before delegation or continuation |
+| --- | --- |
+| Scope and cost | One finishable objective; what is explicitly out of scope; one focused reproduction and no more than one evidence-based retry per diagnostic assignment; after that STOP and request a new Test Lead decision. |
+| Repository | Exact Product HEAD/origin, dirty and **untracked** paths, protected work and forbidden reset/cleanup operations. |
+| Safety | Effective application origin, Firebase project, Auth/Firestore/Storage endpoints and observable real-request fail-fast; no local real-backend QA merely because `localhost` is used. |
+| Test contract | Current approved requirement and actual accessible UI/oracle; identify the failed step and read existing helpers before changing locators or Product behaviour. |
+| Checkpoint economy | Named previous PASS and its invalidating change; select the smallest layer that can restore the specific confidence gap; no repeated full E2E as a discovery technique. |
+| Exit | Report PASS/FAIL/SKIPPED, exact test names, final-file state, exit codes and missing assertions; keep BLOCKED on unresolved diagnosis, unsafe environment or incomplete evidence. No commit/push/deploy/Portfolio evidence until separately authorised. |
+
+**Coordinator enforcement:** If preflight or diagnosis is incomplete, do not issue a repair prompt; request read-only evidence. Do not broaden a task or budget automatically when the agent reports a timeout. Test Lead makes the next scope/usage decision. Carry forward unaffected green checkpoints explicitly; any later file edit triggers a targeted invalidation check. C45M remains open and must not be described here as Product PASS or an AB-EV-058 release closure.
+
 ### Recent applications
 
 **AB-EV-034:** the write-path audit identified only `flagSortOrder` as the remaining Partial QR-01 path. One deterministic component failure/recovery test closed the gap; no runtime deployment or unrelated regression rerun was required.
