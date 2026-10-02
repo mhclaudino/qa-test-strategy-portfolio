@@ -3,7 +3,7 @@
 **Document status:** Completed and maintained  
 **Product:** AtlasBadge  
 **Document owner:** Test Lead  
-**Last updated:** 26 August 2026
+**Last updated:** 2 October 2026
 
 ---
 
@@ -363,6 +363,8 @@ A run is not classified as a product failure when execution cannot start or is i
 
 The condition is reported as environment/infrastructure blocked or parity mismatch, corrected where safe, and the valid execution result is recorded separately. C45J-FIX1/AB-EV-055 encountered `ECONNREFUSED 127.0.0.1:9099` when Playwright was started without a live Auth Emulator. That attempt did **not** establish an E2E PASS or `realFirebaseRequests=0`; final evidence came from the complete `firebase emulators:exec --project demo-atlasbadge-web --only auth,firestore,storage` run with Edge `--workers=1`, after the services were available.
 
+C45M/AB-EV-058 reinforces the same rule. Final browser E2E used the protected Emulator fixture against project `demo-atlasbadge-web` and reported `realFirebaseRequests=0`. A local agent workspace could push Product code but could not authenticate the Vercel CLI; that was an **evidence-channel limitation**, not a failed deployment. Exact-SHA Production READY state was independently verified through the connected Vercel project. The first C45M deployment then proceeded to human Production smoke, where AB-DEF-021 was found; the hotfix repeated exact-SHA verification before the Test Lead retest.
+
 This classification does not hide true product defects. In C36, the Rules-parity permission failure was environmental, while the later lost-order behaviour reproduced under the correct environment was correctly treated as a product implementation failure and fixed before release. C44 applied the same separation: missing local Admin configuration and the Node 24 Storage OAuth transport failure were environment/runtime blockers, while missing public `photoRef` projection and protected-field profile-write regressions were product implementation defects and were corrected separately.
 
 ---
@@ -381,6 +383,8 @@ Public and test repositories must not contain:
 Mock/dummy credentials used only to prove Emulator isolation must be clearly fictitious.
 
 Raw Auth Emulator identities, passwords and manual browser session state created during C36 troubleshooting were intentionally excluded from public evidence.
+
+C45M used disposable Emulator identities internally, but public evidence excludes their e-mail addresses, passwords, action data and raw payloads. Temporary diagnostic/scratch files created during investigation were removed before Product publication and are not evidence artefacts.
 
 ---
 
@@ -424,3 +428,4 @@ Review this document when:
 - `evidence/v1.0/regression/ab-ev-033-wishlist-public-profile-release-hardening.md`
 - `evidence/v1.0/defects/ab-ev-036-wishlist-atomic-settings-save-and-order-integrity.md`
 - `evidence/v1.0/regression/ab-ev-055-c45j-public-profile-localization-and-fixes.md`
+- `evidence/v1.0/regression/ab-ev-058-c45m-authenticated-language-selector-and-production-hotfix.md`

@@ -6,7 +6,7 @@ This document defines the overall testing strategy for AtlasBadge and how qualit
 
 It covers risk prioritisation, test design, regression, evidence, AI-assisted execution, automation, release approval and residual risk.
 
-> **Document status:** Completed and maintained through AB-EV-057. The current strategy includes versioned Playwright/Firebase Emulator regression, checkpointed incremental validation, controlled real-backend/Production validation, explicit environment/runtime parity checks, real-browser acceptance and fixed living-document governance.
+> **Document status:** Completed and maintained through AB-EV-058. The current strategy includes versioned Playwright/Firebase Emulator regression, checkpointed incremental validation, controlled real-backend/Production validation, explicit environment/runtime parity checks, real-browser acceptance and fixed living-document governance.
 
 ---
 
@@ -147,6 +147,8 @@ AB-EV-052 extends localization into the high-risk deep country/visit editor whil
 AB-EV-053 applies the same bounded model to a shared achievement domain. Stable achievement IDs and canonical evaluator/metadata objects remain locale-neutral; `/badges` and `BadgeUnlockToast` resolve localized presentation by ID while the shared public Profile remains Portuguese. Focused tests prove catalog completeness, date localization, strict achievement-order assertions, reconquest/notification semantics and public-projection isolation. Stateful achievement unlock proof stays in the Firebase Emulators, while Production validation remains non-destructive and verifies route/document/isolation behaviour only.
 
 AB-EV-055 extends the same bounded model to the canonical public Profile: a route-scoped provider/document locale, anonymous same-path language switching, locale-neutral public projection, reuse of C45H stable-ID achievement presentation and explicit owner/viewer isolation. The Test Lead then found two distinct Production Product Defects: the authenticated public Profile Header omitted the translated authenticated labels (AB-DEF-019), and classic-scrollbar width altered centred Header geometry between short loading and long content (AB-DEF-020). Each fix received a minimal commit, focused Emulator regression, exact READY deployment and real-browser Test Lead acceptance. Headless overlay-scrollbar runs are functional regression evidence, not proof of native pixel stability.
+
+AB-EV-058 closes the planned localization sequence with authenticated language selection. The strategy deliberately separates control behavior, unsaved-data protection, final-file automation, responsive visual acceptance, exact-SHA deployment and Production human retest. AB-DEF-021 demonstrates why two controls that represent the same state must be tested bidirectionally: cookie-only reload was insufficient on a route-authoritative public Home. C45M also operationalised LL-66: agent work was bounded, stale checkpoints were invalidated explicitly, and the final hotfix was accepted only after an edit-free final-file Vitest/E2E freeze.
 
 This reduces wasted execution time while retaining traceable risk-based coverage.
 
@@ -448,6 +450,7 @@ Review this strategy when authentication, travel-status/Wishlist rules, persiste
 - `evidence/v1.0/regression/ab-ev-055-c45j-public-profile-localization-and-fixes.md`
 - `evidence/v1.0/regression/ab-ev-056-c45k-geographic-localization.md`
 - `evidence/v1.0/regression/ab-ev-057-c45l-password-reset-action-localization.md`
+- `evidence/v1.0/regression/ab-ev-058-c45m-authenticated-language-selector-and-production-hotfix.md`
 
 ## C45K / AB-EV-056 — geographic localization closure
 
@@ -460,3 +463,11 @@ C45K adds regression expectations for every active consumer of shared localized 
 C45L used a Server Page for mode-scoped metadata and a Client Component for Firebase action-code handling instead of illegally exporting generateMetadata from a client page. Test design covered real Auth Emulator oobCode recovery and login with the new password; unambiguous locators and actual 15-character policy; contextual locale resolution; and selective C45E/C45F/C45G/C45H/C45D E2E oracle updates after a legitimate requirement change. An initial Turbopack cache error was an environment blocker corrected before the final run. A follow-up E2E-only mobile change required an affected 390×844 rerun, not the entire suite.
 
 [Consolidated evidence](../evidence/v1.0/regression/ab-ev-057-c45l-password-reset-action-localization.md).
+
+## C45M / AB-EV-058 — authenticated language selection strategy
+
+C45M uses layered evidence rather than one aggregate pass rate: component tests protect menu order, friendly names, selected-state and keyboard/focus behavior; focused Emulator E2E proves six-locale switching, cookie/document/session continuity and dirty-state protection; viewport/manual QA covers submenu layout at 390×844 and 320×568; and Production smoke validates the deployed authenticated journey.
+
+After AB-DEF-021 was found in Production, only the invalidated public-Home convergence path was reopened. The final hotfix checkpoint froze the three changed files, reran `Header.c45m.test.tsx` 8/8 and the single protected Emulator E2E 1/1 with `realFirebaseRequests=0`, then published the exact tested state. Broad earlier green checkpoints were carried forward where the hotfix did not invalidate them. Vercel READY and Test Lead Production behavior are recorded separately.
+
+[Consolidated evidence](../evidence/v1.0/regression/ab-ev-058-c45m-authenticated-language-selector-and-production-hotfix.md).

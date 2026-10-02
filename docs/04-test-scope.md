@@ -6,7 +6,7 @@ This document defines the testing scope for AtlasBadge during incremental V1.0 d
 
 It identifies covered product areas, expected depth, current coverage, mandatory remaining work and intentionally deferred items.
 
-> **Document status:** Completed and maintained through AB-EV-057. C39–C44 cover the current privacy/order/public-display, editable-name, visual-identity and visit-photo baseline. C45A establishes public locale routing; C45B completes the localized public Home/Hero/Header/Footer surface and language selector; C45C completes Login/auth entry; C45D Onboarding/profile creation; C45E email verification; C45F the authenticated `/app` shell/dashboard; C45G the deep authenticated country/visit editor. C45H completes authenticated `/badges`, all current achievement title/description presentation, locale-aware earned dates and `BadgeUnlockToast` for the six approved V1.0 locales while preserving achievement-domain and public-Profile contracts. C45I completes Profile Edit plus embedded access-method/account-deletion presentation localization while preserving profile persistence, auth/security behaviour and the separate public-Profile localization boundary. C45J subsequently localizes that canonical public-Profile boundary; two narrowly scoped follow-ups fix authenticated Header labels (AB-DEF-019) and short-loading/long-content Header shift (AB-DEF-020), with Production visual approval on 20 September 2026.
+> **Document status:** Completed and maintained through AB-EV-058. C39–C44 cover the current privacy/order/public-display, editable-name, visual-identity and visit-photo baseline. C45A establishes public locale routing; C45B completes the localized public Home/Hero/Header/Footer surface and language selector; C45C completes Login/auth entry; C45D Onboarding/profile creation; C45E email verification; C45F the authenticated `/app` shell/dashboard; C45G the deep authenticated country/visit editor. C45H completes authenticated `/badges`, all current achievement title/description presentation, locale-aware earned dates and `BadgeUnlockToast` for the six approved V1.0 locales while preserving achievement-domain and public-Profile contracts. C45I completes Profile Edit plus embedded access-method/account-deletion presentation localization while preserving profile persistence, auth/security behaviour and the separate public-Profile localization boundary. C45J subsequently localizes that canonical public-Profile boundary; two narrowly scoped follow-ups fix authenticated Header labels (AB-DEF-019) and short-loading/long-content Header shift (AB-DEF-020), with Production visual approval on 20 September 2026.
 
 ---
 
@@ -216,7 +216,7 @@ Coverage includes:
 - desktop/mobile layout and modal scroll lock;
 - sanitisation of public root/place fields.
 
-C45J/AB-EV-055 executes public-Profile presentation localization for all six V1.0 locales while preserving public projection, read-only viewer state, owner Edit Profile, memory/photo/Wishlist visibility, stable achievement IDs/chronology and unprefixed `/@username` routing. Its localized Header/Footer and anonymous selector preserve the contextual authenticated/anonymous distinction. C45J-FIX1/AB-DEF-019 closes Portuguese fallback in the authenticated public-Profile Header; C45J-FIX2/AB-DEF-020 closes the loading-to-content Header displacement by reserving scrollbar gutter at root. C45G/C45H/C45I remain the preceding isolation/projection baselines; geographic country/continent display names, resetPassword and authenticated language selection are separate future work.
+C45J/AB-EV-055 executes public-Profile presentation localization for all six V1.0 locales while preserving public projection, read-only viewer state, owner Edit Profile, memory/photo/Wishlist visibility, stable achievement IDs/chronology and unprefixed `/@username` routing. Its localized Header/Footer and anonymous selector preserve the contextual authenticated/anonymous distinction. C45J-FIX1/AB-DEF-019 closes Portuguese fallback in the authenticated public-Profile Header; C45J-FIX2/AB-DEF-020 closes the loading-to-content Header displacement by reserving scrollbar gutter at root. C45G/C45H/C45I remain the preceding isolation/projection baselines; geographic country/continent display names, resetPassword and authenticated language selection were delivered as C45K, C45L and C45M respectively and now remain regression scope.
 
 ### 6.5 Counters and statistics — Executed / regression risk
 
@@ -253,7 +253,7 @@ C45B/AB-EV-046 completes the translated public Home/Hero/Header/Footer layer acr
 
 C45C–C45E extend localization through Login, Onboarding and email verification. C45F/AB-EV-051 localizes the authenticated `/app` shell/dashboard. C45G/AB-EV-052 localizes the deep country/visit editor. C45H/AB-EV-053 localizes the authenticated `/badges` route, metadata/document language, achievement title/description presentation, earned-date formatting and Badge Unlock notification while preserving locale-neutral achievement IDs/rules/metadata.
 
-C45J/AB-EV-055 completes the canonical unprefixed public Profile presentation for six locales (with FIX1/FIX2 closed). C45K/AB-EV-056 completes geographic **display-name** localization for supported consumers without changing canonical IDs, user-authored data or the public projection. C45L/AB-EV-057 closes resetPassword action presentation in six locales. Remaining localization scope includes the future authenticated language selector (C45M). Profile Edit remains complete under C45I/AB-EV-054. User-authored content is not automatically translated. C45B's root `headers()` solution makes the page tree request-time dynamic; the architecture review accepted this as bounded V1.0 technical debt because eliminating it would require a disproportionate multi-root route migration.
+C45J/AB-EV-055 completes the canonical unprefixed public Profile presentation for six locales (with FIX1/FIX2 closed). C45K/AB-EV-056 completes geographic **display-name** localization for supported consumers without changing canonical IDs, user-authored data or the public projection. C45L/AB-EV-057 closes resetPassword action presentation in six locales. C45M/AB-EV-058 completes authenticated language selection; the planned C45A–C45M V1.0 localization sequence is closed and now remains regression scope. Profile Edit remains complete under C45I/AB-EV-054. User-authored content is not automatically translated. C45B's root `headers()` solution makes the page tree request-time dynamic; the architecture review accepted this as bounded V1.0 technical debt because eliminating it would require a disproportionate multi-root route migration.
 
 ### 6.8 Performance and responsiveness — Partially executed / ongoing
 
@@ -372,7 +372,7 @@ Current gaps/deferred areas include:
 - formal accessibility certification/native AT matrix;
 - quantitative performance SLAs;
 - future Story/social features beyond current scope;
-- authenticated-selector localization (C45M); resetPassword action (C45L) and geographic display-name mapping (C45K) are completed and remain regression scope;
+- authenticated-selector localization (C45M/AB-EV-058), resetPassword action (C45L/AB-EV-057) and geographic display-name mapping (C45K/AB-EV-056) are completed and remain regression scope;
 - geographic presentation regression on future consumers (initial mapping completed by C45K/AB-EV-056);
 - separate legacy UK-selector unreachable-code cleanup.
 
@@ -422,6 +422,7 @@ Release approval is blocked by evidence of:
 - `evidence/v1.0/regression/ab-ev-055-c45j-public-profile-localization-and-fixes.md`
 - `evidence/v1.0/regression/ab-ev-056-c45k-geographic-localization.md`
 - `evidence/v1.0/regression/ab-ev-057-c45l-password-reset-action-localization.md`
+- `evidence/v1.0/regression/ab-ev-058-c45m-authenticated-language-selector-and-production-hotfix.md`
 - `docs/10-lessons-learned.md`
 
 ## C45K / AB-EV-056 — geographic localization closure
@@ -435,3 +436,13 @@ C45K completes the six-locale geographic presentation across the picker, search,
 C45L completes localized resetPassword action states, metadata, validation, errors, success and Login return in pt-BR/pt-PT/es-419/es-ES/fr/en-GB. C45E verifyEmail and unsupported/missing-mode fallback remain regression contracts. 29/29 affected Edge/Firebase Emulator E2E were reported; a separate 1 PASS viewport 390×844 covered fr/en-GB/pt-PT states. Test Lead manually approved supported local visuals. Physical handset and live Production password-reset behavior were NOT EXECUTED; Vercel exact-SHA READY does not substitute for a functional Production reset.
 
 [Consolidated evidence](../evidence/v1.0/regression/ab-ev-057-c45l-password-reset-action-localization.md).
+
+## C45M / AB-EV-058 — authenticated language selector scope closure
+
+**In scope:** authenticated avatar-menu locale switching for `pt-BR`, `pt-PT`, `es-419`, `es-ES`, `fr` and `en-GB`; friendly language labels; current selection; keyboard/focus behavior; locale cookie and document-language continuity; preservation of path/search/hash and authentication; public-selector parity; and unsaved/saving editor protection for visit, non-physical memory, memory-order and manual-visit-order flows.
+
+**Regression boundary:** anonymous public selectors remain supported; choosing the current locale closes without reload; dirty changes require explicit cancel/discard; an existing confirmation surface must not be overwritten; successful discard produces one intentional navigation/reload without duplicate native `beforeunload`. No Firestore Rules/schema/config change is part of C45M.
+
+AB-DEF-021 specifically reopened authenticated public-Home bidirectional locale convergence. Final focused automated and Production Test Lead retest close that gap. Physical-device execution is not claimed; responsive viewport evidence covers 390×844 and 320×568.
+
+[Consolidated evidence](../evidence/v1.0/regression/ab-ev-058-c45m-authenticated-language-selector-and-production-hotfix.md).

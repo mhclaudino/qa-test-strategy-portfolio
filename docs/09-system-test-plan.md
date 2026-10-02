@@ -1,11 +1,11 @@
 # AtlasBadge V1.0 System Test Plan
 
 **Document status:** Active / change-controlled  
-**Execution status:** Incremental system testing in progress; latest baseline reviewed through AB-EV-057; C45L local Test Lead Visual PASS and exact-SHA Production deployment READY — 22 September 2026  
+**Execution status:** Incremental system testing in progress; latest baseline reviewed through AB-EV-058; C45M authenticated language selection and AB-DEF-021 hotfix are CLOSED / Production PASS — Test Lead approved 2 October 2026  
 **Product:** AtlasBadge  
 **Target release:** V1.0  
 **Document owner:** Test Lead/Product Owner  
-**Last updated:** 22 September 2026
+**Last updated:** 2 October 2026
 
 ---
 
@@ -636,7 +636,7 @@ Before drafting **each** task for Codex, Gemini/Antigravity or another implement
 | Checkpoint economy | Named previous PASS and its invalidating change; select the smallest layer that can restore the specific confidence gap; no repeated full E2E as a discovery technique. |
 | Exit | Report PASS/FAIL/SKIPPED, exact test names, final-file state, exit codes and missing assertions; keep BLOCKED on unresolved diagnosis, unsafe environment or incomplete evidence. No commit/push/deploy/Portfolio evidence until separately authorised. |
 
-**Coordinator enforcement:** If preflight or diagnosis is incomplete, do not issue a repair prompt; request read-only evidence. Do not broaden a task or budget automatically when the agent reports a timeout. Test Lead makes the next scope/usage decision. Carry forward unaffected green checkpoints explicitly; any later file edit triggers a targeted invalidation check. C45M remains open and must not be described here as Product PASS or an AB-EV-058 release closure.
+**Coordinator enforcement:** If preflight or diagnosis is incomplete, do not issue a repair prompt; request read-only evidence. Do not broaden a task or budget automatically when the agent reports a timeout. Test Lead makes the next scope/usage decision. Carry forward unaffected green checkpoints explicitly; any later file edit triggers a targeted invalidation check. C45M subsequently closed under AB-EV-058 only after final-file evidence, exact-SHA deployment and Test Lead Production retest; the LL-66 gate remains a standing control.
 
 ### Recent applications
 
@@ -775,6 +775,35 @@ Node: 22.x / Next.js 16.2.11
 Production technical smoke: PASS
 Stateful/visual Badges/achievement/toast evidence: local/Firebase Emulator PASS
 Decision: C45H CLOSED / PRODUCTION TECHNICAL PASS + LOCAL/EMULATOR VISUAL PASS — Test Lead approved — 17 September 2026
+
+AB-EV-054 / C45I:
+Commit: ecc2b735e284a0babfa15b9febcda297ad2846ce
+Vercel Production: dpl_EaQtK4iv6FjaKdachTj5UKAinhan
+State: READY
+Decision: C45I CLOSED / PRODUCTION TECHNICAL + VISUAL PASS — Test Lead approved — 18 September 2026
+
+AB-EV-055 / C45J / AB-DEF-019 / AB-DEF-020:
+Product/fix commits: 2f3a640e7a1ba44c065d8ad876d23f0213878175; 84b26512a9e3bc44b2bc68a718b54caf2bbd1eec; 309096bcf8bd85c7528592d03c00e5de41729889
+Vercel Production: dpl_59LUTwNK1AzikFk9yQyVNhqBZgKw; dpl_56Fzo29QSxT51j3tTAjkDxxMjjHn; dpl_Ht2fTLy3xmcvhfz4291RVKvY9j4X
+State: READY
+Decision: C45J + FIX1/FIX2 CLOSED; AB-DEF-019/020 CLOSED — Test Lead approved — 20 September 2026
+
+AB-EV-056 / C45K:
+B7 Product: a74358b8769abbd9533f2bf6ca7467419badc69d / dpl_9efHWAcGxCrNjci46HsZ6K2PPPMx READY
+B8 test-only: 9374273e4dcc5745628267de61e96c0b12740e00 / dpl_69uaKtiqJcj2ZvucWhQDMFrwK5JH READY
+Decision: C45K CLOSED; final Edge/Emulator E2E 66/66 PASS; Test Lead Production Visual PASS
+
+AB-EV-057 / C45L:
+Product: 6f308276600be2b14b15076def0c33a16c118770
+Vercel Production: dpl_AzasBv7Wo4bKtSfJBTVFAi6xGTE9 READY exact SHA
+Decision: C45L local technical/visual PASS; physical phone/live Production reset NOT EXECUTED
+
+AB-EV-058 / C45M / AB-DEF-021:
+Feature: 8e3f97269036deaa26eca17c8d5fc34eefc1bde4 / dpl_3LrMiQNSMwhTiVKmTGGumrEmPmVc READY exact SHA
+Hotfix: 447b568bd70c445c0a98220fcd134fd5bb843259 / dpl_8LiFm2GyN6cKDuQZdW9i7fLP8VPp READY exact SHA
+Final focused hotfix evidence: Header 8/8 PASS; protected Emulator E2E 1/1 PASS; realFirebaseRequests=0
+Production retest: PASS / Test Lead approved — 2 October 2026
+Decision: C45M CLOSED; AB-DEF-021 CLOSED
 ```
 
 ---
@@ -798,7 +827,7 @@ Requirement / rule
 
 The central public index is `evidence/v1.0/evidence-register.md`.
 
-Current recent evidence is AB-EV-033 through AB-EV-053.
+Current recent evidence is AB-EV-033 through AB-EV-058.
 
 ---
 
@@ -814,7 +843,7 @@ An increment may be approved when:
 - required Production validation is complete or its limitation explicitly accepted;
 - residual risks are retained in the risk register.
 
-The official V1.0 final release assessment additionally depends on completion/acceptance of the remaining mandatory scope, including remaining localisation, compatibility/performance and final reset/clean-start activities as applicable. C44 one-photo-per-`RegisteredVisit` scope and C45A–C45H public-Home + auth-entry + Onboarding + email-verification + authenticated-dashboard + deep-editor + Badges/achievement localization baseline are closed and retained as regression coverage.
+The official V1.0 final release assessment additionally depends on completion/acceptance of the remaining mandatory scope, including compatibility/performance and final reset/clean-start activities as applicable. C44 one-photo-per-`RegisteredVisit` scope and the planned C45A–C45M localization sequence are closed and retained as regression coverage.
 
 The final release decision belongs to the Test Lead/Product Owner.
 
@@ -831,8 +860,8 @@ The final release decision belongs to the Test Lead/Product Owner.
 - Formal accessibility certification/native assistive-technology coverage is not claimed.
 - No independent penetration/security audit or formal load test has been completed.
 - C44 one-photo-per-`RegisteredVisit` is implemented, Production-approved and retained as permanent regression scope, including the free 10-photo quota and server-mediated read/privacy boundary.
-- C45A/C45B public-Home localisation, C45C Login localisation, C45D Onboarding localisation, C45E email-verification localisation, C45F authenticated-dashboard localisation, C45G deep country/visit-editor localisation, C45H Badges/achievement/toast localisation and C45I Profile Edit/account-presentation localisation and C45J public-Profile localisation including FIX1/FIX2 are approved.
-- Remaining localization includes authenticated language switching (C45M); resetPassword action presentation is completed by C45L/AB-EV-057 and country/continent display names by C45K/AB-EV-056.
+- C45A–C45M planned V1.0 localization is approved: public Home/routing, Login, Onboarding, email verification, authenticated dashboard/deep editor, Badges/achievement/toast, Profile Edit, public Profile/FIX1/FIX2, geographic display names, resetPassword action and authenticated language switching. C45M/AB-EV-058 includes AB-DEF-021 closure and bidirectional Production selector retest.
+- User-authored content remains intentionally untranslated; localization remains regression scope rather than open implementation scope.
 - The current root-layout `headers()` approach makes page rendering request-time dynamic and is retained as explicit V1.0 technical debt pending any future multi-root routing redesign.
 - The legacy UK-selector modal remains an unreachable-code cleanup candidate rather than a Product Defect.
 - The extra `travelMap.clearMap.emulator.test.ts` anonymous LIST/Rules diagnostic remains separate pre-existing test/environment debt; C45G did not modify its source boundary.
@@ -865,6 +894,9 @@ The final release decision belongs to the Test Lead/Product Owner.
 - `evidence/v1.0/regression/ab-ev-053-c45h-badges-achievements-localization.md`
 - `evidence/v1.0/regression/ab-ev-054-c45i-profile-edit-localization.md`
 - `evidence/v1.0/regression/ab-ev-055-c45j-public-profile-localization-and-fixes.md`
+- `evidence/v1.0/regression/ab-ev-056-c45k-geographic-localization.md`
+- `evidence/v1.0/regression/ab-ev-057-c45l-password-reset-action-localization.md`
+- `evidence/v1.0/regression/ab-ev-058-c45m-authenticated-language-selector-and-production-hotfix.md`
 - `docs/10-lessons-learned.md`
 
 ## C45K / AB-EV-056 — geographic localization and integrated closure
@@ -880,3 +912,13 @@ The final release decision belongs to the Test Lead/Product Owner.
 C45L/AB-EV-057 localizes the mode=resetPassword action across six locales while preserving mode=verifyEmail, missing/unsupported-mode fallback, Firebase Auth action-code behavior, minimum 15-character policy and localized Login return. Production Product commit `6f308276600be2b14b15076def0c33a16c118770` / Vercel `dpl_AzasBv7Wo4bKtSfJBTVFAi6xGTE9` READY exact SHA. Agent-reported final Edge/Firebase Emulator affected suite 29 PASS (0 FAIL/0 SKIPPED), separate fr/en-GB/pt-PT 390×844 mobile 1 PASS, Vitest 832 PASS/37 SKIPPED, tsc/lint/build PASS, `realFirebaseRequests=0`. Test Lead approved executable local visual checks. Physical phone NOT EXECUTED; live Production reset NOT EXECUTED. After a first Turbopack cache failure, `.next` cleanup preceded the successful run. C45E historical pt-BR reset isolation remains a historical observation only; C45L updates prospective assertions.
 
 [Consolidated evidence](../evidence/v1.0/regression/ab-ev-057-c45l-password-reset-action-localization.md).
+
+## C45M / AB-EV-058 — authenticated language selector, dirty-state safety and Production closure
+
+C45M adds authenticated six-locale switching through the avatar menu, keeps anonymous public selectors, localizes friendly language labels, preserves selected/focus/keyboard behavior, and integrates unsaved-data protection across VisitEditor, NonPhysicalMemoryEditor, MemoryOrderEditor and ManualVisitOrderEditor. A saving editor blocks switching; dirty state routes through the existing confirmation contract; current-locale selection closes without a redundant reload; confirmed discard produces one intentional navigation/reload.
+
+Authoritative pre-release evidence includes the final C45M 7/7 Edge/Emulator E2E run with 0 FAIL/0 SKIPPED and `realFirebaseRequests=0`, focused dirty protection 2/2, Header 6/6, supporting mutation/manual-order tests, Node 22.23.2 TypeScript/lint/build gates and Test Lead 390×844/320×568 visual acceptance. Feature commit `8e3f97269036deaa26eca17c8d5fc34eefc1bde4` deployed as `dpl_3LrMiQNSMwhTiVKmTGGumrEmPmVc` READY.
+
+Production smoke then found AB-DEF-021: avatar switching on localized public Home persisted the target cookie but reloaded the old locale route, so route-derived `publicHomeLocale` remained authoritative. The hotfix preserves query/hash and navigates the public-Home branch to the target localized route while ordinary authenticated app routes retain their prior reload behavior. After investigation, the authoritative final-file hotfix evidence was frozen and rerun with **8/8 Header Vitest + 1/1 focused protected E2E + `realFirebaseRequests=0` + TypeScript/diff PASS**. Hotfix `447b568bd70c445c0a98220fcd134fd5bb843259` deployed as `dpl_8LiFm2GyN6cKDuQZdW9i7fLP8VPp` READY, and Test Lead Production retest confirmed avatar→flag and flag→avatar synchronization with authenticated-session continuity. Query/hash preservation is covered by the focused Emulator E2E. Physical-device execution is not claimed.
+
+[Consolidated evidence](../evidence/v1.0/regression/ab-ev-058-c45m-authenticated-language-selector-and-production-hotfix.md).

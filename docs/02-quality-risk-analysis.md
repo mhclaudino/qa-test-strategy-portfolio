@@ -6,7 +6,7 @@ This document identifies, evaluates and prioritises the main quality risks assoc
 
 This is a living analysis. Risk scores and priorities must be reviewed whenever the product, architecture, geographic catalogue, privacy model or release scope changes.
 
-> **Document status:** Reviewed through AB-EV-057. C39–C44 establish the current privacy/order/public-rendering, editable-name, visual-identity and visit-photo baselines. C45A closes the localisation-routing foundation, C45B the public-Home translation/selector layer, C45C Login/auth entry, C45D Onboarding/profile creation, C45E email verification, C45F the authenticated dashboard shell and C45G the deep country/visit editor for all six V1.0 locales. C45H closes the authenticated `/badges` and achievement-presentation localization risk while preserving achievement IDs, evaluator criteria, chronology/reconquest metadata, public achievement projection and shared public-Profile isolation. C45I closes Profile Edit localization risk through scoped locale resolution and stable-code presentation mapping while preserving username/social/avatar persistence, account-linking/password/deletion behaviour and external public-Profile isolation. C45J localizes canonical public Profile presentation without modifying its public-source/privacy contract; AB-DEF-019 authenticated Header fallback and AB-DEF-020 loading scrollbar layout shift were corrected, retested and approved in Production under AB-EV-055.
+> **Document status:** Reviewed through AB-EV-058. C39–C44 establish the current privacy/order/public-rendering, editable-name, visual-identity and visit-photo baselines. C45A closes the localisation-routing foundation, C45B the public-Home translation/selector layer, C45C Login/auth entry, C45D Onboarding/profile creation, C45E email verification, C45F the authenticated dashboard shell and C45G the deep country/visit editor for all six V1.0 locales. C45H closes the authenticated `/badges` and achievement-presentation localization risk while preserving achievement IDs, evaluator criteria, chronology/reconquest metadata, public achievement projection and shared public-Profile isolation. C45I closes Profile Edit localization risk through scoped locale resolution and stable-code presentation mapping while preserving username/social/avatar persistence, account-linking/password/deletion behaviour and external public-Profile isolation. C45J localizes canonical public Profile presentation without modifying its public-source/privacy contract; AB-DEF-019 authenticated Header fallback and AB-DEF-020 loading scrollbar layout shift were corrected, retested and approved in Production under AB-EV-055.
 
 ---
 
@@ -357,6 +357,7 @@ QR-01 and QR-25 are no longer open investigations. Their residual concern is reg
 8. Future Clear Map/public-projection cleanup changes preserve generation invalidation and keep physical garbage collection correctness-independent.
 9. Future rich QA fixtures that create derived achievement/projection state use or reproduce the same reconciliation lifecycle as normal Product flows before manual handoff.
 10. Future localized consumers of shared achievement components continue to supply presentation additively so unlocalized consumers cannot inherit a locale accidentally.
+11. Future changes to locale controls preserve one convergent route/cookie/document/selected-state contract across public flags and authenticated selectors, including unsaved-data protection and query/hash/session continuity where applicable.
 
 ---
 
@@ -364,7 +365,7 @@ QR-01 and QR-25 are no longer open investigations. Their residual concern is reg
 
 Resolved V1.0 decisions must not be reopened without new evidence or an explicit requirement correction: explicit Save for memories, character-limit policy, retry-safe account deletion, real-time/OCC controls, password minimum/passphrases, canonical usernames, immediate username reuse, Passed-through detailed-visit workflow, QR-01 failed-write recovery baseline, C35 Visited + Passed-through coexistence, C36 Wishlist atomic settings/root-order model, C37 Clear Map atomic generation-reset model, accessibility technical baseline, responsive baseline, achievement chronology, map/profile parity, geographic counters, dashboard/manual ordering, Wishlist/public-profile projection and the C45A public-locale routing foundation.
 
-Open questions remain around username allowed characters, broader browser/device support, native assistive-technology coverage, localisation completion beyond the executed C45A–C45L public-Home + auth-entry + onboarding + verification + authenticated-dashboard + deep-editor + Badges/achievements + Profile-Edit + public-Profile baseline, quantitative performance targets, future Story/share scope and `FUTURE-PAID-01`, a possible post-V1.0 monetisation model if infrastructure cost requires it. C45K geographic names and C45L resetPassword action presentation are closed; remaining localization includes authenticated language selection (C45M); public Profile C45J/FIX1/FIX2 is closed. C44's free 10-photo quota is implemented and is not an open V1.0 question. The legacy UK-selector modal remains a non-defect technical cleanup/reachability follow-up.
+Open questions remain around username allowed characters, broader browser/device support, native assistive-technology coverage, quantitative performance targets, future Story/share scope and `FUTURE-PAID-01`, a possible post-V1.0 monetisation model if infrastructure cost requires it. The planned C45A–C45M V1.0 localization sequence is closed: C45K geographic names, C45L resetPassword action presentation and C45M authenticated language switching have completed their evidence/release cycles; public Profile C45J/FIX1/FIX2 is also closed. User-authored content remains intentionally untranslated. C44's free 10-photo quota is implemented and is not an open V1.0 question. The legacy UK-selector modal remains a non-defect technical cleanup/reachability follow-up.
 
 ---
 
@@ -415,6 +416,7 @@ A change to the public projection whitelist, Wishlist source of truth, Wishlist 
 - `evidence/v1.0/regression/ab-ev-055-c45j-public-profile-localization-and-fixes.md`
 - `evidence/v1.0/regression/ab-ev-056-c45k-geographic-localization.md`
 - `evidence/v1.0/regression/ab-ev-057-c45l-password-reset-action-localization.md`
+- `evidence/v1.0/regression/ab-ev-058-c45m-authenticated-language-selector-and-production-hotfix.md`
 
 ## C45K / AB-EV-056 — geographic localization closure
 
@@ -427,3 +429,11 @@ C45K geographic localization is a presentation layer over the existing 251/252/1
 C45L/AB-EV-057 extends QR-08 password-policy regression, QR-39 390×844 responsive regression and QR-40 accessible localized form presentation, without revising their accepted risk states. Genuine Auth Emulator recovery→new password→Login E2E demonstrated the affected path; the physical phone and live Production reset were NOT EXECUTED and remain explicit evidence limits. Historical C45E pt-BR-only resetPassword isolation is superseded by the C45L requirement, not a C45E defect.
 
 [Consolidated evidence](../evidence/v1.0/regression/ab-ev-057-c45l-password-reset-action-localization.md).
+
+## C45M / AB-EV-058 — authenticated locale convergence and data-loss protection
+
+C45M closes the remaining planned authenticated language-selection risk for the six V1.0 locales. The selector preserves locale as presentation state only, keeps anonymous public selectors working, and protects dirty/saving editor states so a language change cannot silently discard in-progress visit, memory or manual-order edits.
+
+AB-DEF-021 was a genuine Production presentation/navigation defect rather than a localization-oracle or environment failure: on authenticated public Home, the avatar menu persisted the target locale but reloaded the old localized route, allowing route-derived state to overwrite the preference. The focused hotfix established a single convergence contract across route, `atlasbadge_locale`, `html lang`, public flag and avatar selected state while preserving query/hash and session continuity. The defect is closed after exact-SHA deployment and Test Lead Production retest. Residual browser/device breadth remains under QR-39/QR-40; physical-device C45M execution is not claimed.
+
+[Consolidated evidence](../evidence/v1.0/regression/ab-ev-058-c45m-authenticated-language-selector-and-production-hotfix.md).

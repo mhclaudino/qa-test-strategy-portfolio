@@ -8,7 +8,7 @@ It is deliberately not a diary of every defect, test run or implementation decis
 
 The emphasis is on reducing avoidable work while preserving risk-based confidence and traceability.
 
-> **Document status:** Active / maintained. Consolidated through AB-EV-057; LL-66 records an in-progress C45M process-control lesson (not release sign-off).
+> **Document status:** Active / maintained. Consolidated through AB-EV-058. LL-66 originated during C45M and remains a standing process-control rule; LL-67 captures the Product-state convergence lesson from AB-DEF-021.
 
 ---
 
@@ -582,11 +582,19 @@ All three must be true before the environment is called “ready”.
 
 ### LL-66 — Make AI-agent investigation a bounded, evidence-gated operation
 
-**Observation:** During C45M (still open), repeated long Playwright runs, speculative locator changes, late edits after claimed gates and a temporary real-Firebase local configuration exhausted an agent usage window without a stable full-E2E result. Repeated corrective prompts did not enforce the already documented LL-01–LL-05, LL-16, LL-22, LL-38, LL-58 and LL-62 rules. This is a process failure, not an assertion that C45M Product behaviour is defective or complete.
+**Observation:** During C45M, repeated long Playwright runs, speculative locator changes, late edits after claimed gates and a temporary real-Firebase local configuration exhausted an agent usage window before a stable full-E2E checkpoint existed. Repeated corrective prompts initially failed to enforce the already documented LL-01–LL-05, LL-16, LL-22, LL-38, LL-58 and LL-62 rules. C45M later closed only after the work was re-bounded, stale evidence was invalidated explicitly, the final hotfix files were frozen, and the affected tests were rerun without further edits. This was a process-control failure distinct from the separately confirmed Product Defect AB-DEF-021.
 
 **Working rule:** Before every delegated agent prompt, the coordinating reviewer must read this active Lessons Learned document and the relevant Test Plan sections, identify the specific applicable LL IDs in the prompt, and pass a **fail-closed preflight**: one bounded objective; exact baseline and untracked-file inventory; intended test environment and observable Firebase isolation; current requirement/oracle; invalidated checkpoint; cheapest diagnostic layer; explicit stop condition; no Product/Portfolio publication authority. A debugging assignment has an initial allowance of **one focused reproduction plus at most one evidence-based retry**; after that, stop and return the trace/DOM state, exact failure step, root-cause status and smallest proposed next action for Test Lead review. Never silently turn a diagnostic assignment into a long repair-and-regression campaign. Additional runs require a separately approved, newly scoped task. The agent must not launch a full suite until the focused blocker is resolved, must remove `.only`/unapproved skips before final execution, and must report exact final-file counts and exit codes. An unresolved root cause, unsafe backend or missing assertion means BLOCKED, not READY. An automated assistant's instructions cannot guarantee compliance by an external agent: this rule is an auditable review/stop gate, not an assertion of a technical kill switch.
 
 **Benefit:** Makes model-usage, environment and evidence risks visible before spending capacity; arrests repetitive trial-and-error and prevents incomplete work being promoted to Test Lead QA or publication.
+
+### LL-67 — Multiple controls for one locale need a single convergence contract
+
+**Observation:** AB-DEF-021 appeared after C45M reached Production: the authenticated avatar selector and the public-Home flag selector represented the same active locale but used different transition mechanics. The avatar path persisted `atlasbadge_locale` and reloaded the existing localized route; the route-derived `publicHomeLocale` then remained authoritative, so the user's apparent selection reverted.
+
+**Working rule:** When multiple controls mutate the same presentation state, define and test one convergence contract across **control → canonical route → saved preference → document locale → other control**. Exercise both directions, preserve search/hash and authenticated session where applicable, and test the current-value no-op. Do not assume a cookie write plus reload is equivalent to route navigation when the route also encodes state.
+
+**Benefit:** Prevents split-brain UI state and turns multi-control consistency into an explicit browser-level acceptance criterion.
 
 ## 7. Standing efficiency rules
 
@@ -646,6 +654,7 @@ The following compact rules apply to future AtlasBadge work:
 52. Use genuine disposable Auth Emulator action codes and the current password policy for reset-form E2E.
 53. Keep action links and test identities out of public evidence and staged commits; distinguish viewport/mobile-device and READY/Production functional proof.
 54. Preflight each delegated agent task against the current Lessons Learned and Test Plan; limit debugging to one focused run plus one evidence-based retry, then STOP/BLOCKED pending new Test Lead scope. Never substitute repeated broad E2E runs or agent confidence for final-file execution evidence.
+55. When two or more UI controls change one locale/state, prove bidirectional convergence through the canonical route, persisted preference, document state and peer-control selection; preserve query/hash/session as part of the contract.
 
 ---
 
@@ -700,3 +709,4 @@ Do not add a lesson merely because an isolated defect occurred.
 - `evidence/v1.0/regression/ab-ev-055-c45j-public-profile-localization-and-fixes.md`
 - `evidence/v1.0/regression/ab-ev-056-c45k-geographic-localization.md`
 - `evidence/v1.0/regression/ab-ev-057-c45l-password-reset-action-localization.md`
+- `evidence/v1.0/regression/ab-ev-058-c45m-authenticated-language-selector-and-production-hotfix.md`

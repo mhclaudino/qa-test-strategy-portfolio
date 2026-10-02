@@ -32,7 +32,7 @@ This document applies to:
 * future releases;
 * selected public portfolio reporting.
 
-> **Document status:** Initial completed version based on the current AtlasBadge quality process, the existing QA portfolio documents, and the metrics and reporting decisions confirmed by the Test Lead.
+> **Document status:** Completed and maintained through AB-EV-058 based on the current AtlasBadge quality process, the existing QA portfolio documents, and Test Lead-confirmed reporting decisions.
 
 ---
 
@@ -48,7 +48,8 @@ This document should be read together with:
 * [Test Environments](06-test-environments.md);
 * [Defect Management](07-defect-management.md);
 * [V1.0 Test Evidence](../evidence/v1.0/README.md)
-* [AB-EV-055 C45J release and two visual-defect closures](../evidence/v1.0/regression/ab-ev-055-c45j-public-profile-localization-and-fixes.md).
+* [AB-EV-055 C45J release and two visual-defect closures](../evidence/v1.0/regression/ab-ev-055-c45j-public-profile-localization-and-fixes.md);
+* [AB-EV-058 C45M authenticated selector and Production hotfix closure](../evidence/v1.0/regression/ab-ev-058-c45m-authenticated-language-selector-and-production-hotfix.md).
 
 These documents have different responsibilities:
 
@@ -1999,3 +2000,13 @@ Report the diagnostic **59 PASS / 7 FAIL** C45 run separately from final **66 PA
 C45L agent final run: 29/29 PASS affected Edge/Auth/Firestore/Storage Emulator E2E, separate 1 PASS 390×844 mobile viewport differential, Vitest 832 PASS / 37 SKIPPED, TypeScript/lint/build PASS, zero real Firebase requests reported. Five C45 tests updated for the superseded pt-BR-only resetPassword oracle; these changes must not inflate Product defect metrics. Test Lead local visual PASS is distinct from mobile physical NOT EXECUTED and from Production deployment READY with no reported live-Firebase functional reset smoke. Product SHA `6f308276600be2b14b15076def0c33a16c118770`; Vercel `dpl_AzasBv7Wo4bKtSfJBTVFAi6xGTE9` READY for exact SHA.
 
 [Consolidated evidence](../evidence/v1.0/regression/ab-ev-057-c45l-password-reset-action-localization.md).
+
+## C45M / AB-EV-058 — authenticated language selector reporting
+
+Report C45M as layered evidence, not one summed pass-rate figure. Before first publication, the authoritative C45M browser run was 7/7 PASS on the final feature-file state with `realFirebaseRequests=0`; dirty-protection had a focused 2/2 PASS; Header coverage reached 6/6 at that feature checkpoint; Node 22.23.2 TypeScript/lint/build gates passed, with lint reporting 0 errors and 34 warnings; and Test Lead visual checks accepted the authenticated menu/submenu at 390×844 and 320×568. Other lower-layer checkpoints such as MutationOrchestrator and manual-order integration are supporting evidence and must not be arithmetically merged into a fictitious unique-test total.
+
+The first exact-SHA Production deployment was READY but human smoke found **one Product Defect, AB-DEF-021**. Investigation attempts, stale tests, missing local Vercel CLI authentication, guard-scope mistakes and late edits are not extra Product Defects. The authoritative hotfix closure evidence is the edit-free final state: `Header.c45m.test.tsx` 8/8 PASS, one focused protected Emulator E2E 1/1 PASS, `realFirebaseRequests=0`, TypeScript PASS and diff-check PASS. Hotfix `447b568bd70c445c0a98220fcd134fd5bb843259` then reached exact-SHA Vercel READY and the Test Lead Production retest passed bidirectionally.
+
+Keep **deployment READY**, **automated Emulator PASS**, **viewport visual PASS**, **Production human PASS** and **physical-device NOT EXECUTED** as separate evidence dimensions. Query/hash preservation is automated hotfix evidence; the public Production decision records the Test Lead-confirmed two-way selector synchronization/session behavior without inflating unexecuted device coverage.
+
+[Consolidated evidence](../evidence/v1.0/regression/ab-ev-058-c45m-authenticated-language-selector-and-production-hotfix.md).

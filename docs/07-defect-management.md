@@ -25,7 +25,7 @@ The process applies to incremental development, local quality validation, regres
 
 The approach is intentionally proportional to the product and delivery model. It provides professional traceability and release governance without introducing unnecessary administrative stages or roles that do not exist in the AtlasBadge workflow.
 
-> **Document status:** Completed and maintained; latest classification example reviewed through C45K / AB-EV-056.
+> **Document status:** Completed and maintained; latest classification examples reviewed through C45M / AB-EV-058 and AB-DEF-021.
 
 ---
 
@@ -1460,6 +1460,7 @@ A suitability review is also performed:
 * [V1.0 Test Evidence](../evidence/v1.0/README.md)
 * [AB-EV-051 C45F authenticated dashboard localization](../evidence/v1.0/regression/ab-ev-051-c45f-authenticated-dashboard-localization.md)
 * [AB-EV-055 C45J public Profile localization and AB-DEF-019/020 closure](../evidence/v1.0/regression/ab-ev-055-c45j-public-profile-localization-and-fixes.md)
+* [AB-EV-058 C45M authenticated language selector and AB-DEF-021 closure](../evidence/v1.0/regression/ab-ev-058-c45m-authenticated-language-selector-and-production-hotfix.md)
 * `test-assets/exploratory-test-charters.md` — planned
 * `test-assets/sample-test-cases.md` — planned
 * `reports/test-summary-report.md` — planned
@@ -1475,3 +1476,13 @@ B8's former `Brasil`-in-English/French and pt-BR-only-public-Profile expectation
 C45L supersedes the prior C45E contractual requirement to keep resetPassword in pt-BR. Five existing C45 E2E specifications expected the old document locale and were updated as test-oracle maintenance, not recorded as five Product defects. During new E2E development, a fabricated oobCode correctly produced invalid-code UI instead of the form, ambiguous New/Confirm password locators timed out, and a test expected an obsolete eight-character minimum instead of the actual fifteen-character minimum. Correct the fixture/oracle; do not weaken Firebase or password policy. A Turbopack task-cache restoration error was an environment blocker, cleared before a clean passing integrated run. An initially shared disposable QA link was rotated; action codes and test credentials must not enter public evidence.
 
 [Consolidated evidence](../evidence/v1.0/regression/ab-ev-057-c45l-password-reset-action-localization.md).
+
+## C45M / AB-EV-058 — AB-DEF-021 versus process, harness and release-channel findings
+
+**AB-DEF-021 is a genuine Product Defect.** The released authenticated public Home exposed two locale controls representing the same state. The public flag changed the localized route, while the avatar menu only persisted the cookie and reloaded the existing route. Because `publicHomeLocale` was route-derived and had precedence over the context preference, the avatar selection appeared ineffective after reload. The behavior reproduced in valid Production state and violated the approved C45M requirement that both controls work and remain synchronized.
+
+The correction was deliberately narrow: on public Home, the authenticated selector navigates to the canonical target localized Home path while preserving search/hash; the public flag path also preserves those URL components; ordinary authenticated application routes retain their established reload behavior. Final frozen-file component/E2E evidence passed, hotfix commit `447b568bd70c445c0a98220fcd134fd5bb843259` reached exact-SHA Production READY, and the Test Lead confirmed bidirectional behavior. **AB-DEF-021 status: CLOSED.**
+
+The following C45M events are **not** additional Product Defects: stale/over-broad Playwright attempts during investigation, an E2E context that initially bypassed the intended guard, late test/file edits that invalidated earlier PASS evidence, temporary scratch diagnostics, unavailable local Vercel CLI authentication, and an earlier temporary real-Firebase local configuration. They are process/harness/environment or evidence-control findings and are governed by LL-05, LL-58, LL-62, LL-65 and LL-66 rather than defect-count inflation.
+
+[Consolidated evidence](../evidence/v1.0/regression/ab-ev-058-c45m-authenticated-language-selector-and-production-hotfix.md).
