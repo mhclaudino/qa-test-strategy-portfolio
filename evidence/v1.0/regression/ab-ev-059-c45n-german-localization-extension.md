@@ -4,9 +4,11 @@
 **Checkpoint:** C45N — German V1.0 Localization Extension  
 **Decision owner:** Test Lead / Product Owner  
 **Product repository:** `mhclaudino/atlasbadge`  
+**Portfolio repository:** `mhclaudino/qa-test-strategy-portfolio`  
 **Baseline:** C45M hotfix `447b568bd70c445c0a98220fcd134fd5bb843259`  
 **Feature publication:** `8321975158a389760c0d8d13ae7fb1036b4209c2` — `feat(i18n): add German localization` — 42 files  
 **Vercel deployment:** `dpl_8jzWEnP8uhZFzZg443Nn6sAiayjE` — **READY / production / exact SHA**  
+**Portfolio C45N publication:** `b565ac8b85bbf07b3ef21a34087dbf1354e1c9bc` — `docs(qa): add C45N German localization evidence`  
 **Technical release decision:** **C45N PRODUCTION TECHNICAL PASS — 4 October 2026**  
 **Final Test Lead visual decision:** **PENDING — deep authenticated German visual acceptance is not yet explicitly recorded.**
 
@@ -282,3 +284,43 @@ The following remain explicit rather than being silently converted into PASS:
 **Final C45N Test Lead visual acceptance:** **PENDING explicit sign-off.**
 
 Historical C45A–C45M evidence remains unchanged and retains the six-locale scope that was true when those records were produced.
+
+## 11. Portfolio publication control
+
+The C45N public evidence package was published to the QA Portfolio before the final reconciliation audit recorded here.
+
+Verified publication identity:
+
+- Portfolio commit: `b565ac8b85bbf07b3ef21a34087dbf1354e1c9bc`
+- parent: `75b2fa69929d84ea8edeca30bbd8bc947bb1ac17`
+- tree: `a48fc393c8729b6d0c35bc0a224e238c79f2b8fe`
+- actual commit message: `docs(qa): add C45N German localization evidence`
+- topology: one fast-forward commit from the previous Portfolio `main`
+- published C45N documentation scope: **12 files**
+
+The 12-file publication contains:
+
+1. `README.md`
+2. `docs/01-product-overview.md`
+3. `docs/02-quality-risk-analysis.md`
+4. `docs/03-test-strategy.md`
+5. `docs/04-test-scope.md`
+6. `docs/05-entry-exit-criteria.md`
+7. `docs/08-metrics-and-reporting.md`
+8. `docs/09-system-test-plan.md`
+9. `evidence/v1.0/README.md`
+10. `evidence/v1.0/evidence-register.md`
+11. `evidence/v1.0/regression/README.md`
+12. `evidence/v1.0/regression/ab-ev-059-c45n-german-localization-extension.md`
+
+Publication reconciliation confirmed:
+
+- `docs/06-test-environments.md`, `docs/07-defect-management.md` and `docs/10-lessons-learned.md` were not modified;
+- historical AB-EV-045 through AB-EV-058 evidence files were not modified;
+- no sentinel or scratch artefact was present in the publication diff;
+- AB-EV-059 appears in the Evidence Register and QR-39/QR-40 remain `Regression risk`;
+- the System Test Plan preserves C45M Test Lead approval on 2 October 2026 and C45N Production Technical PASS on 4 October 2026.
+
+The original ref update had already occurred before this reconciliation audit began. The resulting Git topology proves a direct fast-forward from the previous `main`, but this record does **not** retroactively claim that the original ref move was observed using an `expected_sha` lease.
+
+This publication-control clarification changes no Product result and does not convert the pending representative deep authenticated German visual Test Lead gate into an approval.
