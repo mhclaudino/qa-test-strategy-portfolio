@@ -1,11 +1,11 @@
 # AtlasBadge V1.0 System Test Plan
 
 **Document status:** Active / change-controlled  
-**Execution status:** Incremental system testing in progress; latest baseline reviewed through AB-EV-058; C45M authenticated language selection and AB-DEF-021 hotfix are CLOSED / Production PASS — Test Lead approved 2 October 2026  
+**Execution status:** Incremental system testing in progress; latest baseline reviewed through AB-EV-059; C45N German localization extension is PRODUCTION TECHNICAL PASS; final representative deep authenticated German visual acceptance remains pending explicit Test Lead sign-off — 4 October 2026  
 **Product:** AtlasBadge  
 **Target release:** V1.0  
 **Document owner:** Test Lead/Product Owner  
-**Last updated:** 2 October 2026
+**Last updated:** 4 October 2026
 
 ---
 
@@ -34,7 +34,7 @@ A material update is required when:
 
 Each update should identify what changed, affected risks/tests, which previous results remain valid, which require re-execution and the Test Lead decision.
 
-AB-EV-033 established the broad checkpointed regression baseline; AB-EV-034 and AB-EV-035 demonstrate proportional follow-up validation; AB-EV-036 applies the same principle to Wishlist atomic persistence; AB-EV-037 extends it to a destructive Clear Map redesign; AB-EV-038 hardens the manual-QA environment contract. AB-EV-039/040/041 extend the same checkpoint model to per-memory privacy, manual memory ordering and public-memory Profile presentation. AB-EV-042 applies the same proportional model to editable visit names. AB-EV-043 applies it to a broad but presentation-only brand alignment. AB-EV-044 applies the model to a high-risk Storage/server integration: bounded quota/Rules and Emulator gates were combined with real Firebase Admin/runtime proof, then later exact defects were closed through focused tests and small release gates rather than repeated full-suite execution. AB-EV-045 applies the model to localisation infrastructure by separating routing foundation from translated UI, validating the official Node 22 runtime, patching a framework advisory before publication and proving Production route ownership/resolution with focused smoke. AB-EV-046 through AB-EV-051 continue bounded localization through Home, Login, Onboarding, Verify Email and the authenticated dashboard. AB-EV-052 extends that model into the stateful deep country/visit editor while carrying forward locale-neutral status, privacy, visit-name, ordering and visit-photo contracts through directly affected C35/C39/C40/C42/C44 regression. AB-EV-053 extends the same model into shared achievement presentation: stable achievement IDs, evaluator criteria, chronology/reconquest metadata and public projection remain locale-neutral while `/badges` and `BadgeUnlockToast` become localized through additive presentation data. AB-EV-054 applies the same boundary discipline to Profile Edit: presentation is localized through a scoped provider and stable validation codes while username/social/avatar persistence, auth/security operations and the surrounding public Profile remain behaviourally isolated.
+AB-EV-033 established the broad checkpointed regression baseline; AB-EV-034 and AB-EV-035 demonstrate proportional follow-up validation; AB-EV-036 applies the same principle to Wishlist atomic persistence; AB-EV-037 extends it to a destructive Clear Map redesign; AB-EV-038 hardens the manual-QA environment contract. AB-EV-039/040/041 extend the same checkpoint model to per-memory privacy, manual memory ordering and public-memory Profile presentation. AB-EV-042 applies the same proportional model to editable visit names. AB-EV-043 applies it to a broad but presentation-only brand alignment. AB-EV-044 applies the model to a high-risk Storage/server integration: bounded quota/Rules and Emulator gates were combined with real Firebase Admin/runtime proof, then later exact defects were closed through focused tests and small release gates rather than repeated full-suite execution. AB-EV-045 applies the model to localisation infrastructure by separating routing foundation from translated UI, validating the official Node 22 runtime, patching a framework advisory before publication and proving Production route ownership/resolution with focused smoke. AB-EV-046 through AB-EV-051 continue bounded localization through Home, Login, Onboarding, Verify Email and the authenticated dashboard. AB-EV-052 extends that model into the stateful deep country/visit editor while carrying forward locale-neutral status, privacy, visit-name, ordering and visit-photo contracts through directly affected C35/C39/C40/C42/C44 regression. AB-EV-053 extends the same model into shared achievement presentation: stable achievement IDs, evaluator criteria, chronology/reconquest metadata and public projection remain locale-neutral while `/badges` and `BadgeUnlockToast` become localized through additive presentation data. AB-EV-054 applies the same boundary discipline to Profile Edit: presentation is localized through a scoped provider and stable validation codes while username/social/avatar persistence, auth/security operations and the surrounding public Profile remain behaviourally isolated. AB-EV-055 through AB-EV-058 complete the original six-locale public Profile, geography, password-reset and authenticated-selector sequence. AB-EV-059 then adds German/de-DE as a mandatory additive V1.0 extension; only invalidated localization/responsive boundaries are requalified while unaffected prior evidence is carried forward.
 
 ---
 
@@ -71,7 +71,7 @@ C36 establishes that Wishlist membership remains `statuses.wishlist`, while cano
 
 C37 establishes that Clear Map is one logical destructive operation. The private place reset, private root lifecycle reset and public root invalidation are committed through one atomic batch of at most 253 writes. Public child projections use `placesGeneration`; stale generations are no longer current/readable public travel state and their later physical deletion is housekeeping rather than part of the Clear Map success criterion.
 
-C39 establishes explicit per-memory privacy and sanitised `publicMemories`; C40 stores memory presentation order separately in `memoryOrder` while preserving `registeredVisits` history; C41 displays those authorised public memories from earned flags using the same public projection for owner and anonymous viewers. C42 adds optional `visitName` presentation metadata to `RegisteredVisit` while preserving stable identity, explicit Save, C40 ordering and C41 sanitised public labels. C43 establishes the current AtlasBadge presentation baseline: Atlas Gold/Black/Warm White drive generic interface identity while status, feedback, data-visualisation and external-brand colours remain semantic exceptions. C44 adds one bounded visit photo per RegisteredVisit with a hard free quota of ten active slots. C45A–C45G progressively localize routing, public/auth-entry surfaces, authenticated dashboard and deep country/visit editing while keeping persisted business identifiers and privacy/storage contracts locale-neutral. C45H extends localization to `/badges`, all 31 current achievement title/description presentations and the Badge Unlock notification while keeping canonical achievement IDs, evaluator rules, acquisition metadata, strict chronology assertions, reconquest and public achievement projection unchanged.
+C39 establishes explicit per-memory privacy and sanitised `publicMemories`; C40 stores memory presentation order separately in `memoryOrder` while preserving `registeredVisits` history; C41 displays those authorised public memories from earned flags using the same public projection for owner and anonymous viewers. C42 adds optional `visitName` presentation metadata to `RegisteredVisit` while preserving stable identity, explicit Save, C40 ordering and C41 sanitised public labels. C43 establishes the current AtlasBadge presentation baseline: Atlas Gold/Black/Warm White drive generic interface identity while status, feedback, data-visualisation and external-brand colours remain semantic exceptions. C44 adds one bounded visit photo per RegisteredVisit with a hard free quota of ten active slots. C45A–C45G progressively localize routing, public/auth-entry surfaces, authenticated dashboard and deep country/visit editing while keeping persisted business identifiers and privacy/storage contracts locale-neutral. C45H extends localization to `/badges`, all 31 current achievement title/description presentations and the Badge Unlock notification while keeping canonical achievement IDs, evaluator rules, acquisition metadata, strict chronology assertions, reconquest and public achievement projection unchanged. C45I–C45M complete Profile Edit, public Profile, geography, password-reset and authenticated-selector coverage for the historical six-locale programme. C45N/AB-EV-059 subsequently adds German/de-DE as a mandatory additive V1.0 extension; the current supported locale set is seven while persisted business/data contracts remain locale-neutral.
 
 Previous incremental testing is valid evidence when impact analysis confirms that a later change has not invalidated it.
 
@@ -368,9 +368,18 @@ AB-DEF-020 / C45J-FIX2: horizontal Header movement between short Searching map..
 309096bcf8bd85c7528592d03c00e5de41729889 — fix(ui): prevent public profile loading layout shift (html scrollbar-gutter: stable; globals.css only)
 FIX2 C45J Emulator Playwright 4/4 PASS / realFirebaseRequests=0; TypeScript/lint/build/diff PASS; native-scrollbar pixel proof is Test Lead real-browser QA, not headless automation
 Vercel dpl_Ht2fTLy3xmcvhfz4291RVKvY9j4X READY / Production / exact FIX2 SHA; Test Lead final Production visual approval — 20 September 2026
+
+AB-EV-059 / C45N German localization extension:
+Product: 8321975158a389760c0d8d13ae7fb1036b4209c2 / feat(i18n): add German localization
+Vercel: dpl_8jzWEnP8uhZFzZg443Nn6sAiayjE READY / production / exact SHA
+Final Node 22 qualification: TypeScript PASS; production build PASS; /de-de generated
+Protected affected Emulator/browser evidence: PASS; realFirebaseRequests=0 where explicitly recorded
+Production technical smoke: /de-de, de-DE document language, German Login, fallback/isolation, 390×844 overflow and seven-locale selector order PASS
+Authenticated German Production convergence: NOT RE-EXECUTED — carried forward from C1/C1A Emulator evidence
+Decision: PRODUCTION TECHNICAL PASS; final representative deep authenticated German visual Test Lead sign-off pending
 ```
 
-C35 did not alter Firestore Rules. C36 and C37 did, so their Production functional validation was blocked until the separate Rules-only deployment restored application/Rules parity. C45G, C45H, C45I, C45J and FIX1/FIX2 did not change Firebase Rules/configuration.
+C35 did not alter Firestore Rules. C36 and C37 did, so their Production functional validation was blocked until the separate Rules-only deployment restored application/Rules parity. C45G, C45H, C45I, C45J and FIX1/FIX2 did not change Firebase Rules/configuration. C45N also changed no Firebase schema or Rules.
 
 ---
 
@@ -496,6 +505,15 @@ C45J public Profile focused regression:
 
 C45J-FIX1 targeted Header/E2E regression:
 4 / 4 Playwright PASS, separate from Vitest counts
+
+C45N A2 localization foundation:
+50 / 50 PASS
+
+C45N A3 direct unit oracles:
+117 / 117 PASS across 9 targeted files
+
+C45N C3A stale/unit-oracle refresh:
+73 / 73 PASS across 6 targeted files
 ```
 
 ### 8.3 Firestore Rules and backend Emulator
@@ -536,6 +554,10 @@ C45J public Profile localization + FIX1/FIX2:
 3 / 3 initial C45J Edge Playwright PASS; 4 / 4 after FIX1; 4 / 4 after FIX2
 Auth/Firestore/Storage Emulators, demo-atlasbadge-web, workers=1
 realFirebaseRequests=0
+
+C45N authenticated German convergence:
+8 / 8 PASS in C1/C1A
+realFirebaseRequests=0
 ```
 
 The first C45G parallel execution of a subset of Emulator tests hit a Storage fixture collision. The same required suites passed serially; no Product code or acceptance criteria were changed. This is test-harness contention rather than Product failure.
@@ -563,9 +585,21 @@ realFirebaseRequests=0
 C45H /badges + achievement popup/localization regression:
 8 / 8 PASS across 3 specs
 realFirebaseRequests=0
+
+C45N routing/browser boundary:
+14 / 14 PASS
+realFirebaseRequests=0
+
+C45N responsive seven-locale selector after correction:
+8 / 8 PASS
+realFirebaseRequests=0
+
+C45N auth/dashboard browser evidence:
+25 / 25 PASS
+realFirebaseRequests=0
 ```
 
-C45H browser coverage includes `/badges` locale handling, localized achievement cards/dates, achievement popup/toast navigation and affected C45F authenticated navigation/localization isolation. C45J adds same-path public Profile locale, six-locale document/presentation coverage, authenticated/anonymous state isolation and representative 390×844 mobile tests. FIX1 retests the authenticated public Profile Header alongside /app and /badges. FIX2 reuses the C45J browser regression but reserves native-scrollbar visual acceptance for the Test Lead.
+C45H browser coverage includes `/badges` locale handling, localized achievement cards/dates, achievement popup/toast navigation and affected C45F authenticated navigation/localization isolation. C45J adds same-path public Profile locale, six-locale document/presentation coverage, authenticated/anonymous state isolation and representative 390×844 mobile tests. FIX1 retests the authenticated public Profile Header alongside /app and /badges. FIX2 reuses the C45J browser regression but reserves native-scrollbar visual acceptance for the Test Lead. C45N extends those presentation contracts to German while carrying forward unaffected locale-neutral domain evidence.
 
 ### 8.5 Manual/exploratory QA
 
@@ -587,6 +621,8 @@ During C45G visual QA, the rich seed initially caused `/badges` and the public P
 
 C45H deliberately carries that lesson forward. The Test Lead visual profile was reconciled before handoff and contained six earned achievements (`a1`, `a6`, `a7`, `a8`, `a9`, `a29`) with valid metadata sequences 1–6 and `nextAchievementUnlockSequence=7`, plus representative locked progress. The Test Lead reviewed all six `/badges` locales and representative 390×844 `fr`/`pt-PT`/`es-ES` layouts, long localized achievement copy, dates, progress/locks and a legitimate localized unlock toast. Toast click/Enter/Space navigated to stable ID anchors and public Profile remained Portuguese under French preference.
 
+C45N has complete technical Production evidence for German public/auth-entry presentation and seven-locale selector state, but the project history does not yet contain an explicit Test Lead visual sign-off for representative deep authenticated German surfaces. That decision remains pending rather than being inferred from automation or the public smoke.
+
 ### 8.6 Production validation
 
 Executed only after the expected source revision and applicable Firebase Rules are deployed/aligned.
@@ -604,6 +640,8 @@ C39 and C40 both reached successful automatic Vercel deployment after their appr
 C45D–C45H use an explicit evidence distinction when a full feature surface requires state that should not be manufactured in Production. Server/document/routing/isolation evidence is collected safely in Production while authenticated/stateful interaction and visual evidence remains in the Firebase Emulators and Test Lead local browser. Such checkpoints are closed as **Production technical PASS + local/Emulator visual PASS**, not as full Production visual execution.
 
 C45H Production smoke verified the exact deployed SHA, six-locale `/badges` and `/app` document/metadata handling with expected anonymous localized-login redirects, weighted `Accept-Language`, public Profile/resetPassword isolation, deployed documents/assets and clean Vercel runtime logs without creating Production achievement state.
+
+C45N Production technical smoke verified exact-SHA deployment `8321975158a389760c0d8d13ae7fb1036b4209c2` / `dpl_8jzWEnP8uhZFzZg443Nn6sAiayjE`, `/de-de` 200 with `lang=de-DE`, German Home/Login presentation, Germany flag asset, `de-DE → /de-de`, unsupported `zh-CN → /pt-br`, `/de-de/app` 404, unauthenticated `/app` guard, 390×844 no horizontal overflow and the exact seven-locale rendered selector with `de-DE` current. No Production authentication, write/mutation, account creation or Firebase Admin action was performed. Authenticated German convergence was not rerun in Production and remains carried from C1/C1A Emulator evidence.
 
 ---
 
@@ -652,6 +690,8 @@ Before drafting **each** task for Codex, Gemini/Antigravity or another implement
 
 **C45H/AB-EV-053:** shared achievement cards and notification presentation changed, so focused catalog/card/layout/ordering/reconciliation/notification tests plus Emulator/Playwright and Test Lead rendered-browser review restored the achievement-localization boundary. Existing Firestore Rules, travel-status persistence and unrelated product surfaces remained valid and were not subjected to unnecessary broad campaigns.
 
+**C45N/AB-EV-059:** German was additive to the established localization architecture, so the existing six-locale/domain baseline was carried forward. German catalogue/resolver/oracles, affected routing/authenticated browser boundaries, seven-locale responsive selector geometry and final Node 22 compile/build were requalified. The pre-release 768px overlap correction invalidated only its affected presentation/build checkpoints. No unchanged Firebase Rules or backend suite was rerun merely to manufacture a full-campaign count.
+
 The efficiency rules are retained in `docs/10-lessons-learned.md`.
 
 ---
@@ -678,6 +718,8 @@ AB-DEF-018 is the destructive-operation counterpart: C36 root `wishlistOrder` ma
 C45G is the test-data counterpart: a visual-QA seed omitted derived achievement metadata, causing a legitimate Product invariant to reject the fixture. Repairing Emulator data through existing reconciliation removed the failure without changing Product code. No AB-DEF ID was created.
 
 C45H adds the release-control counterpart: the first push was blocked by automated security review until explicit Test Lead authorization was supplied. No source or deployment mutation occurred before approval; the same validated commit was then pushed normally and deployed successfully. No AB-DEF ID was created.
+
+C45N's 768px seven-locale overlap was discovered and corrected before the accepted Product release. It is retained as a pre-release implementation finding/correction and does not receive an AB-DEF ID.
 
 ---
 
@@ -804,6 +846,15 @@ Hotfix: 447b568bd70c445c0a98220fcd134fd5bb843259 / dpl_8LiFm2GyN6cKDuQZdW9i7fLP8
 Final focused hotfix evidence: Header 8/8 PASS; protected Emulator E2E 1/1 PASS; realFirebaseRequests=0
 Production retest: PASS / Test Lead approved — 2 October 2026
 Decision: C45M CLOSED; AB-DEF-021 CLOSED
+
+AB-EV-059 / C45N:
+Commit: 8321975158a389760c0d8d13ae7fb1036b4209c2
+Vercel Production: dpl_8jzWEnP8uhZFzZg443Nn6sAiayjE
+State: READY / production / exact SHA
+Final Node 22 qualification: TypeScript PASS; production build PASS; /de-de generated
+Production technical smoke: PASS for German Home/Login, fallback/isolation, 390×844 overflow and exact seven-locale selector order
+Authenticated German convergence: NOT RE-EXECUTED in Production; carried from C1/C1A Emulator evidence
+Decision: PRODUCTION TECHNICAL PASS — 4 October 2026; final representative deep authenticated German visual Test Lead sign-off pending
 ```
 
 ---
@@ -827,7 +878,7 @@ Requirement / rule
 
 The central public index is `evidence/v1.0/evidence-register.md`.
 
-Current recent evidence is AB-EV-033 through AB-EV-058.
+Current recent evidence is AB-EV-033 through AB-EV-059.
 
 ---
 
@@ -843,7 +894,7 @@ An increment may be approved when:
 - required Production validation is complete or its limitation explicitly accepted;
 - residual risks are retained in the risk register.
 
-The official V1.0 final release assessment additionally depends on completion/acceptance of the remaining mandatory scope, including compatibility/performance and final reset/clean-start activities as applicable. C44 one-photo-per-`RegisteredVisit` scope and the planned C45A–C45M localization sequence are closed and retained as regression coverage.
+The official V1.0 final release assessment additionally depends on completion/acceptance of the remaining mandatory scope, including compatibility/performance and final reset/clean-start activities as applicable. C44 one-photo-per-`RegisteredVisit` scope and the original C45A–C45M six-locale localization sequence are closed and retained as regression coverage. C45N extends that scope to seven locales; its technical Production gate is complete, while final representative deep authenticated German visual acceptance remains a Test Lead exit item unless explicitly accepted as residual risk.
 
 The final release decision belongs to the Test Lead/Product Owner.
 
@@ -860,8 +911,9 @@ The final release decision belongs to the Test Lead/Product Owner.
 - Formal accessibility certification/native assistive-technology coverage is not claimed.
 - No independent penetration/security audit or formal load test has been completed.
 - C44 one-photo-per-`RegisteredVisit` is implemented, Production-approved and retained as permanent regression scope, including the free 10-photo quota and server-mediated read/privacy boundary.
-- C45A–C45M planned V1.0 localization is approved: public Home/routing, Login, Onboarding, email verification, authenticated dashboard/deep editor, Badges/achievement/toast, Profile Edit, public Profile/FIX1/FIX2, geographic display names, resetPassword action and authenticated language switching. C45M/AB-EV-058 includes AB-DEF-021 closure and bidirectional Production selector retest.
-- User-authored content remains intentionally untranslated; localization remains regression scope rather than open implementation scope.
+- C45A–C45M original six-locale V1.0 localization is approved: public Home/routing, Login, Onboarding, email verification, authenticated dashboard/deep editor, Badges/achievement/toast, Profile Edit, public Profile/FIX1/FIX2, geographic display names, resetPassword action and authenticated language switching. C45M/AB-EV-058 includes AB-DEF-021 closure and bidirectional Production selector retest.
+- C45N/AB-EV-059 adds German/de-DE as the seventh locale. Production technical validation is PASS; final representative deep authenticated German visual acceptance remains pending explicit Test Lead sign-off.
+- User-authored content remains intentionally untranslated; localization remains regression scope rather than an automatic content-translation feature.
 - The current root-layout `headers()` approach makes page rendering request-time dynamic and is retained as explicit V1.0 technical debt pending any future multi-root routing redesign.
 - The legacy UK-selector modal remains an unreachable-code cleanup candidate rather than a Product Defect.
 - The extra `travelMap.clearMap.emulator.test.ts` anonymous LIST/Rules diagnostic remains separate pre-existing test/environment debt; C45G did not modify its source boundary.
@@ -897,6 +949,7 @@ The final release decision belongs to the Test Lead/Product Owner.
 - `evidence/v1.0/regression/ab-ev-056-c45k-geographic-localization.md`
 - `evidence/v1.0/regression/ab-ev-057-c45l-password-reset-action-localization.md`
 - `evidence/v1.0/regression/ab-ev-058-c45m-authenticated-language-selector-and-production-hotfix.md`
+- `evidence/v1.0/regression/ab-ev-059-c45n-german-localization-extension.md`
 - `docs/10-lessons-learned.md`
 
 ## C45K / AB-EV-056 — geographic localization and integrated closure
@@ -922,3 +975,13 @@ Authoritative pre-release evidence includes the final C45M 7/7 Edge/Emulator E2E
 Production smoke then found AB-DEF-021: avatar switching on localized public Home persisted the target cookie but reloaded the old locale route, so route-derived `publicHomeLocale` remained authoritative. The hotfix preserves query/hash and navigates the public-Home branch to the target localized route while ordinary authenticated app routes retain their prior reload behavior. After investigation, the authoritative final-file hotfix evidence was frozen and rerun with **8/8 Header Vitest + 1/1 focused protected E2E + `realFirebaseRequests=0` + TypeScript/diff PASS**. Hotfix `447b568bd70c445c0a98220fcd134fd5bb843259` deployed as `dpl_8LiFm2GyN6cKDuQZdW9i7fLP8VPp` READY, and Test Lead Production retest confirmed avatar→flag and flag→avatar synchronization with authenticated-session continuity. Query/hash preservation is covered by the focused Emulator E2E. Physical-device execution is not claimed.
 
 [Consolidated evidence](../evidence/v1.0/regression/ab-ev-058-c45m-authenticated-language-selector-and-production-hotfix.md).
+
+## C45N / AB-EV-059 — German localization extension
+
+C45N is a material V1.0 scope extension after the original six-locale localization programme. It adds German/de-DE across the existing localization architecture without changing Firebase schema/Rules or locale-neutral domain identifiers. Previous C45A–C45M evidence is carried forward unless directly invalidated.
+
+Final technical qualification includes German catalogue completeness, focused resolver/unit/browser coverage, authenticated dirty-state convergence in the Firebase Emulators, the corrected seven-locale responsive selector, Node v22.23.2 TypeScript/production-build PASS and exact-SHA Vercel Production deployment. Non-destructive Production smoke confirms German public/auth-entry presentation, route/fallback isolation, 390×844 no-overflow and the exact rendered seven-locale order with de-DE current.
+
+The Production technical gate does not substitute for an explicit Test Lead visual decision on representative deep authenticated German surfaces. Until that sign-off is recorded, the release state is **Production Technical PASS / final German visual acceptance pending**.
+
+[Consolidated evidence](../evidence/v1.0/regression/ab-ev-059-c45n-german-localization-extension.md).

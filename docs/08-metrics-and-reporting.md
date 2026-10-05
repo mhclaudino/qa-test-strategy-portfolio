@@ -32,7 +32,7 @@ This document applies to:
 * future releases;
 * selected public portfolio reporting.
 
-> **Document status:** Completed and maintained through AB-EV-058 based on the current AtlasBadge quality process, the existing QA portfolio documents, and Test Lead-confirmed reporting decisions.
+> **Document status:** Completed and maintained through AB-EV-059 based on the current AtlasBadge quality process, the existing QA portfolio documents, and Test Lead-confirmed reporting decisions.
 
 ---
 
@@ -49,7 +49,8 @@ This document should be read together with:
 * [Defect Management](07-defect-management.md);
 * [V1.0 Test Evidence](../evidence/v1.0/README.md)
 * [AB-EV-055 C45J release and two visual-defect closures](../evidence/v1.0/regression/ab-ev-055-c45j-public-profile-localization-and-fixes.md);
-* [AB-EV-058 C45M authenticated selector and Production hotfix closure](../evidence/v1.0/regression/ab-ev-058-c45m-authenticated-language-selector-and-production-hotfix.md).
+* [AB-EV-058 C45M authenticated selector and Production hotfix closure](../evidence/v1.0/regression/ab-ev-058-c45m-authenticated-language-selector-and-production-hotfix.md);
+* [AB-EV-059 C45N German localization extension](../evidence/v1.0/regression/ab-ev-059-c45n-german-localization-extension.md).
 
 These documents have different responsibilities:
 
@@ -2010,3 +2011,20 @@ The first exact-SHA Production deployment was READY but human smoke found **one 
 Keep **deployment READY**, **automated Emulator PASS**, **viewport visual PASS**, **Production human PASS** and **physical-device NOT EXECUTED** as separate evidence dimensions. Query/hash preservation is automated hotfix evidence; the public Production decision records the Test Lead-confirmed two-way selector synchronization/session behavior without inflating unexecuted device coverage.
 
 [Consolidated evidence](../evidence/v1.0/regression/ab-ev-058-c45m-authenticated-language-selector-and-production-hotfix.md).
+
+## C45N / AB-EV-059 — German localization extension reporting
+
+Report C45N as separate evidence dimensions rather than one aggregate pass count:
+
+- catalogue/resolver completeness and focused unit oracles;
+- protected Firebase Emulator browser regression, where `realFirebaseRequests=0` is valid;
+- responsive seven-locale selector qualification, including the pre-release 768px correction;
+- final Node 22 TypeScript/production-build qualification;
+- one exact Product release commit and exact-SHA Vercel Production deployment;
+- non-destructive Production technical smoke for German public/auth-entry presentation, routing, route isolation, 390×844 overflow and final seven-locale selector order;
+- authenticated German convergence carried from Emulator evidence and **not** represented as rerun in Production;
+- final representative deep authenticated German visual acceptance as a distinct Test Lead decision.
+
+Do not report `realFirebaseRequests=0` as Production traffic evidence. Do not convert the absence of explicit Production browser `pageerror`/console listeners into an automated error-free claim. The available deployment runtime-log review found no relevant error, which is a separate fact.
+
+[Consolidated evidence](../evidence/v1.0/regression/ab-ev-059-c45n-german-localization-extension.md).

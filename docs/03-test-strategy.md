@@ -6,7 +6,7 @@ This document defines the overall testing strategy for AtlasBadge and how qualit
 
 It covers risk prioritisation, test design, regression, evidence, AI-assisted execution, automation, release approval and residual risk.
 
-> **Document status:** Completed and maintained through AB-EV-058. The current strategy includes versioned Playwright/Firebase Emulator regression, checkpointed incremental validation, controlled real-backend/Production validation, explicit environment/runtime parity checks, real-browser acceptance and fixed living-document governance.
+> **Document status:** Completed and maintained through AB-EV-059. The current strategy includes versioned Playwright/Firebase Emulator regression, checkpointed incremental validation, controlled real-backend/Production validation, explicit environment/runtime parity checks, real-browser acceptance and fixed living-document governance.
 
 ---
 
@@ -150,6 +150,8 @@ AB-EV-055 extends the same bounded model to the canonical public Profile: a rout
 
 AB-EV-058 closes the planned localization sequence with authenticated language selection. The strategy deliberately separates control behavior, unsaved-data protection, final-file automation, responsive visual acceptance, exact-SHA deployment and Production human retest. AB-DEF-021 demonstrates why two controls that represent the same state must be tested bidirectionally: cookie-only reload was insufficient on a route-authoritative public Home. C45M also operationalised LL-66: agent work was bounded, stale checkpoints were invalidated explicitly, and the final hotfix was accepted only after an edit-free final-file Vitest/E2E freeze.
 
+AB-EV-059 applies the same checkpoint-preservation discipline to the additive German extension. The existing six-locale architecture is carried forward; only German catalogue/resolver/oracle coverage, affected browser boundaries, the seven-locale responsive selector and final Node 22 build are requalified. The 768px overlap found after adding the seventh locale demonstrates why additive presentation scope can cross an existing responsive threshold without invalidating unrelated backend/Rules evidence. Production validation remains non-destructive and is reported separately from protected Emulator evidence.
+
 This reduces wasted execution time while retaining traceable risk-based coverage.
 
 ### 6.2 Fail-fast classification
@@ -238,7 +240,7 @@ A READY frontend deployment is not enough when the security-rule layer changed.
 
 AB-EV-033 followed this exact gate before validating Wishlist/private-public projection in Production.
 
-Presentation-only/authenticated-state checkpoints may close as **Production technical PASS + local/Emulator visual PASS** when manufacturing Production state would add avoidable risk and server/routing/isolation behaviour can be verified safely without mutation. C45D–C45J use this evidence distinction where applicable; C45I and C45J/FIX1/FIX2 additionally received final Test Lead Production visual approval without exercising destructive account or private-data operations.
+Presentation-only/authenticated-state checkpoints may close as **Production technical PASS + local/Emulator visual PASS** when manufacturing Production state would add avoidable risk and server/routing/isolation behaviour can be verified safely without mutation. C45D–C45J use this evidence distinction where applicable; C45I and C45J/FIX1/FIX2 additionally received final Test Lead Production visual approval without exercising destructive account or private-data operations. C45N uses the same separation: the non-destructive German Production technical smoke is PASS, while final representative deep authenticated German visual acceptance remains a distinct Test Lead decision.
 
 ---
 
@@ -277,7 +279,7 @@ Later photo/stateful checkpoints also start the Storage Emulator when required.
 
 The configuration forces Emulator targets, uses a dedicated E2E Next.js runtime/build, excludes Firebase-real Production specs and fails fast if real Firebase traffic is detected.
 
-Validated runs recorded `realFirebaseRequests=0`. C45H again recorded `realFirebaseRequests=0` while exercising reconciled achievement state and localized `/badges`/toast behavior.
+Validated runs recorded `realFirebaseRequests=0`. C45H again recorded `realFirebaseRequests=0` while exercising reconciled achievement state and localized `/badges`/toast behavior. C45N protected Emulator browser checkpoints also recorded `realFirebaseRequests=0`; that value remains Emulator-fixture evidence and must not be reported as a Production request-count result.
 
 ### 10.3 Controlled Production automation
 
@@ -325,7 +327,7 @@ Current evidence includes Microsoft Edge on Windows, Chrome/Android and automate
 
 A scoped WCAG 2.2 AA technical baseline has been executed (AB-EV-017), with later interaction regression extending keyboard/control/dialog/responsive coverage.
 
-C45H adds localized loading/ARIA presentation, toast keyboard activation, close-control accessible naming and stable achievement anchors to the affected regression baseline.
+C45H adds localized loading/ARIA presentation, toast keyboard activation, close-control accessible naming and stable achievement anchors to the affected regression baseline. C45N extends localized selector accessible-current-state coverage to German/de-DE without changing the broader certification boundary.
 
 This does **not** constitute formal accessibility certification or complete assistive-technology coverage.
 
@@ -451,6 +453,7 @@ Review this strategy when authentication, travel-status/Wishlist rules, persiste
 - `evidence/v1.0/regression/ab-ev-056-c45k-geographic-localization.md`
 - `evidence/v1.0/regression/ab-ev-057-c45l-password-reset-action-localization.md`
 - `evidence/v1.0/regression/ab-ev-058-c45m-authenticated-language-selector-and-production-hotfix.md`
+- `evidence/v1.0/regression/ab-ev-059-c45n-german-localization-extension.md`
 
 ## C45K / AB-EV-056 — geographic localization closure
 
@@ -471,3 +474,11 @@ C45M uses layered evidence rather than one aggregate pass rate: component tests 
 After AB-DEF-021 was found in Production, only the invalidated public-Home convergence path was reopened. The final hotfix checkpoint froze the three changed files, reran `Header.c45m.test.tsx` 8/8 and the single protected Emulator E2E 1/1 with `realFirebaseRequests=0`, then published the exact tested state. Broad earlier green checkpoints were carried forward where the hotfix did not invalidate them. Vercel READY and Test Lead Production behavior are recorded separately.
 
 [Consolidated evidence](../evidence/v1.0/regression/ab-ev-058-c45m-authenticated-language-selector-and-production-hotfix.md).
+
+## C45N / AB-EV-059 — German localization extension strategy
+
+C45N reuses the established localization architecture and carries forward unaffected six-locale evidence. New work is qualified at the smallest invalidated layers: German catalogue/resolver/unit oracles, affected routing/authenticated browser contracts, seven-locale responsive geometry and the final Node 22 compile/build state. The seventh public selector entry exposed a real 768px layout threshold; the focused correction was revalidated without reopening unrelated backend or Rules suites.
+
+Protected Firebase Emulator browser runs retain `realFirebaseRequests=0` as isolation evidence. Production evidence is deliberately separate and non-destructive: exact-SHA deployment, German public/auth-entry presentation, fallback/isolation, 390×844 no-overflow and final seven-locale selector order passed. Authenticated German convergence is carried from Emulator evidence and final representative deep authenticated German visual acceptance remains a Test Lead decision.
+
+[Consolidated evidence](../evidence/v1.0/regression/ab-ev-059-c45n-german-localization-extension.md).

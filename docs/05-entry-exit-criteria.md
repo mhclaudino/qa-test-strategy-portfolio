@@ -772,13 +772,14 @@ AtlasBadge V1.0 may be considered ready for real users only when all applicable 
 * New badges and achievements have been validated.
 * Badge visual refinements have been assessed.
 * The perceived status-selection delay has received the required improvement and validation.
-* All six supported locales have received the defined coverage.
+* All seven supported locales have received the defined coverage.
 * Browser-language detection, manual selection and persistence have been validated.
 * Public-profile corrections, map behaviour, performance, responsiveness and privacy have been validated.
 * Windows Google Chrome coverage has been completed.
 * The essential accessibility baseline has been completed.
 * The permanent Playwright and TypeScript suite has been executed.
 * The final broad regression has been completed.
+* Representative deep authenticated German visual acceptance required by the current seven-locale scope has been completed or explicitly resolved by the Test Lead as accepted residual risk.
 
 ### 17.2 Release decision
 
