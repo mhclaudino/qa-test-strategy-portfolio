@@ -53,8 +53,12 @@ The audit reviewed the current living-control set and release evidence, includin
 - Lessons Learned;
 - V1.0 Evidence Register;
 - AB-EV-017 accessibility baseline;
+- AB-EV-018 responsive/touch/constrained-device and rapid-status baseline;
+- AB-EV-019 status persistence/OCC closure;
 - AB-EV-021 V1.0 release hardening;
+- AB-EV-022 rapid-status last-intent closure;
 - AB-EV-023/025/029/043/053 achievement/badge/geographic/visual baselines;
+- AB-EV-024 Production parity validation;
 - AB-EV-058 authenticated locale selector closure;
 - AB-EV-059 German technical qualification;
 - AB-EV-060 C45N final visual/AB-DEF-022 closure;
@@ -104,24 +108,20 @@ The launch criterion requiring badge visual refinements to be assessed is also s
 
 Release-readiness classification: **SATISFIED / not pending Product work.**
 
-### 5.3 Perceived status-selection delay — unresolved traceability item
+### 5.3 Perceived status-selection delay — satisfied by later responsiveness/concurrency evidence
 
-The Entry/Exit Criteria still contains a bullet requiring the perceived status-selection delay to receive the required improvement and validation.
+The Entry/Exit Criteria still contains a historical launch bullet requiring the perceived status-selection delay to receive the required improvement and validation.
 
-The current Test Scope classifies travel status/Wishlist behavior as Executed and the risk/evidence history contains strong rapid-status, OCC, last-intent and responsive interaction coverage, including AB-EV-018, AB-EV-019, AB-EV-022, AB-EV-032 and AB-EV-035.
+The wording no longer identifies an open Product gap. Later evidence demonstrates the status-interaction behavior that the criterion was intended to protect:
 
-However, this audit did **not** find an explicit current evidence record directly linking the specific release criterion named “perceived status-selection delay” to a documented correction/acceptance decision.
+- AB-EV-018 exercised the application under Slow-4G-equivalent latency and 4× CPU throttling, executed 31/31 responsive/constrained-condition tests, found and corrected AB-DEF-004 rapid same-session status instability, and received physical Android Test Lead retest including rapid status switching and preservation of the final selected state;
+- AB-EV-019 then closed the Production regression where an optimistically selected permitted status disappeared after synchronization, with UI/Firestore/reload parity and Test Lead Production approval;
+- AB-EV-022 replaced relative toggle replay with explicit idempotent last-intent semantics and retained repeated rapid-race/reload/Firestore coverage;
+- AB-EV-024 later confirmed controlled Production status activation/removal/reactivation parity.
 
-It must therefore not be silently marked PASS or converted into new implementation work without investigation.
+Together these checkpoints establish responsive user feedback, stable latest-intent behavior and persisted/reloaded convergence under the relevant constrained/rapid interaction conditions.
 
-Release-readiness classification: **TRACEABILITY/REQUIREMENT GAP — clarification required before final-regression entry.**
-
-Required next action: bounded read-only investigation of the historical requirement and current Product behavior. Outcomes:
-
-1. if later evidence demonstrably satisfies/supersedes the criterion, reconcile the Entry/Exit wording with that evidence;
-2. if the user-visible delay remains a genuine current requirement gap, define acceptance criteria and delegate a bounded Product correction to the implementation agent chosen/authorised by the Test Lead.
-
-No speculative Product optimization is authorised by this audit.
+Release-readiness classification: **SATISFIED / stale wording to reconcile in the living Entry/Exit Criteria. No new Product optimization is required by this historical bullet.**
 
 ### 5.4 Seven supported locales — satisfied
 
@@ -171,26 +171,25 @@ Release-readiness classification: **SATISFIED FOR CURRENT CLAIM / residual scope
 
 ### 5.9 Performance — final release assessment still required; formal SLA not required
 
-Responsive/repeated-interaction/perceived usability evidence exists, but quantitative performance SLAs and formal load/stress testing are not established and are documented as limitations rather than mandatory V1.0 certification.
+Responsive/repeated-interaction/perceived usability evidence exists, including constrained-network/CPU coverage in AB-EV-018, but quantitative performance SLAs and formal load/stress testing are not established and are documented as limitations rather than mandatory V1.0 certification.
 
 Release-readiness classification: **FINAL USER-PERCEIVED/RELEASE ASSESSMENT REQUIRED; formal load/SLA work is not automatically a launch blocker.**
 
 ## 6. Mandatory gates still pending before real-user launch
 
-The following gates remain genuinely open after localization closure:
+The following gates remain genuinely open after localization and launch-criteria reconciliation:
 
-1. resolve the “perceived status-selection delay” traceability/requirement ambiguity;
-2. establish the final Release Candidate baseline;
-3. execute the permanent Playwright/TypeScript and other applicable final-RC quality gates;
-4. execute the final broad V1.0 regression according to risk/checkpoint preservation;
-5. complete required Windows Google Chrome coverage;
-6. review final compatibility/performance/responsiveness results and residual risk;
-7. freeze the exact approved Release Candidate SHA;
-8. complete final Production smoke, including required `pt-BR` and `en-GB` coverage;
-9. perform the controlled Production data reset;
-10. verify clean-start state technically and functionally;
-11. consolidate the Test Summary Report and residual-risk record;
-12. obtain final Test Lead V1.0 release decision.
+1. establish the final Release Candidate baseline;
+2. execute the permanent Playwright/TypeScript and other applicable final-RC quality gates;
+3. execute the final broad V1.0 regression according to risk/checkpoint preservation;
+4. complete required Windows Google Chrome coverage;
+5. review final compatibility/performance/responsiveness results and residual risk;
+6. freeze the exact approved Release Candidate SHA;
+7. complete final Production smoke, including required `pt-BR` and `en-GB` coverage;
+8. perform the controlled Production data reset;
+9. verify clean-start state technically and functionally;
+10. consolidate the Test Summary Report and residual-risk record;
+11. obtain final Test Lead V1.0 release decision.
 
 ## 7. Explicitly non-blocking limitations unless new evidence changes risk
 
@@ -212,18 +211,18 @@ Current decision on 5 October 2026:
 
 **NOT YET READY FOR GO LIVE.**
 
-**READY FOR FINAL RELEASE PREPARATION, subject first to resolution of the status-selection-delay criterion and then execution of the remaining final-RC gates.**
+**READY TO ENTER FINAL RELEASE-CANDIDATE REGRESSION.**
 
-There is no evidence at this audit point that another broad Product feature must be implemented before starting final release preparation.
+No remaining broad Product feature or defect correction is identified as a prerequisite to begin the final V1.0 regression. Historical launch bullets for badges, badge polish and perceived status-selection delay are satisfied by later evidence and require living-document reconciliation rather than new implementation.
 
 ## 9. Next controlled step
 
-Before commissioning any Product implementation, investigate the status-selection-delay criterion in read-only mode and tie it to historical evidence/current behavior.
+Prepare and execute the final Release Candidate regression with checkpoint preservation, explicit Windows Google Chrome coverage and final release-quality gates.
 
-If no Product change is required, update the living release criteria and proceed directly to final-RC regression planning/execution.
+Any failure found during that cycle must first be classified as Product defect, test defect/stale oracle, fixture problem, environment issue or inconclusive result before correction is commissioned.
 
-If Product change is required, the coordinator must run the standing role-routing + LL-66 preflight and delegate the bounded implementation to the Test Lead-authorised implementation agent. The coordinator then independently audits the result and updates QA evidence.
+If Product implementation becomes necessary, the coordinator runs the standing role-routing + LL-66 preflight and delegates the bounded implementation to the Test Lead-authorised implementation agent. The coordinator then independently audits the result and updates QA evidence.
 
 ## 10. Traceability
 
-`V1.0 launch criteria → historical evidence audit → C45N/AB-DEF-022 closure → release-readiness matrix → pending RC gates → final regression → Production smoke → Production reset/clean start → Test Summary Report → Test Lead release decision`
+`V1.0 launch criteria → historical evidence audit → C45N/AB-DEF-022 closure → release-readiness matrix → final RC regression → Windows Chrome → Production smoke → Production reset/clean start → Test Summary Report → Test Lead release decision`
