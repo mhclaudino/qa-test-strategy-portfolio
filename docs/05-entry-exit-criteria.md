@@ -19,7 +19,7 @@ It establishes:
 
 The criteria are intentionally proportional to risk. They are designed to support reliable quality decisions without requiring the same evidence, formality or test depth for a cosmetic correction and a change affecting authentication, privacy or persistent user data.
 
-> **Document status:** Initial completed version based on the current AtlasBadge development, testing, deployment and release-decision process.
+> **Document status:** Maintained through AB-EV-061. V1.0 launch criteria were reconciled on 5 October 2026 after C45N/AB-DEF-022 closure and the release-readiness audit.
 
 ---
 
@@ -92,7 +92,7 @@ Completed parts of a larger feature may be tested before the entire feature is f
 
 ### 3.4 Separation between technical readiness and quality approval
 
-AI-assisted development tools may:
+The **designated Product implementation agent** may:
 
 * implement a change;
 * execute technical checks;
@@ -101,6 +101,8 @@ AI-assisted development tools may:
 * provide test results and evidence;
 * implement a defect correction;
 * recommend approval or blocking.
+
+Gemini/Antigravity is the default Product implementation agent in the current AtlasBadge workflow. Codex/ChatGPT or another implementation agent may perform Product implementation when the Test Lead explicitly authorises that actor for the current task. Generic instructions such as “fix it”, “finish it” or “do everything” do not silently change the active implementation actor.
 
 The Test Lead decides:
 
@@ -209,7 +211,7 @@ Environmental unavailability does not automatically remove a scenario from scope
 
 ### 5.5 Entry authority
 
-An AI-assisted development tool or implementation process may report that a change is technically ready.
+The designated Product implementation agent or delivery process may report that a change is technically ready.
 
 The Test Lead accepts or rejects entry into functional validation after considering:
 
@@ -395,7 +397,7 @@ Defect severity, priority, lifecycle and triage are governed by [Defect Manageme
 
 A correction may be submitted for retesting when:
 
-* the implementation tool reports that the correction is complete;
+* the designated implementation agent reports that the correction is complete;
 * a summary of the correction is available;
 * potentially affected areas are identified where relevant;
 * preliminary technical checks have been executed;
@@ -415,7 +417,7 @@ A defect may be closed only when the Test Lead confirms that:
 * any remaining limitation is understood;
 * residual risk has either been removed or explicitly accepted.
 
-An implementation tool may report a defect as corrected or ready for retest. It does not close the defect.
+An implementation agent may report a defect as corrected or ready for retest. It does not close the defect.
 
 ### 9.3 Failed retest
 
@@ -503,6 +505,8 @@ The final V1.0 regression may begin when:
 * known blockers from incremental testing have been resolved;
 * the required environments, accounts, data and Playwright suite are available;
 * the Test Lead approves commencement of the final cycle.
+
+AB-EV-061 confirms that the current V1.0 implementation scope is sufficiently complete to enter final Release Candidate regression. Historical launch bullets for badges, badge polish and perceived status-selection delay are satisfied by later evidence; C45N/AB-DEF-022 is closed by AB-EV-060. Final-regression entry therefore does not require another broad feature implementation.
 
 The final regression is complete when:
 
@@ -768,18 +772,18 @@ AtlasBadge V1.0 may be considered ready for real users only when all applicable 
 
 ### 17.1 Product and test completion
 
-* The mandatory remaining V1.0 scope has been implemented or explicitly removed from the agreed release scope.
-* New badges and achievements have been validated.
-* Badge visual refinements have been assessed.
-* The perceived status-selection delay has received the required improvement and validation.
-* All seven supported locales have received the defined coverage.
+* The mandatory V1.0 implementation scope has been completed or explicitly removed from the agreed release scope; AB-EV-061 confirms no remaining broad feature implementation is required before final regression.
+* Current badges and achievements have been validated through AB-EV-023, AB-EV-025, AB-EV-029 and AB-EV-053.
+* Badge visual refinements have been assessed and approved through AB-EV-025, AB-EV-043 and AB-EV-053.
+* The historical status-selection responsiveness criterion is satisfied by AB-EV-018, AB-EV-019, AB-EV-022 and AB-EV-024, including constrained-network/CPU coverage, rapid-intent stability, persistence/reload parity and Production confirmation.
+* All seven supported locales have received the defined incremental coverage; C45N German final visual acceptance and AB-DEF-022 closure are recorded in AB-EV-060.
 * Browser-language detection, manual selection and persistence have been validated.
-* Public-profile corrections, map behaviour, performance, responsiveness and privacy have been validated.
-* Windows Google Chrome coverage has been completed.
-* The essential accessibility baseline has been completed.
-* The permanent Playwright and TypeScript suite has been executed.
-* The final broad regression has been completed.
-* Representative deep authenticated German visual acceptance required by the current seven-locale scope has been completed or explicitly resolved by the Test Lead as accepted residual risk.
+* Public-profile corrections, map behaviour, responsiveness and privacy have been validated incrementally; final Release Candidate regression must confirm that those checkpoints remain valid.
+* Windows Google Chrome release coverage must be completed during the final Release Candidate cycle.
+* The essential accessibility technical baseline has been completed; formal certification/native-AT breadth remains outside the current V1.0 claim.
+* The permanent Playwright and TypeScript suite must be executed for the final Release Candidate.
+* The final broad regression must be completed.
+* Final compatibility/performance/responsiveness results and residual risks must be assessed before launch; formal load/SLA certification is not a V1.0 prerequisite unless new evidence raises unacceptable risk.
 
 ### 17.2 Release decision
 
@@ -841,16 +845,16 @@ The application being online does not by itself mean that V1.0 is ready for real
 
 ## 18. Authority matrix
 
-| Stage                     | AI-assisted development or delivery process                | Test Lead                                                         |
-| ------------------------- | ---------------------------------------------------------- | ----------------------------------------------------------------- |
-| Implementation completion | Reports implementation and preliminary technical readiness | Reviews whether the change may enter validation                   |
-| Functional validation     | Supports execution, investigation and evidence collection  | Defines scenarios, expected results and required depth            |
-| Defect correction         | Implements correction and reports readiness for retest     | Retests, assesses regression and closes or reopens the defect     |
-| Regression                | Supports scripted or automated execution                   | Defines scope and approves completion                             |
-| Residual risk             | Identifies and describes limitations                       | Accepts or rejects residual risk                                  |
-| Deployment recommendation | May recommend approval or blocking                         | Formally approves or blocks deployment                            |
-| Production smoke          | Supports execution and technical investigation             | Assesses results and approves, blocks or orders corrective action |
-| V1.0 launch               | Provides implementation and execution evidence             | Holds final launch authority                                      |
+| Stage                     | Designated implementation agent / delivery process          | Test Lead                                                         |
+| ------------------------- | ------------------------------------------------------------ | ----------------------------------------------------------------- |
+| Implementation completion | Reports implementation and preliminary technical readiness   | Reviews whether the change may enter validation                   |
+| Functional validation     | Supports execution, investigation and evidence collection    | Defines scenarios, expected results and required depth            |
+| Defect correction         | Implements correction and reports readiness for retest       | Retests, assesses regression and closes or reopens the defect     |
+| Regression                | Supports scripted or automated execution                     | Defines scope and approves completion                             |
+| Residual risk             | Identifies and describes limitations                         | Accepts or rejects residual risk                                  |
+| Deployment recommendation | May recommend approval or blocking                           | Formally approves or blocks deployment                            |
+| Production smoke          | Supports execution and technical investigation               | Assesses results and approves, blocks or orders corrective action |
+| V1.0 launch               | Provides implementation and execution evidence               | Holds final launch authority                                      |
 
 ---
 
@@ -864,9 +868,9 @@ The assumptions already identified in the Product Overview, Quality Risk Analysi
 
 ### Open questions
 
-There are no unresolved open questions that prevent application of these criteria.
+There are no unresolved open questions that prevent entry into the final Release Candidate regression.
 
-Feature-specific questions may still arise when future functionality is defined or implemented. They must be resolved before final approval of the affected behaviour.
+Feature-specific questions may still arise if the final regression reveals new behavior or if future functionality is defined. They must be resolved before final approval of the affected behaviour.
 
 ### Proposed evolution
 
