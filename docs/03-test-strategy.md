@@ -6,7 +6,7 @@ This document defines the overall testing strategy for AtlasBadge and how qualit
 
 It covers risk prioritisation, test design, regression, evidence, AI-assisted execution, automation, release approval and residual risk.
 
-> **Document status:** Completed and maintained through AB-EV-059. The current strategy includes versioned Playwright/Firebase Emulator regression, checkpointed incremental validation, controlled real-backend/Production validation, explicit environment/runtime parity checks, real-browser acceptance and fixed living-document governance.
+> **Document status:** Completed and maintained through AB-EV-067. The current strategy includes versioned Playwright/Firebase Emulator regression, checkpointed incremental validation, controlled real-backend/Production validation, explicit environment/runtime parity checks, real-browser acceptance, fixed living-document governance and Premium Hardening controls for named acceptance-oracle preservation, independent pre-publication review where required, exact candidate-byte freeze/integrity and publication-chain verification. PA-001 and PA-002 are published Premium closures; PA-003 is the next finding. Final V1.0 Go Live is not claimed.
 
 ---
 
@@ -35,7 +35,7 @@ The objective is release confidence, not an unrealistic claim that every theoret
 
 AtlasBadge is a published web product built with Next.js, React, TypeScript, Tailwind CSS, Firebase Authentication, Cloud Firestore and Vercel.
 
-Its main quality challenges include asynchronous persistence, optimistic state, concurrency, interdependent statuses, detailed visits/memories, Wishlist privacy/order, geographic catalogue integrity, public/private profile projection, achievements, responsive map/UI behaviour and account lifecycle.
+Its main quality challenges include asynchronous persistence, optimistic state, concurrency, interdependent statuses, detailed visits/memories, Wishlist privacy/order, visit-photo active quota/lifecycle, geographic catalogue integrity, public/private profile projection, achievements, responsive map/UI behaviour and account lifecycle.
 
 The strategy should be read together with the [Product Overview](01-product-overview.md) and [Quality Risk Analysis](02-quality-risk-analysis.md).
 
@@ -43,7 +43,7 @@ The strategy should be read together with the [Product Overview](01-product-over
 
 ## 4. Quality ownership and governance
 
-AI-assisted development/testing tools may contribute implementation summaries, technical findings, scripted validation, defect investigation, test execution and evidence.
+AI-assisted tools contribute only within the actor boundaries defined by `GOVERNANCE-ERRATA.md` and repository instructions. ChatGPT coordinates requirements/risk/evidence and QA documentation; Antigravity/Gemini is the default Product implementation agent; Codex provides independent review when required; the Test Lead owns final quality/publication decisions.
 
 The Test Lead remains responsible for:
 
@@ -57,6 +57,8 @@ The Test Lead remains responsible for:
 - approving or blocking commits, pushes, deployments and Production validation.
 
 Use of AI does not transfer quality ownership.
+
+Where an independent review is an approved publication gate, publication is fail-closed until that review completes. PA-001 contains a transparently recorded review-order deviation and requires a compensating **post-publication** architecture audit before final Premium Hardening closure. PA-002 demonstrates the corrected sequence: uncommitted implementation/remediation → exact candidate freeze → independent Codex APPROVE → Test Lead publication authorisation → exact-byte staged/committed/remote/deployment verification.
 
 ---
 
@@ -103,11 +105,13 @@ Checkpointed regression gate
         ↓
 Quality / repository audit
         ↓
+Independent review when required by the current publication gate
+        ↓
 Test Lead commit/push approval
         ↓
-Deployment parity verification
+Deployment parity / exact-SHA verification
         ↓
-Focused Production validation
+Focused Production validation where proportionate
         ↓
 Test Lead sign-off + evidence update
 ```
@@ -150,7 +154,13 @@ AB-EV-055 extends the same bounded model to the canonical public Profile: a rout
 
 AB-EV-058 closes the planned localization sequence with authenticated language selection. The strategy deliberately separates control behavior, unsaved-data protection, final-file automation, responsive visual acceptance, exact-SHA deployment and Production human retest. AB-DEF-021 demonstrates why two controls that represent the same state must be tested bidirectionally: cookie-only reload was insufficient on a route-authoritative public Home. C45M also operationalised LL-66: agent work was bounded, stale checkpoints were invalidated explicitly, and the final hotfix was accepted only after an edit-free final-file Vitest/E2E freeze.
 
-AB-EV-059 applies the same checkpoint-preservation discipline to the additive German extension. The existing six-locale architecture is carried forward; only German catalogue/resolver/oracle coverage, affected browser boundaries, the seven-locale responsive selector and final Node 22 build are requalified. The 768px overlap found after adding the seventh locale demonstrates why additive presentation scope can cross an existing responsive threshold without invalidating unrelated backend/Rules evidence. Production validation remains non-destructive and is reported separately from protected Emulator evidence.
+AB-EV-059 applies the same checkpoint-preservation discipline to the additive German extension. The existing six-locale architecture is carried forward; only German catalogue/resolver/oracle coverage, affected browser boundaries, the seven-locale responsive selector and final Node 22 build are requalified. The 768px overlap found after adding the seventh locale demonstrates why additive presentation scope can cross an existing responsive threshold without invalidating unrelated backend/Rules evidence. AB-EV-060 subsequently closes the final deep authenticated German visual acceptance.
+
+AB-EV-065 then establishes the Node 24 / Next.js 16.3.6 technical RC anchor. Premium Hardening starts from that green checkpoint rather than repeating the whole earlier release campaign for every finding.
+
+AB-EV-066 demonstrates bounded ownership hardening: Clear Map's protected-state mutation moves to the authenticated server/Admin transaction boundary while the historical user-visible reset and generation semantics remain stable. It also records two governance/evidence lessons separately from Product behaviour: a missed pre-publication independent-review gate that requires a post-publication compensating audit, and a post-publication UTF-8 test-oracle repair that changed tests only because runtime behaviour was already correct.
+
+AB-EV-067 demonstrates the mature Premium workflow. PA-002 retained an explicit original acceptance matrix across several remediation cycles, froze exact candidate bytes, rejected stale/remapped oracles, compared lint warning identity rather than only the warning total, received independent Codex APPROVE before publication, and then proved approved working bytes → staged bytes → committed bytes → GitHub `main` → Vercel Production exact SHA. The underlying Product hardening separates logical photo removal/access/quota completion from deferred physical Storage cleanup and preserves concurrent edits by applying tombstone completion to current orchestrated state.
 
 This reduces wasted execution time while retaining traceable risk-based coverage.
 
@@ -163,15 +173,18 @@ When a test fails, the first step is classification:
 - **test-data/fixture defect** — prepared state violates Product invariants even though valid Product state behaves correctly;
 - **environment/infrastructure issue** — execution cannot prove product behaviour;
 - **release-control block** — tooling/security/process prevents publication before execution but source/product behaviour is not shown to be wrong;
+- **governance/process deviation** — the resulting Product may be technically valid but an approved actor/review/publication control was violated; preserve chronology and correct the control rather than inventing a Product Defect;
 - **inconclusive** — evidence is insufficient.
 
-Test defects, fixture defects and release-control blocks must not be presented as product defects, and product defects must not be hidden by weakening automation or Product assertions.
+Test defects, fixture defects, process deviations and release-control blocks must not be presented as product defects, and product defects must not be hidden by weakening automation or Product assertions.
 
 AB-EV-033 demonstrates this model: three real product defects were assigned AB-DEF IDs, while stale selectors, unauthenticated test reads and obsolete protocol/offline assumptions were treated as test-maintenance debt.
 
 AB-EV-052 adds a fixture-specific example. A direct C45G visual-QA seed created travel state that earned achievements but bypassed the normal achievement-metadata reconciliation lifecycle. The development invariant correctly rejected the incomplete state on Badges/public Profile. Reconciliation of Emulator data alone restored all dependent surfaces with no Product change, confirming a QA test-data defect rather than a Product regression.
 
 AB-EV-053 adds a release-control example. The first C45H push attempt was blocked by an automated security/release review because explicit authorization to publish `main` and trigger Production was not recognised. No push/deployment occurred until the Test Lead authorized it explicitly. The same approved commit was then pushed normally and deployed successfully; no Product defect was created.
+
+AB-EV-066 adds a governance example: PA-001 was published before a planned independent architecture review. The published Product remains functionally accepted, but the chronology is preserved and a post-publication compensating architecture audit remains mandatory before final Premium closure.
 
 ---
 
@@ -190,6 +203,8 @@ AtlasBadge uses a combination of:
 
 Particular attention is given to asynchronous writes, stale state, repeated clicks, destructive actions, public/private boundaries, status combinations and derived counters.
 
+For Premium Hardening, named acceptance-oracle inventories are retained when a finding has multiple race/lifecycle cases. A green aggregate test count cannot replace a missing original oracle.
+
 ---
 
 ## 8. Functional and regression coverage
@@ -199,6 +214,8 @@ Particular attention is given to asynchronous writes, stale state, repeated clic
 Every implementation/correction receives direct validation against the accepted rule and affected dependencies.
 
 A status or Wishlist change may require coverage of UI state, Firestore private state, public projection, reload persistence, counters, visit order independence, achievements, Profile presentation and privacy.
+
+A visit-photo lifecycle change may additionally require exact allocation identity, release idempotency/staleness, durable recovery after reload, current owner/public reference validation, full-quota recovery and physical-object/logical-state separation.
 
 ### 8.2 Core regression
 
@@ -231,16 +248,18 @@ For a release that changes both frontend and Firestore Rules, the process is:
 ```text
 Git push
 → verify Vercel Production READY at expected SHA
-→ deploy approved Firestore Rules-only change
+→ deploy approved Firestore Rules-only change where separately required
 → confirm frontend/Rules parity
-→ run focused Production validation
+→ run focused Production validation when proportionate
 ```
 
 A READY frontend deployment is not enough when the security-rule layer changed.
 
 AB-EV-033 followed this exact gate before validating Wishlist/private-public projection in Production.
 
-Presentation-only/authenticated-state checkpoints may close as **Production technical PASS + local/Emulator visual PASS** when manufacturing Production state would add avoidable risk and server/routing/isolation behaviour can be verified safely without mutation. C45D–C45J use this evidence distinction where applicable; C45I and C45J/FIX1/FIX2 additionally received final Test Lead Production visual approval without exercising destructive account or private-data operations. C45N uses the same separation: the non-destructive German Production technical smoke is PASS, while final representative deep authenticated German visual acceptance remains a distinct Test Lead decision.
+Presentation-only/authenticated-state checkpoints may close as **Production technical PASS + local/Emulator visual PASS** when manufacturing Production state would add avoidable risk and server/routing/isolation behaviour can be verified safely without mutation. C45D–C45J use this evidence distinction where applicable; C45I and C45J/FIX1/FIX2 additionally received final Test Lead Production visual approval without exercising destructive account or private-data operations.
+
+For PA-001/PA-002 publication, exact Git/Vercel SHA metadata was sufficient to prove deployment identity after comprehensive local/Emulator qualification; destructive/authenticated Production mutation was deliberately not repeated merely to prove the same lifecycle against real user data.
 
 ---
 
@@ -248,7 +267,7 @@ Presentation-only/authenticated-state checkpoints may close as **Production tech
 
 ### 10.1 Versioned automated coverage
 
-Playwright, Vitest and Firebase Rules tests are now permanent, versioned quality assets.
+Playwright, Vitest and Firebase Rules tests are permanent, versioned quality assets.
 
 The browser E2E suite includes high-value flows such as:
 
@@ -260,6 +279,7 @@ The browser E2E suite includes high-value flows such as:
 - manual visit order;
 - responsive behaviour;
 - achievement unlock/notification/localization where affected;
+- visit-photo owner/public access and active-quota affected paths;
 - Clear Map/account lifecycle affected areas.
 
 ### 10.2 Firebase Emulator isolation
@@ -279,7 +299,7 @@ Later photo/stateful checkpoints also start the Storage Emulator when required.
 
 The configuration forces Emulator targets, uses a dedicated E2E Next.js runtime/build, excludes Firebase-real Production specs and fails fast if real Firebase traffic is detected.
 
-Validated runs recorded `realFirebaseRequests=0`. C45H again recorded `realFirebaseRequests=0` while exercising reconciled achievement state and localized `/badges`/toast behavior. C45N protected Emulator browser checkpoints also recorded `realFirebaseRequests=0`; that value remains Emulator-fixture evidence and must not be reported as a Production request-count result.
+Validated runs recorded `realFirebaseRequests=0`. PA-002's final C44 regression again recorded `realFirebaseRequests=0`; this is Emulator evidence and must not be misreported as a Production network-count claim.
 
 ### 10.3 Controlled Production automation
 
@@ -299,7 +319,9 @@ Tests must avoid false confidence from:
 - offline toggling used as a substitute for semantics already covered deterministically elsewhere;
 - hardcoded app ports that bypass the isolated test runtime;
 - stale product counts/labels after an approved rule change;
-- directly seeded derived achievement state that bypasses required reconciliation.
+- directly seeded derived achievement state that bypasses required reconciliation;
+- replacing a named acceptance criterion with a superficially similar weaker test;
+- relying on an implementation helper test when the real Product path does not call that helper.
 
 ---
 
@@ -309,7 +331,7 @@ Tests must avoid false confidence from:
 
 Current coverage includes authenticated-route protection, Firestore Rules, account isolation, private/public profile transitions, sanitised `publicProfiles` projection, public Wishlist privacy, direct identifier/URL attempts and account deletion.
 
-AB-EV-033 validated zero private viewer reads in the focused Production Profile flow and absence of forbidden private place fields in the public projection. AB-EV-053 confirms that localized achievement presentation does not expand the `{ unlockedAt, sequence }` public achievement metadata contract or make the public Profile depend on the authenticated locale provider.
+AB-EV-033 validated zero private viewer reads in the focused Production Profile flow and absence of forbidden private place fields in the public projection. AB-EV-053 confirms that localized achievement presentation does not expand the `{ unlockedAt, sequence }` public achievement metadata contract or make the public Profile depend on the authenticated locale provider. AB-EV-067 adds current-reference validation for visit-photo reads so retained physical objects cannot bypass logical owner/public removal.
 
 This is not an independent penetration test or security certification.
 
@@ -317,7 +339,7 @@ This is not an independent penetration test or security certification.
 
 Performance is assessed through user-facing responsiveness, repeated interaction, map behaviour and targeted responsive/stability tests.
 
-No formal load/SLA baseline exists yet. Quantitative performance targets remain a planned improvement.
+No formal load/SLA baseline exists yet. Quantitative performance targets remain a planned improvement and PA-011 requires a measured baseline before optimisation.
 
 ### 11.3 Compatibility
 
@@ -341,8 +363,6 @@ Emulator tests use isolated demonstration-project data. Production tests use onl
 
 Rich manual/visual fixtures that induce derived Product state must be prepared through the normal Product/domain lifecycle where practical or explicitly run the same reconciliation helpers before handoff. Fixture readiness includes checking dependent surfaces whose invariants consume that derived state; a fixture shortcut must not be used as justification to weaken a Product assertion.
 
-C45H operationalizes this rule for achievement fixtures: every earned achievement in the visual QA user had valid `unlockedAt`/`sequence` metadata and a valid next unlock sequence before Test Lead handoff.
-
 Credentials, tokens, private account details and sensitive payloads are not committed to the public QA portfolio.
 
 ---
@@ -351,7 +371,7 @@ Credentials, tokens, private account details and sensitive payloads are not comm
 
 Evidence depth is proportional to risk, complexity, repetition need, release importance and investigation difficulty.
 
-Evidence may include execution summaries, command output, screenshots, structured narratives, commits, deployments, test counts and Test Lead decisions.
+Evidence may include execution summaries, command output, screenshots, structured narratives, commits, deployments, test counts, exact candidate hashes and Test Lead decisions.
 
 A material defect record should preserve:
 
@@ -385,6 +405,8 @@ An implementation is approved only when:
 - required corrections pass direct retest;
 - required affected regression passes;
 - repository/test-quality blockers are resolved;
+- required independent review has completed when it is part of the approved gate;
+- the final approved artefact is the same artefact later committed/published;
 - residual risk is reviewed by the Test Lead.
 
 After deployment, release sign-off additionally requires expected-version verification and Production validation proportional to the change.
@@ -417,21 +439,26 @@ The final release decision belongs to the Test Lead.
 - Quantitative performance targets are not established.
 - CI execution policy for the versioned regression suite can be expanded further.
 - Formal accessibility certification/native assistive-technology coverage is not claimed.
+- PA-001 AC-017 full browser UI → API → Admin Emulator reload proof remains carried to PA-007 / Final Premium RC.
+- The compensating post-publication PA-001 architecture audit remains a governance requirement before final Premium Hardening closure.
+- Physical visit-photo Storage deletion is intentionally deferred after PA-002; logical access and active quota no longer depend on it.
+- The existing Rules alias's undeclared/cached `tsx` dependency remains PA-006A deterministic-tooling scope.
 
-### Planned improvements
+### Planned improvements / Premium sequence
 
-1. expand browser/device coverage;
-2. add/strengthen CI execution for stable gates;
-3. establish measurable performance baselines;
-4. continue accessibility validation with assistive-technology evidence;
-5. maintain the Emulator fail-fast protections as Firebase/Next.js configuration changes;
-6. keep checkpointed regression traceable so saved execution time never becomes hidden coverage loss.
+1. continue Premium Hardening with PA-003 photo Admin/server-route lifecycle and input-contract hardening;
+2. close PA-006A deterministic tooling and PA-007 server-boundary/project-safety items in their approved order;
+3. establish measurable performance baselines before PA-011 optimisation decisions;
+4. expand browser/device coverage where risk justifies it;
+5. continue accessibility validation with assistive-technology evidence;
+6. maintain Emulator fail-fast protections as Firebase/Next.js configuration changes;
+7. keep checkpointed regression and exact-byte approval traceable so saved execution time never becomes hidden coverage loss.
 
 ---
 
 ## 17. Strategy review triggers
 
-Review this strategy when authentication, travel-status/Wishlist rules, persistence/concurrency, Firestore Rules/data model, public projection/privacy, account deletion, geographic catalogue, achievements/localized presentation, Emulator architecture, CI, supported browsers/devices, accessibility targets or release process change materially.
+Review this strategy when authentication, travel-status/Wishlist rules, persistence/concurrency, Firestore Rules/data model, public projection/privacy, account deletion, visit-photo lifecycle/Admin boundaries, geographic catalogue, achievements/localized presentation, Emulator architecture, CI, supported browsers/devices, accessibility targets or release process change materially.
 
 ---
 
@@ -444,6 +471,7 @@ Review this strategy when authentication, travel-status/Wishlist rules, persiste
 - `docs/08-metrics-and-reporting.md`
 - `docs/09-system-test-plan.md`
 - `docs/10-lessons-learned.md`
+- `GOVERNANCE-ERRATA.md`
 - `evidence/v1.0/evidence-register.md`
 - `evidence/v1.0/regression/ab-ev-033-wishlist-public-profile-release-hardening.md`
 - `evidence/v1.0/regression/ab-ev-052-c45g-deep-country-visit-editor-localization.md`
@@ -454,31 +482,17 @@ Review this strategy when authentication, travel-status/Wishlist rules, persiste
 - `evidence/v1.0/regression/ab-ev-057-c45l-password-reset-action-localization.md`
 - `evidence/v1.0/regression/ab-ev-058-c45m-authenticated-language-selector-and-production-hotfix.md`
 - `evidence/v1.0/regression/ab-ev-059-c45n-german-localization-extension.md`
+- `evidence/v1.0/regression/ab-ev-060-c45n-final-localization-closure-and-ab-def-022.md`
+- `evidence/v1.0/regression/ab-ev-061-v1-release-readiness-audit.md`
+- `evidence/v1.0/regression/ab-ev-062-final-v1-release-candidate-regression-charter.md`
+- `evidence/v1.0/regression/ab-ev-063-rc-lockfile-reproducibility-recovery.md`
+- `evidence/v1.0/regression/ab-ev-064-c46-node24-lts-upgrade-charter.md`
+- `evidence/v1.0/regression/ab-ev-065-node24-final-rc-qualification-and-production-deployment.md`
+- `evidence/v1.0/regression/ab-ev-066-pa001-clear-map-server-boundary-premium-hardening.md`
+- `evidence/v1.0/regression/ab-ev-067-pa002-active-visit-photo-quota-lifecycle-premium-hardening.md`
 
-## C45K / AB-EV-056 — geographic localization closure
+## Current Premium Hardening strategy checkpoint
 
-C45K adds regression expectations for every active consumer of shared localized geography, including accessible SVG text on a decorative map. B8 illustrates the need to update E2E oracles after a locale/route contract changes: initially obsolete locators resembled an infrastructure hang and a diagnostic run reported 59 PASS / 7 FAIL; updated tests passed 66/66. Final evidence was frozen and the changed C45F file rerun after its last edit. Browser-title hypotheses were not converted into global code workarounds without reproduction.
+The current Product publication anchor is `49abb003a9b495f3be43b4e30ea4b36dcfb8ceca`, deployed automatically to Vercel Production as `dpl_FTp3iCiARWMSejRv12FcHtaMcWeR` (`READY`, exact SHA).
 
-[Consolidated evidence](../evidence/v1.0/regression/ab-ev-056-c45k-geographic-localization.md).
-
-## C45L / AB-EV-057 — password-reset action localization
-
-C45L used a Server Page for mode-scoped metadata and a Client Component for Firebase action-code handling instead of illegally exporting generateMetadata from a client page. Test design covered real Auth Emulator oobCode recovery and login with the new password; unambiguous locators and actual 15-character policy; contextual locale resolution; and selective C45E/C45F/C45G/C45H/C45D E2E oracle updates after a legitimate requirement change. An initial Turbopack cache error was an environment blocker corrected before the final run. A follow-up E2E-only mobile change required an affected 390×844 rerun, not the entire suite.
-
-[Consolidated evidence](../evidence/v1.0/regression/ab-ev-057-c45l-password-reset-action-localization.md).
-
-## C45M / AB-EV-058 — authenticated language selection strategy
-
-C45M uses layered evidence rather than one aggregate pass rate: component tests protect menu order, friendly names, selected-state and keyboard/focus behavior; focused Emulator E2E proves six-locale switching, cookie/document/session continuity and dirty-state protection; viewport/manual QA covers submenu layout at 390×844 and 320×568; and Production smoke validates the deployed authenticated journey.
-
-After AB-DEF-021 was found in Production, only the invalidated public-Home convergence path was reopened. The final hotfix checkpoint froze the three changed files, reran `Header.c45m.test.tsx` 8/8 and the single protected Emulator E2E 1/1 with `realFirebaseRequests=0`, then published the exact tested state. Broad earlier green checkpoints were carried forward where the hotfix did not invalidate them. Vercel READY and Test Lead Production behavior are recorded separately.
-
-[Consolidated evidence](../evidence/v1.0/regression/ab-ev-058-c45m-authenticated-language-selector-and-production-hotfix.md).
-
-## C45N / AB-EV-059 — German localization extension strategy
-
-C45N reuses the established localization architecture and carries forward unaffected six-locale evidence. New work is qualified at the smallest invalidated layers: German catalogue/resolver/unit oracles, affected routing/authenticated browser contracts, seven-locale responsive geometry and the final Node 22 compile/build state. The seventh public selector entry exposed a real 768px layout threshold; the focused correction was revalidated without reopening unrelated backend or Rules suites.
-
-Protected Firebase Emulator browser runs retain `realFirebaseRequests=0` as isolation evidence. Production evidence is deliberately separate and non-destructive: exact-SHA deployment, German public/auth-entry presentation, fallback/isolation, 390×844 no-overflow and final seven-locale selector order passed. Authenticated German convergence is carried from Emulator evidence and final representative deep authenticated German visual acceptance remains a Test Lead decision.
-
-[Consolidated evidence](../evidence/v1.0/regression/ab-ev-059-c45n-german-localization-extension.md).
+PA-001 and its UTF-8 test-oracle repair are published under AB-EV-066; AC-017 and the compensating post-publication architecture audit remain explicit carry-forwards. PA-002 is closed under AB-EV-067 with all original acceptance criteria independently PROVEN before publication. PA-003 is the next implementation/audit service. This checkpoint is not the final V1.0 Go-Live decision.
