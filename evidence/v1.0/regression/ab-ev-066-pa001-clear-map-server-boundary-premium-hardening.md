@@ -3,11 +3,14 @@
 **Evidence ID:** AB-EV-066  
 **Programme:** AtlasBadge V1.0 — Premium Hardening  
 **Finding:** PA-001  
-**Product commit:** `b0fef1d825649a7c961a3413f11faa4c104b8aca`  
+**Implementation commit:** `b0fef1d825649a7c961a3413f11faa4c104b8aca`  
 **Parent qualification baseline:** `12a0dd53dfe789610e6393b31db1c94c311757ff`  
-**Vercel deployment:** `dpl_57PhNgUXQdmDsTByu9xJp4jCkKcK` — `READY`, `production`, exact Product SHA  
+**Implementation deployment:** `dpl_57PhNgUXQdmDsTByu9xJp4jCkKcK` — `READY`, `production`, exact implementation SHA  
+**Test-oracle hotfix commit:** `d0116967fc389353191c11e8865f20e38b9d5835`  
+**Hotfix deployment:** `dpl_5M8VAxJ6VcWdcgSM78rsVDWYiP4J` — `READY`, `production`, exact hotfix SHA  
 **Test Lead decision:** **PASS / PUBLISHED**  
-**Residual qualification item:** AC-017 carried to PA-007 / Final Premium RC
+**Residual qualification item:** AC-017 carried to PA-007 / Final Premium RC  
+**Governance carry-forward:** compensating **post-publication** architecture audit of `12a0dd53... → b0fef1d...` remains open before final Premium Hardening closure
 
 ## 1. Context
 
@@ -155,7 +158,7 @@ Transaction failure coverage confirms that a failed reset does not leave an appr
 
 PA-001 deliberately used the smallest destructive test layers that could prove the server boundary without sending destructive traffic to a real Firebase project.
 
-Final qualification combined:
+Final implementation qualification combined:
 
 - client-wrapper unit tests;
 - route authentication/lifecycle tests;
@@ -167,41 +170,41 @@ Final qualification combined:
 - `git diff --check`;
 - exact-SHA GitHub/Vercel publication verification.
 
-A temporary manual test skip introduced during remediation was removed before final qualification. The pre-existing emulator test was restored to HEAD and the final gate sequence was executed only after the last source/test edit.
+A temporary manual test skip introduced during remediation was removed before qualification. The pre-existing emulator test was restored to HEAD and the final gate sequence was executed only after the last implementation/test edit.
 
-## 11. Final automated results
+## 11. Implementation qualification result
 
-| Gate | Final result |
+| Gate | Implementation qualification result |
 |---|---:|
 | Client Clear Map unit | **5 / 5 PASS** |
 | Route security | **8 / 8 PASS** |
 | PA-001 Firestore Emulator server/concurrency | **11 / 11 PASS** |
-| Normal full Vitest | **889 PASS / 48 SKIPPED / 0 FAIL** |
+| Normal full Vitest | **889 PASS / 48 SKIPPED / 0 FAIL** after the later test-oracle repair |
 | TypeScript | **PASS** |
 | ESLint | **0 errors / 38 warnings / 0 PA-001-created warnings** |
 | Production build | **PASS** |
 | `git diff --check` | **PASS** |
-| Real Firebase requests during final destructive qualification | **0** |
+| Real Firebase requests during destructive qualification | **0** |
 
-The 38 ESLint warnings are the qualified repository baseline and were not increased by PA-001.
+The 38 ESLint warnings were the qualified repository baseline and were not increased by PA-001.
 
 ## 12. Acceptance-criteria disposition
 
 PA-001 closed the approved implementation criteria with one explicit infrastructure carry-forward.
 
-- **AC-001–AC-016:** qualified by approved focused emulator/unit/source evidence;
+- **AC-001–AC-016:** qualified by approved focused Emulator/unit/source evidence;
 - **AC-018–AC-022:** **PASS**;
 - **AC-017:** **BLOCKED BY EXISTING E2E INFRASTRUCTURE**.
 
-AC-017 is not marked PASS or N/A. The missing proof is a browser-level reload through the complete UI → client wrapper → API route → Admin server path while all Firebase dependencies are emulator-backed.
+AC-017 is not marked PASS or N/A. The missing proof is a browser-level reload through the complete UI → client wrapper → API route → Admin server path while all Firebase dependencies are Emulator-backed.
 
-The existing Clear Map Playwright harness is production-oriented, while the new Admin server path requires broader server/emulator integration. Altering that infrastructure inside PA-001 would have expanded the finding into PA-007 territory.
+The existing Clear Map Playwright harness was production-oriented, while the new Admin server path requires broader server/Emulator integration. Altering that infrastructure inside PA-001 would have expanded the finding into PA-007 territory.
 
 The Test Lead accepted this as a bounded residual qualification item rather than a PA-001 publication blocker.
 
-## 13. Product publication
+## 13. Original Product publication
 
-PA-001 was committed and pushed as:
+PA-001 implementation was committed and pushed as:
 
 ```text
 b0fef1d825649a7c961a3413f11faa4c104b8aca
@@ -214,8 +217,6 @@ The commit parent is the qualified Node 24 RC baseline:
 12a0dd53dfe789610e6393b31db1c94c311757ff
 ```
 
-GitHub `main` was independently verified at the PA-001 SHA after publication.
-
 Vercel created the exact-SHA Production deployment:
 
 ```text
@@ -227,21 +228,78 @@ b0fef1d825649a7c961a3413f11faa4c104b8aca
 
 This deployment evidence proves publication/deployment integrity only. **No Production functional Clear Map PASS is claimed by AB-EV-066.**
 
-## 14. Test Lead decision
+## 14. Governance deviation — independent review ordering
+
+The original PA-001 publication did **not** follow the intended independent-review ordering.
+
+The coordinator authorised commit/push before the planned independent Codex architecture review of the implementation had been completed. This was a governance/process-control deviation. The chronology must not be rewritten to imply that the review happened before publication.
+
+The deviation does not by itself establish a Product Defect and no rollback is justified solely to recreate the same valid Product state under a different review order. The corrective controls are:
+
+1. record the deviation transparently;
+2. retain a compensating **post-publication** architecture audit of the exact implementation delta `12a0dd53... → b0fef1d...` as an open governance item;
+3. require that audit before final Premium Hardening closure;
+4. require independent pre-publication review for subsequent Premium findings.
+
+PA-002 followed the corrected ordering and received independent approval before publication.
+
+## 15. Post-publication UTF-8 test-oracle defect and hotfix
+
+After the implementation was already published, the PA-001 route tests exposed a separate test-oracle defect. Three assertions expected mojibake response text while the runtime route returned correct UTF-8 Portuguese text.
+
+The Product runtime behaviour was already correct. The repair therefore changed **only** the test oracle in:
+
+```text
+src/app/api/account/clear-map/route.test.ts
+```
+
+The isolated branch/hotfix was independently reviewed by Codex and received **APPROVE / NO FINDINGS** before publication.
+
+The qualified one-file candidate hash was:
+
+```text
+112138f095f0235d5aca66b10d0df4d2f44cde0b41e5fd48427f5bc6d38c55c3
+```
+
+Final repair qualification included:
+
+- corrected three UTF-8 expectations;
+- full Vitest **889 PASS / 48 SKIPPED / 0 FAIL**;
+- TypeScript PASS;
+- ESLint **0 errors / 38 warnings**;
+- production build PASS;
+- `git diff --check` PASS.
+
+The test-only hotfix was published as:
+
+```text
+d0116967fc389353191c11e8865f20e38b9d5835
+test(clear-map): fix UTF-8 route expectations
+```
+
+Vercel automatically deployed that exact Product SHA:
+
+```text
+dpl_5M8VAxJ6VcWdcgSM78rsVDWYiP4J
+READY
+production
+d0116967fc389353191c11e8865f20e38b9d5835
+```
+
+The hotfix introduced **no runtime behaviour change**. It restored reproducible qualification of the already-published correct UTF-8 runtime behaviour.
+
+## 16. Test Lead decision
 
 **PA-001 — PASS / PUBLISHED**
 
-The Test Lead approved the implementation after the final clean gate sequence demonstrated:
+The Test Lead decision remains valid for the implemented server-boundary correction. The later test-oracle repair is recorded as a qualification repair, not as a Product functional correction.
 
-- no manual test skip;
-- no unrelated file in the Product commit;
-- exact reset-contract parity;
-- privileged token revocation checking;
-- contention coverage against canonical place creation/update and protected slot state;
-- zero destructive real-Firebase calls during final qualification;
-- clean Product publication from the authorised baseline.
+The decision does not close the two explicit carry-forwards:
 
-## 15. Traceability
+- AC-017 browser-level Emulator UI → API → Admin reload proof → PA-007 / Final Premium RC;
+- compensating post-publication architecture audit of `12a0dd53... → b0fef1d...` → required before final Premium Hardening closure.
+
+## 17. Traceability
 
 | Traceability element | PA-001 record |
 |---|---|
@@ -252,37 +310,46 @@ The Test Lead approved the implementation after the final clean gate sequence de
 | Photo/quota ownership evidence | AB-EV-044 |
 | RC baseline | AB-EV-065 / Product `12a0dd53...` |
 | Implementation | Product `b0fef1d825649a7c961a3413f11faa4c104b8aca` |
+| Original deployment | `dpl_57PhNgUXQdmDsTByu9xJp4jCkKcK` READY / production / exact implementation SHA |
+| Test-oracle repair | Product `d0116967fc389353191c11e8865f20e38b9d5835` |
+| Hotfix review | Codex APPROVE / NO FINDINGS |
+| Hotfix deployment | `dpl_5M8VAxJ6VcWdcgSM78rsVDWYiP4J` READY / production / exact hotfix SHA |
 | Client tests | 5 / 5 PASS |
-| Route tests | 8 / 8 PASS |
+| Route tests | 8 / 8 PASS after UTF-8 oracle correction |
 | Server/concurrency tests | 11 / 11 PASS |
 | Full regression | 889 PASS / 48 SKIPPED / 0 FAIL |
 | Static/build gates | TypeScript PASS; ESLint 0 errors / 38 warnings; build PASS; diff-check PASS |
 | Evidence | AB-EV-066 |
-| Deployment | `dpl_57PhNgUXQdmDsTByu9xJp4jCkKcK` READY / production / exact SHA |
 | Test Lead decision | PASS / PUBLISHED |
-| Residual | AC-017 → PA-007 / Final Premium RC |
+| Functional residual | AC-017 → PA-007 / Final Premium RC |
+| Governance residual | compensating post-publication architecture audit before final Premium Hardening closure |
 
-## 16. Relationship to earlier evidence
+## 18. Relationship to earlier and later evidence
 
 AB-EV-066 **does not rewrite** AB-EV-037. AB-EV-037 remains the correct historical record of the C37 client-batch architecture and generation invalidation decision.
 
 AB-EV-066 records the later architectural hardening required after C44 changed the ownership model for visit-photo quota metadata. The later record supersedes only the assumption that the client remained the correct owner of every Clear Map field mutation.
 
-AB-EV-044 remains the authoritative visit-photo/quota lifecycle baseline. PA-001 intentionally does not implement normal photo-removal quota recovery; that separate Premium finding is PA-002.
+AB-EV-044 remains the authoritative visit-photo/quota lifecycle baseline. PA-001 intentionally did not implement normal photo-removal quota recovery; that separate Premium finding was PA-002 and is closed later by AB-EV-067.
 
-AB-EV-065 remains the Node 24 final RC qualification baseline from which PA-001 was implemented.
+AB-EV-065 remains the Node 24 final RC qualification baseline from which PA-001 implementation was created.
 
-## 17. Carry-forward actions
-
-The following item remains open by explicit Test Lead decision:
+## 19. Carry-forward actions
 
 ### AC-017 → PA-007 / Final Premium RC
 
-Provide browser-level destructive-flow evidence across the full UI → API → Admin path under a controlled emulator-backed server environment, without real Firebase traffic.
+Provide browser-level destructive-flow evidence across the full UI → API → Admin path under a controlled Emulator-backed server environment, without real Firebase traffic.
 
-This carry-forward must remain visible until either:
+### PA-001 compensating architecture audit
 
-1. PA-007 closes the environment/server-boundary gap and the browser proof is executed; or
-2. the Final Premium RC records an explicit residual-risk decision.
+Perform and record an explicitly **post-publication** independent architecture audit of the exact implementation delta:
 
-PA-001 itself is closed and published.
+```text
+12a0dd53dfe789610e6393b31db1c94c311757ff
+→
+b0fef1d825649a7c961a3413f11faa4c104b8aca
+```
+
+This audit must not be described retroactively as pre-publication review. It is a governance closure item required before the Premium Hardening programme is finally closed.
+
+PA-001 itself remains functionally closed and published; the test-oracle hotfix is also closed and published.
