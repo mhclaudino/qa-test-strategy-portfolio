@@ -355,7 +355,7 @@ Release approval is blocked by evidence of:
 - `evidence/v1.0/regression/ab-ev-059-c45n-german-localization-extension.md`
 - `evidence/v1.0/regression/ab-ev-060-c45n-final-localization-closure-and-ab-def-022.md`
 - `evidence/v1.0/regression/ab-ev-061-v1-release-readiness-audit.md`
-- `evidence/v1.0/regression/ab-ev-062-final-v1.0-release-candidate-regression-charter.md`
+- `evidence/v1.0/regression/ab-ev-062-final-v1-release-candidate-regression-charter.md`
 - `evidence/v1.0/regression/ab-ev-063-rc-lockfile-reproducibility-recovery.md`
 - `evidence/v1.0/regression/ab-ev-064-c46-node24-lts-upgrade-charter.md`
 - `evidence/v1.0/regression/ab-ev-065-node24-final-rc-qualification-and-production-deployment.md`
