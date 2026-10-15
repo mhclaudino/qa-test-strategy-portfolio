@@ -1,11 +1,11 @@
 # AtlasBadge V1.0 System Test Plan
 
 **Document status:** Active / change-controlled  
-**Execution status:** Premium Hardening in progress; reviewed through AB-EV-067. AB-EV-065 remains the technical Release Candidate anchor; PA-001/AB-EV-066 and PA-002/AB-EV-067 are published hardening closures; PA-003 is the next active service. Final Premium Hardening closure and final V1.0 Go Live are not yet declared.  
+**Execution status:** Premium Hardening in progress; reviewed through AB-EV-068. AB-EV-065 remains the technical Release Candidate anchor; PA-001/AB-EV-066, PA-002/AB-EV-067 and PA-003/AB-EV-068 are published hardening closures. PA-003 is Production verified. Final Premium Hardening closure and final V1.0 Go Live are not yet declared.  
 **Product:** AtlasBadge  
 **Target release:** V1.0  
 **Document owner:** Test Lead/Product Owner  
-**Last updated:** 12 October 2026
+**Last updated:** 15 October 2026
 
 ---
 
@@ -106,7 +106,7 @@ test(clear-map): fix UTF-8 route expectations
 Vercel: dpl_5M8VAxJ6VcWdcgSM78rsVDWYiP4J — READY
 ```
 
-The current published Premium Hardening Product anchor is PA-002:
+PA-002 publication is:
 
 ```text
 49abb003a9b495f3be43b4e30ea4b36dcfb8ceca
@@ -116,7 +116,18 @@ Vercel: dpl_FTp3iCiARWMSejRv12FcHtaMcWeR
 READY / production / exact SHA
 ```
 
-AB-EV-066 and AB-EV-067 are the authoritative public evidence records for PA-001 and PA-002.
+The current published Premium Hardening Product anchor is PA-003:
+
+```text
+7616e8ca455f1d2e72a67e4dd839c9c302f98656
+fix(visit-photo): complete PA-003 premium hardening
+Parent: 49abb003a9b495f3be43b4e30ea4b36dcfb8ceca
+Vercel: dpl_B842NnXHecrGNhcQAfpkC8CgyVhj
+READY / production / exact SHA
+Alias: atlas-badge.vercel.app
+```
+
+AB-EV-066, AB-EV-067 and AB-EV-068 are the authoritative public evidence records for PA-001, PA-002 and PA-003.
 
 ---
 
@@ -158,11 +169,29 @@ Current contract:
 
 All original PA2-01 through PA2-14 criteria, including PA2-09B and separate OWNER/PUBLIC PA2-12 transitions, are independently PROVEN under AB-EV-067.
 
-### Next active service
+### PA-003 — photo Admin/server-route lifecycle and input-contract hardening
 
-**PA-003 — photo Admin/server-route lifecycle and input-contract hardening.**
+**Status:** closed / independently approved / published / Production verified.
 
-PA-003 starts with read-only audit and must not silently absorb PA-007 server-project safety, PA-008 account-deletion origin policy, broad physical Storage garbage collection or unrelated Firebase/state rewrites unless evidence shows a direct blocker.
+Current contract:
+
+- mutation ingress rejects malformed JSON, wrong types, invalid document segments and non-canonical slot values before state mutation;
+- unexpected failures are sanitised and quota/auth/account outcomes remain typed/deterministic;
+- failed initial upload releases only its unpersisted allocation while failed persisted replacement preserves the current photo/allocation;
+- required auth is revocation-aware; reserve requires verified e-mail; inactive/missing account state is gated with the approved 404/403 read-versus-mutation semantics;
+- current explicit `photoRef` and modern locator state take precedence over weaker legacy compatibility; present-invalid state fails closed;
+- each new photo version receives a fresh immutable Storage key `users/{uid}/visit-photo-objects/{slotId}/{photoRef}.webp`;
+- slot/reservation identity remains quota/allocation identity, not byte-version identity;
+- the former mutable `visit-photo-slots/**` namespace is frozen for client writes while genuine pre-S5 records remain server-readable;
+- a delayed request authorised for X may finish X (or fail safely) but can never receive later Y after replacement or slot reuse;
+- malformed-present `photoObjectKey` state remains distinguishable from genuine absence through canonicalisation/save/reload so legacy fallback cannot be silently re-enabled;
+- account deletion continues to clean the new immutable namespace by existing user-prefix enumeration.
+
+All PA3-01 through PA3-15 criteria are proven. F01–F08/F10/F11 are PASS, F09 is PASS WITH OBSERVATION and F12 remains rejected as unsupported speculation. AB-EV-068 records the final qualification, publication and bounded non-destructive post-publication smoke.
+
+### Remaining Premium work
+
+PA-003 closure does not absorb later findings. PA-006A deterministic tooling, PA-007 Firebase namespace/safety plus PA-001 AC-017, PA-008 account-deletion origin policy, later accessibility/performance work and final Premium/Go-Live assessment remain separately controlled.
 
 ---
 
@@ -180,6 +209,7 @@ Objectives include:
 - protect visits/memories/order/photo state from loss, duplication or stale cleanup;
 - verify explicit per-memory privacy and sanitised public projection;
 - verify current owner/public photo-reference identity independent of retained physical bytes;
+- verify authorised photo identity remains bound to immutable physical bytes across replacement/slot reuse;
 - confirm destructive Clear Map cannot expose a partially reset protected state;
 - confirm stale public generations are not returned as current data;
 - confirm canonical geographic/counter semantics;
@@ -207,6 +237,7 @@ Release-blocking coverage includes, when affected:
 - public projection whitelisting/sanitisation;
 - current/stale generation boundaries;
 - current/stale visit-photo identity boundaries;
+- logical-photo → physical-byte identity boundaries;
 - public/private transitions;
 - account deletion and Clear Map lifecycle;
 - core counters/geographic model;
@@ -242,23 +273,28 @@ A lower-layer helper test is accepted only when the real Product path uses that 
 
 Firestore/Storage Rules and backend-focused Emulator tests cover owner-only access, schema/projection boundaries, atomic/failure behaviour, protected server/client ownership and exact lifecycle races.
 
-For PA-002, the final independent gate recorded:
+Historical PA-002 final evidence recorded Firestore Rules 242/242 and its core quota/slot/route groups. The current PA-003 final gate recorded:
 
 ```text
-Firestore Rules: 242 / 242 PASS
-Core PA-002 Emulator declarations:
-- quota lifecycle 13 / 13
-- slot server 10 / 10
-- route 10 / 10
+Rules: 258 / 258 PASS, 0 skipped
+Owner route unit: 23 / 23 PASS
+Combined route Emulator: 45 / 45 PASS
+Immutable race suite: 7 / 7 PASS
+Quota lifecycle Emulator: 19 / 19 PASS
+Slot-server Emulator: 18 / 18 PASS
+Account-deletion visit-photo Emulator: 1 / 1 PASS
+Required five-suite Emulator group: 90 / 90 PASS
 ```
 
-The existing Rules alias still relies on cached undeclared `tsx`; this result is valid but deterministic declaration is PA-006A follow-up.
+A focused Firestore+Storage Rules smoke was also executed under the Product Emulator project `demo-atlasbadge-web` because immutable Storage CREATE authorisation consults Firestore account/allocation state. This proved active allocation allow, no-allocation deny, inactive deny, cross-user deny and same-key second-write deny in the Product configuration.
+
+The existing Rules alias still relies on cached undeclared `tsx`; the result itself is valid but deterministic declaration remains PA-006A follow-up.
 
 ### 7.4 Browser E2E — Emulator
 
 Normal stateful/destructive browser regression uses Firebase Emulators and must fail fast on unexpected real Firebase traffic.
 
-The current PA-002 C44 affected regression recorded:
+The PA-002 C44 affected regression was rerun in PA-003 final qualification and recorded:
 
 ```text
 Edge: 1 / 1 PASS
@@ -279,7 +315,9 @@ Production validation is proportional and separately authorised.
 
 Production deployment identity may be proven by Git/Vercel SHA metadata. Destructive/authenticated Production data mutation is not required merely because a deployment is READY when equivalent Product behaviour has already been qualified under controlled Emulator/local gates and a real-Production mutation would add avoidable risk.
 
-No claim of functional Production execution may be inferred solely from Vercel READY.
+PA-003 additionally used a bounded read-only/non-mutating post-publication smoke: `/`→`/pt-br`, static assets, expected unauthenticated/malformed owner/public photo API failures and a bounded deployment-log error/fatal query. Zero intentional Production Firebase mutation occurred. This proves deployment/runtime availability and non-disclosure at safe rejection paths, not a Production replay of PA3-15 races.
+
+No claim of broader functional Production execution may be inferred solely from Vercel READY or the bounded smoke.
 
 ---
 
@@ -303,6 +341,7 @@ Examples:
 - a Rules change invalidates Rules/release-parity evidence;
 - a responsive CSS change invalidates affected rendered-browser evidence;
 - a server ownership change invalidates authentication/authorisation/lifecycle evidence around that boundary;
+- a physical-locator change invalidates the affected read/upload/race evidence;
 - a test file edit after a claimed final gate requires the affected test to be rerun against the final file state.
 
 Carried-forward results and the reason they remain valid must be explicit.
@@ -350,6 +389,8 @@ PA-001 provides the current test-oracle example: three route assertions expected
 
 PA-002 provides the acceptance-inventory example: original PA2-06/PA2-07 coverage was temporarily lost even though aggregate suites remained green. Final approval required restoration of the original named oracles.
 
+PA-003 provides a fail-closed compatibility example: the first immutable-byte implementation closed the core F08 race, but independent review still rejected S5 because a present malformed private locator could fall through to legacy resolution and canonicalisation could erase malformed-present state into absence after save/reload. S5-R01 corrected the Product boundary; the green race evidence did not substitute for those separate identity/persistence oracles.
+
 ---
 
 ## 11. Repository and final-byte quality gate
@@ -369,19 +410,21 @@ Before final independent approval/publication:
 
 If an interruption/workstation failure occurs while untracked candidate files exist, preserve a complete byte-for-byte external snapshot before attempting recovery. `git diff` alone is not a backup for untracked files.
 
-PA-002 publication additionally proved:
+PA-002 proved approved working bytes → staged bytes → committed bytes → GitHub main → Vercel Production SHA. PA-003 repeated and extended that chain:
 
 ```text
-approved working bytes
+approved S6 source bytes
 =
-staged bytes
+staged PA-003 bytes
 =
-committed bytes
+7616e8ca455f1d2e72a67e4dd839c9c302f98656
 =
-GitHub main exact commit
+origin/main exact commit
 =
-Vercel Production source SHA
+dpl_B842NnXHecrGNhcQAfpkC8CgyVhj Production source SHA
 ```
+
+The post-publication review then confirmed all **444 tracked/nonignored files** remained hash-identical throughout the read-only verification.
 
 ---
 
@@ -399,6 +442,7 @@ implementation candidate
 → controlled push
 → exact remote SHA verification
 → automatic Vercel deployment verification
+→ proportional post-publication verification
 → documentation reconciliation
 ```
 
@@ -406,7 +450,9 @@ Do not reorder this sequence for convenience.
 
 PA-001 contains one known governance deviation: publication occurred before the planned independent architecture review. The Product state remains accepted, but a compensating **post-publication** audit is mandatory before final Premium closure and must not be relabelled as pre-publication review.
 
-PA-002 followed the corrected sequence and received Codex **APPROVE** on the exact frozen bytes before the Test Lead authorised publication.
+PA-002 followed the corrected sequence and received Codex **APPROVE** on exact frozen bytes before Test Lead publication authorisation.
+
+PA-003 followed the corrected sequence throughout: initial audit → approved slice matrix → per-slice independent reviews → dedicated S5 architecture design gate before implementation → S5-R01 correction/re-review → S6 cumulative final qualification → Test Lead approval → clean commit/push → exact Vercel deployment verification → read-only post-publication smoke → documentation reconciliation.
 
 ---
 
@@ -425,7 +471,7 @@ For source-only releases:
 9. verify `origin/main` / remote SHA;
 10. verify automatic Vercel Production deployment is `READY` on the exact commit SHA.
 
-For releases that also require separately deployed Firestore/Storage Rules, source/deployment and Rules parity must be restored before Production functional smoke begins.
+For releases that also require separately deployed Firestore/Storage Rules, source/deployment and Rules parity must be understood/restored before any Production functional smoke that depends on the changed Rules.
 
 No force push, merge/rebase shortcut or unrelated cleanup is used to make publication look clean.
 
@@ -455,7 +501,8 @@ Current Premium evidence:
 
 - AB-EV-065 — Node 24 final technical RC anchor;
 - AB-EV-066 — PA-001 Clear Map server-boundary hardening + UTF-8 test-oracle repair + governance carry-forward;
-- AB-EV-067 — PA-002 active visit-photo quota lifecycle hardening and Production publication.
+- AB-EV-067 — PA-002 active visit-photo quota lifecycle hardening and Production publication;
+- AB-EV-068 — PA-003 photo Admin/server-route hardening, immutable byte identity, final qualification, exact-SHA publication and post-publication Production verification.
 
 Historical C31–C45N execution details remain in AB-EV-029 through AB-EV-060 and are not duplicated here.
 
@@ -489,38 +536,41 @@ The final release decision belongs to the Test Lead/Product Owner.
 - AB-EV-065 is the technical RC anchor but does not by itself equal final Go Live.
 - PA-001 is functionally closed/published; AC-017 remains for PA-007 / Final Premium RC.
 - PA-001 compensating **post-publication** architecture audit remains open as governance closure work.
-- PA-002 is closed/published/Production READY; physical visit-photo Storage deletion is intentionally deferred.
-- PA-003 photo Admin/server-route lifecycle and input-contract hardening is next.
+- PA-002 is closed/published/Production READY; its active-logical quota and exact retry contract remain regression scope.
+- PA-003 is closed/published/Production verified under AB-EV-068.
+- Physical immutable visit-photo object GC remains deferred; logical access, quota correctness and immutable-byte correctness do not depend on immediate deletion.
+- Old clients intentionally cannot write the frozen `visit-photo-slots/**` namespace; rollback must not re-enable mutable slot writes.
+- Authorisation-snapshot semantics remain accepted: an already-authorised immutable X may finish X after later logical invalidation, while fresh stale-X requests are denied.
+- Malformed private immutable locators remain nominally string-typed in the TypeScript domain model, but current runtime consumers validate type/canonical equality and fail closed.
+- No Production race test is claimed; PA3-15 is qualified deterministically under controlled local/Emulator boundaries.
 - PA-006A retains the undeclared/cached `tsx` deterministic-tooling concern.
+- PA-007 retains Firebase namespace/safety plus PA-001 AC-017.
+- PA-008 retains the account-deletion origin allowlist follow-up.
 - Browser/device coverage is not comprehensive.
 - Quantitative performance targets are not established.
 - Formal accessibility certification/native assistive-technology coverage is not claimed.
 - No independent penetration/security audit or formal load test has been completed.
 - The root-layout request-time rendering choice remains technical debt pending any later routing redesign.
 - The legacy UK-selector modal remains an unreachable-code cleanup candidate, not a Product Defect.
+- The unchanged legacy `travelMap.clearMap.emulator.test.ts` fixture debt remains separate from the authoritative Clear Map 11/11 server and 5/5 client regression that passed PA-003 S6.
 
 ---
 
-## 17. Next-service entry contract — PA-003
+## 17. Post-PA-003 service entry contract
 
-The next system-test service begins **read-only**.
+PA-003 is no longer an active implementation service. New Premium work begins from the published PA-003 Product anchor and must preserve:
 
-Initial PA-003 work must inventory photo-related Admin/server routes and functions, including:
+- PA2 active logical quota, exact release/recovery identity and stale-release safety;
+- PA3 strict mutation/input/error contracts;
+- revocation/account lifecycle gates;
+- explicit current-reference precedence and fail-closed present-invalid state;
+- immutable `photoRef`→Storage-object binding for new photo versions;
+- client-write freeze of the old mutable slot namespace;
+- current owner/public logical authorisation independent of retained physical bytes;
+- account deletion coverage for `visit-photo-objects/**`;
+- acceptance-oracle inventory and exact candidate-byte publication controls.
 
-- authentication/token/revocation and account-lifecycle gates;
-- HTTP method/content-type/query/body contracts;
-- schema/type/range/length/unknown-field handling;
-- `countryId`, `visitId`, `photoRef`, `slotId`, `variant`, `reservationId` identity relationships;
-- route/resource authorisation and current-reference proof;
-- owner/public/private projection boundaries;
-- reserve/release/upload/read/delete path construction;
-- path traversal/object-name ambiguity;
-- error/status semantics;
-- Rules/Storage boundary assumptions;
-- existing unit/Emulator/E2E evidence;
-- PA-002 regressions that must remain unchanged.
-
-The first PA-003 step produces a route inventory, finding/risk classification, exact acceptance-oracle matrix, scoped test plan and implementation slicing recommendation. It performs **no Product mutation, commit, push or deploy**.
+Later findings such as PA-006A, PA-007 and PA-008 remain separately scoped. No later service may silently reopen or weaken PA-003 merely to simplify another implementation.
 
 ---
 
@@ -539,5 +589,6 @@ The first PA-003 step produces a route inventory, finding/risk classification, e
 - `evidence/v1.0/regression/ab-ev-065-node24-final-rc-qualification-and-production-deployment.md`
 - `evidence/v1.0/regression/ab-ev-066-pa001-clear-map-server-boundary-premium-hardening.md`
 - `evidence/v1.0/regression/ab-ev-067-pa002-active-visit-photo-quota-lifecycle-premium-hardening.md`
+- `evidence/v1.0/regression/ab-ev-068-pa003-photo-admin-server-route-hardening.md`
 - `docs/10-lessons-learned.md`
 - `GOVERNANCE-ERRATA.md`
