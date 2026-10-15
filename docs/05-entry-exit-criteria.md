@@ -19,7 +19,7 @@ It establishes:
 
 The criteria are intentionally proportional to risk. They are designed to support reliable quality decisions without requiring the same evidence, formality or test depth for a cosmetic correction and a change affecting authentication, privacy or persistent user data.
 
-> **Document status:** Maintained through AB-EV-061. V1.0 launch criteria were reconciled on 5 October 2026 after C45N/AB-DEF-022 closure and the release-readiness audit.
+> **Document status:** Maintained through AB-EV-068. AB-EV-060 closed the final seven-locale visual/Production acceptance; AB-EV-061–065 established release-readiness and the Node 24 technical RC baseline. Premium Hardening then published PA-001/AB-EV-066, PA-002/AB-EV-067 and PA-003/AB-EV-068. The current criteria include independent pre-publication review where required, exact final-byte integrity, named acceptance-oracle preservation, publication-chain verification and proportional non-destructive post-publication checks where deep stateful/race evidence already exists. Final V1.0 Go Live is not yet approved.
 
 ---
 
@@ -30,7 +30,10 @@ This document should be read together with:
 * [AtlasBadge Product Overview](01-product-overview.md);
 * [AtlasBadge Quality Risk Analysis](02-quality-risk-analysis.md);
 * [AtlasBadge Test Strategy](03-test-strategy.md);
-* [AtlasBadge Test Scope](04-test-scope.md).
+* [AtlasBadge Test Scope](04-test-scope.md);
+* [AtlasBadge System Test Plan](09-system-test-plan.md);
+* [AtlasBadge Lessons Learned](10-lessons-learned.md);
+* [Governance Errata](../GOVERNANCE-ERRATA.md).
 
 The Product Overview defines the product context and main user journeys.
 
@@ -39,6 +42,8 @@ The Quality Risk Analysis identifies what could fail, why it matters and which a
 The Test Strategy defines how testing is directed, executed and governed.
 
 The Test Scope defines the product areas, scenario groups, priorities and remaining mandatory coverage for V1.0.
+
+The System Test Plan defines the current release-validation sequence and Premium Hardening checkpoints.
 
 This document defines the practical quality gates used to determine whether testing or delivery may begin, continue, conclude or proceed to the next stage.
 
@@ -65,7 +70,7 @@ Entry and exit criteria are applied according to:
 
 A contained visual correction may require direct validation, a brief regression and a concise approval record.
 
-A change affecting authentication, Firestore persistence, privacy, account deletion, identity, travel-status architecture or an essential user journey requires stronger technical evidence, deeper testing, broader regression and explicit residual-risk review.
+A change affecting authentication, Firestore persistence, privacy, account deletion, identity, travel-status architecture, visit-photo/server ownership or physical byte identity, or an essential user journey requires stronger technical evidence, deeper testing, broader regression and explicit residual-risk review.
 
 ### 3.2 Meaningful confidence rather than artificial completion
 
@@ -75,12 +80,12 @@ Testing is considered sufficiently complete when:
 
 * the required depth matches the risk;
 * relevant behaviour has been validated;
-* defects and gaps have been assessed;
+* defects, stale oracles, fixture problems and process gaps have been assessed;
 * the required regression has been completed;
 * remaining uncertainty is understood;
 * no unacceptable risk remains.
 
-Conversely, a large number of successful checks does not justify approval when an important risk remains untested or unresolved.
+Conversely, a large number of successful checks does not justify approval when an important named acceptance criterion remains unproven.
 
 ### 3.3 Incremental validation
 
@@ -90,19 +95,21 @@ Each implementation is validated when it becomes sufficiently complete and testa
 
 Completed parts of a larger feature may be tested before the entire feature is finished. This early validation does not represent approval of the complete feature.
 
+A previous green checkpoint is retained unless a later change invalidates what it proved.
+
 ### 3.4 Separation between technical readiness and quality approval
 
 The **designated Product implementation agent** may:
 
-* implement a change;
+* implement a Product change;
 * execute technical checks;
 * report that the implementation is ready for validation;
 * identify technical limitations;
-* provide test results and evidence;
+* provide test results and factual handoff evidence;
 * implement a defect correction;
 * recommend approval or blocking.
 
-Gemini/Antigravity is the default Product implementation agent in the current AtlasBadge workflow. Codex/ChatGPT or another implementation agent may perform Product implementation when the Test Lead explicitly authorises that actor for the current task. Generic instructions such as “fix it”, “finish it” or “do everything” do not silently change the active implementation actor.
+Gemini/Antigravity is the default Product implementation agent in the current AtlasBadge workflow. ChatGPT coordinates requirements/risk/governance and owns QA Portfolio documentation/evidence. Codex performs independent review when the current gate requires it. The Test Lead owns final approval/publication decisions. Generic instructions such as “fix it”, “finish it” or “do everything” do not silently change those actor boundaries.
 
 The Test Lead decides:
 
@@ -115,6 +122,19 @@ The Test Lead decides:
 
 Technical completion does not automatically represent quality approval.
 
+### 3.5 Independent review and exact-artifact approval
+
+Where independent review is an approved publication gate:
+
+* the implementation candidate remains uncommitted/unpublished until the review is complete;
+* the exact final candidate bytes are frozen after all implementation/test edits;
+* required gates execute against those bytes;
+* no later source/test/rules edit is allowed without impact analysis and requalification;
+* approval applies to the named acceptance criteria and exact candidate, not merely an aggregate green count;
+* staging, commit, remote SHA and deployment source must preserve the approved bytes.
+
+PA-001 records a historical ordering deviation: original publication preceded the planned independent architecture review. The chronology remains transparent and a compensating **post-publication** audit is required before final Premium Hardening closure. PA-002 demonstrates the corrected pre-publication control. PA-003 demonstrates the full corrected chain through sliced independent review, S6 final qualification, Test Lead final approval, exact publication identity and post-publication verification before the finding was closed.
+
 ---
 
 ## 4. Decision states
@@ -125,7 +145,7 @@ The Test Lead uses three formal decision states.
 | ---------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Approved**                             | The required validation has been completed, no unacceptable risk remains and the change or release may proceed.                                                       |
 | **Approved with accepted residual risk** | The required validation has been completed and a known limitation or defect remains, but its impact is understood, recorded and explicitly accepted by the Test Lead. |
-| **Blocked**                              | Testing, deployment or launch cannot safely proceed because the implementation, evidence, environment, unresolved defects or remaining risk are unacceptable.         |
+| **Blocked**                              | Testing, deployment or launch cannot safely proceed because the implementation, evidence, environment, unresolved defects, missing review gate or remaining risk are unacceptable. |
 
 `Approved with accepted residual risk` must not be used to hide:
 
@@ -135,7 +155,9 @@ The Test Lead uses three formal decision states.
 * unauthorised access;
 * an essential-flow failure;
 * misleading privacy or security behaviour;
-* insufficient evidence for a material high-risk change.
+* insufficient evidence for a material high-risk change;
+* a required independent review that has not occurred;
+* an unknown final artefact that differs from what was validated.
 
 ---
 
@@ -146,11 +168,12 @@ An implementation, correction or completed part of a feature may enter Test Lead
 ### 5.1 Implementation readiness
 
 * The intended change or testable part of the change has been implemented.
-* The relevant behaviour is available in the local application.
+* The relevant behaviour is available in the intended test environment.
 * The application compiles and operates sufficiently for meaningful validation.
 * No technical failure prevents reliable execution of the required scenarios.
 * Preliminary technical checks have been completed in proportion to the risk.
 * Known warnings, failed checks or limitations have been disclosed.
+* Dirty/untracked Product state that may affect evidence is inventoried.
 
 A completely warning-free technical execution is not required for every change.
 
@@ -178,7 +201,9 @@ For Critical and High-impact changes, it should also identify:
 * the expected impact;
 * affected features, components or dependencies;
 * relevant quality risks;
-* files or technical areas changed when this information helps the Test Lead assess regression risk.
+* files or technical areas changed when this information helps the Test Lead assess regression risk;
+* named acceptance criteria/oracles where the change is race/lifecycle heavy;
+* environment/Firebase isolation evidence where destructive or stateful tests are involved.
 
 A detailed list of every modified line is not mandatory for every change. More detailed technical information may be required when the change is complex, high-risk or difficult to assess from external behaviour alone.
 
@@ -196,6 +221,8 @@ When the expected behaviour is incomplete, ambiguous or changes during implement
 
 The Test Lead must not approve a change by silently assuming the most likely intended behaviour.
 
+A green automated test is not authoritative when it protects a superseded or malformed oracle.
+
 ### 5.4 Environment and data readiness
 
 The accounts, configurations, data and environmental conditions required for the selected scenarios should be available.
@@ -208,6 +235,8 @@ When a required condition is unavailable:
 * approval is blocked when the gap leaves relevant risk unresolved.
 
 Environmental unavailability does not automatically remove a scenario from scope.
+
+For Emulator tests, the effective project/endpoints and real-request fail-fast must be observable; `localhost` alone is not evidence of Firebase isolation. When Storage Rules depend on Firestore state, a dedicated Rules suite alone is insufficient to prove Product-project cross-service behaviour; a focused combined-service Emulator check is required when that dependency is material.
 
 ### 5.5 Entry authority
 
@@ -258,7 +287,8 @@ A High-impact change should enter validation with:
 * relevant technical checks completed;
 * risks and limitations disclosed;
 * stable behaviour sufficient for broad functional and dependency testing;
-* stronger evidence where required.
+* stronger evidence where required;
+* explicit acceptance criteria and the current oracle for important lifecycle/concurrency paths.
 
 ### 6.4 Critical-impact change
 
@@ -290,9 +320,11 @@ A change or feature may be considered complete from a testing perspective when a
 
 * The confirmed expected behaviour has been validated.
 * Relevant positive scenarios have been executed.
-* Relevant negative, boundary, state-transition or exploratory scenarios have been executed according to risk.
-* Dependent calculations, persistence, profiles, maps, counters, badges or other affected behaviours have been checked where applicable.
-* The implementation behaves consistently after refresh, navigation or a later session where persistence is relevant.
+* Relevant negative, boundary, state-transition, concurrency or exploratory scenarios have been executed according to risk.
+* Dependent calculations, persistence, profiles, maps, counters, badges, server routes or other affected behaviours have been checked where applicable.
+* The implementation behaves consistently after refresh, navigation or a later session where persistence/recovery is relevant.
+* Named acceptance criteria remain mapped to executable evidence; a similar green test is not accepted as replacement without requirement review.
+* For security-relevant persisted identity, genuine absence, valid presence and malformed presence are not silently conflated when compatibility fallback could weaken authorisation.
 
 ### 7.2 Defect and correction status
 
@@ -301,6 +333,7 @@ A change or feature may be considered complete from a testing perspective when a
 * Corrected defects have passed direct retesting.
 * Regression of affected areas has been completed.
 * Any remaining defect or limitation has been evaluated as residual risk.
+* Test-oracle, fixture, environment and governance issues are classified separately rather than inflated into Product defects.
 
 ### 7.3 Regression status
 
@@ -308,6 +341,7 @@ A change or feature may be considered complete from a testing perspective when a
 * Regression has been expanded according to impact and dependencies.
 * No unacceptable regression remains.
 * Any newly identified defect outside the original scope has been recorded and assessed.
+* Previously green checkpoints are rerun only when a later change invalidated them.
 
 A newly identified defect does not automatically reject or approve the original change. Its impact, relationship to the implementation and contribution to combined release risk must be assessed.
 
@@ -335,6 +369,8 @@ For an unexecuted Critical or High-priority scenario, the Test Lead must conside
 
 Approval is blocked when confidence is insufficient.
 
+PA-001 AC-017 is an example of an explicit bounded carry-forward: it does not reopen PA-001 functionality but remains required under PA-007 / Final Premium RC. PA-003 provides the complementary example: destructive and race behaviour was intentionally **not** replayed against Production because exact Emulator/Rules/race evidence already existed; post-publication qualification instead verified exact deployment identity, safe read-only/error-path behaviour and runtime health with zero intentional Firebase mutation.
+
 ### 7.5 Scope changes
 
 When part of the originally expected scope is removed or deferred:
@@ -346,6 +382,8 @@ When part of the originally expected scope is removed or deferred:
 * the Test Lead must approve the revised delivery.
 
 A feature is not complete merely because the implemented portion works when the agreed scope remains unclear.
+
+PA-002/PA-003 physical Storage garbage collection is an accepted example of correctness-independent deferred cleanup: logical inaccessibility, active quota release and current immutable-byte authorisation are proven independently, and broader physical cleanup remains separate scope.
 
 ### 7.6 Final decision
 
@@ -375,15 +413,20 @@ It may include:
 * command output;
 * build results;
 * Playwright results;
+* exact candidate hashes;
+* lint warning-identity comparison;
+* independent-review decisions;
 * defect evidence;
 * retest results;
 * regression results;
 * implementation reports;
+* commit/deployment SHA evidence;
+* post-publication traceability/safe-smoke evidence where applicable;
 * Test Lead approval records.
 
 For Critical and High-impact changes, explicit evidence should normally be retained.
 
-The Test Lead's explicit approval is also valid evidence of the quality decision. However, approval does not replace testing, retesting, regression or investigation that was necessary to reach that decision.
+The Test Lead's explicit approval is also valid evidence of the quality decision. However, approval does not replace testing, retesting, regression, independent review or investigation that was necessary to reach that decision.
 
 Medium and Low-impact changes may use lighter evidence when the risk and need for traceability are limited.
 
@@ -500,13 +543,13 @@ It is not necessary to execute every theoretical scenario when the selected cove
 
 The final V1.0 regression may begin when:
 
-* the mandatory V1.0 implementation scope is sufficiently complete;
+* the mandatory V1.0 implementation/Premium Hardening scope is sufficiently complete for an integrated candidate;
 * the application is stable enough for broad integrated validation;
 * known blockers from incremental testing have been resolved;
 * the required environments, accounts, data and Playwright suite are available;
 * the Test Lead approves commencement of the final cycle.
 
-AB-EV-061 confirms that the current V1.0 implementation scope is sufficiently complete to enter final Release Candidate regression. Historical launch bullets for badges, badge polish and perceived status-selection delay are satisfied by later evidence; C45N/AB-DEF-022 is closed by AB-EV-060. Final-regression entry therefore does not require another broad feature implementation.
+AB-EV-065 established the technical RC baseline. PA-001, PA-002 and PA-003 are later published Premium Hardening closures and therefore form part of the eventual final Premium RC integration state. Entry to the ultimate final cycle must account for the remaining Premium sequence, not merely reuse the pre-hardening green state as final Go Live evidence.
 
 The final regression is complete when:
 
@@ -517,6 +560,7 @@ The final regression is complete when:
 * reported corrections have passed retesting;
 * affected areas have passed regression;
 * known limitations and residual risks have been reviewed;
+* PA-001 AC-017 and governance carry-forward are closed or explicitly resolved under their approved final gates;
 * no launch-blocking risk remains.
 
 ### 10.5 Changes during final regression
@@ -552,27 +596,44 @@ A demonstrably invalid, outdated or unstable automated test may be corrected or 
 
 The suite is not merely informational, but automated results do not replace the Test Lead's analysis and final judgement.
 
+Emulator Playwright evidence must not be called isolated/safe if the relevant run did not establish its intended backend or if it completed with real Firebase traffic.
+
 ---
 
 ## 12. Deployment entry and approval criteria
 
 A change or release may be approved for deployment when:
 
-* its applicable feature exit criteria have been satisfied;
+* its applicable feature/finding exit criteria have been satisfied;
 * required defect corrections have passed retesting;
 * required regression has been completed;
 * build and technical release checks appropriate to the change have passed;
-* Playwright results have been assessed where required;
+* Playwright/Emulator/Rules results have been assessed where required;
 * known limitations have been reviewed;
 * no Critical defect remains open;
 * any accepted High or lower defect meets the residual-risk criteria;
 * production-only scenarios have been identified;
 * the exact approved implementation version is known;
+* any required independent pre-publication review is complete;
 * the Test Lead assigns `Approved` or `Approved with accepted residual risk`.
 
-### 12.1 Version integrity
+### 12.1 Version and byte integrity
 
-The commit, build or implementation deployed must correspond to the version approved by the Test Lead.
+The commit/build deployed must correspond to the version approved by the Test Lead.
+
+For high-risk Premium changes, approval may additionally require:
+
+```text
+approved working candidate hashes
+=
+staged hashes
+=
+committed tree hashes
+=
+GitHub main exact commit
+=
+Vercel Production source SHA
+```
 
 When the deployed version differs from the approved version:
 
@@ -593,10 +654,12 @@ A deployment may proceed when a scenario cannot be reproduced adequately in the 
 * the risk has been assessed;
 * no unacceptable privacy, data or security exposure is introduced;
 * controlled accounts and disposable data are used;
-* production validation is mandatory immediately after deployment;
+* production validation is mandatory immediately after deployment when it is part of the approved gate;
 * the Test Lead approves the controlled deployment.
 
 Production is not treated as the normal primary testing environment.
+
+Conversely, a stateful/destructive scenario does not have to be re-run against real Production merely because the deployment is READY when comprehensive Emulator evidence already proves the behaviour and Production mutation would add avoidable risk. The non-execution limitation must be explicit. PA-003 post-publication qualification is the current reference example: exact source/deployment identity and safe runtime/error-path smoke were verified without manufacturing Production photo/account state.
 
 ---
 
@@ -619,6 +682,8 @@ Blocking conditions include:
 * inability to distinguish whether user data was saved correctly;
 * an untested condition whose potential impact is unacceptable;
 * unresolved ambiguity in essential expected behaviour;
+* a required independent review not completed;
+* final candidate bytes that differ from the independently approved bytes;
 * a deployed build that has not received the necessary validation;
 * combined lower-severity defects whose overall effect makes the release unsafe or untrustworthy.
 
@@ -671,6 +736,8 @@ A separate formal report is not required for every minor accepted risk.
 
 Relevant risks involving privacy, exposure, corruption or loss of user data are not accepted for production.
 
+Current material carry-forwards include PA-001 AC-017, the PA-001 compensating post-publication architecture audit, PA-006A deterministic Rules-tooling declaration, PA-007 server-boundary/project-safety work, PA-008 account-deletion origin allowlist, deferred physical visit-photo GC and legacy Clear Map fixture/test debt. PA-003 itself is closed and must not be represented as an outstanding risk item.
+
 ---
 
 ## 16. Production smoke test criteria
@@ -682,18 +749,18 @@ Production smoke testing may begin when:
 * deployment has completed;
 * the deployed version has been identified;
 * the application is accessible;
-* required controlled accounts and disposable data are available;
+* required controlled accounts and disposable data are available where stateful execution is authorised;
 * the smoke scope is defined;
 * no known deployment problem makes execution unsafe.
 
 ### 16.2 Required V1.0 language coverage
 
-The V1.0 production smoke test requires coverage in:
+The final V1.0 production smoke test requires coverage in:
 
 * `pt-BR`;
 * `en-GB`.
 
-Both languages remain part of the required coverage.
+Both languages remain part of the required final-launch coverage even though the supported V1.0 locale set contains seven locales.
 
 If one language cannot be executed or produces an inconclusive result, the Test Lead must assess:
 
@@ -710,11 +777,11 @@ The launch may proceed only when sufficient confidence exists and no relevant ri
 The production smoke test is complete when:
 
 * essential public access has been validated;
-* relevant authentication and account access have been validated;
-* authenticated navigation works;
-* the map and core status interaction work;
-* persistence-dependent behaviour has been checked;
-* personal-profile access works;
+* relevant authentication and account access have been validated where authorised by the smoke scope;
+* authenticated navigation works where included;
+* the map and core status interaction work where stateful execution is included;
+* persistence-dependent behaviour has been checked where authorised/required;
+* personal-profile access works where included;
 * public-profile access remains read-only and respects privacy;
 * logout or session termination works where included;
 * required language coverage has been completed or any exceptional limitation has been assessed;
@@ -722,6 +789,8 @@ The production smoke test is complete when:
 * pending scenarios are justified;
 * no unacceptable risk remains;
 * the Test Lead approves the smoke result.
+
+A Premium finding's bounded post-publication verification may intentionally be narrower than the final V1.0 launch smoke. PA-003, for example, proved `/` → `/pt-br`, static assets, safe owner/public API rejection paths, runtime log health and exact deployment identity with zero intentional Production mutation; it did **not** claim authenticated photo lifecycle or Production race execution.
 
 A minor smoke failure does not automatically reject the deployment.
 
@@ -760,7 +829,7 @@ A new deployment attempt requires:
 * updated risk analysis;
 * Test Lead approval;
 * a new deployment;
-* a new production smoke test.
+* a new production smoke test where required.
 
 Compilation or implementation confirmation alone is insufficient.
 
@@ -772,18 +841,16 @@ AtlasBadge V1.0 may be considered ready for real users only when all applicable 
 
 ### 17.1 Product and test completion
 
-* The mandatory V1.0 implementation scope has been completed or explicitly removed from the agreed release scope; AB-EV-061 confirms no remaining broad feature implementation is required before final regression.
-* Current badges and achievements have been validated through AB-EV-023, AB-EV-025, AB-EV-029 and AB-EV-053.
-* Badge visual refinements have been assessed and approved through AB-EV-025, AB-EV-043 and AB-EV-053.
-* The historical status-selection responsiveness criterion is satisfied by AB-EV-018, AB-EV-019, AB-EV-022 and AB-EV-024, including constrained-network/CPU coverage, rapid-intent stability, persistence/reload parity and Production confirmation.
-* All seven supported locales have received the defined incremental coverage; C45N German final visual acceptance and AB-DEF-022 closure are recorded in AB-EV-060.
-* Browser-language detection, manual selection and persistence have been validated.
-* Public-profile corrections, map behaviour, responsiveness and privacy have been validated incrementally; final Release Candidate regression must confirm that those checkpoints remain valid.
-* Windows Google Chrome release coverage must be completed during the final Release Candidate cycle.
-* The essential accessibility technical baseline has been completed; formal certification/native-AT breadth remains outside the current V1.0 claim.
-* The permanent Playwright and TypeScript suite must be executed for the final Release Candidate.
-* The final broad regression must be completed.
-* Final compatibility/performance/responsiveness results and residual risks must be assessed before launch; formal load/SLA certification is not a V1.0 prerequisite unless new evidence raises unacceptable risk.
+* The mandatory V1.0 implementation/Premium Hardening scope has been completed or explicitly removed from the agreed release scope.
+* All seven supported locales have received the defined incremental coverage; German final visual acceptance and AB-DEF-022 closure are recorded in AB-EV-060.
+* Public-profile, map, visit-photo, responsiveness and privacy corrections have been validated incrementally; final Release Candidate regression confirms those checkpoints remain valid.
+* PA-001/AB-EV-066, PA-002/AB-EV-067 and PA-003/AB-EV-068 remain valid published checkpoints in the integrated final candidate.
+* Remaining Premium Hardening findings are closed or explicitly dispositioned under the approved release decision.
+* PA-001 AC-017 has been resolved under PA-007 / Final Premium RC or explicitly accepted at the final gate with adequate alternative evidence.
+* The compensating PA-001 post-publication architecture audit has been completed and recorded before Premium Hardening is finally closed.
+* Final compatibility/performance/responsiveness and accessibility residual risks have been assessed.
+* The permanent automated suite required by the final candidate has been executed and analysed.
+* The final broad regression has been completed.
 
 ### 17.2 Release decision
 
@@ -797,7 +864,7 @@ AtlasBadge V1.0 may be considered ready for real users only when all applicable 
 
 ### 17.3 Deployment and production validation
 
-* The approved version has been deployed.
+* The approved final version has been deployed.
 * Production smoke testing has been completed.
 * Required `pt-BR` and `en-GB` coverage has been completed or any exceptional limitation has passed explicit risk assessment.
 * Production-only scenarios have been executed where required.
@@ -810,9 +877,10 @@ After controlled production validation and before real users are admitted:
 * disposable test accounts are deleted;
 * Firebase Authentication test identities are removed;
 * Firestore test data is removed;
+* Storage test objects are removed where applicable;
 * usernames and public profiles are cleared;
 * no demonstration profile remains;
-* no test visits, memories, badges, statistics or orphaned records remain;
+* no test visits, memories, photos, badges, statistics or orphaned records remain;
 * public URLs do not expose deleted test records.
 
 ### 17.5 Clean-start confirmation
@@ -845,15 +913,17 @@ The application being online does not by itself mean that V1.0 is ready for real
 
 ## 18. Authority matrix
 
-| Stage                     | Designated implementation agent / delivery process          | Test Lead                                                         |
+| Stage                     | Product implementation / review actor                       | Test Lead                                                         |
 | ------------------------- | ------------------------------------------------------------ | ----------------------------------------------------------------- |
-| Implementation completion | Reports implementation and preliminary technical readiness   | Reviews whether the change may enter validation                   |
-| Functional validation     | Supports execution, investigation and evidence collection    | Defines scenarios, expected results and required depth            |
-| Defect correction         | Implements correction and reports readiness for retest       | Retests, assesses regression and closes or reopens the defect     |
-| Regression                | Supports scripted or automated execution                     | Defines scope and approves completion                             |
-| Residual risk             | Identifies and describes limitations                         | Accepts or rejects residual risk                                  |
-| Deployment recommendation | May recommend approval or blocking                           | Formally approves or blocks deployment                            |
-| Production smoke          | Supports execution and technical investigation               | Assesses results and approves, blocks or orders corrective action |
+| Implementation completion | Antigravity/Gemini reports implementation and technical readiness | Reviews whether the change may enter validation                   |
+| Independent review        | Codex reviews when the gate requires it; no publication authority | Confirms/uses review result in publication decision               |
+| Functional validation     | Coordinator/agents support execution, investigation and evidence collection | Defines scenarios, expected results and required depth            |
+| Defect correction         | Designated implementation agent implements correction and reports readiness | Retests, assesses regression and closes/reopens the defect        |
+| QA Portfolio              | ChatGPT coordinator reconciles evidence/control docs         | Reviews/finally approves decision state                           |
+| Regression                | Agents support scripted/automated execution                  | Defines scope and approves completion                             |
+| Residual risk             | Agents identify and describe limitations                    | Accepts or rejects residual risk                                  |
+| Deployment recommendation | Agents may recommend approval or blocking                   | Formally approves or blocks deployment                            |
+| Production smoke          | Agents support execution and technical investigation         | Assesses results and approves, blocks or orders corrective action |
 | V1.0 launch               | Provides implementation and execution evidence               | Holds final launch authority                                      |
 
 ---
@@ -862,29 +932,26 @@ The application being online does not by itself mean that V1.0 is ready for real
 
 ### Assumptions
 
-This document introduces no new operational assumptions.
-
 The assumptions already identified in the Product Overview, Quality Risk Analysis, Test Strategy and Test Scope remain applicable until validated or revised.
 
-### Open questions
+### Open/current questions
 
-There are no unresolved open questions that prevent entry into the final Release Candidate regression.
+There is no open localization feature gate after AB-EV-060. PA-001, PA-002 and PA-003 are closed/published Premium checkpoints; PA-003 is not the next active finding anymore.
 
-Feature-specific questions may still arise if the final regression reveals new behavior or if future functionality is defined. They must be resolved before final approval of the affected behaviour.
+Remaining Premium work includes PA-006A deterministic tooling, PA-007/AC-017 server-boundary/project-safety closure, PA-008 account-deletion origin policy, the PA-001 compensating post-publication architecture audit and deferred physical visit-photo garbage collection. The next implementation service is selected by Test Lead priority and must not silently absorb unrelated findings.
 
 ### Proposed evolution
 
 As AtlasBadge and the quality process mature, these criteria may be extended to support:
 
-* a dedicated test or staging environment;
+* a dedicated test or staging environment if justified;
 * continuous Playwright execution;
-* formal release-candidate identification;
 * broader compatibility gates;
 * quantitative performance thresholds;
 * formal accessibility conformance gates;
 * additional contributors or approval roles.
 
-These are future improvements and are not current requirements for V1.0.
+These are future improvements and are not automatically current V1.0 requirements.
 
 ---
 
@@ -893,13 +960,15 @@ These are future improvements and are not current requirements for V1.0.
 These criteria must be reviewed when there is a material change to:
 
 * the AtlasBadge architecture;
-* the authentication or data-storage model;
+* the authentication/data-storage/server-ownership model;
 * the privacy model;
+* visit-photo quota/read/release/cleanup semantics or physical-object identity;
 * the supported platforms or locales;
 * the deployment process;
 * the test environments;
 * the automation strategy;
 * the release scope;
+* independent-review requirements;
 * quality ownership or approval authority.
 
 The Test Lead remains responsible for ensuring that the criteria continue to reflect the real AtlasBadge delivery and testing process.

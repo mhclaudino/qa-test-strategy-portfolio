@@ -1,41 +1,43 @@
 # QA Test Strategy Portfolio
 
-A practical, risk-based Quality Assurance portfolio using AtlasBadge as a real-world case study.
+A practical, risk-based Quality Assurance portfolio using **AtlasBadge** as a real-world case study.
 
-This repository demonstrates how I approach test strategy, quality risks, test planning, exploratory testing, release readiness, defect management, quality reporting and continuous process improvement as a Test Lead.
+This repository demonstrates how I approach test strategy, quality risks, test planning, exploratory testing, defect management, automation, release readiness, production validation and continuous process improvement as a Test Lead.
 
-> **Project status:** This portfolio and the AtlasBadge application are both under active development. Documentation evolves under change control as new features, risks, defects, requirement corrections and release evidence are produced.
+> **Current case-study status — 15 October 2026:** documentation is reconciled through **AB-EV-068 / PA-003**. PA-001, PA-002 and PA-003 are published Premium Hardening checkpoints; PA-003 is **CLOSED / PUBLISHED / PRODUCTION VERIFIED**. The current AtlasBadge Product publication anchor is `7616e8ca455f1d2e72a67e4dd839c9c302f98656`, deployed to Vercel Production as `dpl_B842NnXHecrGNhcQAfpkC8CgyVhj` (`READY`, exact SHA). Final Premium Hardening closure and final V1.0 Go Live are separate future decisions and are **not** claimed here.
 
 ## Case study: AtlasBadge
 
-AtlasBadge is an interactive travel platform where users can track places they have visited or want to visit, assign cumulative travel statuses, maintain detailed visit history, monitor progress, manage a private/public Wishlist and build a public traveller profile.
+AtlasBadge is an interactive travel platform where users can track places they have visited or want to visit, assign cumulative travel statuses, maintain detailed visit history and memories, attach a representative visit photo, monitor geographic progress and achievements, manage a private/public Wishlist and publish a read-only traveller profile.
 
-The application provides realistic testing challenges involving:
+The application creates realistic QA challenges involving:
 
-- user authentication and account management;
-- persistent user data and failed-write recovery;
-- travel status and Wishlist management;
-- interactive maps and user interfaces;
-- public/private profile projection and privacy;
-- responsive behaviour across devices;
-- data integrity and synchronisation;
-- accessibility and usability;
-- third-party services and deployment integration.
+- authentication and account lifecycle;
+- persistent user data, failure recovery and concurrency;
+- travel-status and Wishlist rules;
+- interactive maps and geographic counters;
+- private/public profile projection and per-memory privacy;
+- bounded visit-photo quota, server-owned lifecycle and immutable resource identity;
+- responsive behaviour and accessibility;
+- localization across seven supported locales;
+- Firebase Authentication, Firestore, Storage and Rules;
+- exact-SHA Git/Vercel publication and Production verification.
 
 ## My involvement
 
 My responsibilities within the AtlasBadge project include:
 
 - Product and feature definition;
-- Requirements analysis and clarification;
-- Quality risk identification;
-- Manual and exploratory testing;
-- Workflow and usability validation;
-- Defect investigation and reporting;
-- Regression strategy and checkpoint management;
-- Release readiness assessment;
-- AI-assisted development coordination;
-- Continuous improvement of the product and testing process.
+- requirements analysis and clarification;
+- quality-risk identification;
+- manual and exploratory testing;
+- test strategy, scope and acceptance-oracle design;
+- defect investigation, classification and reporting;
+- regression strategy and checkpoint management;
+- release-readiness and residual-risk assessment;
+- AI-assisted delivery coordination and independent-review governance;
+- Production validation planning;
+- continuous improvement of the product and QA process.
 
 ## Quality approach
 
@@ -44,128 +46,174 @@ The strategy documented in this repository is based on the following principles:
 - prioritise testing according to business and technical risk;
 - begin quality discussions during requirement and feature definition;
 - combine structured testing with exploratory investigation;
-- focus automation on stable, repetitive and valuable scenarios;
-- maintain traceability between risks, requirements, tests, defects, evidence and releases;
-- preserve green checkpoints unless a later change invalidates what they proved;
-- distinguish Product Defects from stale automation, infrastructure failures and requirement corrections;
-- communicate quality status in a concise and decision-oriented way;
-- treat quality as a shared responsibility across delivery.
+- focus automation on stable, repeatable and valuable scenarios;
+- maintain traceability across **requirement → risk → implementation → test/oracle → finding/defect → evidence → commit → deployment → Test Lead decision**;
+- preserve a green checkpoint unless a later change invalidates what it proved;
+- distinguish Product Defects from stale automation, fixture problems, environment failures, unsupported theories and requirement corrections;
+- preserve named acceptance oracles rather than relying on aggregate test counts;
+- bind high-risk publication approval to exact candidate bytes and exact deployed SHA;
+- use protected Emulator evidence for destructive/race scenarios and proportional non-destructive Production verification when real mutation would add avoidable risk;
+- communicate residual risk explicitly rather than hiding gaps behind a green headline.
 
 ## Portfolio deliverables
 
+The `docs/` directory is intentionally limited to the ten living control artefacts `01`–`10`. Change-level execution evidence belongs under `evidence/`.
+
 | Document | Purpose | Status |
 |---|---|---|
-| [Product Overview](docs/01-product-overview.md) | Describe the product, users, features and business context | Completed / maintained |
-| [Quality Risk Analysis](docs/02-quality-risk-analysis.md) | Identify and prioritise product and project risks | Completed / maintained |
-| [Test Strategy](docs/03-test-strategy.md) | Define the overall testing approach and responsibilities | Completed / maintained |
-| [Test Scope](docs/04-test-scope.md) | Define what will and will not be tested | Completed / maintained |
-| [Entry and Exit Criteria](docs/05-entry-exit-criteria.md) | Define conditions for starting and completing testing | Completed |
-| [Test Environments](docs/06-test-environments.md) | Describe environments, test data, dependencies and Emulator isolation/readiness | Completed / maintained |
-| [Defect Management](docs/07-defect-management.md) | Define defect reporting, severity, priority and triage | Completed |
-| [Metrics and Reporting](docs/08-metrics-and-reporting.md) | Define useful quality indicators and reporting methods | Completed |
-| [System Test Plan](docs/09-system-test-plan.md) | Define the V1.0 system-level execution and release-validation plan | Completed / maintained |
-| [Lessons Learned](docs/10-lessons-learned.md) | Convert recurring product/QA experience into reusable efficiency and quality rules | Active / maintained |
-| Exploratory Test Charters | Provide focused exploratory testing missions | Planned |
-| Sample Test Cases | Demonstrate selected functional and risk-based tests | Planned |
-| Test Summary Report | Demonstrate release-level quality reporting | Planned |
-| [V1.0 Test Evidence](evidence/v1.0/README.md) | Organise environment, smoke, regression, defect and reset evidence | In Progress |
+| [Product Overview](docs/01-product-overview.md) | Product, users, capabilities, data and current Premium checkpoint | Maintained through AB-EV-068 |
+| [Quality Risk Analysis](docs/02-quality-risk-analysis.md) | Risk identification, prioritisation and residual-risk state | Maintained through AB-EV-068 |
+| [Test Strategy](docs/03-test-strategy.md) | Risk-based validation, automation, review and publication approach | Maintained through AB-EV-068 |
+| [Test Scope](docs/04-test-scope.md) | Covered areas, depth, deferrals and regression boundaries | Maintained through AB-EV-068 |
+| [Entry and Exit Criteria](docs/05-entry-exit-criteria.md) | Validation, deployment and launch gates | Maintained through AB-EV-068 |
+| [Test Environments](docs/06-test-environments.md) | Local/Emulator/Production environments and safety controls | Maintained through AB-EV-068 |
+| [Defect Management](docs/07-defect-management.md) | Defect/finding classification, lifecycle and closure | Maintained through AB-EV-068 |
+| [Metrics and Reporting](docs/08-metrics-and-reporting.md) | Decision-oriented quality indicators and evidence reporting | Maintained through AB-EV-068 |
+| [System Test Plan](docs/09-system-test-plan.md) | V1.0 system-test and Premium Hardening execution control | Maintained through AB-EV-068 |
+| [Lessons Learned](docs/10-lessons-learned.md) | Reusable QA/delivery rules derived from evidence | Active; LL-01–LL-79 |
+| [V1.0 Test Evidence](evidence/v1.0/README.md) | Sanitised public evidence by purpose | In progress / maintained |
+| [Evidence Register](evidence/v1.0/evidence-register.md) | Authoritative public evidence index | Maintained through AB-EV-068 |
+| Exploratory Test Charters | Focused exploratory missions | Planned |
+| Sample Test Cases | Selected risk-based examples | Planned |
+| Test Summary Report | Final V1.0 release-level quality summary | Planned |
 
-The `docs/` directory is intentionally limited to the ten living control artefacts `01`–`10`. Increment-specific traceability must be distributed into those existing documents; a new change-level file must not be created under `docs/` without explicit Test Lead approval. New incremental records belong under `evidence/` when evidence is required.
+## Current Premium Hardening traceability
 
-## Recent quality traceability
+### PA-001 — Clear Map server boundary
 
-Recent evidence includes:
+[AB-EV-066 — PA-001 Clear Map server-boundary premium hardening](evidence/v1.0/regression/ab-ev-066-pa001-clear-map-server-boundary-premium-hardening.md)
 
-- [AB-EV-029 / AB-DEF-012 — Geographic counter integrity: 252 / 195 / 57](evidence/v1.0/defects/ab-ev-029-geographic-counter-integrity-252-195-57.md)
-- [AB-EV-030 — Profile map to earned-flag navigation](evidence/v1.0/smoke/ab-ev-030-profile-map-to-earned-flag-navigation.md)
-- [AB-EV-031 — Dashboard selected-place sorting](evidence/v1.0/regression/ab-ev-031-dashboard-selected-place-sorting.md)
-- [AB-EV-032 / AB-DEF-013 — Manual visit order and rapid-visit concurrency](evidence/v1.0/defects/ab-ev-032-manual-visit-order-and-rapid-visit-concurrency.md)
-- [AB-EV-033 — Wishlist, public-profile projection and release hardening](evidence/v1.0/regression/ab-ev-033-wishlist-public-profile-release-hardening.md)
-- [AB-EV-034 — QR-01 failed-write recovery closure](evidence/v1.0/regression/ab-ev-034-qr-01-failed-write-recovery-closure.md)
-- [AB-EV-035 — C35 Visited + Passed-through coexistence](evidence/v1.0/regression/ab-ev-035-c35-visited-passed-coexistence.md)
-- [AB-EV-036 / AB-DEF-017 — Wishlist atomic settings save and order integrity](evidence/v1.0/defects/ab-ev-036-wishlist-atomic-settings-save-and-order-integrity.md)
-- [AB-EV-037 / AB-DEF-018 — Clear Map atomic generation reset](evidence/v1.0/defects/ab-ev-037-clear-map-atomic-generation-reset.md)
-- [AB-EV-038 — Manual QA Environment Contract](evidence/v1.0/environments/ab-ev-038-manual-qa-environment-contract.md)
-- [AB-EV-039 — C39 Individual memory privacy](evidence/v1.0/regression/ab-ev-039-c39-individual-memory-privacy.md)
-- [AB-EV-040 — C40 Manual memory ordering](evidence/v1.0/regression/ab-ev-040-c40-manual-memory-ordering.md)
-- [AB-EV-041 — C41 Public memories from earned flags](evidence/v1.0/regression/ab-ev-041-c41-public-memory-flag-modal.md)
-- [AB-EV-042 — C42 Editable visit names](evidence/v1.0/regression/ab-ev-042-editable-visit-names.md)
-- [AB-EV-043 — C43 Visual identity alignment](evidence/v1.0/regression/ab-ev-043-visual-identity-alignment.md)
-- [AB-EV-044 — C44 One photo per RegisteredVisit production closure](evidence/v1.0/regression/ab-ev-044-c44-registered-visit-photo-production-closure.md)
-- [AB-EV-045 — C45A Localization routing foundation](evidence/v1.0/regression/ab-ev-045-c45a-localization-routing-foundation.md)
-- [AB-EV-046 — C45B Public Home localization and language selector](evidence/v1.0/regression/ab-ev-046-c45b-public-home-localization-and-language-selector.md)
-- [AB-EV-047 — C45C Login localization and locale continuity](evidence/v1.0/regression/ab-ev-047-c45c-login-localization-and-locale-continuity.md)
-- [AB-EV-048 — C45D Onboarding localization](evidence/v1.0/regression/ab-ev-048-c45d-onboarding-localization.md)
-- [AB-EV-049 — Public Home language-selector centering](evidence/v1.0/regression/ab-ev-049-public-home-language-selector-centering.md)
-- [AB-EV-050 — C45E email-verification localization](evidence/v1.0/regression/ab-ev-050-c45e-email-verification-localization.md)
-- [AB-EV-051 — C45F authenticated dashboard localization](evidence/v1.0/regression/ab-ev-051-c45f-authenticated-dashboard-localization.md)
-- [AB-EV-052 — C45G deep country and visit editor localization](evidence/v1.0/regression/ab-ev-052-c45g-deep-country-visit-editor-localization.md)
-- [AB-EV-053 — C45H Badges and achievements localization](evidence/v1.0/regression/ab-ev-053-c45h-badges-achievements-localization.md)
-- [AB-EV-054 — C45I Profile Edit localization](evidence/v1.0/regression/ab-ev-054-c45i-profile-edit-localization.md)
-- [AB-EV-055 — C45J public Profile localization and FIX1/FIX2 closure](evidence/v1.0/regression/ab-ev-055-c45j-public-profile-localization-and-fixes.md)
-- [AB-EV-056 — C45K geographic localization and integrated QA closure](evidence/v1.0/regression/ab-ev-056-c45k-geographic-localization.md)
-- [AB-EV-057 — C45L password-reset localization and release qualification](evidence/v1.0/regression/ab-ev-057-c45l-password-reset-action-localization.md)
+- Clear Map protected-state mutation moved to an authenticated server/Admin transaction.
+- The historical reset/generation contract and server-managed photo-slot protection are preserved.
+- A later UTF-8 test-oracle-only repair changed tests, not runtime behaviour.
+- PA-001 is published/functionally closed.
+- AC-017 browser UI → API → Admin all-Emulator reload proof remains a PA-007 / Final Premium RC carry-forward.
+- The missed pre-publication independent architecture review remains a transparently labelled compensating post-publication governance item.
+
+### PA-002 — Active visit-photo quota lifecycle
+
+[AB-EV-067 — PA-002 active visit-photo quota lifecycle premium hardening](evidence/v1.0/regression/ab-ev-067-pa002-active-visit-photo-quota-lifecycle-premium-hardening.md)
+
+- The free quota means at most **10 active logical persisted visit photos**, not historical reservations.
+- Logical photo/visit removal releases exact active capacity and immediately invalidates obsolete owner/public access.
+- Release failures persist exact retry identity across reload.
+- Stale cleanup cannot remove a newer reservation that reused a slot.
+- Reconciliation preserves concurrent edits and other pending work.
+- All original PA2 acceptance criteria were independently proven before publication.
+- Physical Storage deletion remains correctness-independent deferred cleanup.
+
+### PA-003 — Photo Admin/server-route hardening
+
+[AB-EV-068 — PA-003 photo Admin/server-route lifecycle and input-contract premium hardening](evidence/v1.0/regression/ab-ev-068-pa003-photo-admin-server-route-hardening.md)
+
+PA-003 extends the photo lifecycle boundary with:
+
+- strict mutation/input/request contracts;
+- revocation-aware protected authentication and account-lifecycle gates;
+- verified-email reservation policy;
+- canonical owner/public read identity and fail-closed legacy compatibility;
+- explicit distinction between **absent / present-valid / present-invalid** persisted locator state;
+- immutable physical identity for new photo versions:
+
+```text
+users/{uid}/visit-photo-objects/{slotId}/{photoRef}.webp
+```
+
+- write-frozen legacy mutable photo namespace;
+- deterministic authorization/resource race proof with the barrier before byte consumption;
+- cross-service Firestore+Storage Rules smoke in the Product Emulator project;
+- exact candidate-byte, Git and Vercel publication traceability;
+- bounded post-publication verification with **zero intentional Production Firebase mutation**.
+
+Final PA-003 qualification included:
+
+```text
+PA3-01 through PA3-15: accepted
+Immutable race suite: 7 / 7 PASS
+Serial five-suite Emulator group: 90 / 90 PASS
+Rules: 258 / 258 PASS, 0 failed, 0 skipped
+Full Vitest: 989 PASS / 123 environment-gated SKIPPED / 0 FAIL
+C44 affected Edge regression: 1 / 1 PASS; realFirebaseRequests=0
+Build: PASS
+TypeScript: PASS
+ESLint: 0 errors / 30 warnings
+Product: 7616e8ca455f1d2e72a67e4dd839c9c302f98656
+Vercel: dpl_B842NnXHecrGNhcQAfpkC8CgyVhj — READY / production / exact SHA
+Post-publication: PASS
+```
+
+**Final status: PA-003 CLOSED / PUBLISHED / PRODUCTION VERIFIED.**
+
+## Recent release and quality evidence
+
+The complete index is the [Evidence Register](evidence/v1.0/evidence-register.md). Recent milestones include:
+
+- [AB-EV-055 — C45J Public Profile localization and fixes](evidence/v1.0/regression/ab-ev-055-c45j-public-profile-localization-and-fixes.md)
+- [AB-EV-056 — C45K geographic localization](evidence/v1.0/regression/ab-ev-056-c45k-geographic-localization.md)
+- [AB-EV-057 — C45L password-reset localization](evidence/v1.0/regression/ab-ev-057-c45l-password-reset-action-localization.md)
 - [AB-EV-058 / AB-DEF-021 — C45M authenticated language selector and Production hotfix](evidence/v1.0/regression/ab-ev-058-c45m-authenticated-language-selector-and-production-hotfix.md)
 - [AB-EV-059 — C45N German V1.0 localization extension](evidence/v1.0/regression/ab-ev-059-c45n-german-localization-extension.md)
+- [AB-EV-060 / AB-DEF-022 — C45N final localization closure](evidence/v1.0/regression/ab-ev-060-c45n-final-localization-closure-and-ab-def-022.md)
+- [AB-EV-061 — V1.0 release-readiness audit](evidence/v1.0/regression/ab-ev-061-v1-release-readiness-audit.md)
+- [AB-EV-062 — Final V1.0 Release Candidate regression charter](evidence/v1.0/regression/ab-ev-062-final-v1-release-candidate-regression-charter.md)
+- [AB-EV-063 — RC lockfile reproducibility recovery](evidence/v1.0/regression/ab-ev-063-rc-lockfile-reproducibility-recovery.md)
+- [AB-EV-064 — Node 24 LTS upgrade charter](evidence/v1.0/regression/ab-ev-064-c46-node24-lts-upgrade-charter.md)
+- [AB-EV-065 — Node 24 final RC qualification and Production deployment](evidence/v1.0/regression/ab-ev-065-node24-final-rc-qualification-and-production-deployment.md)
+- [AB-EV-066 — PA-001 Clear Map server-boundary premium hardening](evidence/v1.0/regression/ab-ev-066-pa001-clear-map-server-boundary-premium-hardening.md)
+- [AB-EV-067 — PA-002 active visit-photo quota lifecycle premium hardening](evidence/v1.0/regression/ab-ev-067-pa002-active-visit-photo-quota-lifecycle-premium-hardening.md)
+- [AB-EV-068 — PA-003 photo Admin/server-route premium hardening](evidence/v1.0/regression/ab-ev-068-pa003-photo-admin-server-route-hardening.md)
 
-AB-EV-034 closes the last documented QR-01 coverage gap and changes its current state from `Current gap` to `Regression risk`. AB-EV-035 records a Product Owner/Test Lead requirement correction: Visited and Passed through are compatible cumulative historical statuses, while `RegisteredVisit` remains the individual-occurrence model.
-
-AB-EV-036 records a true Product Defect found through atomicity analysis: one Wishlist Save could use independent Firestore commits and leave partial persisted state. The final correction replaces per-place Wishlist ordering writes with root `wishlistOrder`, keeps the maximum combined operation at or below 253 document writes, proves rejected-batch atomicity in the Firestore Emulator and closes the defect after controlled Vercel/Firestore Rules deployment plus Test Lead Production validation.
-
-AB-EV-037 extends that data-integrity work to the destructive Clear Map lifecycle. The old implementation could be blocked by the new root Wishlist metadata and also used separate public/private commit boundaries. C37 rejects naive 504-write chunking, introduces generation-based public projection invalidation, performs the logical Clear Map reset in one <=253-write batch, protects stale public data at the Rules/query boundary and closes AB-DEF-018 after aligned application/Rules deployment and Test Lead Production PASS.
-
-AB-EV-039 establishes explicit per-memory privacy with sanitised `publicMemories`; AB-EV-040 adds independent `memoryOrder` presentation metadata while preserving `registeredVisits` identity/history; AB-EV-041 connects those contracts to the public Profile through an earned-flag modal and a single public data source for owner/viewer rendering. AB-EV-042 adds optional editable visit names while preserving stable visit identity, explicit Save, memory order and sanitised public labels. AB-EV-043 aligns the cross-product visual language to Atlas Gold/Black/Warm White while retaining semantic status, feedback, data-visualisation and third-party colours. AB-EV-044 closes C44: one representative photo per `RegisteredVisit`, a hard free quota of 10 active visit photos per user, bounded Storage slots, owner/public server-mediated reads, replacement/removal lifecycle cleanup and Production approval after real-backend/runtime hardening. AB-EV-045 closes C45A: six explicit public Home locale routes, root locale resolution, `next-intl` foundation, preservation of the root `[username]` public-profile contract and Next.js security hardening before Production publication. AB-EV-046 closes C45B: translated public Home/Hero/Header/Footer for all six V1.0 locales, desktop/mobile language selection, cookie persistence, locale-specific metadata/document language and authenticated-Home selector parity. AB-EV-052 closes the deep authenticated country/visit editor localisation layer while preserving C35/C39/C40/C42/C44 status, memory, ordering, visit-name and photo contracts. AB-EV-053 closes the authenticated Badges/achievement localization layer: all 31 current achievement IDs resolve localized title/description presentation, earned dates and the unlock toast are localized, chronology/reconquest/public metadata remain stable and the still-Portuguese public Profile remains isolated. AB-EV-054 closes Profile Edit localization, including embedded access-method and account-deletion presentation, while preserving username/social/avatar persistence, authentication/deletion semantics and the still-unlocalized public Profile boundary. C41–C45I plus the post-C45D Home-header centering patch reached Production and final Test Lead approval. AB-EV-055 now consolidates C45J six-locale canonical public Profile presentation and two Test Lead-discovered Production Product Defects: AB-DEF-019 (authenticated Profile Header fell back to Portuguese) and AB-DEF-020 (horizontal Header shift between loading and populated Profile). Their scoped fixes, exact Product commits/READY deployments, Emulator regressions and Test Lead visual acceptance close C45J/FIX1/FIX2; geographic display-name localization remains a separate future checkpoint.
-
-AB-EV-056 closes C45K geographic display-name localization in six supported locales, preserving the 251-selectable / 252-conceptual / 195-country / 57-territory-and-entity contract. It records consumer-specific fixes, Test Lead Production visual acceptance and test-only B8 E2E maintenance (66/66 Edge/Emulator E2E PASS; 832 Vitest PASS / 37 SKIPPED as reported). The earlier Edge-tab language discrepancy was not reproduced on human retest and has no established cause; stale E2E locale expectations were corrected as test defects, not Product defects. C45L/AB-EV-057 subsequently completes six-locale password-reset action presentation and supersedes the prior pt-BR-only action expectation. C45M/AB-EV-058 completes authenticated language selection across the six V1.0 locales, adds unsaved-change protection around locale switching, and closes AB-DEF-021 after a Test Lead-discovered Production mismatch between the avatar selector and the public-Home flag/route. Feature commit `8e3f97269036deaa26eca17c8d5fc34eefc1bde4` and hotfix `447b568bd70c445c0a98220fcd134fd5bb843259` both reached exact-SHA Vercel Production READY; the final bidirectional selector retest passed on 2 October 2026. C45N/AB-EV-059 subsequently extends mandatory V1.0 scope with German (`de-DE`), bringing the current supported set to seven locales without rewriting the historical six-locale C45A–C45M evidence.
-
-The portfolio records true Product Defects separately from stale automation, environment/Rules parity failures, test-data/fixture defects, release-control blocks and requirement corrections so defect metrics are not artificially inflated.
+Historical evidence remains unchanged when later work supersedes its decision state. Living controls and the Evidence Register describe the current state.
 
 ## Lessons learned and efficiency
 
-[AtlasBadge Lessons Learned](docs/10-lessons-learned.md) consolidates reusable rules developed through the V1.0 work. Key themes include:
+[AtlasBadge Lessons Learned](docs/10-lessons-learned.md) converts recurring observations into standing QA controls. Current themes include:
 
-- do not rerun a green checkpoint without a concrete invalidation reason;
-- use the smallest test layer capable of proving the changed behaviour;
-- perform format/auto-fix work before final gates;
-- preserve historical evidence rather than rewriting past decisions;
-- validate temporal user journeys before imposing mutually exclusive historical states;
-- treat optimistic UI separately from confirmed persistence;
-- use actual Firestore commit boundaries when assessing atomicity;
-- quantify maximum write cardinality before accepting a batch redesign;
-- verify application/Firestore Rules parity before investigating permission failures;
-- treat Emulator services, test identity and the Test Lead browser session as separate readiness gates;
-- use one canonical manual-QA browser origin;
-- review write path, read path and confirmed in-memory state whenever a source of truth changes;
-- ensure ordering tests connect user reorder state to persisted and later-rendered order;
-- separate atomic logical invalidation from non-critical physical garbage collection when destructive operations exceed backend transaction limits;
-- expose destructive-operation failure feedback instead of leaving confirmation UI apparently frozen;
-- keep public Profile rendering on the sanitised public projection even when the owner views their own Profile;
-- diagnose stale legacy projection data before adding compensating code or migrations;
-- keep AI-agent work bounded to one finishable objective per checkpoint and fit task size to available model/runtime quota;
-- distinguish local environment readiness from Production/Vercel configuration instead of inferring one from the other;
-- prove real Firebase Admin/Storage/runtime integration separately from Emulator success when a feature depends on those boundaries;
-- reuse an explicitly referenced existing UI pattern before inventing a new layout;
-- make rich QA fixtures pass the same derived-metadata reconciliation invariants as normal product flows before declaring them ready for Test Lead use;
-- localize shared domain-backed components through stable IDs and additive presentation data so not-yet-localized consumers retain their established fallback;
-- scope localization providers at shared modal boundaries so a localized child can be reused from both localized and not-yet-localized parent surfaces without changing the parent route contract;
-- pass the localized authenticated Header labels on every supported route variant, with separately tested anonymous/authenticated states;
-- reserve native scrollbar space at the root when loading and loaded content have different heights, and require real-browser visual proof where headless scrollbars are overlaid.
-- when multiple controls change the same locale, prove bidirectional convergence across route, cookie, document language, selected UI state and authenticated session; preserve query/hash where the route changes.
+- preserve valid checkpoints unless a later change invalidates them;
+- select the smallest test layer capable of proving the changed behaviour;
+- classify Product, test-oracle, fixture, environment and governance problems separately;
+- prove persistence through confirmed state/reload, not optimistic UI alone;
+- assess atomicity at real backend commit boundaries;
+- keep Product and Rules/runtime environment parity observable;
+- maintain explicit acceptance-oracle inventories;
+- freeze exact candidate bytes before final independent approval;
+- complete required independent review before publication;
+- separate logical lifecycle completion from deferred physical garbage collection;
+- persist exact recovery identity before fallible lifecycle work;
+- apply post-await cleanup to current orchestrated state rather than stale snapshots;
+- bind authorised content to immutable physical resource identity when names can be reused;
+- preserve absent/present-valid/present-invalid security states across persistence;
+- place concurrency barriers at the actual semantic boundary being claimed;
+- qualify cross-service Rules in the Product Emulator project;
+- keep Production verification proportional and non-destructive when controlled lower layers already prove stateful/race behaviour.
 
-This is part of the QA strategy rather than a retrospective appendix: lessons are converted into standing working rules for later AtlasBadge changes.
+## Current carry-forwards
+
+PA-001, PA-002 and PA-003 are not open findings. Remaining separately tracked work includes:
+
+- PA-006A — deterministic tooling / cached undeclared `tsx` concern;
+- PA-007 — Firebase server-boundary/project-safety work and PA-001 AC-017 closure;
+- PA-008 — account-deletion origin policy hardening;
+- PA-001 compensating post-publication architecture audit;
+- deferred physical visit-photo Storage garbage collection;
+- legacy Clear Map fixture/test debt;
+- broader browser/device, native assistive-technology and quantitative performance evidence before final V1.0 release where required.
+
+These carry-forwards do not rewrite the published PASS decisions for PA-001/002/003.
 
 ## Test evidence
 
-Selected and sanitised evidence is organised in [V1.0 Test Evidence](evidence/v1.0/README.md). The central [Evidence Register](evidence/v1.0/evidence-register.md) is the authoritative public index of evidence IDs, related risks/defects, environments, commits, decisions and artefacts.
+Selected and sanitised evidence is organised in [V1.0 Test Evidence](evidence/v1.0/README.md). The central [Evidence Register](evidence/v1.0/evidence-register.md) is the authoritative public index of evidence IDs, related risks/findings, environments, commits, deployments, decisions and public artefacts.
 
 Only material appropriate for a public professional portfolio is committed. Personal data, credentials, tokens, private environment variables, raw test-account payloads and sensitive configuration are not published.
 
-## Current and planned repository structure
+## Repository structure
 
 ```text
 qa-test-strategy-portfolio/
 │
 ├── README.md
+├── GOVERNANCE-ERRATA.md
 ├── docs/
 │   ├── 01-product-overview.md
 │   ├── 02-quality-risk-analysis.md
