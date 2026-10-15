@@ -8,7 +8,7 @@ It is deliberately not a diary of every defect, test run or implementation decis
 
 The emphasis is on reducing avoidable work while preserving risk-based confidence and traceability.
 
-> **Document status:** Active / maintained. Consolidated through AB-EV-067. LL-66 remains the standing AI-agent process-control rule; LL-67 captures locale-control convergence; LL-68–LL-74 capture the first two Premium Hardening closures and their governance, oracle, lifecycle, concurrency and final-byte controls.
+> **Document status:** Active / maintained. Consolidated through AB-EV-068. LL-66 remains the standing AI-agent process-control rule; LL-67 captures locale-control convergence; LL-68–LL-74 capture the first two Premium Hardening closures and their governance, oracle, lifecycle, concurrency and final-byte controls; LL-75–LL-79 capture PA-003 immutable-byte identity, fail-closed presence semantics, deterministic race proof, cross-service Rules qualification and proportional non-destructive Production verification.
 
 ---
 
@@ -652,6 +652,46 @@ All three must be true before the environment is called “ready”.
 
 **Benefit:** Makes final evidence reproducible, exposes scope contamination and prevents “same count” or “all green” from masking a different artefact.
 
+### LL-75 — Authorisation must bind to immutable byte identity, not a reusable object name
+
+**Observation:** PA-003 reproduced an authorisation-to-byte race in the mutable slot/variant Storage model. A request could authorise logical photo X, pause before reading, and then receive later Z/W bytes after the same physical `slot/variant` name was overwritten by replacement or reused by another visit. Logical authorisation had selected a reusable name rather than immutable content identity.
+
+**Working rule:** When a read authorises a logical version of mutable content, the selected physical locator must identify an immutable version for the lifetime of that request. Allocation/quota identity such as a slot or reservation is not automatically byte-version identity. If a legacy mutable namespace must remain for compatibility, freeze future client writes to it before relying on no-migration compatibility reads.
+
+**Benefit:** Removes ABA/time-of-check-to-time-of-use byte substitution without coupling logical quota to historical physical object count.
+
+### LL-76 — Presence and validity are separate security states
+
+**Observation:** PA-003 S4/S5 showed that treating whitespace, `null`, empty strings or malformed persisted locator fields as “absent” can silently enable a weaker legacy fallback. S5-R01 reproduced a more subtle version: an invalid-present `photoObjectKey` initially failed closed, but canonicalisation/serialization removed the field; after save/reload the record looked genuinely pre-S5 and retained old bytes became eligible again.
+
+**Working rule:** For security-relevant persisted identity fields, model three states explicitly at every boundary: **absent**, **present and valid**, **present and invalid**. Present-invalid state must fail closed and must not be normalized into absence when that would weaken authorisation. Hydration, canonicalisation, persistence and read resolution must preserve or deterministically reject that distinction.
+
+**Benefit:** Prevents malformed or stale persisted state from downgrading itself into a more permissive compatibility path.
+
+### LL-77 — A concurrency test must pause after authority selection and before byte consumption
+
+**Observation:** PA3-15 required proof that a delayed request for X could not return later Y. A superficially similar race test could become green by buffering X before the replacement and replaying the already-captured bytes after the pause, which would not prove the route's physical locator is immutable.
+
+**Working rule:** For authorisation/read races, place the deterministic barrier **after authentication, logical authorisation and exact physical-key selection, but before the response stream opens or consumes bytes**. Mutate/reuse the underlying logical state while paused, then resume the real read and compare exact bytes/hashes. Independently review the test seam for pre-buffering or mock-induced certainty.
+
+**Benefit:** Turns a timing-sensitive concurrency claim into reproducible evidence about the real authority→resource boundary rather than about test-buffer behaviour.
+
+### LL-78 — Cross-service Rules need qualification in the Product Emulator project
+
+**Observation:** PA-003 immutable Storage CREATE rules consult Firestore account/allocation state. The canonical Rules suite passed under `demo-atlasbadge-rules`, but independent review correctly required a focused Firestore+Storage smoke under the actual Product Emulator project `demo-atlasbadge-web` before accepting the cross-service assumption.
+
+**Working rule:** When one Rules engine depends on another service's state, keep the dedicated Rules suite but also execute a focused combined-service smoke under the Product's real Emulator project/configuration. Prove at least the intended allow case plus no-state, inactive, cross-account and duplicate/write-once denial cases that depend on the cross-service lookup.
+
+**Benefit:** Catches project/configuration parity gaps that a dedicated Rules fixture can miss without duplicating the entire Rules suite.
+
+### LL-79 — Post-publication verification should be proportional and non-destructive when deep stateful evidence already exists
+
+**Observation:** PA-003's destructive, failure and race behaviour was deeply qualified under local/Emulator controls before publication. Replaying those scenarios against Production would have created avoidable Firebase state risk. Post-publication confidence instead verified the exact approved commit→origin→Vercel deployment chain, localized HTTP/static availability, safe rejected API paths, bounded runtime logs and zero intentional Production mutation.
+
+**Working rule:** After deterministic high-risk stateful qualification, design Production verification to prove what only Production can prove: exact source/deployment identity, routing/assets/runtime health, configuration-dependent non-disclosure and safe integration availability. Do not mutate real user/backend state merely to duplicate an already-proven destructive/race oracle; record the Production non-execution boundary explicitly.
+
+**Benefit:** Preserves release confidence while reducing privacy/data/environment risk and preventing Vercel READY from being overstated as functional stateful proof.
+
 ## 7. Standing efficiency rules
 
 The following compact rules apply to future AtlasBadge work:
@@ -718,6 +758,11 @@ The following compact rules apply to future AtlasBadge work:
 60. After an await, apply narrow cleanup to current orchestrated state instead of replaying a captured whole-object snapshot.
 61. Maintain an explicit acceptance-oracle inventory; a green aggregate suite is insufficient if a named acceptance case disappeared or changed meaning.
 62. Freeze and hash final candidate bytes before final qualification; compare lint warning identity, then prove those same bytes through staging, commit, remote SHA and deployment.
+63. Bind authorised mutable content to an immutable physical version identity; allocation names that can be reused are not byte identity.
+64. Preserve **absent / present-valid / present-invalid** identity states through hydration, canonicalisation and persistence; present-invalid must never silently downgrade to a weaker fallback.
+65. Place deterministic race barriers after authorisation/resource selection and before byte consumption; inspect the test seam for pre-buffering.
+66. When Storage Rules depend on Firestore state, supplement the canonical Rules suite with a focused combined Firestore+Storage smoke under the Product Emulator project.
+67. Keep post-publication smoke proportional and non-destructive when controlled lower-layer evidence already proves destructive/race behaviour; verify exact deployment identity and safe runtime boundaries without manufacturing Production state.
 
 ---
 
@@ -782,3 +827,4 @@ Do not add a lesson merely because an isolated defect occurred.
 - `evidence/v1.0/regression/ab-ev-065-node24-final-rc-qualification-and-production-deployment.md`
 - `evidence/v1.0/regression/ab-ev-066-pa001-clear-map-server-boundary-premium-hardening.md`
 - `evidence/v1.0/regression/ab-ev-067-pa002-active-visit-photo-quota-lifecycle-premium-hardening.md`
+- `evidence/v1.0/regression/ab-ev-068-pa003-photo-admin-server-route-hardening.md`
