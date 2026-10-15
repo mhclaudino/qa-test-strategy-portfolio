@@ -6,7 +6,7 @@ This document provides a high-level overview of AtlasBadge, including its purpos
 
 It establishes the product context required for the risk analysis and test strategy documented in this repository.
 
-> **Document status:** Completed and maintained through AB-EV-067. C39–C44 establish the current memory/privacy/order/public-display, editable-name, visual-identity and visit-photo baselines. C45A–C45M established the historical six-locale rollout; C45N/AB-EV-059 added German and AB-EV-060 closed the final seven-locale visual/Production acceptance plus AB-DEF-022. AB-EV-061–065 then reconciled release readiness, recovered deterministic installation, completed the mandatory Node 24 / Next.js 16.3.6 migration and established the final technical RC baseline. Premium Hardening reopened engineering after that green checkpoint: AB-EV-066 closes PA-001 Clear Map server ownership plus its later UTF-8 test-oracle repair, and AB-EV-067 closes PA-002 active visit-photo quota/retry/concurrency semantics. Product `49abb003a9b495f3be43b4e30ea4b36dcfb8ceca` is the current published Premium Hardening anchor. PA-003 is the next finding. Final V1.0 Go Live and final Premium Hardening closure are not claimed here.
+> **Document status:** Completed and maintained through AB-EV-068. C39–C44 establish the current memory/privacy/order/public-display, editable-name, visual-identity and visit-photo baselines. C45A–C45M established the historical six-locale rollout; C45N/AB-EV-059 added German and AB-EV-060 closed the final seven-locale visual/Production acceptance plus AB-DEF-022. AB-EV-061–065 then reconciled release readiness, recovered deterministic installation, completed the mandatory Node 24 / Next.js 16.3.6 migration and established the final technical RC baseline. Premium Hardening subsequently published PA-001/AB-EV-066, PA-002/AB-EV-067 and PA-003/AB-EV-068. Product `7616e8ca455f1d2e72a67e4dd839c9c302f98656` is the current published Premium Hardening anchor; Vercel deployment `dpl_B842NnXHecrGNhcQAfpkC8CgyVhj` is READY / production / exact SHA and received bounded post-publication verification. Final V1.0 Go Live and final Premium Hardening closure are not claimed here.
 
 ## 2. Product summary
 
@@ -62,7 +62,7 @@ A public visitor can:
 
 ### 4.3 Product administrator
 
-Administrative capabilities are not currently part of the documented portfolio scope.
+Administrative capabilities are not currently part of the documented user-facing portfolio scope. Narrow privileged Firebase Admin/server boundaries exist for protected lifecycle operations such as Clear Map and visit-photo services; those boundaries are treated as security/quality-critical implementation detail rather than as an administrator UI.
 
 ## 5. Core capabilities
 
@@ -132,6 +132,7 @@ Relevant behaviours include:
 - `RegisteredVisit.isMemoryPublic?: boolean` for visit-memory visibility;
 - C44 visit-photo metadata using a bounded private slot/variant plus an opaque `photoRef` for public projection; photos inherit visit-memory privacy and do not create visits or change `visitsCount`;
 - PA-002/AB-EV-067 defines the current photo-removal lifecycle: quota counts active persisted logical photos, logical removal immediately invalidates old owner/public access, exact server-managed allocation release occurs without waiting for TTL, failed release persists exact retry metadata across reload and physical Storage deletion is not the logical-success boundary;
+- PA-003/AB-EV-068 hardens the photo service boundary: new photo versions use immutable object identity `users/{uid}/visit-photo-objects/{slotId}/{photoRef}.webp`; mutable legacy slot paths are write-frozen; owner/public reads bind current logical authorisation to the exact immutable object key; malformed-present modern locator state fails closed rather than falling back; revocation/account lifecycle, request-shape and error-contract gates are enforced at the server routes;
 - `UserCountry.isGeneralNotePublic?: boolean` for general-memory visibility;
 - legacy/missing privacy flags defaulting to private;
 - a public visit requiring at least one approved shareable value (duration, date/time or note), with note not mandatory;
@@ -148,7 +149,7 @@ Relevant behaviours include:
 - independent Wishlist order;
 - transactional integrity for the Born there user pointer/status relationship.
 
-C34/AB-EV-032 is the current Manual Visit Order and rapid-visit concurrency baseline. It preserves the atomic `birthplacePlaceId` + `statuses.born` invariant and records AB-DEF-013 as closed. C39/AB-EV-039 is the current privacy contract for memories. C40/AB-EV-040 is the current manual memory-order contract. C42/AB-EV-042 adds editable visit names as presentation metadata without changing visit identity, visit-history order, memory order or privacy. C45G/AB-EV-052 localizes the deep editor presentation around those existing contracts without changing their stored identifiers, rules or persistence semantics. PA-002/AB-EV-067 later strengthens the photo/visit removal path with durable exact retry and concurrent-edit-safe cleanup while preserving those same visit/history semantics.
+C34/AB-EV-032 is the current Manual Visit Order and rapid-visit concurrency baseline. It preserves the atomic `birthplacePlaceId` + `statuses.born` invariant and records AB-DEF-013 as closed. C39/AB-EV-039 is the current privacy contract for memories. C40/AB-EV-040 is the current manual memory-order contract. C42/AB-EV-042 adds editable visit names as presentation metadata without changing visit identity, visit-history order, memory order or privacy. C45G/AB-EV-052 localizes the deep editor presentation around those existing contracts without changing their stored identifiers, rules or persistence semantics. PA-002/AB-EV-067 later strengthens the photo/visit removal path with durable exact retry and concurrent-edit-safe cleanup while preserving those same visit/history semantics. PA-003/AB-EV-068 preserves that lifecycle while replacing reusable physical byte identity for new uploads and strengthening server-route input/auth/read contracts.
 
 ### 5.5 Persistent user data
 
@@ -161,13 +162,13 @@ users/{uid}
 users/{uid}/places/{placeId}
 ```
 
-Private user/place records are owner-only. Root user state may include Profile/lifecycle settings including `isWishlistPublic`, canonical `wishlistOrder`, `placesGeneration` and server-managed visit-photo slot metadata; private places may include durable pending photo-release recovery metadata while an exact release is being reconciled.
+Private user/place records are owner-only. Root user state may include Profile/lifecycle settings including `isWishlistPublic`, canonical `wishlistOrder`, `placesGeneration` and server-managed visit-photo slot metadata; private places may include durable pending photo-release recovery metadata while an exact release is being reconciled, and current S5-era visit photos may include a private immutable `photoObjectKey` that is never part of the public projection.
 
 Relevant behaviours include loading/saving status, visit and order changes; handling delayed/rejected/concurrent writes; maintaining consistency between optimistic UI, confirmed state and cache; and recovering safely across reload/session boundaries.
 
 AB-EV-034 closes the previous QR-01 failed-write/recovery coverage gap using architectural equivalence and focused deterministic rollback evidence. AB-EV-036 adds a real Firestore Emulator rejected-batch proof for combined Wishlist settings and confirms no sibling write partially persists when the atomic batch is denied.
 
-AB-EV-066 moves Clear Map protected-state mutation to an authenticated server/Admin transaction after C44 made `visitPhotoSlots` server-managed. AB-EV-067 makes ordinary photo/visit removal durable and exact: the logical change plus pending-release identity persists before the fallible release, successful cleanup clears only that exact tombstone against current orchestrated state, and failed release remains retryable after Product reload.
+AB-EV-066 moves Clear Map protected-state mutation to an authenticated server/Admin transaction after C44 made `visitPhotoSlots` server-managed. AB-EV-067 makes ordinary photo/visit removal durable and exact: the logical change plus pending-release identity persists before the fallible release, successful cleanup clears only that exact tombstone against current orchestrated state, and failed release remains retryable after Product reload. AB-EV-068 then preserves those quota/recovery semantics while making byte identity immutable for new uploads and preserving the security distinction between locator absence, valid presence and malformed presence through canonicalisation/persistence.
 
 ### 5.6 Public profile and sanitised projection
 
@@ -184,9 +185,9 @@ A non-owner or anonymous Profile viewer reads the public source only. C41 applie
 
 The public root may expose only approved presentation fields. When the Wishlist is public, the approved root projection may include `isWishlistPublic` and sanitised `wishlistOrder`; private Wishlist order is not exposed when visibility is disabled.
 
-Public place projections must not expose raw `generalNote`, `registeredVisits`, privacy flags, `memoryOrder`, private visit content, `firstPhysicalPresenceAt`, `statusActivatedAt` or `visitsCount`. They may expose the sanitised `publicMemories` list created by C39.
+Public place projections must not expose raw `generalNote`, `registeredVisits`, privacy flags, `memoryOrder`, private visit content, `firstPhysicalPresenceAt`, `statusActivatedAt`, `visitsCount` or `photoObjectKey`. They may expose the sanitised `publicMemories` list created by C39.
 
-For visit memories, the projection contains only approved shareable values. C41 introduced the sanitised exact presentation label; C42 allows that public `visitLabel` to use the approved custom visit name when present while retaining `VISITA n` fallback and never exposing raw `visitName`. C44 may add only the opaque `photoRef` for a public visit photo; private `photoPath`, slot, variant and stable visit ID are not exposed. Owner and public image reads are served through authenticated/sanitised server routes rather than public Firebase Storage download URLs. PA-002/AB-EV-067 confirms physical object retention does not keep an obsolete photo logically accessible: old owner/public requests return 404 after the current private/public reference is removed. C40 ordering is resolved before privacy filtering, so relative public order is preserved without exposing `memoryOrder` itself.
+For visit memories, the projection contains only approved shareable values. C41 introduced the sanitised exact presentation label; C42 allows that public `visitLabel` to use the approved custom visit name when present while retaining `VISITA n` fallback and never exposing raw `visitName`. C44 may add only the opaque `photoRef` for a public visit photo; private Storage locators, slot, variant and stable visit ID are not exposed. Owner and public image reads are served through authenticated/sanitised server routes rather than public Firebase Storage download URLs. PA-002/AB-EV-067 confirms physical object retention does not keep an obsolete photo logically accessible: old owner/public requests return 404 after the current private/public reference is removed. PA-003/AB-EV-068 further requires a current modern record with present immutable locator state to resolve only through its complete canonical private identity; present-invalid/incomplete modern locator state returns 404 and cannot downgrade to a legacy path, while genuine pre-S5 records with the modern key absent retain bounded compatibility. C40 ordering is resolved before privacy filtering, so relative public order is preserved without exposing `memoryOrder` itself.
 
 Public achievement metadata contains only `unlockedAt` and `sequence`. C45H/AB-EV-053 localizes achievement presentation by stable achievement ID without changing or expanding that public metadata projection. C45J localizes public Profile achievement titles/descriptions by reusing the existing C45H stable-ID presentation catalogue. Before C45J the public Profile deliberately stayed Portuguese; C45J changed only the presentation boundary, not the approved public achievement metadata.
 
@@ -251,12 +252,12 @@ C45G/AB-EV-052 adds representative deep-editor responsive coverage at `390×844`
 |---|---|---|
 | Account data | User identifier, authentication state | Security, privacy, account isolation |
 | Private profile data | User settings and owner-only lifecycle state | Authorisation, deletion, integrity |
-| Private travel data | Statuses, visits, memories, ranks, pending exact photo-release recovery metadata | Accuracy, persistence, ownership, concurrency |
+| Private travel data | Statuses, visits, memories, ranks, pending exact photo-release recovery metadata, private immutable photo object key | Accuracy, persistence, ownership, concurrency |
 | Wishlist data | Place membership, root `wishlistOrder`, `isWishlistPublic` | Atomicity, status compatibility, privacy, independent ordering |
-| Visit-photo quota data | Server-managed active allocations plus exact release identity | Quota correctness, race safety, retry, stale cleanup |
+| Visit-photo quota/data | Server-managed active allocations, exact release identity and immutable per-photo object identity for new uploads | Quota correctness, race safety, retry, stale cleanup, authorisation-to-byte integrity |
 | Progress data | Counts, percentages, achievements | Calculation consistency, chronology |
 | Local cache | UID-scoped browser state | Synchronisation, stale information |
-| Public projection | `publicProfiles` root/places, sanitised `publicMemories` | Whitelisting, per-memory privacy, ordering, read-only access |
+| Public projection | `publicProfiles` root/places, sanitised `publicMemories`, opaque photo references | Whitelisting, per-memory privacy, ordering, read-only access, no private locator exposure |
 
 No real user credentials or personal data are included in this portfolio.
 
@@ -264,7 +265,7 @@ No real user credentials or personal data are included in this portfolio.
 
 AtlasBadge depends on Vercel hosting/Git deployment, Firebase Authentication, Cloud Firestore, Firebase Storage where applicable, Firebase Emulator Suite, Playwright, browser storage/cache, map data/components and third-party web libraries.
 
-A release that changes both frontend behaviour and Firestore Rules must preserve deployment parity; a Vercel READY state alone is not sufficient evidence that the Firebase security layer is aligned.
+A release that changes both frontend behaviour and Firestore/Storage Rules must preserve deployment parity; a Vercel READY state alone is not sufficient evidence that the Firebase security layer is aligned.
 
 The current supported locale set is seven: `pt-BR`, `pt-PT`, `es-419`, `es-ES`, `fr`, `de-DE`, `en-GB`. Locale remains a presentation concern and is not persisted as travel/profile domain data. AB-EV-060 is the final C45N localization closure record.
 
@@ -284,14 +285,17 @@ The current supported locale set is seven: `pt-BR`, `pt-PT`, `es-419`, `es-ES`, 
 
 Key characteristics are functional correctness, data integrity, security/privacy, usability, reliability, compatibility, performance, accessibility and maintainability.
 
-Maintainability includes keeping business rules central, maintaining automated expectations when requirements legitimately change, avoiding unnecessary regression work when earlier checkpoints remain valid, reviewing write/read/session-refresh paths when a canonical data source changes, and freezing exact candidate bytes before independent final approval/publication.
+Maintainability includes keeping business rules central, maintaining automated expectations when requirements legitimately change, avoiding unnecessary regression work when earlier checkpoints remain valid, reviewing write/read/session-refresh paths when a canonical data source changes, preserving absent/present-valid/present-invalid security states across persistence boundaries, and freezing exact candidate bytes before independent final approval/publication.
 
 ## 11. Known areas requiring clarification or future work
 
 - The seven-locale V1.0 localization requirement is closed under AB-EV-060; locale architecture remains regression scope rather than an open localization feature gap.
-- Premium Hardening remains active. PA-001 and PA-002 are published; PA-003 photo Admin-route lifecycle/input hardening is next. Later findings remain sequenced under the approved Premium programme.
+- Premium Hardening remains active. PA-001, PA-002 and PA-003 are published/closed checkpoints. Remaining sequenced findings are selected under the approved Premium programme and must not be pulled into a completed finding without evidence of a direct blocker.
 - PA-001 AC-017 still requires full browser UI → API → Admin Emulator reload evidence under PA-007 / Final Premium RC.
 - The missed PA-001 pre-publication architecture review remains a governance carry-forward requiring an explicitly post-publication compensating audit before final Premium Hardening closure.
+- PA-006A retains deterministic-tooling cleanup for the cached undeclared `tsx` dependency.
+- PA-008 retains the account-deletion origin-allowlist hardening item.
+- Physical garbage collection of obsolete/retained visit-photo Storage objects remains deferred; PA-003 proves current logical authorisation and byte identity do not depend on immediate deletion.
 - `FUTURE-PAID-01` — possible post-V1.0 paid-plan model if infrastructure cost requires monetisation; candidates include an expanded visit-photo quota above the free 10-photo limit and other premium conveniences. No paid CTA, entitlement or billing behaviour is part of V1.0.
 - broader browser/device compatibility beyond the current validated sample;
 - quantitative performance targets;
@@ -322,6 +326,7 @@ These items are not automatically defects. They are open product/quality questio
 - `evidence/v1.0/regression/ab-ev-065-node24-final-rc-qualification-and-production-deployment.md`
 - `evidence/v1.0/regression/ab-ev-066-pa001-clear-map-server-boundary-premium-hardening.md`
 - `evidence/v1.0/regression/ab-ev-067-pa002-active-visit-photo-quota-lifecycle-premium-hardening.md`
+- `evidence/v1.0/regression/ab-ev-068-pa003-photo-admin-server-route-hardening.md`
 
 ## 13. Current Premium Hardening checkpoint
 
@@ -329,7 +334,8 @@ The technically green AB-EV-065 Release Candidate became the starting point for 
 
 - **PA-001 / AB-EV-066:** Clear Map protected-state mutation moved to an authenticated server/Admin transaction. The implementation and later UTF-8 test-oracle-only repair are published. AC-017 remains a PA-007/Final Premium RC residual, and the skipped pre-publication independent architecture review is retained as an explicit governance carry-forward.
 - **PA-002 / AB-EV-067:** the ten-photo quota now represents active logical photos; normal photo/visit removal releases exact server-managed capacity, persists durable retry identity on failure, protects newer allocations/concurrent edits, invalidates obsolete owner/public reads immediately and does not depend on physical Storage cleanup. All original PA2 criteria were independently proven before publication.
-- **Current Product publication anchor:** `49abb003a9b495f3be43b4e30ea4b36dcfb8ceca`, Vercel `dpl_FTp3iCiARWMSejRv12FcHtaMcWeR` READY / production / exact SHA.
-- **Next Premium service:** PA-003 — photo Admin/server-route lifecycle and input-contract hardening.
+- **PA-003 / AB-EV-068:** photo Admin/server routes now enforce strict request/auth/account/current-reference contracts; new photo versions use immutable physical object identity; present-invalid modern locator state fails closed; legacy mutable-object writes are frozen; PA3-01 through PA3-15 passed final qualification and the published commit passed bounded non-destructive Production verification.
+- **Current Product publication anchor:** `7616e8ca455f1d2e72a67e4dd839c9c302f98656`, Vercel `dpl_B842NnXHecrGNhcQAfpkC8CgyVhj` READY / production / exact SHA / post-publication PASS.
+- **Remaining Premium work:** PA-006A, PA-007/AC-017, PA-008, the PA-001 compensating architecture audit and deferred physical Storage GC remain explicit carry-forwards; the next implementation service is selected by Test Lead priority rather than being implicitly PA-003.
 
 This checkpoint does not claim final Premium Hardening closure or final V1.0 Go Live.
