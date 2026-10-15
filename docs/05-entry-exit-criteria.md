@@ -19,7 +19,7 @@ It establishes:
 
 The criteria are intentionally proportional to risk. They are designed to support reliable quality decisions without requiring the same evidence, formality or test depth for a cosmetic correction and a change affecting authentication, privacy or persistent user data.
 
-> **Document status:** Maintained through AB-EV-067. AB-EV-060 closed the final seven-locale visual/Production acceptance; AB-EV-061–065 established release-readiness and the Node 24 technical RC baseline. Premium Hardening then published PA-001/AB-EV-066 and PA-002/AB-EV-067. The current criteria include independent pre-publication review where required, exact final-byte integrity and publication-chain verification. PA-003 is the next active finding; final V1.0 Go Live is not yet approved.
+> **Document status:** Maintained through AB-EV-068. AB-EV-060 closed the final seven-locale visual/Production acceptance; AB-EV-061–065 established release-readiness and the Node 24 technical RC baseline. Premium Hardening then published PA-001/AB-EV-066, PA-002/AB-EV-067 and PA-003/AB-EV-068. The current criteria include independent pre-publication review where required, exact final-byte integrity, named acceptance-oracle preservation, publication-chain verification and proportional non-destructive post-publication checks where deep stateful/race evidence already exists. Final V1.0 Go Live is not yet approved.
 
 ---
 
@@ -70,7 +70,7 @@ Entry and exit criteria are applied according to:
 
 A contained visual correction may require direct validation, a brief regression and a concise approval record.
 
-A change affecting authentication, Firestore persistence, privacy, account deletion, identity, travel-status architecture, visit-photo/server ownership or an essential user journey requires stronger technical evidence, deeper testing, broader regression and explicit residual-risk review.
+A change affecting authentication, Firestore persistence, privacy, account deletion, identity, travel-status architecture, visit-photo/server ownership or physical byte identity, or an essential user journey requires stronger technical evidence, deeper testing, broader regression and explicit residual-risk review.
 
 ### 3.2 Meaningful confidence rather than artificial completion
 
@@ -133,7 +133,7 @@ Where independent review is an approved publication gate:
 * approval applies to the named acceptance criteria and exact candidate, not merely an aggregate green count;
 * staging, commit, remote SHA and deployment source must preserve the approved bytes.
 
-PA-001 records a historical ordering deviation: original publication preceded the planned independent architecture review. The chronology remains transparent and a compensating **post-publication** audit is required before final Premium Hardening closure. PA-002 demonstrates the corrected pre-publication control.
+PA-001 records a historical ordering deviation: original publication preceded the planned independent architecture review. The chronology remains transparent and a compensating **post-publication** audit is required before final Premium Hardening closure. PA-002 demonstrates the corrected pre-publication control. PA-003 demonstrates the full corrected chain through sliced independent review, S6 final qualification, Test Lead final approval, exact publication identity and post-publication verification before the finding was closed.
 
 ---
 
@@ -236,7 +236,7 @@ When a required condition is unavailable:
 
 Environmental unavailability does not automatically remove a scenario from scope.
 
-For Emulator tests, the effective project/endpoints and real-request fail-fast must be observable; `localhost` alone is not evidence of Firebase isolation.
+For Emulator tests, the effective project/endpoints and real-request fail-fast must be observable; `localhost` alone is not evidence of Firebase isolation. When Storage Rules depend on Firestore state, a dedicated Rules suite alone is insufficient to prove Product-project cross-service behaviour; a focused combined-service Emulator check is required when that dependency is material.
 
 ### 5.5 Entry authority
 
@@ -324,6 +324,7 @@ A change or feature may be considered complete from a testing perspective when a
 * Dependent calculations, persistence, profiles, maps, counters, badges, server routes or other affected behaviours have been checked where applicable.
 * The implementation behaves consistently after refresh, navigation or a later session where persistence/recovery is relevant.
 * Named acceptance criteria remain mapped to executable evidence; a similar green test is not accepted as replacement without requirement review.
+* For security-relevant persisted identity, genuine absence, valid presence and malformed presence are not silently conflated when compatibility fallback could weaken authorisation.
 
 ### 7.2 Defect and correction status
 
@@ -368,7 +369,7 @@ For an unexecuted Critical or High-priority scenario, the Test Lead must conside
 
 Approval is blocked when confidence is insufficient.
 
-PA-001 AC-017 is an example of an explicit bounded carry-forward: it does not reopen PA-001 functionality but remains required under PA-007 / Final Premium RC.
+PA-001 AC-017 is an example of an explicit bounded carry-forward: it does not reopen PA-001 functionality but remains required under PA-007 / Final Premium RC. PA-003 provides the complementary example: destructive and race behaviour was intentionally **not** replayed against Production because exact Emulator/Rules/race evidence already existed; post-publication qualification instead verified exact deployment identity, safe read-only/error-path behaviour and runtime health with zero intentional Firebase mutation.
 
 ### 7.5 Scope changes
 
@@ -382,7 +383,7 @@ When part of the originally expected scope is removed or deferred:
 
 A feature is not complete merely because the implemented portion works when the agreed scope remains unclear.
 
-PA-002 physical Storage deletion is an accepted example of a correctness-independent deferred cleanup: logical inaccessibility and active quota release are proven independently, and broader cleanup remains separate scope.
+PA-002/PA-003 physical Storage garbage collection is an accepted example of correctness-independent deferred cleanup: logical inaccessibility, active quota release and current immutable-byte authorisation are proven independently, and broader physical cleanup remains separate scope.
 
 ### 7.6 Final decision
 
@@ -420,6 +421,7 @@ It may include:
 * regression results;
 * implementation reports;
 * commit/deployment SHA evidence;
+* post-publication traceability/safe-smoke evidence where applicable;
 * Test Lead approval records.
 
 For Critical and High-impact changes, explicit evidence should normally be retained.
@@ -547,7 +549,7 @@ The final V1.0 regression may begin when:
 * the required environments, accounts, data and Playwright suite are available;
 * the Test Lead approves commencement of the final cycle.
 
-AB-EV-065 established the technical RC baseline. PA-001 and PA-002 are later published Premium Hardening closures and therefore form part of the eventual final Premium RC integration state. Entry to the ultimate final cycle must account for the remaining Premium sequence, not merely reuse the pre-hardening green state as final Go Live evidence.
+AB-EV-065 established the technical RC baseline. PA-001, PA-002 and PA-003 are later published Premium Hardening closures and therefore form part of the eventual final Premium RC integration state. Entry to the ultimate final cycle must account for the remaining Premium sequence, not merely reuse the pre-hardening green state as final Go Live evidence.
 
 The final regression is complete when:
 
@@ -657,7 +659,7 @@ A deployment may proceed when a scenario cannot be reproduced adequately in the 
 
 Production is not treated as the normal primary testing environment.
 
-Conversely, a stateful/destructive scenario does not have to be re-run against real Production merely because the deployment is READY when comprehensive Emulator evidence already proves the behaviour and Production mutation would add avoidable risk. The non-execution limitation must be explicit.
+Conversely, a stateful/destructive scenario does not have to be re-run against real Production merely because the deployment is READY when comprehensive Emulator evidence already proves the behaviour and Production mutation would add avoidable risk. The non-execution limitation must be explicit. PA-003 post-publication qualification is the current reference example: exact source/deployment identity and safe runtime/error-path smoke were verified without manufacturing Production photo/account state.
 
 ---
 
@@ -734,7 +736,7 @@ A separate formal report is not required for every minor accepted risk.
 
 Relevant risks involving privacy, exposure, corruption or loss of user data are not accepted for production.
 
-Current material carry-forwards include PA-001 AC-017, the PA-001 compensating post-publication architecture audit, PA-002 deferred physical Storage cleanup and PA-006A deterministic Rules-tooling declaration.
+Current material carry-forwards include PA-001 AC-017, the PA-001 compensating post-publication architecture audit, PA-006A deterministic Rules-tooling declaration, PA-007 server-boundary/project-safety work, PA-008 account-deletion origin allowlist, deferred physical visit-photo GC and legacy Clear Map fixture/test debt. PA-003 itself is closed and must not be represented as an outstanding risk item.
 
 ---
 
@@ -775,11 +777,11 @@ The launch may proceed only when sufficient confidence exists and no relevant ri
 The production smoke test is complete when:
 
 * essential public access has been validated;
-* relevant authentication and account access have been validated;
-* authenticated navigation works;
-* the map and core status interaction work;
+* relevant authentication and account access have been validated where authorised by the smoke scope;
+* authenticated navigation works where included;
+* the map and core status interaction work where stateful execution is included;
 * persistence-dependent behaviour has been checked where authorised/required;
-* personal-profile access works;
+* personal-profile access works where included;
 * public-profile access remains read-only and respects privacy;
 * logout or session termination works where included;
 * required language coverage has been completed or any exceptional limitation has been assessed;
@@ -787,6 +789,8 @@ The production smoke test is complete when:
 * pending scenarios are justified;
 * no unacceptable risk remains;
 * the Test Lead approves the smoke result.
+
+A Premium finding's bounded post-publication verification may intentionally be narrower than the final V1.0 launch smoke. PA-003, for example, proved `/` → `/pt-br`, static assets, safe owner/public API rejection paths, runtime log health and exact deployment identity with zero intentional Production mutation; it did **not** claim authenticated photo lifecycle or Production race execution.
 
 A minor smoke failure does not automatically reject the deployment.
 
@@ -840,6 +844,7 @@ AtlasBadge V1.0 may be considered ready for real users only when all applicable 
 * The mandatory V1.0 implementation/Premium Hardening scope has been completed or explicitly removed from the agreed release scope.
 * All seven supported locales have received the defined incremental coverage; German final visual acceptance and AB-DEF-022 closure are recorded in AB-EV-060.
 * Public-profile, map, visit-photo, responsiveness and privacy corrections have been validated incrementally; final Release Candidate regression confirms those checkpoints remain valid.
+* PA-001/AB-EV-066, PA-002/AB-EV-067 and PA-003/AB-EV-068 remain valid published checkpoints in the integrated final candidate.
 * Remaining Premium Hardening findings are closed or explicitly dispositioned under the approved release decision.
 * PA-001 AC-017 has been resolved under PA-007 / Final Premium RC or explicitly accepted at the final gate with adequate alternative evidence.
 * The compensating PA-001 post-publication architecture audit has been completed and recorded before Premium Hardening is finally closed.
@@ -931,11 +936,9 @@ The assumptions already identified in the Product Overview, Quality Risk Analysi
 
 ### Open/current questions
 
-There is no open localization feature gate after AB-EV-060. Current V1.0 work is Premium Hardening.
+There is no open localization feature gate after AB-EV-060. PA-001, PA-002 and PA-003 are closed/published Premium checkpoints; PA-003 is not the next active finding anymore.
 
-The next active finding is PA-003 photo Admin/server-route lifecycle and input-contract hardening. Later Premium findings remain sequenced and must not be pulled into PA-003 without evidence of a direct blocker.
-
-Separate carry-forwards remain PA-001 AC-017, the PA-001 compensating post-publication architecture audit, PA-002 physical Storage cleanup deferral and PA-006A deterministic `tsx` tooling declaration.
+Remaining Premium work includes PA-006A deterministic tooling, PA-007/AC-017 server-boundary/project-safety closure, PA-008 account-deletion origin policy, the PA-001 compensating post-publication architecture audit and deferred physical visit-photo garbage collection. The next implementation service is selected by Test Lead priority and must not silently absorb unrelated findings.
 
 ### Proposed evolution
 
@@ -959,7 +962,7 @@ These criteria must be reviewed when there is a material change to:
 * the AtlasBadge architecture;
 * the authentication/data-storage/server-ownership model;
 * the privacy model;
-* visit-photo quota/read/release/cleanup semantics;
+* visit-photo quota/read/release/cleanup semantics or physical-object identity;
 * the supported platforms or locales;
 * the deployment process;
 * the test environments;
