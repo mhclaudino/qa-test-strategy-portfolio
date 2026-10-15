@@ -1,9 +1,9 @@
 # Test Environments
 
-**Document status:** Completed and maintained through AB-EV-067  
+**Document status:** Completed and maintained through AB-EV-068  
 **Product:** AtlasBadge  
 **Document owner:** Test Lead  
-**Last updated:** 12 October 2026
+**Last updated:** 15 October 2026
 
 ---
 
@@ -42,7 +42,9 @@ AtlasBadge does not claim an artificial enterprise test estate. It does not curr
 12. Local secret/configuration state and Vercel Production secret/configuration state are separate facts; one must never be inferred from the other.
 13. When a server-side integration depends on a specific runtime/dependency transport, the effective Node/runtime version is part of environment evidence and must be validated on the real integration boundary.
 14. Exact deployment metadata/SHA verification may be sufficient publication evidence when stateful/destructive behaviour was already comprehensively proven in the protected Emulator environment and real Production mutation would add avoidable risk.
-15. The Test Lead has final authority over Production testing, destructive validation and environmental exceptions.
+15. When one Firebase Rules engine depends on another service's state, the dedicated Rules project is supplemented with a focused combined-service smoke under the Product Emulator project/configuration.
+16. Post-publication smoke must distinguish deployment/runtime evidence from stateful Product evidence; Vercel READY or HTTP 200 does not imply destructive/race behaviour was executed in Production.
+17. The Test Lead has final authority over Production testing, destructive validation and environmental exceptions.
 
 ---
 
@@ -53,7 +55,7 @@ AtlasBadge does not claim an artificial enterprise test estate. It does not curr
 | Local manual development | Implementation review, exploratory/manual QA, selected real-backend checks while authorised | Local Next.js runtime on Windows | Real `atlas-badge` when intentionally configured | Active / controlled |
 | Manual Emulator QA | Manual validation requiring current local Rules/backend behaviour without Production deploy | Canonical local browser origin for the active session | Auth/Firestore/Storage Emulators with explicit QA identity/session | Active / controlled |
 | Browser E2E Emulator | Normal automated persistence/privacy/regression | `127.0.0.1:3100` where the dedicated runner uses that origin | Auth/Firestore/Storage Emulators, project `demo-atlasbadge-web` when Storage is in scope | Active / primary automated E2E |
-| Technical Emulator/Rules | Firestore Rules, account-deletion and backend-focused lifecycle/concurrency tests | Scripts/test runners | Firebase Emulators; Rules namespace may use `demo-atlasbadge-rules` | Active |
+| Technical Emulator/Rules | Firestore/Storage Rules, account-deletion and backend-focused lifecycle/concurrency/race tests | Scripts/test runners | Firebase Emulators; canonical Rules namespace may use `demo-atlasbadge-rules`, with Product-project smoke under `demo-atlasbadge-web` when cross-service state is material | Active |
 | Production | Deployment identity, post-deployment smoke and approved real-integration validation | Vercel Production | Real Firebase project `atlas-badge` | Active / controlled |
 
 The local manual application and Production may intentionally use the real Firebase project during controlled pre-launch testing. This is different from the automated Emulator suite, which is explicitly isolated and must not touch real Firebase.
@@ -62,27 +64,35 @@ The local manual application and Production may intentionally use the real Fireb
 
 ## 4. Runtime baseline
 
-AB-EV-065 established the current technical runtime baseline used by Premium Hardening:
+AB-EV-065 established the historical Node 24 technical RC environment with:
 
 ```text
-Node.js: 24.21.0
+Node.js observed at that checkpoint: 24.21.0
 Next.js: 16.3.6
-npm: 11.19.0
+npm observed at that checkpoint: 11.19.0
 ```
 
-The corresponding pre-hardening technical RC Product SHA is:
+The current Product runtime contract is:
+
+```text
+Node.js: 24.x
+Next.js: 16.3.6 exact
+npm: compatible with the Node 24 toolchain; exact minor is not a Product acceptance criterion unless tooling evidence makes it material
+```
+
+The corresponding pre-hardening technical RC Product SHA was:
 
 ```text
 12a0dd53dfe789610e6393b31db1c94c311757ff
 ```
 
-PA-001/PA-002 keep this runtime family. The current published Product anchor is:
+PA-001, PA-002 and PA-003 preserve this runtime contract. The current published Product anchor is:
 
 ```text
-49abb003a9b495f3be43b4e30ea4b36dcfb8ceca
+7616e8ca455f1d2e72a67e4dd839c9c302f98656
 ```
 
-No later environment document may silently revert the runtime baseline to the historical Node 22 qualification state.
+No later environment document may silently revert the runtime baseline to the historical Node 22 qualification state or invent an npm-minor requirement unsupported by Product/tooling evidence.
 
 ---
 
@@ -125,7 +135,7 @@ Node/runtime version when server integration is relevant
 
 The hardened Playwright environment uses a dedicated local runtime and explicit Emulator routing.
 
-For the PA-002 affected C44 regression, the protected configuration was:
+For current visit-photo affected regression, the protected configuration is:
 
 ```text
 Application:      http://127.0.0.1:3100
@@ -152,9 +162,10 @@ The suite must fail rather than continue if:
 - configuration points to the real Firebase project unexpectedly;
 - a request attempts to reach real Firebase hosts during an Emulator test.
 
-Current PA-002 C44 evidence includes:
+Current PA-003 final affected C44 evidence includes:
 
 ```text
+Edge affected regression: 1 / 1 PASS
 realFirebaseRequests = 0
 ```
 
@@ -238,29 +249,30 @@ The Firebase Emulator Suite is used for backend-focused verification including:
 - Firestore Rules allow/deny behaviour;
 - Storage Rules where photo storage is affected;
 - owner/non-owner/anonymous access;
+- revocation-aware/auth/account-lifecycle gates where route behaviour depends on Firebase identity;
 - public-profile projection whitelists;
-- valid/invalid order/rank/recovery fields;
+- valid/invalid order/rank/recovery/locator fields;
 - account-deletion failure/retry logic;
 - Clear Map/private-public cleanup;
 - achievement metadata projection;
 - real backend batch/transaction atomicity and contention;
 - visit-photo reserve/release/idempotency/stale-reservation races;
-- durable Product persistence/hydration after release failure;
+- immutable-object write-once semantics and authority-to-byte race coverage;
+- durable Product persistence/hydration after release failure or malformed persisted locator state;
 - test fixtures requiring deterministic isolated state.
 
-C36 recorded an earlier 226/226 Firestore Rules checkpoint. The current PA-002 independent qualification records:
+Historical checkpoints include C36 226/226 Firestore Rules and PA-002 242/242. The current PA-003 final qualification records:
 
 ```text
-Firestore Rules: 242 / 242 PASS
-PA-002 requested run: 39 / 39 PASS
-Core real Emulator acceptance declarations:
-- quota lifecycle: 13
-- slot server: 10
-- route: 10
-Context ordering tests: 6 (mock persistence boundaries; not misrepresented as six more Firestore tests)
+Rules: 258 / 258 PASS, 0 failed, 0 skipped
+PA-003 dedicated immutable race suite: 7 / 7 PASS
+PA-003 five-suite serial Emulator group: 90 / 90 PASS
+Full Vitest qualification: 989 PASS / 123 environment-gated SKIPPED / 0 FAIL
 ```
 
-The Rules command currently relies on a cached undeclared `tsx` executable. The 242/242 result is valid, but deterministic tooling declaration is tracked separately as PA-006A.
+PA-003 also executed a focused Firestore+Storage smoke under `demo-atlasbadge-web` proving the cross-service Storage CREATE contract for an active verified user/current allocation and the relevant denial cases (no allocation, inactive account, cross-user and same-key second write). This supplements, rather than replaces, the canonical Rules suite.
+
+The Rules command currently relies on a cached undeclared `tsx` executable. The 258/258 result is valid, but deterministic tooling declaration is tracked separately as PA-006A.
 
 ---
 
@@ -291,23 +303,34 @@ Production is used for:
 
 ### 9.2 Current Premium deployment anchor
 
-PA-002 is the current published Product anchor:
+PA-003 is the current published Product anchor:
 
 ```text
-Commit:      49abb003a9b495f3be43b4e30ea4b36dcfb8ceca
-Parent:      d0116967fc389353191c11e8865f20e38b9d5835
-Deployment:  dpl_FTp3iCiARWMSejRv12FcHtaMcWeR
+Commit:      7616e8ca455f1d2e72a67e4dd839c9c302f98656
+Subject:     fix(visit-photo): complete PA-003 premium hardening
+Deployment:  dpl_B842NnXHecrGNhcQAfpkC8CgyVhj
 Target:      production
 State:       READY
 Source:      Git / main / exact commit SHA
 Alias:       atlas-badge.vercel.app
 ```
 
-Publication verification used deployment metadata/SHA/status. No authenticated Production QA, Production Firestore/Storage mutation or real-Firebase test-data creation was required to approve that publication.
+Post-publication qualification independently verified:
+
+- local `HEAD == origin/main == 7616e8ca...`, divergence `0 / 0`, clean tree;
+- deployment project/target/state/branch/SHA/subject identity;
+- Production alias pointing to that deployment;
+- `/` returning `307 → 200` at `/pt-br` and `/pt-br` returning `200`;
+- representative Next.js JavaScript/CSS assets returning `200`;
+- safe unauthenticated/synthetic owner/public API rejection paths with no private-byte/internal-error disclosure;
+- no deployment-scoped error/fatal log groups in the bounded inspection window;
+- **zero intentional Production Firebase mutation**.
+
+This is deployment/runtime/safe-smoke evidence. It does not claim authenticated photo lifecycle or race execution against Production.
 
 ### 9.3 Release-parity gate
 
-AB-DEF-002 established that frontend and Firestore Rules can be out of sync even when the Vercel deployment is healthy. C36 reproduced the same risk locally when new application behaviour was accidentally tested against older deployed Production Rules. C44 extended the parity model to Firebase Storage Rules and server runtime.
+AB-DEF-002 established that frontend and Firestore Rules can be out of sync even when the Vercel deployment is healthy. C36 reproduced the same risk locally when new application behaviour was accidentally tested against older deployed Production Rules. C44 extended the parity model to Firebase Storage Rules and server runtime. PA-003 adds cross-service Rules dependency as an explicit environment concern when Storage authorisation consults Firestore state.
 
 Therefore, when a release changes Rules and Production functional smoke depends on those changes:
 
@@ -319,7 +342,7 @@ Therefore, when a release changes Rules and Production functional smoke depends 
 5. only then begin focused Production functional validation.
 ```
 
-When publication verification is intentionally metadata-only after protected Emulator qualification, no claim of Production functional execution is made.
+When publication verification is intentionally metadata/read-only after protected Emulator qualification, no claim of destructive/stateful Production functional execution is made.
 
 ### 9.4 Production test-data safety
 
@@ -342,7 +365,7 @@ Current evidence includes:
 
 | Platform | Browser / execution | Coverage |
 |---|---|---|
-| Windows desktop | Microsoft Edge | Primary manual/Production baseline and current protected C44 browser gate |
+| Windows desktop | Microsoft Edge | Primary manual/Production baseline and protected browser gates |
 | Windows desktop | Playwright Edge/Chromium project as selected | Automated Emulator and Production validation |
 | Android | Google Chrome on Samsung Galaxy S20 FE | Historical physical mobile validation used during V1.0 hardening |
 | Responsive automation | Desktop/mobile viewports including 375×667 and 390×844 | Layout/overflow/modal regression |
@@ -390,11 +413,11 @@ Production testing uses known QA accounts/data only. Test data may be changed wh
 
 ### Destructive scenarios
 
-Clear Map/account deletion are treated separately because they are destructive. They require an appropriate dedicated account/context and explicit authorisation when executed against Production.
+Clear Map/account deletion/photo lifecycle mutations are treated separately because they can be destructive or stateful. They require an appropriate dedicated account/context and explicit authorisation when executed against Production.
 
 A release smoke does not automatically authorise destructive retesting.
 
-PA-001/PA-002 publication did not perform destructive Production retest solely to verify deployment.
+PA-001/PA-002 publication did not perform destructive Production retest solely to verify deployment. PA-003 post-publication qualification intentionally used only read-only/unauthenticated rejected requests and performed zero Auth/Firestore/Storage allocation/profile/Clear-Map/account-deletion mutations.
 
 ---
 
@@ -415,7 +438,7 @@ A run is not classified as a product failure when execution cannot start or is i
 
 The condition is reported as environment/infrastructure blocked or parity mismatch, corrected where safe, and the valid execution result is recorded separately.
 
-This classification does not hide true Product defects. C44 and PA-002 both required separating environment/runtime/test-oracle problems from genuine Product lifecycle/projection/concurrency defects.
+This classification does not hide true Product defects. C44, PA-002 and PA-003 all required separating environment/runtime/test-oracle/fixture issues from genuine Product lifecycle/projection/concurrency/security defects.
 
 ---
 
@@ -446,7 +469,8 @@ Known limitations include:
 - no formal load/stress environment;
 - no comprehensive native assistive-technology/device laboratory;
 - some Production destructive/Admin validations may remain blocked if legitimate required credentials are unavailable;
-- the Rules alias's cached undeclared `tsx` dependency is a deterministic-tooling concern under PA-006A.
+- the Rules alias's cached undeclared `tsx` dependency is a deterministic-tooling concern under PA-006A;
+- Production PA-003 qualification intentionally did not execute authenticated photo mutation or race scenarios; those are supported by controlled local/Emulator evidence instead.
 
 These limitations must remain visible in release/residual-risk decisions rather than being interpreted as passed coverage.
 
@@ -459,7 +483,8 @@ Review this document when:
 - Firebase project/environment routing changes;
 - Emulator ports/services change;
 - Playwright server/build isolation changes;
-- server/Admin route ownership changes;
+- server/Admin route ownership or photo-object identity changes;
+- Firestore↔Storage cross-service Rules dependencies change;
 - Production/Preview deployments become formal test environments;
 - staging/QA infrastructure is introduced;
 - browser/device support changes;
@@ -468,7 +493,7 @@ Review this document when:
 - Node/runtime support changes;
 - a new Production safety, parity or session-origin failure is discovered.
 
-PA-003 must use this environment contract while auditing photo Admin/server routes. PA-007 owns broader server-boundary Firebase project/safety hardening and must not be silently absorbed into PA-003 unless a direct blocker is demonstrated.
+PA-003 is closed under AB-EV-068 and must not be represented as an open environment audit. PA-007 owns broader server-boundary Firebase project/safety hardening and AC-017 closure; PA-006A owns deterministic Rules tooling.
 
 ---
 
@@ -486,3 +511,4 @@ PA-003 must use this environment contract while auditing photo Admin/server rout
 - `evidence/v1.0/regression/ab-ev-065-node24-final-rc-qualification-and-production-deployment.md`
 - `evidence/v1.0/regression/ab-ev-066-pa001-clear-map-server-boundary-premium-hardening.md`
 - `evidence/v1.0/regression/ab-ev-067-pa002-active-visit-photo-quota-lifecycle-premium-hardening.md`
+- `evidence/v1.0/regression/ab-ev-068-pa003-photo-admin-server-route-hardening.md`
