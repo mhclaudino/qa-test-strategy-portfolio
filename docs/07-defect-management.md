@@ -8,7 +8,7 @@ It applies to incremental development, Premium Hardening, controlled deployment/
 
 The process is intentionally proportional. Significant quality failures receive formal traceability; test-oracle, fixture, environment, governance and technical-task findings are kept distinct from Product Defects so defect metrics remain meaningful.
 
-> **Document status:** Completed and maintained through AB-EV-067. The current examples include AB-DEF-022 closure, PA-001 review-order governance deviation and UTF-8 test-oracle repair, and PA-002 Product lifecycle/concurrency defects versus test, recovery and scope-hygiene findings. Actor ownership follows `GOVERNANCE-ERRATA.md`.
+> **Document status:** Completed and maintained through AB-EV-068. The current examples include AB-DEF-022 closure, PA-001 review-order governance deviation and UTF-8 test-oracle repair, PA-002 Product lifecycle/concurrency defects versus test, recovery and scope-hygiene findings, and PA-003 route/input/account/resource-identity findings plus S5-R01 persistence/fallback correction. Actor ownership follows `GOVERNANCE-ERRATA.md`.
 
 ---
 
@@ -46,6 +46,8 @@ Quality-risk priority, defect severity, defect priority and test-scope priority 
 10. **The Test Lead owns final classification, severity/priority, residual-risk, deployment and closure decisions.**
 11. **A green test can protect the wrong requirement.** Stale/malformed oracles are repaired as test evidence rather than forcing Product behaviour to match them.
 12. **A governance deviation is not automatically a Product Defect.** Preserve the real chronology and correct the control forward.
+13. **Malformed-present persisted identity is not equivalent to absence when fallback rules differ.** Canonicalisation/persistence must not weaken a fail-closed state silently.
+14. **Race evidence must prove the claimed semantic boundary.** A test that captures the protected resource before the intended race point is not valid evidence for the live boundary.
 
 ---
 
@@ -53,9 +55,9 @@ Quality-risk priority, defect severity, defect priority and test-scope priority 
 
 ### 4.1 Product Defect
 
-An implemented AtlasBadge behaviour that violates an approved requirement, business rule, acceptance criterion, security/privacy/data-integrity condition or established Product behaviour.
+An implemented AtlasBadge behaviour that violates an approved requirement, business rule, acceptance criterion, privacy/data-integrity condition or established Product behaviour.
 
-Examples include persistence loss, privacy exposure, broken auth, wrong counters, inaccessible essential controls, incorrect public projection, server lifecycle failures or concurrency lost updates.
+Examples include persistence loss, privacy exposure, broken auth, wrong counters, inaccessible essential controls, incorrect public projection, server lifecycle failures, unsafe compatibility fallback or concurrency/resource-identity failures.
 
 ### 4.2 Test-oracle / automation defect
 
@@ -65,7 +67,8 @@ Examples:
 
 - C45 localization tests that retained superseded labels;
 - PA-001 route tests that expected mojibake while runtime returned correct UTF-8;
-- PA-002 temporary deletion/remapping of original PA2-06/PA2-07 acceptance cases.
+- PA-002 temporary deletion/remapping of original PA2-06/PA2-07 acceptance cases;
+- a race test seam that captures bytes before the controlled mutation and therefore proves the wrong boundary.
 
 A test-oracle defect does not increase Product-defect metrics.
 
@@ -74,6 +77,8 @@ A test-oracle defect does not increase Product-defect metrics.
 Prepared QA state violates Product invariants even though valid Product state behaves correctly.
 
 Example: a rich C45G Emulator fixture created earned achievements without running required metadata reconciliation; data-only repair restored dependent surfaces.
+
+A fixture may intentionally model malformed persisted state when the acceptance criterion is fail-closed recovery. In that case the state is deliberate test input, not a fixture defect, provided the oracle is explicit.
 
 ### 4.4 Environment / infrastructure incident
 
@@ -93,11 +98,11 @@ PA-001 is the current example: commit/push occurred before the planned independe
 
 An understood restriction that does not violate the currently promised behaviour and whose residual risk is explicitly recorded.
 
-PA-002 physical Storage deletion is an example: logical access and quota correctness are independently proven, while physical cleanup remains deferred.
+PA-002/PA-003 physical Storage garbage collection is an example: logical access, active quota and current immutable-resource correctness are independently proven, while physical cleanup remains deferred. PA-003 also explicitly does not claim that its controlled resource-race scenario was executed against Production; Emulator/race evidence plus bounded post-publication smoke is the accepted evidence model.
 
 ### 4.8 Enhancement / technical task
 
-Future or internal work that does not correct a current Product failure. Examples include broader CI/tooling hardening, observability, performance baselines and unreachable-code cleanup.
+Future or internal work that does not correct a current Product failure. Examples include broader CI/tooling hardening, observability, performance baselines, deferred physical cleanup and unreachable-code cleanup.
 
 ### 4.9 Quality risk
 
@@ -110,6 +115,10 @@ Evidence is insufficient to establish pass/fail, correct expectation or valid en
 ### 4.11 Not a Defect / Requirement Correction
 
 Use when behaviour matches the approved baseline or when the approved requirement later changes. C35 is the historical requirement-correction example.
+
+### 4.12 Unsupported/speculative finding
+
+A proposed failure theory that is not supported by the implementation or reproducible evidence after bounded assessment. It is not promoted into the defect backlog merely because it is theoretically possible.
 
 ---
 
@@ -125,7 +134,9 @@ Before confirmation, establish where applicable:
 - reproducibility and timing;
 - relevant source/network/Firestore/Storage evidence;
 - whether the automation/fixture/environment could explain the result;
-- whether the requirement itself changed.
+- whether the requirement itself changed;
+- for persisted identity/fallback issues, whether the field is genuinely absent, present-valid or present-invalid;
+- for concurrency/resource issues, where authority/resource selection and consumption occur relative to the deterministic barrier.
 
 The item may remain `Under Review` until enough evidence exists.
 
@@ -199,7 +210,7 @@ Lifecycle information may later add root-cause evidence, correction, commit, ret
 | Severity | Typical impact |
 |---|---|
 | **Critical** | Unauthorised access/private-data exposure, severe/irreversible corruption/loss, critical auth failure, cross-user modification/deletion, broad unavailability or essential journey failure without safe workaround |
-| **High** | Significant core failure, silent persistence rejection/lost update, major regression, severe accessibility/performance failure or impractical workaround |
+| **High** | Significant core failure, silent persistence rejection/lost update, major regression, resource-identity substitution after a valid logical decision, severe accessibility/performance failure or impractical workaround |
 | **Medium** | Limited/recoverable secondary-flow or compatibility/usability impact with acceptable workaround |
 | **Low** | Cosmetic/minor presentation/usability issue without meaningful data/privacy/security/core-flow impact |
 
@@ -235,9 +246,9 @@ New
 → Closed
 ```
 
-Alternative outcomes include `Retest Failed`, `Reopened`, `Deferred`, `Duplicate`, `Cannot Reproduce`, `Not a Defect` and `Accepted Risk`.
+Alternative outcomes include `Retest Failed`, `Reopened`, `Deferred`, `Duplicate`, `Cannot Reproduce`, `Not a Defect`, `Unsupported/Speculative` and `Accepted Risk`.
 
-Test-oracle, fixture, environment, technical-task and governance findings may be redirected to the appropriate evidence/process backlog instead of being forced through the Product-defect lifecycle.
+Test-oracle, fixture, environment, technical-task, unsupported-speculation and governance findings may be redirected to the appropriate evidence/process backlog instead of being forced through the Product-defect lifecycle.
 
 ---
 
@@ -255,7 +266,7 @@ observation
 
 Confirmed cause requires a verifiable chain connecting the failure, mechanism, responsible condition/change, removal/control of that mechanism and corrected result.
 
-Suitable evidence includes before/after deterministic tests, logs/rejected requests, sanitised payload comparison, code inspection linked to reproduction, Rules/Storage behaviour, runtime A/B proof and direct retest.
+Suitable evidence includes before/after deterministic tests, logs/rejected requests, sanitised payload comparison, code inspection linked to reproduction, Rules/Storage behaviour, runtime A/B proof, deterministic race tests with exact resource/byte comparison and direct retest.
 
 If the chain is incomplete, use `working hypothesis`, `suspected cause` or `investigation pending`.
 
@@ -272,6 +283,8 @@ Regression scope is selected from changed code plus semantic dependencies and qu
 A complete repository regression is not mandatory for every correction. Checkpoints are preserved unless invalidated.
 
 For named Premium acceptance matrices, all original oracles must remain represented. A similar test or aggregate pass count does not replace a missing named criterion.
+
+For authority/resource races, the test must pause after the exact authority/resource identity is selected and before the protected resource is consumed; otherwise the result is classified as insufficient evidence rather than PASS.
 
 ---
 
@@ -320,6 +333,8 @@ protect users/data
 
 C45M/AB-DEF-021 and C45N/AB-DEF-022 are recent Product-defect examples. Harness/environment/test-oracle events encountered around them were not inflated into additional defects.
 
+PA-003 post-publication validation found no deployed defect: exact Git/Vercel identity, application/static availability, bounded rejected API responses and runtime logs passed with zero intentional Firebase mutation. That result is closure evidence, not a substitute for the pre-publication stateful/race tests.
+
 ---
 
 ## 17. Premium Hardening classification examples
@@ -338,6 +353,17 @@ C45M/AB-DEF-021 and C45N/AB-DEF-022 are recent Product-defect examples. Harness/
 - **Evidence/process findings:** PA2-13/14 initially proved weaker paths than claimed; lint cleanup temporarily removed unrelated baseline warnings; final gate chronology required re-freezing/requalification.
 - **Recovery incident:** workstation shutdown interrupted one remediation cycle; controlled byte-for-byte recovery restored a reverted route Emulator test and protected untracked candidate files. No AtlasBadge root cause was claimed for the shutdown.
 - **Final classification:** all original PA2 criteria independently PROVEN; PA-002 closed/published. Physical Storage deletion remains an accepted separate cleanup concern, not an unresolved PA-002 Product Defect.
+
+### PA-003
+
+- **S1:** mutation slot/input/error-contract weaknesses were corrected and qualified as part of the Premium finding rather than assigned artificial extra public defect IDs.
+- **S2:** replacement-failure semantics were corrected so an existing persisted photo/allocation remains authoritative when replacement upload/save fails, while a failed first upload releases only its unpersisted allocation.
+- **S3:** protected token/account lifecycle/verified-reserve boundaries were strengthened while preserving the approved distinction between non-disclosing read failures and explicit mutation denial.
+- **S4:** canonical read/query/legacy-fallback contracts were hardened so malformed-present modern identity cannot be repaired by an older locator.
+- **S5:** a reproducible resource-identity race in the mutable physical naming model was closed by immutable per-photo object identity and write-once Rules for new objects.
+- **S5-R01:** two fail-closed defects remained after the first S5 implementation: one route branch could still reach legacy bytes when the modern key was malformed/present, and persistence could erase malformed-present key state and re-enable legacy behaviour after reload. Both were corrected and independently re-reviewed.
+- **Assurance:** PA3-F01 through F11 reached PASS/PASS WITH OBSERVATION as applicable; the remaining speculative generic theory was rejected as unsupported rather than being promoted without evidence.
+- **Final classification:** PA3-01 through PA3-15 accepted; Product `7616e8ca...` published and Production verified; PA-003 CLOSED. Deferred physical GC and no Production race execution remain explicit residual/evidence boundaries, not open PA-003 defects.
 
 ---
 
@@ -393,13 +419,13 @@ Planned improvements include Issue templates/labels, stronger automated reportin
 
 The legacy UK-selector modal remains a technical cleanup candidate, not a Product Defect.
 
-PA-003 photo Admin/server-route lifecycle/input-contract hardening is the next active Premium finding. Its read-only audit may identify new Product defects or structural debt, but it must not pre-classify every Admin-route concern as a defect before comparing behaviour with the approved contracts.
+PA-001, PA-002 and PA-003 are closed/published Premium checkpoints. Remaining Premium work includes PA-006A deterministic tooling, PA-007/AC-017 server-boundary/project-safety closure, PA-008 account-deletion origin policy, the PA-001 compensating architecture audit, legacy Clear Map fixture/test debt and deferred physical Storage GC. None should be pre-classified as a Product Defect without comparing evidence against its approved contract.
 
 ---
 
 ## 22. Review triggers
 
-Review this document when defect lifecycle/record structure, severity/priority definitions, actor ownership, evidence controls, independent-review/publication requirements, server-boundary architecture, test classification or release blocking rules materially change.
+Review this document when defect lifecycle/record structure, severity/priority definitions, actor ownership, evidence controls, independent-review/publication requirements, server-boundary/resource-identity architecture, test classification or release blocking rules materially change.
 
 A suitability review also occurs before final V1.0 launch and after any material Production incident.
 
@@ -414,4 +440,5 @@ A suitability review also occurs before final V1.0 launch and after any material
 - `evidence/v1.0/regression/ab-ev-065-node24-final-rc-qualification-and-production-deployment.md`
 - `evidence/v1.0/regression/ab-ev-066-pa001-clear-map-server-boundary-premium-hardening.md`
 - `evidence/v1.0/regression/ab-ev-067-pa002-active-visit-photo-quota-lifecycle-premium-hardening.md`
+- `evidence/v1.0/regression/ab-ev-068-pa003-photo-admin-server-route-hardening.md`
 - `GOVERNANCE-ERRATA.md`
