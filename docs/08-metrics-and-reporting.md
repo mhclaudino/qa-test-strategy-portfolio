@@ -6,7 +6,7 @@ This document defines how AtlasBadge quality information is collected, interpret
 
 The goal is not to maximise the number of metrics. It is to provide the Test Lead with reliable, contextual evidence about risk, execution, defects/findings, quality gates, environments, versions, residual risk and readiness.
 
-> **Document status:** Completed and maintained through AB-EV-067. Reporting now includes the seven-locale closure, Node 24 technical RC, PA-001 governance/test-oracle reconciliation and PA-002 exact-oracle/final-byte/independent-approval/publication chain. Product `49abb003a9b495f3be43b4e30ea4b36dcfb8ceca` and Vercel `dpl_FTp3iCiARWMSejRv12FcHtaMcWeR` are the current published Premium Hardening anchors. Final Premium closure and final V1.0 Go Live are not claimed.
+> **Document status:** Completed and maintained through AB-EV-068. Reporting now includes the seven-locale closure, Node 24 technical RC, PA-001 governance/test-oracle reconciliation, PA-002 exact-oracle/final-byte/independent-approval/publication chain and PA-003 sliced independent review, immutable-resource race closure, final S6 qualification, exact publication identity and bounded post-publication verification. Product `7616e8ca455f1d2e72a67e4dd839c9c302f98656` and Vercel `dpl_B842NnXHecrGNhcQAfpkC8CgyVhj` are the current published Premium Hardening anchors. Final Premium closure and final V1.0 Go Live are not claimed.
 
 ---
 
@@ -44,13 +44,14 @@ Useful questions include:
 - Is the candidate the same artefact that was independently reviewed?
 - Can commit/push/deployment proceed?
 - Does the deployed SHA match the approved commit?
+- Does a post-publication smoke prove only what it actually executed?
 - What remains unexecuted or accepted as residual risk?
 
 ### 3.2 Counts require context
 
 Raw totals do not equal quality. A high pass count can hide a missing Critical oracle; fewer tests can provide stronger confidence when they target the right risk.
 
-Always retain meaningful denominators and scope. Examples:
+Always retain meaningful denominators and scope. Historical PA-002 examples include:
 
 ```text
 13 / 13 quota-lifecycle Emulator tests PASS
@@ -60,6 +61,16 @@ Always retain meaningful denominators and scope. Examples:
 ```
 
 Do not flatten these into “39 real Firestore tests”.
+
+PA-003 adds different evidence layers whose labels must remain distinct:
+
+```text
+Immutable race suite: 7 / 7 PASS
+Five-suite serial Emulator group: 90 / 90 PASS
+Rules: 258 / 258 PASS, 0 failed, 0 skipped
+Full Vitest final qualification: 989 PASS / 123 environment-gated SKIPPED / 0 FAIL
+C44 affected Edge regression: 1 / 1 PASS; realFirebaseRequests=0
+```
 
 ### 3.3 Facts, interpretation and decision are distinct
 
@@ -98,9 +109,16 @@ Therefore:
 
 - lint comparison uses warning identity (`file`, rule, semantic message) where the total changes or masking is possible;
 - acceptance reporting preserves the authoritative named-oracle matrix;
-- deleted/remapped acceptance tests are reported as coverage loss even if the aggregate suite remains green.
+- deleted/remapped acceptance tests are reported as coverage loss even if the aggregate suite remains green;
+- skip totals are accompanied by a required-oracle audit so environment-gated skips are not mistaken for missing mandatory acceptance evidence.
 
-PA-002 demonstrated all three situations.
+PA-002 demonstrated the first three situations; PA-003 S6 explicitly audited the final skip set and confirmed no required PA2/PA3 acceptance test was skipped.
+
+### 3.7 Presence/validity and resource identity are reportable security properties
+
+For compatibility-sensitive persisted identity, evidence should state whether a field is genuinely absent, present-valid or present-invalid when those states have different fallback semantics.
+
+For concurrency/resource races, evidence should identify the deterministic barrier and prove that authority/resource selection happened before the pause and protected resource consumption happened after it. A green race test without this seam description may be insufficient evidence.
 
 ---
 
@@ -111,6 +129,7 @@ PA-002 demonstrated all three situations.
 | Operational | Test Lead / authorised agents | Investigation, correction and detailed execution control |
 | Change/finding checkpoint | Test Lead / reviewer | Decide whether the change can move to review/publication |
 | Deployment checkpoint | Test Lead | Verify approved commit, remote SHA and deployment identity/status |
+| Post-publication checkpoint | Test Lead / reviewer | Verify exact deployed identity and bounded runtime/safe-smoke evidence without overstating unexecuted stateful scenarios |
 | Release-level summary | Test Lead / future collaborators | Consolidate risks, gates, residuals and final recommendation |
 | Public portfolio evidence | Recruiters / QA leadership / public readers | Demonstrate risk-based QA, governance and decisions without exposing secrets/private data |
 
@@ -125,9 +144,11 @@ Current sources include:
 - named acceptance matrices;
 - Vitest/Playwright/Firebase Emulator results;
 - Firestore/Storage Rules results;
+- cross-service Product-project Emulator smoke where one Rules engine depends on another service's state;
 - TypeScript/ESLint/build/diff checks;
 - candidate/staged/commit hashes;
 - Vercel deployment metadata/source SHA/status;
+- bounded deployment/runtime log checks;
 - manual/exploratory Test Lead observations;
 - sanitised screenshots/evidence records;
 - independent Codex review decisions.
@@ -146,7 +167,7 @@ Report:
 - Current gaps versus Regression risks;
 - accepted residuals;
 - carry-forwards and their closure trigger;
-- whether a Premium finding is open, blocked, independently approved, published or deferred.
+- whether a Premium finding is open, blocked, independently approved, published, Production verified or deferred.
 
 A risk is not “gone” merely because one implementation closes its current defect.
 
@@ -159,13 +180,13 @@ For lifecycle/concurrency/security work, report the authoritative requirement ID
 - `MISSING`
 - `WRONG ORACLE`
 
-Approval requires the defined threshold for that finding. PA-002 required all original PA2 criteria to be `PROVEN`.
+Approval requires the defined threshold for that finding. PA-002 required all original PA2 criteria to be `PROVEN`. PA-003 final reporting preserves PA3-01 through PA3-15 plus the F01–F12 finding disposition, with PA3-14/F09 limitations recorded rather than hidden.
 
 ### 6.3 Test execution
 
 Report exact layers separately, including PASS/FAIL/SKIP/BLOCKED and environment.
 
-For PA-002 final independent approval:
+Historical PA-002 final independent approval recorded:
 
 ```text
 Focused lifecycle: 24 / 24 PASS
@@ -183,6 +204,19 @@ Vitest files: 125 PASS / 10 SKIPPED
 
 Context ordering tests use mocked persistence boundaries; this limitation is part of the report rather than hidden by the aggregate count.
 
+Current PA-003 S6 qualification recorded:
+
+```text
+Immutable race suite: 7 / 7 PASS
+Serial five-suite Emulator group: 90 / 90 PASS
+Rules: 258 / 258 PASS / 0 FAIL / 0 SKIP
+Full Vitest: 989 PASS / 123 environment-gated SKIPPED / 0 FAIL
+C44 Edge: 1 / 1 PASS; realFirebaseRequests=0
+Authoritative Clear Map server: 11 / 11 PASS
+Clear Map client unit: 5 / 5 PASS
+Legacy Clear Map fixture/test debt: unchanged historical suite issue, separately classified
+```
+
 ### 6.4 Static/build quality
 
 Report:
@@ -193,22 +227,26 @@ Report:
 - `git diff --check`;
 - relevant dependency/runtime/tooling limitations.
 
-PA-002 final lint evidence is:
+PA-002 final lint evidence recorded a 38→37 baseline-to-candidate delta with zero errors and zero PA-002-created warnings, compared by identity rather than headline count.
+
+PA-003 final S6 qualification recorded:
 
 ```text
-baseline HEAD: 38 warnings
-approved candidate: 37 warnings
-errors: 0
-PA-002-created warnings: 0
+TypeScript: PASS
+Production build: PASS
+ESLint: 0 errors / 30 warnings
+Diff check: PASS
+Dependency/lockfile change: none for PA-003
+Runtime contract: Node 24.x / Next.js 16.3.6 exact
 ```
-
-The one legitimate removed warning is recorded by identity rather than celebrated as generic “lint improvement”.
 
 ### 6.5 Environment safety
 
 Report effective application origin, Firebase project and Emulator endpoints where relevant.
 
 `realFirebaseRequests=0` is valid only for the protected Emulator run that actually reached the guard/assertion. It must not be extrapolated to Production.
+
+When Storage Rules depend on Firestore state, report both the canonical Rules-suite result and the focused combined-service Product-project smoke. PA-003 used `demo-atlasbadge-web` to verify intended allow/deny behaviour across Firestore+Storage rather than inferring cross-service parity from `demo-atlasbadge-rules` alone.
 
 ### 6.6 Independent review
 
@@ -219,7 +257,7 @@ Where required, report:
 - findings/closure state;
 - whether review occurred before publication.
 
-PA-001 contains a review-order governance deviation and open compensating **post-publication** audit. PA-002 received final independent APPROVE before publication.
+PA-001 contains a review-order governance deviation and open compensating **post-publication** audit. PA-002 received final independent APPROVE before publication. PA-003 received independent review at each slice/correction gate plus S6 final decision `APPROVE PA-003 — READY FOR TEST LEAD FINAL DECISION` before the Test Lead authorised publication.
 
 ### 6.7 Final-byte integrity
 
@@ -235,23 +273,44 @@ approved working bytes
 
 Any mismatch invalidates the assumption that the deployed artefact is the independently approved artefact.
 
+PA-003 additionally recorded final review integrity over all 444 tracked/nonignored files during post-publication qualification, with no source/test/Rules/Portfolio mutation by the reviewer.
+
 ### 6.8 Deployment identity
 
 Report commit, parent when relevant, subject/scope, remote branch SHA, Vercel deployment ID, target, READY/ERROR state and source SHA.
 
-Current PA-002 publication evidence:
+Current PA-003 publication evidence:
 
 ```text
-Product commit: 49abb003a9b495f3be43b4e30ea4b36dcfb8ceca
-Parent: d0116967fc389353191c11e8865f20e38b9d5835
-Subject: fix(visit-photo): enforce active quota lifecycle
-Vercel: dpl_FTp3iCiARWMSejRv12FcHtaMcWeR
+Product commit: 7616e8ca455f1d2e72a67e4dd839c9c302f98656
+Subject: fix(visit-photo): complete PA-003 premium hardening
+Vercel: dpl_B842NnXHecrGNhcQAfpkC8CgyVhj
 Target: production
 State: READY
-Source SHA: 49abb003a9b495f3be43b4e30ea4b36dcfb8ceca
+Source SHA: 7616e8ca455f1d2e72a67e4dd839c9c302f98656
+Alias: atlas-badge.vercel.app
 ```
 
 READY is deployment evidence, not by itself functional Production PASS.
+
+### 6.9 Post-publication verification
+
+Where used, report the exact scope and mutation boundary.
+
+PA-003 post-publication qualification recorded:
+
+```text
+Git: HEAD == freshly fetched origin/main == 7616e8ca..., divergence 0/0, clean tree
+Vercel deployment: exact approved ID/SHA/subject, production, READY
+HTTP: / -> 307 -> /pt-br -> 200; /pt-br -> 200
+Static assets: bounded JS/CSS samples -> 200
+Owner API safe smoke: expected 400/401 rejected responses, no private bytes
+Public API safe smoke: expected 400 rejected response, no real account/photo probing
+Runtime logs: no error/fatal groups in bounded deployment window
+Intentional Production Firebase mutation: 0
+```
+
+Do not convert this into a claim that authenticated photo replacement/removal/race behaviour was executed against Production.
 
 ---
 
@@ -268,9 +327,10 @@ Keep separate counts/classifications for:
 - environment/infrastructure incidents;
 - release-control blocks;
 - governance/process deviations;
+- unsupported/speculative findings;
 - accepted limitations/residual risk.
 
-Do not inflate Product-defect metrics with stale tests, fixture reconciliation, workstation interruptions or review-order errors.
+Do not inflate Product-defect metrics with stale tests, fixture reconciliation, workstation interruptions, unsupported theories or review-order errors.
 
 A single High/P0 defect may be more important than many Low items; severity/priority/affected journey remain visible.
 
@@ -286,6 +346,8 @@ A gate may be:
 - `NOT EXECUTED`
 - `NOT APPLICABLE`
 - `NOT VERIFIED`
+- `PASS WITH OBSERVATION`
+- `REJECTED AS UNSUPPORTED` where a finding theory is explicitly disproven/unsupported
 - `FAIL — EXCEPTION ACCEPTED` where explicitly authorised
 
 An accepted exception does not rewrite a failed gate as PASS.
@@ -320,6 +382,7 @@ finding / requirement
 → Test Lead decision
 → commit/push
 → deployment exact SHA/status
+→ post-publication result where required
 → residuals / next scope
 ```
 
@@ -378,10 +441,24 @@ Report:
 - Product `49abb003...` → GitHub main → Vercel `dpl_FTp3...` READY exact SHA;
 - no authenticated Production mutation required for the publication proof;
 - physical Storage deletion intentionally deferred;
-- PA-003 next;
 - cached undeclared `tsx` follow-up under PA-006A.
 
-PA-002 being Production READY does not equal final Premium Hardening or final V1.0 Go Live approval.
+### PA-003 / AB-EV-068
+
+Report:
+
+- F01–F08 closed; F09 `PASS WITH OBSERVATION`; F10/F11 PASS; unsupported generic F12 theory rejected rather than treated as a defect;
+- PA3-01 through PA3-15 accepted, with PA3-14 carrying its documented observation rather than being overstated;
+- S1–S5 + S5-R01 correction chronology and independent Codex review gates;
+- immutable per-photo object identity for new uploads and write-frozen legacy namespace;
+- absent/present-valid/present-invalid locator distinction preserved through persistence;
+- deterministic race evidence with barrier before byte consumption;
+- Rules 258/258, serial Emulator 90/90, full Vitest 989/123/0, C44 `realFirebaseRequests=0`, build/TS/lint/diff gates;
+- Product `7616e8ca...` → freshly fetched GitHub `main` → Vercel `dpl_B842...` READY exact SHA;
+- post-publication operational/safe-smoke PASS with zero intentional Firebase mutation;
+- physical GC, PA-006A, PA-007/AC-017, PA-008 and PA-001 governance audit remain separate carry-forwards.
+
+PA-001/002/003 being published/Production verified checkpoints does not equal final Premium Hardening or final V1.0 Go Live approval.
 
 ---
 
@@ -446,8 +523,10 @@ PA-002 being Production READY does not equal final Premium Hardening or final V1
 
 ### Production validation
 - Functional Production smoke executed?:
-- If not, why not?:
+- Exact safe-smoke scope:
+- If stateful/destructive scenarios not executed, why not?:
 - Real Firebase mutation?:
+- Runtime log check?:
 
 ### Residuals
 - Accepted limitation:
@@ -490,7 +569,7 @@ Performance thresholds may be introduced only after PA-011 establishes a repeata
 
 ## 16. Reporting cadence
 
-Reporting is event-driven. Produce/update checkpoints when a material change/finding reaches validation, a Critical/High/P0/P1 issue appears, a required gate/review changes state, publication/deployment occurs, Production validation completes, residual risk is accepted or a release decision is required.
+Reporting is event-driven. Produce/update checkpoints when a material change/finding reaches validation, a Critical/High/P0/P1 issue appears, a required gate/review changes state, publication/deployment occurs, post-publication verification completes, residual risk is accepted or a release decision is required.
 
 Do not produce repetitive “all green” reports when no checkpoint changed.
 
@@ -512,13 +591,13 @@ Current limitations include manual consolidation, incomplete CI/dashboard automa
 
 Planned improvements may include machine-readable gate summaries, risk/test/defect/evidence linkage, CI capture, performance baselines, stronger automation-health reporting and the final V1.0 Test Summary Report.
 
-PA-006A owns deterministic test-tooling follow-up for the cached undeclared `tsx` dependency. PA-003 is the next active Product hardening service.
+PA-001, PA-002 and PA-003 are closed/published checkpoints. Remaining Premium reporting must keep PA-006A deterministic tooling, PA-007/AC-017 server-boundary/project-safety closure, PA-008 account-deletion origin policy, the PA-001 compensating architecture audit, deferred physical Storage GC and legacy Clear Map fixture debt distinct rather than presenting PA-003 as still active.
 
 ---
 
 ## 19. Review triggers
 
-Review this model when risk definitions, test environments, defect process, actor ownership, independent-review/publication gates, evidence structure, CI, supported browser/device scope, performance baselines or release criteria change materially.
+Review this model when risk definitions, test environments, defect process, actor ownership, independent-review/publication/post-publication gates, evidence structure, CI, supported browser/device scope, performance baselines or release criteria change materially.
 
 ---
 
@@ -530,3 +609,4 @@ Review this model when risk definitions, test environments, defect process, acto
 - `evidence/v1.0/regression/ab-ev-065-node24-final-rc-qualification-and-production-deployment.md`
 - `evidence/v1.0/regression/ab-ev-066-pa001-clear-map-server-boundary-premium-hardening.md`
 - `evidence/v1.0/regression/ab-ev-067-pa002-active-visit-photo-quota-lifecycle-premium-hardening.md`
+- `evidence/v1.0/regression/ab-ev-068-pa003-photo-admin-server-route-hardening.md`
