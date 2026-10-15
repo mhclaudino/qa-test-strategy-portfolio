@@ -6,7 +6,7 @@ This document defines the overall testing strategy for AtlasBadge and how qualit
 
 It covers risk prioritisation, test design, regression, evidence, AI-assisted execution, automation, release approval and residual risk.
 
-> **Document status:** Completed and maintained through AB-EV-067. The current strategy includes versioned Playwright/Firebase Emulator regression, checkpointed incremental validation, controlled real-backend/Production validation, explicit environment/runtime parity checks, real-browser acceptance, fixed living-document governance and Premium Hardening controls for named acceptance-oracle preservation, independent pre-publication review where required, exact candidate-byte freeze/integrity and publication-chain verification. PA-001 and PA-002 are published Premium closures; PA-003 is the next finding. Final V1.0 Go Live is not claimed.
+> **Document status:** Completed and maintained through AB-EV-068. The current strategy includes versioned Playwright/Firebase Emulator regression, checkpointed incremental validation, controlled real-backend/Production validation, explicit environment/runtime parity checks, real-browser acceptance, fixed living-document governance and Premium Hardening controls for named acceptance-oracle preservation, independent pre-publication review where required, exact candidate-byte freeze/integrity, cross-service Rules qualification and publication-chain verification. PA-001, PA-002 and PA-003 are published Premium closures. Product `7616e8ca455f1d2e72a67e4dd839c9c302f98656` / Vercel `dpl_B842NnXHecrGNhcQAfpkC8CgyVhj` is the current published anchor. Final V1.0 Go Live is not claimed.
 
 ---
 
@@ -35,7 +35,7 @@ The objective is release confidence, not an unrealistic claim that every theoret
 
 AtlasBadge is a published web product built with Next.js, React, TypeScript, Tailwind CSS, Firebase Authentication, Cloud Firestore and Vercel.
 
-Its main quality challenges include asynchronous persistence, optimistic state, concurrency, interdependent statuses, detailed visits/memories, Wishlist privacy/order, visit-photo active quota/lifecycle, geographic catalogue integrity, public/private profile projection, achievements, responsive map/UI behaviour and account lifecycle.
+Its main quality challenges include asynchronous persistence, optimistic state, concurrency, interdependent statuses, detailed visits/memories, Wishlist privacy/order, visit-photo active quota/lifecycle and immutable byte identity, geographic catalogue integrity, public/private profile projection, achievements, responsive map/UI behaviour and account lifecycle.
 
 The strategy should be read together with the [Product Overview](01-product-overview.md) and [Quality Risk Analysis](02-quality-risk-analysis.md).
 
@@ -58,7 +58,7 @@ The Test Lead remains responsible for:
 
 Use of AI does not transfer quality ownership.
 
-Where an independent review is an approved publication gate, publication is fail-closed until that review completes. PA-001 contains a transparently recorded review-order deviation and requires a compensating **post-publication** architecture audit before final Premium Hardening closure. PA-002 demonstrates the corrected sequence: uncommitted implementation/remediation → exact candidate freeze → independent Codex APPROVE → Test Lead publication authorisation → exact-byte staged/committed/remote/deployment verification.
+Where an independent review is an approved publication gate, publication is fail-closed until that review completes. PA-001 contains a transparently recorded review-order deviation and requires a compensating **post-publication** architecture audit before final Premium Hardening closure. PA-002 demonstrates the corrected sequence: uncommitted implementation/remediation → exact candidate freeze → independent Codex APPROVE → Test Lead publication authorisation → exact-byte staged/committed/remote/deployment verification. PA-003 follows the corrected sequence through sliced implementation/review, S6 final qualification, Test Lead final approval, exact Git/Vercel publication identity and a bounded non-destructive post-publication qualification before closure.
 
 ---
 
@@ -162,6 +162,8 @@ AB-EV-066 demonstrates bounded ownership hardening: Clear Map's protected-state 
 
 AB-EV-067 demonstrates the mature Premium workflow. PA-002 retained an explicit original acceptance matrix across several remediation cycles, froze exact candidate bytes, rejected stale/remapped oracles, compared lint warning identity rather than only the warning total, received independent Codex APPROVE before publication, and then proved approved working bytes → staged bytes → committed bytes → GitHub `main` → Vercel Production exact SHA. The underlying Product hardening separates logical photo removal/access/quota completion from deferred physical Storage cleanup and preserves concurrent edits by applying tombstone completion to current orchestrated state.
 
+AB-EV-068 extends the same discipline to a security/concurrency boundary. PA-003 first audited route/input/auth/legacy-fallback behaviour, then implemented bounded slices with independent Codex review. F08 was reproduced as an authorisation-to-byte ABA race in the mutable slot namespace and closed by immutable per-photo object identity. S5-R01 proved that **presence versus validity** survives canonicalisation/persistence so malformed-present modern locators cannot silently downgrade into legacy compatibility. Final S6 qualification retained named PA2/PA3 oracles, cross-service Rules evidence, exact final-byte integrity and post-publication non-destructive smoke against the exact Vercel deployment.
+
 This reduces wasted execution time while retaining traceable risk-based coverage.
 
 ### 6.2 Fail-fast classification
@@ -201,9 +203,9 @@ AtlasBadge uses a combination of:
 - exploratory testing;
 - error guessing based on previous defects and architecture.
 
-Particular attention is given to asynchronous writes, stale state, repeated clicks, destructive actions, public/private boundaries, status combinations and derived counters.
+Particular attention is given to asynchronous writes, stale state, repeated clicks, destructive actions, public/private boundaries, status combinations, derived counters and authority-to-resource races.
 
-For Premium Hardening, named acceptance-oracle inventories are retained when a finding has multiple race/lifecycle cases. A green aggregate test count cannot replace a missing original oracle.
+For Premium Hardening, named acceptance-oracle inventories are retained when a finding has multiple race/lifecycle cases. A green aggregate test count cannot replace a missing original oracle. Concurrency tests must place deterministic barriers at the semantic boundary being claimed; PA3-15 specifically requires the pause after authentication/logical authorisation and physical-key selection but before byte consumption.
 
 ---
 
@@ -215,7 +217,7 @@ Every implementation/correction receives direct validation against the accepted 
 
 A status or Wishlist change may require coverage of UI state, Firestore private state, public projection, reload persistence, counters, visit order independence, achievements, Profile presentation and privacy.
 
-A visit-photo lifecycle change may additionally require exact allocation identity, release idempotency/staleness, durable recovery after reload, current owner/public reference validation, full-quota recovery and physical-object/logical-state separation.
+A visit-photo lifecycle change may additionally require exact allocation identity, release idempotency/staleness, durable recovery after reload, current owner/public reference validation, full-quota recovery, physical-object/logical-state separation, immutable byte identity, strict absent/present-valid/present-invalid locator handling, request/body/query contracts and revocation/account-lifecycle gates.
 
 ### 8.2 Core regression
 
@@ -243,13 +245,13 @@ Most functional validation is completed before Production.
 
 Production validation is controlled and uses disposable QA data only. It focuses on behaviours whose release confidence depends on the deployed frontend, Firebase configuration/Rules or real integration.
 
-For a release that changes both frontend and Firestore Rules, the process is:
+For a release that changes frontend and/or Firebase Rules, the process is:
 
 ```text
 Git push
 → verify Vercel Production READY at expected SHA
-→ deploy approved Firestore Rules-only change where separately required
-→ confirm frontend/Rules parity
+→ deploy approved Firestore/Storage Rules-only change where separately required
+→ confirm source/Rules parity where applicable
 → run focused Production validation when proportionate
 ```
 
@@ -259,7 +261,7 @@ AB-EV-033 followed this exact gate before validating Wishlist/private-public pro
 
 Presentation-only/authenticated-state checkpoints may close as **Production technical PASS + local/Emulator visual PASS** when manufacturing Production state would add avoidable risk and server/routing/isolation behaviour can be verified safely without mutation. C45D–C45J use this evidence distinction where applicable; C45I and C45J/FIX1/FIX2 additionally received final Test Lead Production visual approval without exercising destructive account or private-data operations.
 
-For PA-001/PA-002 publication, exact Git/Vercel SHA metadata was sufficient to prove deployment identity after comprehensive local/Emulator qualification; destructive/authenticated Production mutation was deliberately not repeated merely to prove the same lifecycle against real user data.
+For PA-001/PA-002 publication, exact Git/Vercel SHA metadata proved deployment identity after comprehensive local/Emulator qualification; destructive/authenticated Production mutation was deliberately not repeated merely to prove the same lifecycle against real user data. PA-003 adds a separate post-publication gate: the exact approved commit→`origin/main`→Vercel deployment→Production alias chain was verified, localized page/static assets and safe rejected API paths were smoked, bounded runtime logs were checked and zero intentional Firebase mutation occurred. This is publication/runtime evidence, not a Production race-test claim.
 
 ---
 
@@ -299,7 +301,9 @@ Later photo/stateful checkpoints also start the Storage Emulator when required.
 
 The configuration forces Emulator targets, uses a dedicated E2E Next.js runtime/build, excludes Firebase-real Production specs and fails fast if real Firebase traffic is detected.
 
-Validated runs recorded `realFirebaseRequests=0`. PA-002's final C44 regression again recorded `realFirebaseRequests=0`; this is Emulator evidence and must not be misreported as a Production network-count claim.
+Validated runs recorded `realFirebaseRequests=0`. PA-002/PA-003 final C44 affected regression again recorded `realFirebaseRequests=0`; this is Emulator evidence and must not be misreported as a Production network-count claim.
+
+When one Rules engine depends on another service's state, the dedicated Rules suite is supplemented by a combined-service smoke under the actual Product Emulator project. PA-003 used this to validate Storage CREATE against Firestore account/allocation state under `demo-atlasbadge-web` rather than assuming the dedicated Rules project proved cross-service configuration parity.
 
 ### 10.3 Controlled Production automation
 
@@ -321,7 +325,9 @@ Tests must avoid false confidence from:
 - stale product counts/labels after an approved rule change;
 - directly seeded derived achievement state that bypasses required reconciliation;
 - replacing a named acceptance criterion with a superficially similar weaker test;
-- relying on an implementation helper test when the real Product path does not call that helper.
+- relying on an implementation helper test when the real Product path does not call that helper;
+- treating malformed-present security identity as equivalent to genuine field absence;
+- pre-buffering bytes before a race barrier and then claiming the test proves the live authority-to-stream boundary.
 
 ---
 
@@ -329,9 +335,9 @@ Tests must avoid false confidence from:
 
 ### 11.1 Security and privacy
 
-Current coverage includes authenticated-route protection, Firestore Rules, account isolation, private/public profile transitions, sanitised `publicProfiles` projection, public Wishlist privacy, direct identifier/URL attempts and account deletion.
+Current coverage includes authenticated-route protection, revocation-aware protected photo tokens, account-state gates, Firestore/Storage Rules, account isolation, private/public profile transitions, sanitised `publicProfiles` projection, public Wishlist privacy, direct identifier/URL attempts and account deletion.
 
-AB-EV-033 validated zero private viewer reads in the focused Production Profile flow and absence of forbidden private place fields in the public projection. AB-EV-053 confirms that localized achievement presentation does not expand the `{ unlockedAt, sequence }` public achievement metadata contract or make the public Profile depend on the authenticated locale provider. AB-EV-067 adds current-reference validation for visit-photo reads so retained physical objects cannot bypass logical owner/public removal.
+AB-EV-033 validated zero private viewer reads in the focused Production Profile flow and absence of forbidden private place fields in the public projection. AB-EV-053 confirms that localized achievement presentation does not expand the `{ unlockedAt, sequence }` public achievement metadata contract or make the public Profile depend on the authenticated locale provider. AB-EV-067 adds current-reference validation for visit-photo reads so retained physical objects cannot bypass logical owner/public removal. AB-EV-068 adds immutable per-photo object identity for new uploads, write-once/create-only Storage semantics, fail-closed present-invalid locator handling, cross-account/current-reference isolation and exact-byte race evidence.
 
 This is not an independent penetration test or security certification.
 
@@ -441,24 +447,26 @@ The final release decision belongs to the Test Lead.
 - Formal accessibility certification/native assistive-technology coverage is not claimed.
 - PA-001 AC-017 full browser UI → API → Admin Emulator reload proof remains carried to PA-007 / Final Premium RC.
 - The compensating post-publication PA-001 architecture audit remains a governance requirement before final Premium Hardening closure.
-- Physical visit-photo Storage deletion is intentionally deferred after PA-002; logical access and active quota no longer depend on it.
+- Physical visit-photo Storage garbage collection is intentionally deferred; PA-002/PA-003 logical access, quota and immutable-byte correctness do not depend on immediate deletion.
 - The existing Rules alias's undeclared/cached `tsx` dependency remains PA-006A deterministic-tooling scope.
+- PA-008 retains account-deletion origin-allowlist hardening.
+- The legacy Clear Map fixture/test suite debt remains distinct from the authoritative passing server/client regression and is not a PA-003 failure.
 
 ### Planned improvements / Premium sequence
 
-1. continue Premium Hardening with PA-003 photo Admin/server-route lifecycle and input-contract hardening;
-2. close PA-006A deterministic tooling and PA-007 server-boundary/project-safety items in their approved order;
+1. continue remaining Premium Hardening in Test Lead-approved order, including PA-006A deterministic tooling, PA-007/AC-017 server-boundary/project-safety closure and PA-008 account-deletion origin policy;
+2. complete the PA-001 compensating post-publication architecture audit before final Premium Hardening closure;
 3. establish measurable performance baselines before PA-011 optimisation decisions;
 4. expand browser/device coverage where risk justifies it;
 5. continue accessibility validation with assistive-technology evidence;
 6. maintain Emulator fail-fast protections as Firebase/Next.js configuration changes;
-7. keep checkpointed regression and exact-byte approval traceable so saved execution time never becomes hidden coverage loss.
+7. keep checkpointed regression, immutable resource-identity checks and exact-byte approval traceable so saved execution time never becomes hidden coverage loss.
 
 ---
 
 ## 17. Strategy review triggers
 
-Review this strategy when authentication, travel-status/Wishlist rules, persistence/concurrency, Firestore Rules/data model, public projection/privacy, account deletion, visit-photo lifecycle/Admin boundaries, geographic catalogue, achievements/localized presentation, Emulator architecture, CI, supported browsers/devices, accessibility targets or release process change materially.
+Review this strategy when authentication, travel-status/Wishlist rules, persistence/concurrency, Firestore/Storage Rules/data model, public projection/privacy, account deletion, visit-photo lifecycle/Admin boundaries or physical-object identity, geographic catalogue, achievements/localized presentation, Emulator architecture, CI, supported browsers/devices, accessibility targets or release process change materially.
 
 ---
 
@@ -490,9 +498,10 @@ Review this strategy when authentication, travel-status/Wishlist rules, persiste
 - `evidence/v1.0/regression/ab-ev-065-node24-final-rc-qualification-and-production-deployment.md`
 - `evidence/v1.0/regression/ab-ev-066-pa001-clear-map-server-boundary-premium-hardening.md`
 - `evidence/v1.0/regression/ab-ev-067-pa002-active-visit-photo-quota-lifecycle-premium-hardening.md`
+- `evidence/v1.0/regression/ab-ev-068-pa003-photo-admin-server-route-hardening.md`
 
 ## Current Premium Hardening strategy checkpoint
 
-The current Product publication anchor is `49abb003a9b495f3be43b4e30ea4b36dcfb8ceca`, deployed automatically to Vercel Production as `dpl_FTp3iCiARWMSejRv12FcHtaMcWeR` (`READY`, exact SHA).
+The current Product publication anchor is `7616e8ca455f1d2e72a67e4dd839c9c302f98656`, deployed automatically to Vercel Production as `dpl_B842NnXHecrGNhcQAfpkC8CgyVhj` (`READY`, production, exact SHA) and accepted after bounded post-publication verification.
 
-PA-001 and its UTF-8 test-oracle repair are published under AB-EV-066; AC-017 and the compensating post-publication architecture audit remain explicit carry-forwards. PA-002 is closed under AB-EV-067 with all original acceptance criteria independently PROVEN before publication. PA-003 is the next implementation/audit service. This checkpoint is not the final V1.0 Go-Live decision.
+PA-001 and its UTF-8 test-oracle repair are published under AB-EV-066; AC-017 and the compensating post-publication architecture audit remain explicit carry-forwards. PA-002 is closed under AB-EV-067 with all original acceptance criteria independently PROVEN before publication. PA-003 is closed under AB-EV-068 with PA3-01 through PA3-15 accepted, F08/PA3-15 immutable-byte race evidence, 258/258 Rules, full S6 qualification and safe Production verification. Remaining Premium work is sequenced separately. This checkpoint is not the final V1.0 Go-Live decision.
